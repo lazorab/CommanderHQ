@@ -10,7 +10,7 @@ function Image()
 {
 	global $RENDER;
 	
-	$RENDER = new Image('crossfit/');
+	$RENDER = new Image(SITE_ID);
 }
 
 ?>
@@ -43,7 +43,7 @@ function Image()
 
 <wall:body>
 <div id="header"></div>
-<wall:img alt="Header" src="<?php echo $RENDER->Image('images/img.jpg', $request->get_screen_width_new());?>" />
+<wall:img alt="Header" src="<?php echo $RENDER->Image('img.jpg', $request->get_screen_width_new());?>" />
 <wall:br/><wall:br/>
 <?php if(isset($_SESSION['UID'])){ ?>
 <wall:a href="?page=memberhome">Home</wall:a>

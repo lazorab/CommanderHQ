@@ -95,4 +95,19 @@ class DropDownMenu
 		}
 		return $Options;
 	}	
+	
+	function ExerciseOptions($SelectedValue='')
+	{
+		$Options = '<wall:option value="">Exercise Type</wall:option>';
+		$Options .= '<wall:option value="01"';
+		if($SelectedValue == "01")
+			$Options .=' selected="selected"';		
+		$Options .= '>Sit Ups</wall:option>';
+		$Options .= '<wall:option value="02"';
+		if($SelectedValue == "02")
+			$Options .=' selected="selected"';		
+		$Options .= '>Jogging</wall:option>';
+
+		return $Options;
+	}	
 }
