@@ -42,9 +42,9 @@ function Image()
 </wall:head>
 
 <wall:body>
-<div id="header"></div>
-<wall:img alt="Header" src="<?php echo $RENDER->Image('img.jpg', $request->get_screen_width_new());?>" />
-<wall:br/><wall:br/>
+<div id="header">
+<wall:img alt="Header" src="<?php echo $RENDER->Image('img.jpg', $request->get_screen_width_new());?>"/>
+</div>
 <?php if(isset($_SESSION['UID'])){ ?>
 <wall:a href="?page=memberhome">Home</wall:a>
 <wall:a href="?page=reports">Reports</wall:a>

@@ -52,6 +52,7 @@ class Image
 
 		$NewWidth = floor($MasterWidth * $ratio);
 		$NewHeight = floor($MasterHeight * $ratio);
+
 		$this->Image = ''.$this->FilePath.'/'.$FileName.'_'.$NewWidth.'_'.$NewHeight.'.'.$Extension.'';
 		$ImageToRender = '/'.$FileName.'_'.$NewWidth.'_'.$NewHeight.'.'.$Extension.'';
 		
