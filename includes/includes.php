@@ -16,5 +16,6 @@ require_once('util.php');
 //require_once('./library/image.class.php');
 require_once('./library/video.class.php');
 require_once('./library/dropdownmenu.class.php');
+require_once('./library/quicklog.class.php');
 require_once('const.php');
 ?>

@@ -31,12 +31,11 @@ class API
 				$FIELDS .= ',';
 				$VALUES .= ',';
 			}
-				$FIELDS .= '"'.$key.'"';
+				$FIELDS .= $key;
 				$VALUES .= '"'.$val.'"';
 			$i++;
 		}
 		$SQL = 'INSERT INTO WOD('.$FIELDS.') VALUES('.$VALUES.')';
-		echo $SQL;
-		//mysql_query($SQL);	
+		mysql_query($SQL);	
 	}
 }

@@ -20,7 +20,10 @@ if($_REQUEST['action'] == 'WOD')
 {
 	$API = new API;
 	$_DETAILS=array(
-		'Description'=>''.$_REQUEST['wod'].'',
+		'ActivityName'=>''.$_REQUEST['wod'].'',
+		'ActivityType'=>''.$_REQUEST['type'].'',
+		'Description'=>''.$_REQUEST['desc'].'',
+		'Repetitions'=>''.$_REQUEST['reps'].'',
 		'Duration'=>''.$_REQUEST['dur'].'');	
 	$API->InsertWOD($_DETAILS);
 }

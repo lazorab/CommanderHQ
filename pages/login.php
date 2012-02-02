@@ -1,4 +1,5 @@
 <?php
+session_start();
 $ErrorMessage = '';
 if($_REQUEST['submit'] == 'Submit')
 {

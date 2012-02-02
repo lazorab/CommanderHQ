@@ -13,6 +13,11 @@ Last Modified Date: 10 December 2011
 
 class DropDownMenu
 {
+	function __construct()
+	{
+		mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
+		@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");	
+	}
 	
 	function DayOptions($SelectedValue='')
 	{
@@ -98,16 +103,16 @@ class DropDownMenu
 	
 	function ExerciseOptions($SelectedValue='')
 	{
+		$SQL = 'SELECT DISTINCT activityname FROM SkillsLevel ORDER BY activityname';
+		$Result = mysql_query($SQL);
 		$Options = '<wall:option value="">Exercise Type</wall:option>';
-		$Options .= '<wall:option value="01"';
-		if($SelectedValue == "01")
-			$Options .=' selected="selected"';		
-		$Options .= '>Sit Ups</wall:option>';
-		$Options .= '<wall:option value="02"';
-		if($SelectedValue == "02")
-			$Options .=' selected="selected"';		
-		$Options .= '>Jogging</wall:option>';
-
+		while($Row = mysql_fetch_assoc($Result))
+		{
+			$Options .= '<wall:option value="'.$Row['activityname'].'"';
+			if($SelectedValue == $Row['activityname'])
+				$Options .=' selected="selected"';		
+			$Options .= '>'.$Row['activityname'].'</wall:option>';
+		}
 		return $Options;
 	}	
 }
