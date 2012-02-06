@@ -14,7 +14,7 @@ define("DB_PASSWORD", "cyBerman2010");
 define("DB_SERVER", "localhost");
 define("DB_CUSTOM_DATABASE", "bemobile_CrossFit");
 
-require_once('./library/api.class.php');
+require_once('./library/wod.class.php');
 
 if($_REQUEST['action'] == 'WOD')
 {

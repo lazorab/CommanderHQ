@@ -12,6 +12,7 @@ require_once('./library/member.class.php');
 require_once('./library/util.class.php');
 require_once('./library/content.class.php');
 require_once('./library/asset.class.php');
+require_once('./library/wod.class.php');
 require_once('util.php');
 //require_once('./library/image.class.php');
 require_once('./library/video.class.php');

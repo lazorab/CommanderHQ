@@ -1,9 +1,15 @@
+<?php
+$device = new DeviceManagerTest;
+$supportOnlineVideoPlay = $device->SupportOnlineVideo();
+if ($supportOnlineVideoPlay) {
+?>
 <script type="text/javascript">
     function GetVideo(filename)
     {
         document.getElementById('header').innerHTML = '<iframe marginwidth="0px" marginheight="0px" width="<?php echo $request->get_screen_width(); ?>" height="<?php echo floor($request->get_screen_width() * 0.717); ?>" src="' + filename + '" frameborder="0"></iframe>';
     }
 </script>
+<?php } ?>
 <wall:form action="index.php" method="post">
 <wall:input type="hidden" name="page" value="vids"/>
 <wall:input type="hidden" name="formsubmitted" value="yes"/>
@@ -31,13 +37,17 @@ if($_REQUEST['formsubmitted'] == 'yes')
 		$LimitStart = 0;
 	$Limit = 10;
 	$LimitEnd = $LimitStart+$Limit;
+	echo '<p>Click on a title below to play video</p>';
 	foreach($VideoSearchResults as $Video)
 	{
 		if($i >= $LimitStart && $i <= $LimitEnd)
 		{
-		
-			echo '<p><a onclick="GetVideo(\''.$Video->URL.'\')" href="#"><b>'.$Video->Title.'</b></a></p>';
-			echo '<p>'.$Video->Content.'</p>';
+			if ($supportOnlineVideoPlay) {		
+				echo '<p><a onclick="GetVideo(\''.$Video->SmartPhoneURL.'\')" href="#"><b>'.$Video->Title.'</b></a></p>';
+				echo '<p>'.$Video->Content.'</p>';
+			}else{
+				echo '<wall:a href="'.$Video->LegacyPhoneURL.'">'.$Video->Title.'</wall:a><wall:br/><wall:br/>';
+			}
 		}
 		$i++;
 	}

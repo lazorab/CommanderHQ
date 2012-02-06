@@ -49,13 +49,15 @@ class Video
 class VideoObject
 {
 	var $Title;
-	var $URL;
+	var $SmartPhoneURL;
+	var $LegacyPhoneURL;
 	var $Content;
 	
 	function __construct($Video)
 	{
 		$this->Title = $Video->title;		
-		$this->URL = 'http://www.youtube.com/embed/'.str_replace('http://gdata.youtube.com/feeds/api/videos/','',$Video->id).'';
+		$this->SmartPhoneURL = 'http://www.youtube.com/embed/'.str_replace('http://gdata.youtube.com/feeds/api/videos/','',$Video->id).'';
+		$this->LegacyPhoneURL = 'http://m.youtube.com/details?v='.str_replace('http://gdata.youtube.com/feeds/api/videos/','',$Video->id).'';
 		$this->Content = $Video->content;
 	}
 }
