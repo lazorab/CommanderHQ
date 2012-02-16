@@ -40,7 +40,6 @@ class MemberDetails
 	var $Weight;
 	var $Height;
 	var $Gender;
-	var $Goals;
 	
 	function __construct($Row)
 	{
@@ -49,8 +48,7 @@ class MemberDetails
 		$this->UserName = $Row['UserName'];
 		$this->Weight = $Row['Weight'];
 		$this->Height = $Row['Height'];
-		$this->Gender = $Row['Gender'];
-		$this->Goals = unserialize($Row['Goals']);		
+		$this->Gender = $Row['Gender'];		
 	}
 }
 
@@ -100,27 +98,34 @@ class Register
 				Cell,
 				Email,
 				UserName,
-				PassWord,
-				DOB,
-				Weight,
-				Height,
-				Gender,
-				Goals) 
+				PassWord) 
 				VALUES('".$Credentials['FirstName']."',
 				'".$Credentials['LastName']."',
 				'".$Credentials['Cell']."',
 				'".$Credentials['Email']."',
 				'".$Credentials['UserName']."',
-				'".$Credentials['PassWord']."',
-				'".$Credentials['DOB']."',
-				'".$Credentials['Weight']."',
-				'".$Credentials['Height']."',
-				'".$Credentials['Gender']."',
-				'".$Credentials['Goals']."')";
+				'".$Credentials['PassWord']."')";
 
 			mysql_query($sql);
 			
 			$this->ReturnValue = mysql_insert_id();
+			$BMI = round($Credentials['Weight'] / ($Credentials['Height'] * $Credentials['Height']), 2);
+			
+			$sql="INSERT INTO MemberDetails(
+				MemberId,
+				DOB,
+				Weight,
+				Height,
+				Gender,
+				BMI) 
+				VALUES('".$this->ReturnValue."',
+				'".$Credentials['DOB']."',
+				'".$Credentials['Weight']."',
+				'".$Credentials['Height']."',
+				'".$Credentials['Gender']."',
+				'".$BMI."')";
+
+			mysql_query($sql);				
 		}
 	}
 	

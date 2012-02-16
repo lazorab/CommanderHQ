@@ -86,11 +86,11 @@ Date of Birth<wall:br/>
 <?php echo $DropDown->YearOptions($_REQUEST['year']);?>
 </wall:select>
 <wall:br/>
-Weight<wall:br/>
+Weight (kg)<wall:br/>
 <wall:input type="text" name="weight" value="<?php echo $_REQUEST['weight'];?>"/><wall:br/>
-Height<wall:br/>
+Height (meters)<wall:br/>
 <wall:input type="text" name="height" value="<?php echo $_REQUEST['height'];?>"/><wall:br/>
 Gender<wall:br/>
-Male<wall:input type="radio" name="gender" value="m" <?php if($_REQUEST['gender'] == 'm') echo 'checked="checked"';?>/>Female<wall:input type="radio" name="gender" value="f" <?php if($_REQUEST['gender'] == 'f') echo 'checked="checked"';?>/><wall:br/>
+Male<wall:input type="radio" name="gender" value="M" <?php if($_REQUEST['gender'] == 'M') echo 'checked="checked"';?>/>Female<wall:input type="radio" name="gender" value="F" <?php if($_REQUEST['gender'] == 'F') echo 'checked="checked"';?>/><wall:br/>
 <wall:input type="submit" name="submit" value="Submit"/><wall:br/><wall:br/>
 </wall:form>

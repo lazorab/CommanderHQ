@@ -41,12 +41,12 @@ if($handset->IsSmartPhone()){
 else{
 	define('SMARTPHONE', false);	
 }
-define('ASSET_URL', 'http://www.be-mobile.co.za/framework/img_test.php?account_id=5&amp;disp=1&amp;meta=~~meta~~&amp;site_width=');
+define('ASSET_URL', 'http://www.be-mobile.co.za/framework/img.php?account_id=5&amp;disp=1&amp;meta=~~meta~~&amp;site_width=');
 
 define('ASSET_API_URL', 'http://asset.be-mobile.co.za/api/');
 
 /* Image Direct */
-define('IMAGE_DIRECT', 'http://www.be-mobile.co.za/framework/img_direct_test.php');
+define('IMAGE_DIRECT', 'http://www.be-mobile.co.za/framework/img_direct.php');
 
 /* Site Settings */
 define("SITE_ID", "53");

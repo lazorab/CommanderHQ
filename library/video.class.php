@@ -25,7 +25,7 @@ class Video
 	function SearchResults($keyword)
 	{
 		$VideoResults = array();
-		$this->URL = 'http://gdata.youtube.com/feeds/api/videos?q='.$keyword.'';
+		$this->URL = 'http://gdata.youtube.com/feeds/api/videos?q='.urlencode($keyword).'';
 		$ch=curl_init();
 		curl_setopt($ch, CURLOPT_URL, $this->URL);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 180);

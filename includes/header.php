@@ -48,10 +48,13 @@ function Image()
 <?php if(isset($_SESSION['UID'])){ ?>
 <wall:a href="?page=memberhome">Home</wall:a>
 <wall:a href="?page=reports">Reports</wall:a>
-<wall:a href="?page=exerciseplan">Exercise Plan</wall:a>
+<wall:a href="?page=exerciseplan">ExercisePlan</wall:a>
+<wall:a href="?page=benchmark">BenchmarkWorkouts</wall:a>
 <wall:a href="?page=wod">WOD</wall:a>
-<wall:a href="?page=log">Log</wall:a>
+<wall:a href="?page=challenge">Challenge</wall:a>
+<wall:a href="?page=log">QuickLog</wall:a>
 <wall:a href="?page=vids">Videos</wall:a>
+<wall:a href="?page=logout">LogOut</wall:a>
 <?php } else { ?>
 <wall:a href="?page=about">About</wall:a>
 <wall:a href="?page=map">Map</wall:a>

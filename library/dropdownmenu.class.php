@@ -103,16 +103,46 @@ class DropDownMenu
 	
 	function ExerciseOptions($SelectedValue='')
 	{
-		$SQL = 'SELECT DISTINCT activityname FROM SkillsLevel ORDER BY activityname';
+		$SQL = 'SELECT recid, Exercise FROM Exercises ORDER BY Exercise';
 		$Result = mysql_query($SQL);
-		$Options = '<wall:option value="">Exercise Type</wall:option>';
+		$Options = '<wall:option value="">Exercise</wall:option>';
 		while($Row = mysql_fetch_assoc($Result))
 		{
-			$Options .= '<wall:option value="'.$Row['activityname'].'"';
-			if($SelectedValue == $Row['activityname'])
+			$Options .= '<wall:option value="'.$Row['recid'].'"';
+			if($SelectedValue == $Row['recid'])
 				$Options .=' selected="selected"';		
-			$Options .= '>'.$Row['activityname'].'</wall:option>';
+			$Options .= '>'.$Row['Exercise'].'</wall:option>';
 		}
 		return $Options;
 	}	
+	
+	function WorkoutOptions($SelectedValue='')
+	{
+		$SQL = 'SELECT recid, WorkoutName FROM BenchmarkWorkouts ORDER BY WorkoutName';
+		$Result = mysql_query($SQL);
+		$Options = '<wall:option value="">Workout</wall:option>';
+		while($Row = mysql_fetch_assoc($Result))
+		{
+			$Options .= '<wall:option value="'.$Row['recid'].'"';
+			if($SelectedValue == $Row['recid'])
+				$Options .=' selected="selected"';		
+			$Options .= '>'.$Row['WorkoutName'].'</wall:option>';
+		}
+		return $Options;
+	}	
+	
+	function Challenges()
+	{
+		$SQL = 'SELECT recid, ActivityName FROM WOD';
+		$Result = mysql_query($SQL);
+		$Options = '<wall:option value="">Workout</wall:option>';
+		while($Row = mysql_fetch_assoc($Result))
+		{
+			$Options .= '<wall:option value="'.$Row['recid'].'"';
+			if($SelectedValue == $Row['recid'])
+				$Options .=' selected="selected"';		
+			$Options .= '>'.$Row['ActivityName'].'</wall:option>';
+		}
+		return $Options;	
+	}
 }

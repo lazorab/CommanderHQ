@@ -1,3 +1,7 @@
+<wall:form action="index.php" method="post">
+<wall:input type="hidden" name="page" value="log"/>
+<wall:input type="hidden" name="formsubmitted" value="yes"/>
+<wall:input type="hidden" name="UID" value="<?php echo $_SESSION['UID'];?>"/>
 <?php
 session_start();
 $Validate = new ValidationUtils;
@@ -5,29 +9,40 @@ $ErrorMessage = '';
 $DropDown = new DropDownMenu;
 if($_REQUEST['formsubmitted'] == 'yes')
 {
-	if($_REQUEST['exercise'] == '')
-		$ErrorMessage = 'Must Select Exercise';
-	elseif($_REQUEST['weight'] == '')
-		$ErrorMessage = 'Must Enter Weight';
-		
-	if($ErrorMessage == '')
-	{		
-		$Success = new QuickLog($_REQUEST);
-		if($Success)
-			echo '<wall:br/>Log Successful';
-		else
-			$ErrorMessage = '<wall:br/>Error: Unsuccessful Log';
+	if(isset($_REQUEST['workout']) && $_REQUEST['workout'] != '')
+	{ ?>
+Workout Completed<wall:br/>
+<wall:select name="workout">
+<?php echo $DropDown->WorkoutOptions($_REQUEST['workout']);?>
+</wall:select><wall:br/>
+<wall:br/>
+	<?php
+		if(!isset($_REQUEST['hours']) || !isset($_REQUEST['minutes']) || !isset($_REQUEST['seconds'])){ 
+		$ErrorMessage = 'Must Enter Time';?>
+Time to complete<wall:br/>
+<wall:select name="hours">
+<wall:option value="00">hh</wall:option>
+	<?php for($i=0;$i<25;$i++){ ?>
+		<wall:option value="<?php printf("%02d", $i);?>"<?php if($_REQUEST['hours'] == sprintf("%02d", $i)) echo ' selected="selected"';?>><?php printf("%02d", $i);?></wall:option>
+	<?php } ?>
+</wall:select> :
+<wall:select name="minutes">
+<wall:option value="00">mm</wall:option>
+<?php for($i=0;$i<60;$i++){ ?>
+		<wall:option value="<?php printf("%02d", $i);?>"<?php if($_REQUEST['minutes'] == sprintf("%02d", $i)) echo ' selected="selected"';?>><?php printf("%02d", $i);?></wall:option>
+	<?php } ?>
+</wall:select> :
+<wall:select name="seconds">
+<wall:option value="00">ss</wall:option>
+<?php for($i=0;$i<60;$i++){ ?>
+		<wall:option value="<?php printf("%02d", $i);?>"<?php if($_REQUEST['seconds'] == sprintf("%02d", $i)) echo ' selected="selected"';?>><?php printf("%02d", $i);?></wall:option>
+	<?php } ?>
+</wall:select>
+	<?php }
 	}
-	if($ErrorMessage != ''){
-		echo '<wall:br/>'.$ErrorMessage.'';
-	}
-}
-?>
-<wall:br/><wall:br/>
-<wall:form action="index.php" method="post">
-<wall:input type="hidden" name="page" value="log"/>
-<wall:input type="hidden" name="formsubmitted" value="yes"/>
-<wall:input type="hidden" name="UID" value="<?php echo $_SESSION['UID'];?>"/>
+	elseif(isset($_REQUEST['exercise']) && $_REQUEST['exercise']!= '')
+	{ ?>
+<wall:br/>
 Exercise Completed<wall:br/>
 <wall:select name="exercise">
 <?php echo $DropDown->ExerciseOptions($_REQUEST['exercise']);?>
@@ -39,9 +54,9 @@ Weight<wall:br/>
 Reps<wall:br/>
 <wall:input type="text" name="reps" value="<?php echo $_REQUEST['reps'];?>"/><wall:br/>
 <wall:br/>
-Duration/time<wall:br/>
+Time to complete<wall:br/>
 <wall:select name="hours">
-<wall:option value="00">hh</wall:option>
+<wall:option value="00">hh</wall:option>	
 <?php for($i=0;$i<25;$i++){ ?>
 		<wall:option value="<?php printf("%02d", $i);?>"<?php if($_REQUEST['hours'] == sprintf("%02d", $i)) echo ' selected="selected"';?>><?php printf("%02d", $i);?></wall:option>
 	<?php } ?>
@@ -58,6 +73,43 @@ Duration/time<wall:br/>
 		<wall:option value="<?php printf("%02d", $i);?>"<?php if($_REQUEST['seconds'] == sprintf("%02d", $i)) echo ' selected="selected"';?>><?php printf("%02d", $i);?></wall:option>
 	<?php } ?>
 </wall:select>
+	<?php 
+	if(!isset($_REQUEST['hours']) || !isset($_REQUEST['minutes']) || !isset($_REQUEST['seconds'])) 
+		$ErrorMessage = 'Must Enter Time';
+	if(isset($_REQUEST['weight']) && $_REQUEST['weight'] == '')
+		$ErrorMessage = 'Must Enter Weight';
+	}
+	
+	if($ErrorMessage == ''){		
+		$Success = new QuickLog($_REQUEST);
+		if($Success)
+			echo '<wall:br/>Log Successful';
+		else
+			$ErrorMessage = '<wall:br/>Error: Unsuccessful Log';
+	}
+	else{
+		echo '<wall:br/>'.$ErrorMessage.'';
+	}
+}
+else
+{
+?>
+<wall:br/><wall:br/>
+
+Workout Completed<wall:br/>
+<wall:select name="workout">
+<?php echo $DropDown->WorkoutOptions($_REQUEST['workout']);?>
+</wall:select><wall:br/>
+<wall:br/>
+OR
+<wall:br/><wall:br/>
+Exercise Completed<wall:br/>
+<wall:select name="exercise">
+<?php echo $DropDown->ExerciseOptions($_REQUEST['exercise']);?>
+</wall:select><wall:br/>
+<wall:br/>
+
+<?php } ?>
 <wall:br/><wall:br/>
 <wall:input type="submit" name="submit" value="Submit"/><wall:br/><wall:br/>
 </wall:form>

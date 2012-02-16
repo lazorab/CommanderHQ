@@ -48,6 +48,7 @@ class WOD
 		
 		return $WOD;
 	}	
+
 }
 
 class WODObject

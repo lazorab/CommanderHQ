@@ -10,10 +10,11 @@ if ($supportOnlineVideoPlay) {
     }
 </script>
 <?php } ?>
+<wall:br/><wall:br/>
 <wall:form action="index.php" method="post">
 <wall:input type="hidden" name="page" value="vids"/>
 <wall:input type="hidden" name="formsubmitted" value="yes"/>
-Search<wall:br/>
+Search for videos<wall:br/>
 <wall:input type="text" name="keyword" value="<?php echo $_REQUEST['keyword'];?>"/>
 <wall:input type="submit" name="submit" value="Submit"/><wall:br/><wall:br/>
 </wall:form>
