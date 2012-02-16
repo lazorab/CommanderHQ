@@ -17,8 +17,11 @@ Workout Completed<wall:br/>
 </wall:select><wall:br/>
 <wall:br/>
 	<?php
-		if(!isset($_REQUEST['hours']) || !isset($_REQUEST['minutes']) || !isset($_REQUEST['seconds'])){ 
-		$ErrorMessage = 'Must Enter Time';?>
+		if($_REQUEST['hours'] == '00' && $_REQUEST['minutes'] == '00' && $_REQUEST['seconds'] == '00'){ 
+			$ErrorMessage = 'Must Enter Time';
+		if(isset($_REQUEST['reps']) && $_REQUEST['reps'] == '')
+			$ErrorMessage = 'Must Enter Number of Rounds';	
+			} ?>
 Time to complete<wall:br/>
 <wall:select name="hours">
 <wall:option value="00">hh</wall:option>
@@ -38,7 +41,11 @@ Time to complete<wall:br/>
 		<wall:option value="<?php printf("%02d", $i);?>"<?php if($_REQUEST['seconds'] == sprintf("%02d", $i)) echo ' selected="selected"';?>><?php printf("%02d", $i);?></wall:option>
 	<?php } ?>
 </wall:select>
-	<?php }
+<wall:br/>
+Rounds<wall:br/>
+<wall:input type="text" name="reps" value="<?php echo $_REQUEST['reps'];?>"/><wall:br/>
+<wall:br/>
+	<?php 
 	}
 	elseif(isset($_REQUEST['exercise']) && $_REQUEST['exercise']!= '')
 	{ ?>
@@ -48,8 +55,11 @@ Exercise Completed<wall:br/>
 <?php echo $DropDown->ExerciseOptions($_REQUEST['exercise']);?>
 </wall:select><wall:br/>
 <wall:br/>
-Weight<wall:br/>
+Weight Lifted<wall:br/>
 <wall:input type="text" name="weight" value="<?php echo $_REQUEST['weight'];?>"/><wall:br/>
+<wall:br/>
+Height Reached<wall:br/>
+<wall:input type="text" name="height" value="<?php echo $_REQUEST['height'];?>"/><wall:br/>
 <wall:br/>
 Reps<wall:br/>
 <wall:input type="text" name="reps" value="<?php echo $_REQUEST['reps'];?>"/><wall:br/>
@@ -76,10 +86,11 @@ Time to complete<wall:br/>
 	<?php 
 	if(!isset($_REQUEST['hours']) || !isset($_REQUEST['minutes']) || !isset($_REQUEST['seconds'])) 
 		$ErrorMessage = 'Must Enter Time';
-	if(isset($_REQUEST['weight']) && $_REQUEST['weight'] == '')
-		$ErrorMessage = 'Must Enter Weight';
+	if(isset($_REQUEST['membersweight']) && $_REQUEST['weight'] == '')
+		$ErrorMessage = 'Must Enter Your Weight';
 	}
 	
+	if($_REQUEST['submit'] == 'Submit'){
 	if($ErrorMessage == ''){		
 		$Success = new QuickLog($_REQUEST);
 		if($Success)
@@ -90,7 +101,10 @@ Time to complete<wall:br/>
 	else{
 		echo '<wall:br/>'.$ErrorMessage.'';
 	}
-}
+	} ?>
+	<wall:br/><wall:br/>
+	<wall:input type="submit" name="submit" value="Submit"/><wall:br/><wall:br/>
+<?php }
 else
 {
 ?>
@@ -108,8 +122,8 @@ Exercise Completed<wall:br/>
 <?php echo $DropDown->ExerciseOptions($_REQUEST['exercise']);?>
 </wall:select><wall:br/>
 <wall:br/>
-
-<?php } ?>
 <wall:br/><wall:br/>
-<wall:input type="submit" name="submit" value="Submit"/><wall:br/><wall:br/>
+<wall:input type="submit" name="next" value="Next"/><wall:br/><wall:br/>
+<?php } ?>
+
 </wall:form>

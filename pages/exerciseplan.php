@@ -24,8 +24,9 @@ Exercise Planning / Goals
 		$Action = new Goals;
 		$Goals = $Action->getGoals($_SESSION['UID']);
 		foreach($Goals AS $Goal)
-		{ ?>
-			<wall:input type="checkbox" name="Goals[]" value="<?php echo $Goal->Id; ?>" <?php if($Goal->Achieved == 1) echo 'checked="checked"'; ?>/>
+		{ 
+		?>
+			<wall:input type="checkbox" name="Goals[]" value="<?php echo $Goal->Id; ?>" <?php if($Goal->Achieved == 1) echo 'disabled="disabled" checked="checked"'; ?>/>
 			<wall:a href="index.php?page=exerciseplan&amp;formsubmitted=yes&amp;submit=view&amp;id=<?php echo $Goal->Id; ?>"><?php echo $Goal->Title; ?></wall:a><wall:br/>
 		<?php } ?>
 		<wall:br/><wall:br/>
