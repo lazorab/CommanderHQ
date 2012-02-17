@@ -52,7 +52,10 @@ function Image()
 <wall:a href="?page=benchmark">BenchmarkWorkouts</wall:a>
 <wall:a href="?page=wod">WOD</wall:a>
 <wall:a href="?page=challenge">Challenge</wall:a>
-<wall:a href="?page=log">QuickLog</wall:a>
+<wall:a href="?page=travelworkouts">TravelWorkouts</wall:a>
+<wall:a href="?page=exerciselog">QuickLog</wall:a>
+<wall:a href="?page=foodlog">FoodLog</wall:a>
+<wall:a href="?page=recipes">Recipes</wall:a>
 <wall:a href="?page=vids">Videos</wall:a>
 <wall:a href="?page=logout">LogOut</wall:a>
 <?php } else { ?>

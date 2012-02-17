@@ -22,6 +22,8 @@ class Quicklog
 	var $Weight;
 	var $Height;
 	var $Gender;
+	var $LevelAchieved;
+	var $OverallLevelAchieved;
 	
 	function __construct($Details)
 	{
@@ -47,20 +49,28 @@ class Quicklog
 		$this->ExerciseTypeId = $Row['ExerciseTypeId'];
 			
 		$this->LevelAchieved = $this->ExerciseLevelAchieved();
-			
+		
 		$Sql = 'INSERT INTO ExerciseLog(MemberId, ExerciseId, ExerciseTypeId, Duration, Reps, Weight, Height, LevelAchieved) 
 			VALUES("'.$this->UID.'", "'.$this->ExerciseId.'", "'.$this->ExerciseTypeId.'", "'.$this->Duration.'","'.$this->Reps.'","'.$this->Weight.'", "'.$this->Height.'", "'.$this->LevelAchieved.'")';
 		mysql_query($Sql);
 		
-		$Sql = 'SELECT Gender, Height FROM MemberDetails WHERE MemberId = '.$this->UID.'';
+		$this->OverallLevelAchieved = $this->OverallLevelAchieved();
+		
+		$Sql = 'SELECT Gender, Height, SkillLevel FROM MemberDetails WHERE MemberId = '.$this->UID.'';
 		$Result = mysql_query($Sql);	
 		$Row = mysql_fetch_assoc($Result);
 		$MemberHeight = $Row['Height'];
 		$this->Gender = $Row['Gender'];
 		$BMI = round($Details['membersweight'] / ($MemberHeight * $MemberHeight), 2);
 		
-		$Sql = 'UPDATE MemberDetails SET Weight = "'.$Details['membersweight'].'", BMI = '.$BMI.' WHERE MemberId = '.$this->UID.'';
-		mysql_query($Sql);		
+		if($Details['membersweight'] > 0){
+			$Sql = 'UPDATE MemberDetails SET Weight = "'.$Details['membersweight'].'", BMI = '.$BMI.' WHERE MemberId = '.$this->UID.'';
+			mysql_query($Sql);	
+		}
+		if($Row['SkillLevel'] < $this->OverallLevelAchieved){
+			$Sql = 'UPDATE MemberDetails SET SkillLevel = '.$this->OverallLevelAchieved.' WHERE MemberId = '.$this->UID.'';
+			mysql_query($Sql);		
+		}
     }
 	
 	function ExerciseLevelAchieved()
@@ -122,6 +132,51 @@ class Quicklog
 	
 	function OverallLevelAchieved()
 	{
-	
+		$Level = 4;
+		$CompletedExercises = array();
+		$Sql = 'SELECT ExerciseId, MAX(LevelAchieved) FROM ExerciseLog WHERE MemberId = '.$this->UID.' GROUP BY ExerciseId';
+		$Result = mysql_query($Sql);	
+		while($Row = mysql_fetch_assoc($Result))
+		{
+			if($Row['LevelAchieved'] < $Level)
+				$Level = $Row['LevelAchieved'];
+			array_push($CompletedExercises,$Row['ExerciseId']);
+		}
+		
+		$PendingExercises=array();
+		$AllExercises = $this->getExercises();
+		foreach($AllExercises AS $Exercise)
+		{
+			if(!in_array($Exercise->Id, $CompletedExercises))
+				array_push($PendingExercises,$Exercise->Id);
+		}
+		if(count($PendingExercises) == 0)
+			return $Level;
+		else
+			return 0;
 	}	
+	
+	function getExercises()
+	{
+		$Exercises=array();
+		$Sql = 'SELECT recid, Exercise FROM Exercises';
+		$Result = mysql_query($Sql);	
+		while($Row = mysql_fetch_assoc($Result))
+		{
+			array_push($Exercises, new ExercisesObject($Row));
+		}	
+		return $Exercises;
+	}
+}
+
+class ExercisesObject
+{
+	var $Id;
+	var $Exercise;
+	
+	function __construct($Row)
+	{
+		$this->Id = $Row['recid'];
+		$this->Exercise = $Row['Exercise'];
+	}
 }

@@ -1,5 +1,5 @@
 <wall:form action="index.php" method="post">
-<wall:input type="hidden" name="page" value="log"/>
+<wall:input type="hidden" name="page" value="exerciselog"/>
 <wall:input type="hidden" name="formsubmitted" value="yes"/>
 <wall:input type="hidden" name="UID" value="<?php echo $_SESSION['UID'];?>"/>
 <?php
