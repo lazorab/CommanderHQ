@@ -20,5 +20,7 @@ require_once('./library/video.class.php');
 require_once('./library/dropdownmenu.class.php');
 require_once('./library/quicklog.class.php');
 require_once('./library/goals.class.php');
+require_once('./library/reports.class.php');
+require_once('./library/exercise.class.php');
 require_once('const.php');
 ?>
