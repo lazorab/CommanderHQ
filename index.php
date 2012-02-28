@@ -1,45 +1,41 @@
 <?php
-/********************************************************
-Main control that routes all hits to the correct pages
-Copyright Be-Mobile
+	require_once("includes/includes.php");
+	$request = new BRequest();
+	//If a cookie has been set we can set the session id to the user id
+	if($request->cookie['BeMobileUserId_'.$request->get_site_id()] != '')
+		$request->session['membermember_id'] = $request->cookie['BeMobileUserId_'.$request->get_site_id()];
+		
+	global $RENDER;
+	$RENDER = new Image(SITE_ID);	
+	session_start();
+	if( !isset( $_REQUEST['module'] ) )
+		$Module = 'index';
+	else
+		$Module = $_REQUEST['module'];
 
-Created By   : Darren Hart
-Created Date : 24 Nov 2011
+	if (file_exists('modules/'.$Module.'/controller.php')) {
+		include('modules/'.$Module.'/controller.php');
+		$ControllerClass = ''.$Module.'Controller';
+		include('modules/'.$Module.'/model.php');
+	}
+	else {
+		echo 'What the...';
+		exit();
+	}		
 
-Last Modified Date: 24 Nov 2011
-
-*********************************************************/
+	$Display = new $ControllerClass;
+	$Environment = $Display->getEnvironment();
 
 	/*HEADER*/
-	require_once('includes/header.php');
-
-		if( !isset( $_REQUEST['page'] ) )
-			$page_name = 'home.php';
-		else
-			$page_name = $_REQUEST['page'].'.php';
-
-		//Now look for the file - first check for local file
-		if(file_exists('./pages/'.$page_name))
-		{
-			include('./pages/'.$page_name);
-		}
-		//Next check for local file
-		elseif(file_exists(GLOBAL_PAGES.$page_name))
-		{
-			include(GLOBAL_PAGES.$page_name);
-		}
-		//Nothing found, therefore check for local error
-		elseif(file_exists('./pages/filenotfound.php'))
-		{
-			include('./pages/filenotfound.php');
-		}
-		//Else show global error
-		else
-		{
-			include(GLOBAL_PAGES.'filenotfound.php');
-		}
-	
+		if (file_exists("includes/header/$Environment.php")) 
+			include("includes/header/$Environment.php");
+	/*MENU*/	
+		if (file_exists("includes/menu/$Environment.php")) 
+			include("includes/menu/$Environment.php");
+	/*CONTENT*/	
+		if (file_exists("modules/$Module/view/$Environment.php")) 
+			include("modules/$Module/view/$Environment.php");
 	/*FOOTER*/
-	require_once('includes/footer.php');
-
+		if (file_exists("includes/footer/$Environment.php")) 
+			include("includes/footer/$Environment.php");
 ?>
