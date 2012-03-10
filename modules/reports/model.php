@@ -22,16 +22,33 @@ class ReportsModel extends Model
 		return $Details;
 	}
 
-	private function CompletedExercises()
+	function getCompletedExercises()
 	{
 		$CompletedExercises = array();
-		$Sql = 'SELECT ExerciseId, MAX(LevelAchieved) FROM ExerciseLog WHERE MemberId = '.$this->UID.' GROUP BY ExerciseId';
+		$Sql = 'SELECT E.recid, E.Exercise, MAX(L.LevelAchieved) 
+			FROM ExerciseLog L JOIN Exercises E ON E.recid = L.ExerciseId
+			WHERE L.MemberId = '.$this->UID.' 
+			GROUP BY ExerciseId';
 		$Result = mysql_query($Sql);	
 		while($Row = mysql_fetch_assoc($Result))
 		{
-			array_push($CompletedExercises,$Row['ExerciseId']);
+			array_push($CompletedExercises,new ExerciseObject($Row));
 		}	
 		return $CompletedExercises;
+	}
+	
+	function getPerformanceHistory($ExerciseId)
+	{
+		$Data = array();
+		$Sql = 'SELECT L.ExerciseId, E.Exercise, T.ExerciseType, L.Duration, L.Reps, L.Weight, L.Height, L.LevelAchieved, L.TimeCreated 
+		FROM ExerciseLog L JOIN Exercises E on E.recid = L.ExerciseId JOIN ExerciseTypes T ON T.recid = L.ExerciseTypeId
+		WHERE L.MemberId = '.$this->UID.' AND L.ExerciseId = '.$ExerciseId.'';
+		$Result = mysql_query($Sql);	
+		while($Row = mysql_fetch_assoc($Result))
+		{
+			array_push($Data,new PerformanceObject($Row));
+		}	
+		return $Data;	
 	}
 	
 	function getPendingExercises()
@@ -40,8 +57,8 @@ class ReportsModel extends Model
 		$AllExercises = $this->getExercises();
 		foreach($AllExercises AS $Exercise)
 		{
-			if(!in_array($Exercise['recid'], $this->CompletedExercises()))
-				array_push($PendingExercises,new PendingExercises($Exercise));
+			if(!in_array($Exercise['Exercise'], $this->getCompletedExercises()))
+				array_push($PendingExercises,new ExerciseObject($Exercise));
 		}
 		return $PendingExercises;
 	}	
@@ -73,7 +90,7 @@ class DetailsObject
 	}
 }
 
-class PendingExercises
+class ExerciseObject
 {
 	var $Id;
 	var $Exercise;
@@ -82,6 +99,32 @@ class PendingExercises
 	{
 		$this->Id = $Row['recid'];
 		$this->Exercise = $Row['Exercise'];
+	}
+}
+
+class PerformanceObject
+{
+	var $ExerciseId;
+	var $Exercise;
+	var $ExerciseType;
+	var $Duration;
+	var $Reps;
+	var $Weight;
+	var $Height;
+	var $LevelAchieved;
+	var $TimeCreated;
+	
+	function __construct($Row)
+	{
+		$this->ExerciseId = $Row['ExerciseId'];
+		$this->Exercise = $Row['Exercise'];
+		$this->ExerciseType = $Row['ExerciseType'];
+		$this->Duration = $Row['Duration'];
+		$this->Reps = $Row['Reps'];
+		$this->Weight = $Row['Weight'];
+		$this->Height = $Row['Height'];
+		$this->LevelAchieved = $Row['LevelAchieved'];
+		$this->TimeCreated = $Row['TimeCreated'];
 	}
 }
 ?>

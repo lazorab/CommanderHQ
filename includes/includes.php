@@ -4,6 +4,7 @@ require_once('/home/bemobile/public_html/global/library/2_0/includes.php');
 require_once('/home/bemobile/public_html/framework/general/browser.class.php');
 require_once('/home/bemobile/public_html/framework/image.class.php');
 require_once('/home/bemobile/public_html/framework/Paging/paging.class.php');
+require_once('/home/bemobile/public_html/framework/globalconst.php');
 
 //include local classes
 require_once('./library/site.class.php');
