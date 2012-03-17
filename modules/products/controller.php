@@ -1,8 +1,8 @@
 <?php
 class ProductsController extends Controller
 {
-	var $Workout;
-	var $BMWS;
+	var $Model;
+	var $Html;
 	
 	function __construct()
 	{
@@ -11,60 +11,103 @@ class ProductsController extends Controller
 		if(!isset($_SESSION['UID']))
 			header('location: index.php?module=login');
 					
-		$Model = new BenchmarkModel;
-		if(isset($_REQUEST['id']))
-			$this->Workout = $Model->getWorkoutDetails($_REQUEST['id']);
-		$this->BMWS = $Model->getBMWS($_REQUEST);
+		$this->Model = new ProductsModel;
 	}
 	
-	function html()
+	function getHtml()
 	{
-		$html='';
-		
-if(isset($_REQUEST['id']))
-{
-
-if ($this->SupportOnlineVideo) {				
-	$html.= '<h3>'.$this->Workout->WorkoutName.'</h3>
-	<a onclick="GetVideo(\''.$this->Workout->SmartVideoLink.'\')" href="#">Click here for video</a><'.$this->Wall.'br/><'.$this->Wall.'br/>';
-	}else{
-		$html.= '<h3>'.$this->Workout->WorkoutName.'</h3>
-		<a onclick="GetVideo(\''.$this->Workout->LegacyVideoLink.'\')" href="#">Click here for video</a><'.$this->Wall.'br/><'.$this->Wall.'br/>';
+		if($_REQUEST['form'] != 'submitted')
+			$this->Html = $this->getCategories();
+		else if($_REQUEST['submit'] == 'Submit')
+			$this->Html = $this->getProductsByCategory($_REQUEST['category']);
+		else if($_REQUEST['id'] > 0)
+			$this->Html = $this->getProductDetails($_REQUEST['id']);
+		else if($_REQUEST['submit'] == 'Add to basket')
+			$this->Html = $this->ShoppingBasket($_REQUEST['product'], $_REQUEST['quantity'], 'add');
+			
+		return $this->Html;
 	}
-	$html.= str_replace('{br}','<'.$this->Wall.'br/>',$this->Workout->WorkoutDescription);
-}
-else
-{
 	
-	$html.='<h3>BenchMark Workouts</h3>';
-
-	foreach($this->BMWS AS $BMW){ 
-		$html.='<h3><a href="index.php?module=benchmark&id='.$BMW->Id.'">'.$BMW->WorkoutName.'</a></h3>';
+	function getProducts($_REQUEST)
+	{
+		$Html='';
+		$Products = $this->Model->getProducts($_REQUEST['searchword']);
+		foreach($Products AS $Product){
+			$Html.=''.$Product->ProductName.'';
+		}
+		return $Html;
 	}
-}	
-return $html;
+	
+	function getProductDetails($Id)
+	{
+		$Html='';
+		$Details = $this->Model->getProductDetails($Id);
+
+		$Html.=''.$Details->ProductName.'<'.$this->Wall.'br/>';
+		$Html.=''.$Details->ProductDescription.'<'.$this->Wall.'br/>';
+		$Html.=''.$Details->ProductPrice.'<'.$this->Wall.'br/>';
+		$Html.='<'.$this->Wall.'img src="'.$Details->ProductImage.'" alt=""/><'.$this->Wall.'br/>';
+		$Html.='Quantity:<'.$this->Wall.'select name="quantity">';
+		for($i=1;$i<11;$i++){
+			$Html.='<'.$this->Wall.'option value="'.$i.'">'.$i.'</'.$this->Wall.'option>';
+		}
+		$Html.='</'.$this->Wall.'select>';
+		$Html.='<'.$this->Wall.'input type="submit" name="submit" value="Add to basket"/>';
+		$Html.='<'.$this->Wall.'input type="hidden" name="product" value="'.$Details->Id.'"/>';
+		
+		return $Html;
+	}
+	
+	function getCategories()
+	{
+		$Categories = $this->Model->getCategories();
+		$Html='<'.$this->Wall.'select name="category">';
+		foreach($Categories AS $Category){
+			$Html.='<'.$this->Wall.'option value="'.$Category->Id.'">'.$Category->Category.'</'.$this->Wall.'option>';
+		}
+		$Html.='</'.$this->Wall.'select>';
+		$Html.='<'.$this->Wall.'input type="submit" name="submit" value="Submit"/>';
+		return $Html;
+	}	
+	
+	function getProductsByCategory($Category)
+	{
+		$Html='';
+		$Products = $this->Model->getProductsByCategory($Category);
+		foreach($Products AS $Product){
+			$Html.='<'.$this->Wall.'a href="?module=products&form=submitted&id='.$Product->Id.'">'.$Product->ProductName.'</'.$this->Wall.'a>';
+		}
+		return $Html;
+	}
+	
+	function ShoppingBasket($ProductId, $Quantity, $Action)
+	{
+		if(!isset($_SESSION['BasketId'])){
+			$_SESSION['BasketId'] = $this->Model->getBasketId($_SESSION['UID']);
+		}
+		
+		$Html='';
+		if($Action == 'add'){
+			$Response = $this->Model->AddToBasket($_SESSION['UID'], $_SESSION['BasketId'], $ProductId, $Quantity);
+
+			$Html.=''.$Response.'';
+		}
+		else if($Action == 'remove'){
+			$this->Model->RemoveFromBasket($_SESSION['UID'], $_SESSION['BasketId'], $ProductId, $Quantity);
+		}	
+	
+		return $Html;
+	}
+	
+	function CheckOut()
+	{
+		//Process
+		
+		unset($_SESSION['BasketId']);
 	}
 	
 	function CustomHeader()
 	{
-		if($this->Environment == 'website'){
-		$CustomHeader='
-		<script type="text/javascript">
-    function GetVideo(filename)
-    {
-        document.getElementById("header").innerHTML = \'<iframe marginwidth="0px" marginheight="0px" width="608" height="436" src="\' + filename + \'" frameborder="0"></iframe>\';
-    }
-</script>';
-}
-else{
-		$CustomHeader='
-		<script type="text/javascript">
-    function GetVideo(filename)
-    {
-        document.getElementById("header").innerHTML = \'<iframe marginwidth="0px" marginheight="0px" width="'.$this->Device->GetScreenWidth().'" height="'.($this->Device->GetScreenWidth() * 0.717).'" src="\' + filename + \'" frameborder="0"></iframe>\';
-    }
-</script>';
-}
 		return $CustomHeader;
 	}
 }

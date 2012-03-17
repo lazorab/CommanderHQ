@@ -41,7 +41,7 @@ class ReportsModel extends Model
 	{
 		$Data = array();
 		$Sql = 'SELECT L.ExerciseId, E.Exercise, T.ExerciseType, L.Duration, L.Reps, L.Weight, L.Height, L.LevelAchieved, L.TimeCreated 
-		FROM ExerciseLog L JOIN Exercises E on E.recid = L.ExerciseId JOIN ExerciseTypes T ON T.recid = L.ExerciseTypeId
+		FROM ExerciseLog L LEFT JOIN Exercises E on E.recid = L.ExerciseId LEFT JOIN ExerciseTypes T ON T.recid = L.ExerciseTypeId
 		WHERE L.MemberId = '.$this->UID.' AND L.ExerciseId = '.$ExerciseId.'';
 		$Result = mysql_query($Sql);	
 		while($Row = mysql_fetch_assoc($Result))

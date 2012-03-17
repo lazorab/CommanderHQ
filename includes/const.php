@@ -21,7 +21,7 @@ define("DB_CUSTOM_DATABASE", "bemobile_CrossFit");
 define('GLOBAL_PAGES', '../../global/pages/');
 
 /* Asset URL */
-$handset = new DeviceManagerTest;
+$handset = new DeviceManager;
 if($handset->IsSmartPhone()){
 	define('SMARTPHONE', true);
 }

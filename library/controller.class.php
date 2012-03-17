@@ -9,7 +9,7 @@ class Controller
 	
 	function __construct()
 	{
-		$this->Device = new DeviceManagerTest;
+		$this->Device = new DeviceManager;
 		$this->SupportOnlineVideo = $this->Device->SupportOnlineVideo();
 		if($this->Device->IsTabletPC()){
 				$this->Environment = 'tablet';

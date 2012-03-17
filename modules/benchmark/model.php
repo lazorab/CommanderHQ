@@ -30,7 +30,7 @@ class BenchmarkModel extends Model
 	function GetBMWS($_SEARCH)
 	{
 		$Workouts = array();
-		$SQL = 'SELECT recid, WorkoutName, WorkoutDescription, VideoId FROM BenchmarkWorkouts';
+		$SQL = 'SELECT recid, WorkoutName, WorkoutDescription, VideoId FROM BenchmarkWorkouts WHERE WorkoutName <> "Baseline"';
 		if(isset($_SEARCH['searchword']))
 			$SQL .= 'WHERE WorkoutName LIKE "'.$_SEARCH['searchword'].'%"';
 		$Result = mysql_query($SQL);	
