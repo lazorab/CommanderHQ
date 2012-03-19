@@ -3,9 +3,9 @@ class ExerciselogModel extends Model
 {
 	var $Wall='';
 	var $ExerciseId;
-	var $WorkoutId;
 	var $UID;
 	var $ExerciseType;
+	var $TimeToComplete;
 	var $Duration;
 	var $Reps;
 	var $Weight;
@@ -25,29 +25,45 @@ class ExerciselogModel extends Model
 	function Log($Details)
 	{
 		$Success = false;
-		$this->UID = $Details['UID'];
-		$this->Reps = $Details['reps'];
-		$this->Weight = $Details['weight'];
-		$this->Height = $Details['height'];
-		$this->Duration = ''.$Details['hours'].':'.$Details['minutes'].':'.$Details['seconds'].'';
-
-		if(isset($Details['exercise']) && $Details['exercise'] != ''){
-			$this->ExerciseId = $Details['exercise'];
-		}
-		elseif(isset($Details['workout']) && $Details['workout'] != ''){
-			$this->ExerciseId = $Details['workout'];
-		}
-
+		$this->ExerciseId = $Details['exercise'];
 		$Sql = 'SELECT ExerciseTypeId FROM SkillsLevel WHERE ExerciseId = '.$this->ExerciseId.'';
 		$Result = mysql_query($Sql);
 		$Row = mysql_fetch_assoc($Result);
+		
+		$this->UID = $Details['UID'];
 		$this->ExerciseTypeId = $Row['ExerciseTypeId'];
+		$this->TimeToComplete = ''.$Details['thours'].':'.$Details['tminutes'].':'.$Details['tseconds'].'';
+		$Fields = 'MemberId, ExerciseId, ExerciseTypeId, TimeToComplete';
+		$Values = '"'.$this->UID.'", "'.$this->ExerciseId.'", "'.$this->ExerciseTypeId.'", "'.$this->TimeToComplete.'"';
 
+		if((isset($Details['dhours']) && $Details['dhours'] != '00') || (isset($Details['dminutes']) && $Details['dminutes'] != '00') || (isset($Details['dseconds']) && $Details['dseconds'] != '00')){
+			$this->Duration = ''.$Details['dhours'].':'.$Details['dminutes'].':'.$Details['dseconds'].'';
+			$Fields .= ', Duration';
+			$Values .= ', "'.$this->Duration.'"';			
+		}	
+		if($Details['reps'] != ""){
+			$this->Reps = $Details['reps'];
+			$Fields .= ', Reps';
+			$Values .= ', "'.$this->Reps.'"';
+		}
+		if($Details['weight'] != ""){
+			$this->Weight = $Details['weight'];
+			$Fields .= ', Weight';
+			$Values .= ', "'.$this->Weight.'"';			
+		}
+		if($Details['height'] != ""){
+			$this->Height = $Details['height'];
+			$Fields .= ', Height';
+			$Values .= ', "'.$this->Height.'"';			
+		}
 		$this->LevelAchieved = $this->ExerciseLevelAchieved();
+		$Fields .= ', LevelAchieved';
+		$Values .= ', "'.$this->LevelAchieved.'"';	
 
-		$Sql = 'INSERT INTO ExerciseLog(MemberId, ExerciseId, ExerciseTypeId, Duration, Reps, Weight, Height, LevelAchieved)
-			VALUES("'.$this->UID.'", "'.$this->ExerciseId.'", "'.$this->ExerciseTypeId.'", "'.$this->Duration.'","'.$this->Reps.'","'.$this->Weight.'", "'.$this->Height.'", "'.$this->LevelAchieved.'")';
-			$Success = mysql_query($Sql);
+		$Sql = 'INSERT INTO ExerciseLog('.$Fields.')
+			VALUES('.$Values.')';
+
+		$Success = mysql_query($Sql);
 
 		$this->OverallLevelAchieved = $this->OverallLevelAchieved();
 
@@ -56,10 +72,10 @@ class ExerciselogModel extends Model
 		$Row = mysql_fetch_assoc($Result);
 		$MemberHeight = $Row['Height'];
 		$this->Gender = $Row['Gender'];
-		$BMI = round($Details['membersweight'] / ($MemberHeight * $MemberHeight), 2);
-
-		if($Details['membersweight'] > 0){
-			$Sql = 'UPDATE MemberDetails SET Weight = "'.$Details['membersweight'].'", BMI = '.$BMI.' WHERE MemberId = '.$this->UID.'';
+		//not sure how we gonna use bodyweight yet:
+		if($Details['bodyweight'] > 0){
+			$BMI = round($Details['bodyweight'] / ($MemberHeight * $MemberHeight), 2);
+			$Sql = 'UPDATE MemberDetails SET Weight = "'.$Details['bodyweight'].'", BMI = '.$BMI.' WHERE MemberId = '.$this->UID.'';
 			$Success = mysql_query($Sql);
 		}
 		if($Row['SkillLevel'] < $this->OverallLevelAchieved){
@@ -160,26 +176,26 @@ class ExerciselogModel extends Model
 		return $Row['Exercise'];	
 	}
 	
-	function isBaseline($ExerciseId)
+	function Validate($ExerciseId)
 	{
-		$SQL = 'SELECT Exercise FROM Exercises WHERE recid = "'.$ExerciseId.'"';
-		$Result = mysql_query($SQL);
-		$Row = mysql_fetch_assoc($Result);
-		if($Row['Exercise'] == 'Baseline')
-			return true;
-		else
-			return false;
-	}
-	
-	function isBenchMark($ExerciseId)
-	{
-		$SQL = 'SELECT recid, IsBenchMark FROM Exercises WHERE recid = "'.$ExerciseId.'"';
-		$Result = mysql_query($SQL);
-		$Row = mysql_fetch_assoc($Result);
-		if($Row['IsBenchMark'] == 1)
-			return true;
-		else
-			return false;
+		if($_REQUEST['thours'] == '00' && $_REQUEST['tminutes'] == '00' && $_REQUEST['tseconds'] == '00')
+			$this->Message = 'Must Enter Time to Complete';
+		$Attributes = $this->getAttributes($ExerciseId);
+		foreach($Attributes AS $Attribute)
+		{		
+			if($Attribute->Attribute == 'Duration' && ($_REQUEST['dhours'] == '00' && $_REQUEST['dminutes'] == '00' && $_REQUEST['dseconds'] == '00'))
+				$this->Message = 'Must Enter Duration';	
+				
+			else if($Attribute->Attribute == 'Reps' && $_REQUEST['reps'] == '')
+					$this->Message = 'Must Enter Number of Rounds/Reps';	
+
+			else if($Attribute->Attribute == 'Weight' && $_REQUEST['weight'] == '')
+				$this->Message = 'Must Enter Weight';	
+				
+			else if($Attribute->Attribute == 'Height' && $_REQUEST['height'] == '')
+				$this->Message = 'Must Enter Height';	
+		}
+		return $this->Message;
 	}	
 	
 	function ExerciseOptions($SelectedValue='')
@@ -204,7 +220,7 @@ class ExerciselogModel extends Model
 	{
 		$Level = 0;
 
-		$Sql = 'SELECT Weight, Height, Duration, Reps, Description
+		$Sql = 'SELECT Weight, Height, TimeToComplete, Duration, Reps, Description
 			FROM SkillsLevel4 SL JOIN SkillsLevel SE ON SL.recid = SE.LevelFourId
 			WHERE SE.ExerciseId = '.$this->ExerciseId.' AND (Gender = "U" OR Gender = "'.$this->Gender.'")';
 		$Result = mysql_query($Sql);
@@ -213,7 +229,7 @@ class ExerciselogModel extends Model
 		}
 
 		if($Level == 0){
-			$Sql = 'SELECT Weight, Height, Duration, Reps, Description
+			$Sql = 'SELECT Weight, Height, TimeToComplete, Duration, Reps, Description
 				FROM SkillsLevel3 SL JOIN SkillsLevel SE ON SL.recid = SE.LevelThreeId
 				WHERE SE.ExerciseId = '.$this->ExerciseId.' AND (Gender = "U" OR Gender = "'.$this->Gender.'")';
 			$Result = mysql_query($Sql);
@@ -223,7 +239,7 @@ class ExerciselogModel extends Model
 		}
 
 		if($Level == 0){
-			$Sql = 'SELECT Weight, Height, Duration, Reps, Description
+			$Sql = 'SELECT Weight, Height, TimeToComplete, Duration, Reps, Description
 				FROM SkillsLevel2 SL JOIN SkillsLevel SE ON SL.recid = SE.LevelTwoId
 				WHERE SE.ExerciseId = '.$this->ExerciseId.' AND (Gender = "U" OR Gender = "'.$this->Gender.'")';
 			$Result = mysql_query($Sql);
@@ -233,7 +249,7 @@ class ExerciselogModel extends Model
 		}
 
 		if($Level == 0){
-			$Sql = 'SELECT Weight, Height, Duration, Reps, Description
+			$Sql = 'SELECT Weight, Height, TimeToComplete, Duration, Reps, Description
 				FROM SkillsLevel1 SL JOIN SkillsLevel SE ON SL.recid = SE.LevelOneId
 				WHERE SE.ExerciseId = '.$this->ExerciseId.' AND (Gender = "U" OR Gender = "'.$this->Gender.'")';
 			$Result = mysql_query($Sql);
@@ -247,10 +263,11 @@ class ExerciselogModel extends Model
 
 	function Evaluate($Row, $EvalLevel)
 	{
-		if($Row['Weight'] == null || $Row['Weight'] == '' || $Row['Weight'] <= $this->Weight
-			|| $Row['Height'] == null || $Row['Height'] == '' || $Row['Height'] <= $this->Height
-			|| $Row['Duration'] == null || $Row['Duration'] == '' || $Row['Duration'] <= $this->Duration
-			|| $Row['Reps'] == null || $Row['Reps'] == '' || $Row['Reps'] <= $this->Reps)
+		if($Row['Weight'] == null || $Row['Weight'] == '' || $Row['Weight'] < $this->Weight
+			|| $Row['Height'] == null || $Row['Height'] == '' || $Row['Height'] < $this->Height
+			|| $Row['TimeToComplete'] == null || $Row['TimeToComplete'] == '' || $Row['TimeToComplete'] > $this->TimeToComplete
+			|| $Row['Duration'] == null || $Row['Duration'] == '' || $Row['Duration'] < $this->Duration
+			|| $Row['Reps'] == null || $Row['Reps'] == '' || $Row['Reps'] < $this->Reps)
 		$ReturnLevel = $EvalLevel;
 		else
 			$ReturnLevel = 0;
@@ -295,38 +312,62 @@ class ExerciselogModel extends Model
 		return $Exercises;
 	}
 	
-	function TimeInput()
+	function getAttributes($ExerciseId)
 	{
-		$Html='<'.$this->Wall.'br/>
-			Time to complete<'.$this->Wall.'br/>
-			<'.$this->Wall.'select name="hours">
+		$Attributes=array();
+		$Sql = 'SELECT a.Attribute 
+			FROM ExerciseAttributes ea 
+			JOIN Attributes a ON ea.AttributeId = a.recid
+			WHERE ea.ExerciseId = '.$ExerciseId.'';
+		$Result = mysql_query($Sql);
+		while($Row = mysql_fetch_assoc($Result))
+		{
+			array_push($Attributes, new AttributesObject($Row));
+		}
+		return $Attributes;	
+	}
+	
+	function TimeInput($type)
+	{
+		if($type == 'Duration'){
+			$hours = 'dhours';
+			$minutes = 'dminutes';
+			$seconds = 'dseconds';
+		}else{
+			$hours = 'thours';
+			$minutes = 'tminutes';
+			$seconds = 'tseconds';
+		}
+		
+		$Html='
+			<'.$this->Wall.'select name="'.$hours.'">
 				<'.$this->Wall.'option value="00">hh</'.$this->Wall.'option>';
 				for($i=0;$i<25;$i++){ 
 					$Html.='
-						<'.$this->Wall.'option value="'.$Number.'"';
-						if($_REQUEST['hours'] == sprintf("%02d", $i))
-							$this->Html.=' selected="selected"';
-					$Html.='>'.sprintf("%02d", $i).'</'.$this->Wall.'option>';
-				} 
-			$Html.='
-			</'.$this->Wall.'select> :
-			<'.$this->Wall.'select name="minutes">
-				<'.$this->Wall.'option value="00">mm</'.$this->Wall.'option>';
-				for($i=0;$i<60;$i++){
-					$Html.='
 						<'.$this->Wall.'option value="'.sprintf("%02d", $i).'"';
-						if($_REQUEST['minutes'] == sprintf("%02d", $i))
+						if($_REQUEST[''.$hours.''] == sprintf("%02d", $i))
 							$Html.=' selected="selected"';
 					$Html.='>'.sprintf("%02d", $i).'</'.$this->Wall.'option>';
 				} 
 			$Html.='
 			</'.$this->Wall.'select> :
-			<'.$this->Wall.'select name="seconds">
+			<'.$this->Wall.'select name="'.$minutes.'">
+				<'.$this->Wall.'option value="00">mm</'.$this->Wall.'option>';
+				for($i=0;$i<60;$i++){
+					$Html.='
+						<'.$this->Wall.'option value="'.sprintf("%02d", $i).'"';
+						if($_REQUEST[''.$minutes.''] == sprintf("%02d", $i))
+							$Html.=' selected="selected"';
+					$Html.='>'.sprintf("%02d", $i).'</'.$this->Wall.'option>';
+				} 
+			$Html.='
+			</'.$this->Wall.'select> :
+			<'.$this->Wall.'select name="'.$seconds.'">
 				<'.$this->Wall.'option value="00">ss</'.$this->Wall.'option>';
 				for($i=0;$i<60;$i++){ 
 					$Html.='
 						<'.$this->Wall.'option value="'.sprintf("%02d", $i).'"';
-						if($_REQUEST['seconds'] == sprintf("%02d", $i)) 
+						if($_REQUEST[''.$seconds.''] == sprintf("%02d", $i)) 
 							$Html.=' selected="selected"';
 					$Html.='>'.sprintf("%02d", $i).'</'.$this->Wall.'option>';
 				}
@@ -336,48 +377,46 @@ class ExerciselogModel extends Model
 		return $Html;
 	}
 	
-	function getExerciseHtml()
+	function getHtml($ExerciseId)
 	{
-		$this->Html.='
+		$this->Html ='
 			<'.$this->Wall.'br/>
 			Completed Exercise:
 			'.$this->SelectedExercise($_REQUEST['exercise']).'
 			<'.$this->Wall.'input type="hidden" name="exercise" value="'.$_REQUEST['exercise'].'"/>
 			<'.$this->Wall.'br/>
-			<'.$this->Wall.'br/>
-			
-			Weight Lifted<'.$this->Wall.'br/>
-			<'.$this->Wall.'input type="text" name="weight" value="'.$_REQUEST['weight'].'"/><'.$this->Wall.'br/>
-			<'.$this->Wall.'br/>
-			Height Reached<'.$this->Wall.'br/>
-			<'.$this->Wall.'input type="text" name="height" value="'.$_REQUEST['height'].'"/><'.$this->Wall.'br/>
-			<'.$this->Wall.'br/>
-			Reps<'.$this->Wall.'br/>
-			<'.$this->Wall.'input type="text" name="reps" value="'.$_REQUEST['reps'].'"/><'.$this->Wall.'br/>
-			
-			'.$this->TimeInput().'';	
-
-		return $this->Html;
-	}
-	
-	function getWorkoutHtml()
-	{
-		$this->Html.='
-			<'.$this->Wall.'br/>
-			Completed Exercise:
-			'.$this->SelectedExercise($_REQUEST['exercise']).'
-			<'.$this->Wall.'input type="hidden" name="exercise" value="'.$_REQUEST['exercise'].'"/>
 			<'.$this->Wall.'br/>';
-		$this->Html.='
-		
-			'.$this->TimeInput().'
-			
-		<'.$this->Wall.'br/>
-		Rounds<'.$this->Wall.'br/>
-		<'.$this->Wall.'input type="text" name="reps" value="'.$_REQUEST['reps'].'"/><'.$this->Wall.'br/>
-		<'.$this->Wall.'br/>';	
-		
-		return $this->Html;
+			$this->Html .= 'Time to Complete<'.$this->Wall.'br/>';
+			$this->Html .= $this->TimeInput('Time');
+			$this->Html .= '<'.$this->Wall.'br/>';
+		$Attributes = $this->getAttributes($ExerciseId);
+		foreach($Attributes AS $Attribute)
+		{	
+			if($Attribute->Attribute == 'Duration'){
+				$this->Html .= 'Duration<'.$this->Wall.'br/>';
+				$this->Html .= $this->TimeInput('Duration');
+				$this->Html .= '<'.$this->Wall.'br/>';
+			}	
+			if($Attribute->Attribute == 'Reps'){
+				$this->Html .= 'Rounds/Reps<'.$this->Wall.'br/>
+				<'.$this->Wall.'input type="text" name="reps" value="'.$_REQUEST['reps'].'"/>
+				<'.$this->Wall.'br/>';
+			}	
+			if($Attribute->Attribute == 'Body Weight'){
+				//not sure about this one
+			}
+			if($Attribute->Attribute == 'Weight'){
+				$this->Html .= 'Weight Used<'.$this->Wall.'br/>
+				<'.$this->Wall.'input type="text" name="weight" value="'.$_REQUEST['weight'].'"/><'.$this->Wall.'br/>
+				<'.$this->Wall.'br/>';
+			}	
+			if($Attribute->Attribute == 'Height'){
+				$this->Html .= 'Height Used/Reached<'.$this->Wall.'br/>
+				<'.$this->Wall.'input type="text" name="height" value="'.$_REQUEST['height'].'"/><'.$this->Wall.'br/>
+				<'.$this->Wall.'br/>';	
+			}
+		}
+		return $this->Html;	
 	}	
 	
 	function defaultHtml()
@@ -407,4 +446,14 @@ class ExercisesObject
 		$this->Exercise = $Row['Exercise'];
 	}
 }	
+
+class AttributesObject
+{
+	var $Attribute;
+
+	function __construct($Row)
+	{
+		$this->Attribute = $Row['Attribute'];
+	}
+}
 ?>

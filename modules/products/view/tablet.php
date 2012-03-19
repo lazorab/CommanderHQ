@@ -1,5 +1,7 @@
-<?php
+<form action="index.php" method="post">
+<input type="hidden" name="module" value="products"/>
+<input type="hidden" name="form" value="submitted"/>
 
-echo $Display->html();
+<?php echo $Display->getHtml();?>
 
-?>
+</form>

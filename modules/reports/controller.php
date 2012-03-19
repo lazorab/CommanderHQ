@@ -37,6 +37,7 @@ class ReportsController extends Controller
 				<'.$this->Wall.'input type="hidden" name="module" value="reports"/>
 				<'.$this->Wall.'input type="hidden" name="form" value="submitted"/>
 				<'.$this->Wall.'input type="submit" name="action" value="Pending Exercises"/>
+				<'.$this->Wall.'br/><'.$this->Wall.'br/>
 				<'.$this->Wall.'input type="submit" name="action" value="Performance History"/>
 				</'.$this->Wall.'form>
 		';
@@ -60,7 +61,7 @@ class ReportsController extends Controller
 	function PerformanceHistory($Id)
 	{
 		$this->Html.='<div style="height:20px">';
-		$this->Html.='<div style="width:120px;float:left">Date</div><div style="width:80px;float:left">Duration</div><div style="width:100px;float:left">Performance</div></div>';
+		$this->Html.='<div style="width:120px;float:left">Date</div><div style="width:80px;float:left">Recorded Time</div><div style="width:100px;float:left">Performance</div></div>';
 		$PerformanceData = $this->Model->getPerformanceHistory($Id);
 		$previous = '';
 		foreach($PerformanceData AS $Data)

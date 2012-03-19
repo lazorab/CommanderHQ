@@ -17,27 +17,10 @@ class ExerciselogController extends Controller
 		$Model = new ExerciselogModel;
 		if($_REQUEST['formsubmitted'] == 'yes')
 		{	
-			if($_REQUEST['hours'] == '00' && $_REQUEST['minutes'] == '00' && $_REQUEST['seconds'] == '00') 
-				$this->Message = 'Must Enter Time';
-			if($Model->isBaseline($_REQUEST['exercise']))
-			{
-				$this->Html = $Model->TimeInput();
-			}
-			else if($Model->isBenchMark($_REQUEST['exercise']))
-			{ 
-				$this->Html = $Model->getWorkoutHtml();
-				if(isset($_REQUEST['reps']) && $_REQUEST['reps'] == ''){
-					$this->Message = 'Must Enter Number of Rounds';	
-				} 
-			}
-			else
-			{ 
-				$this->Html = $Model->getExerciseHtml();
-				if(isset($_REQUEST['membersweight']) && $_REQUEST['weight'] == '')
-					$this->Message = 'Must Enter Your Weight';
-			}
+			$this->Html = $Model->getHtml($_REQUEST['exercise']);
 			
 			if($_REQUEST['submit'] == 'Save'){
+				$this->Message = $Model->Validate($_REQUEST['exercise']);
 				if($this->Message == ''){		
 					$Success = $Model->Log($_REQUEST);
 					if($Success)
