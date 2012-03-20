@@ -1,8 +1,7 @@
 <?php
-class RegisterModel extends Model
+class EditModel extends Model
 {
-	var $ReturnValue;
-	var $Wall='';
+	var $MemberDetails;
 	
 	function __construct()
 	{
@@ -10,53 +9,65 @@ class RegisterModel extends Model
 		@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");
 	}
 	
-	function Register($Credentials)
+	function getCredentials($UserId)
 	{
-		$sql='SELECT UserId FROM Members WHERE UserName = "'.$Credentials['UserName'].'" AND PassWord = "'.$Credentials['PassWord'].'"';			
+		$sql='SELECT 
+			UserId,
+			FirstName,
+			LastName,
+			Cell,
+			Email,
+			UserName,
+			PassWord,
+			SkillLevel,
+			Gender,
+			DOB,
+			Weight,
+			Height,
+			BMI,
+			RestHR,
+			RecHR
+			FROM Members M JOIN MemberDetails MD ON MD.MemberId = M.UserId WHERE M.UserId = '.$UserId.'';				
 		$result = mysql_query($sql);
-		if(mysql_num_rows($result) > 0){
-			$this->ReturnValue = false;
-		}
-		else{
-			$sql="INSERT INTO Members(FirstName,
-				LastName,
-				Cell,
-				Email,
-				UserName,
-				PassWord) 
-				VALUES('".$Credentials['FirstName']."',
-				'".$Credentials['LastName']."',
-				'".$Credentials['Cell']."',
-				'".$Credentials['Email']."',
-				'".$Credentials['UserName']."',
-				'".$Credentials['PassWord']."')";
+		$row = mysql_fetch_assoc($result);
+		$this->MemberDetails=new MemberObject($row);
+	}
+	
+	function setCredentials()
+	{
+		$this->MemberDetails=new MemberObject($_REQUEST);
+	}
+	
+	function MemberDetails()
+	{
+		return $this->MemberDetails;
+	}
+	
+	function Save(&$Credentials)
+	{
+		$Details = &$Credentials;
+			$sql="UPDATE Members SET 
+				FirstName = '".$Details->FirstName."',
+				LastName = '".$Details->LastName."',
+				Cell = '".$Details->Cell."',
+				Email = '".$Details->Email."',
+				UserName = '".$Details->UserName."',
+				PassWord = '".$Details->PassWord."'
+				WHERE UserId = ".$Details->UserId."";
 
 			mysql_query($sql);
 			
-			$this->ReturnValue = mysql_insert_id();
-			$BMI = round($Credentials['Weight'] / ($Credentials['Height'] * $Credentials['Height']), 2);
+			$BMI = round($Details->Weight / ($Details->Height * $Details->Height), 2);
 			
-			$sql="INSERT INTO MemberDetails(
-				MemberId,
-				DOB,
-				Weight,
-				Height,
-				Gender,
-				BMI) 
-				VALUES('".$this->ReturnValue."',
-				'".$Credentials['DOB']."',
-				'".$Credentials['Weight']."',
-				'".$Credentials['Height']."',
-				'".$Credentials['Gender']."',
-				'".$BMI."')";
+			$sql="UPDATE MemberDetails SET 
+				DOB = '".$Details->Year."-".$Details->Month."-".$Details->Day."',
+				Weight = '".$Details->Weight."',
+				Height = '".$Details->Height."',
+				Gender = '".$Details->Gender."',
+				BMI = '".$BMI."'		
+				WHERE MemberId = ".$Details->UserId."";
 
 			mysql_query($sql);				
-		}
-	}
-	
-	function ReturnValue()
-	{
-		return $this->ReturnValue;
 	}
 	
 	function DayOptions($SelectedValue='')
@@ -140,5 +151,56 @@ class RegisterModel extends Model
 		}
 		return $Options;
 	}	
+}
+
+class MemberObject
+{
+	var $UserId;
+	var $FirstName;
+	var $LastName;
+	var $Cell;
+	var $Email;
+	var $UserName;
+	var $PassWord;
+	var $SkillLevel;
+	var $Gender;
+	var $Year;
+	var $Month;
+	var $Day;
+	var $Weight;
+	var $Height;
+	var $BMI;
+	var $RestHR;
+	var $RecHR;
+	
+	function __construct($Row)
+	{
+		$this->UserId = $Row['UserId'];
+		$this->FirstName = $Row['FirstName'];
+		$this->LastName = $Row['LastName'];
+		$this->Cell = $Row['Cell'];
+		$this->Email = $Row['Email'];
+		$this->UserName = $Row['UserName'];
+		$this->PassWord = $Row['PassWord'];
+		$this->SkillLevel = $Row['SkillLevel'];
+		$this->Gender = $Row['Gender'];
+	
+		if(isset($Row['DOB'])){
+			$DOB = explode("-",$Row['DOB']);
+			$this->Year = $DOB[0];
+			$this->Month = $DOB[1];
+			$this->Day = $DOB[2];
+		}
+		else{
+			$this->Year = $Row['Year'];
+			$this->Month = $Row['Month'];
+			$this->Day = $Row['Day'];
+		}
+		$this->Weight = $Row['Weight'];
+		$this->Height = $Row['Height'];
+		$this->BMI = $Row['BMI'];
+		$this->RestHR = $Row['RestHR'];
+		$this->RecHR = $Row['RecHR'];	
+	}
 }
 ?>
