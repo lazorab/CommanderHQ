@@ -3,14 +3,36 @@ class RegisterController extends Controller
 {
 	var $Message;
 	var $Model;
-	
+	var $SystemWeight;
+	var $SystemHeight;	
+	var $System;
+	var $AlternateSystem;
+		
 	function __construct()
 	{
 		parent::__construct();
 		$this->Model = new RegisterModel;
 		$Validate = new ValidationUtils;
+		$this->System = 'Metric';
+		$this->AlternateSystem = 'Imperial';
+		$this->SystemWeight = 'Kg';
+		$this->SystemHeight = 'cm';		
+		
 if($_REQUEST['formsubmitted'] == 'yes')
 {
+		if($_REQUEST['system'] == 'Metric'){
+			$this->System = 'Metric';
+			$this->SystemWeight = 'Kg';
+			$this->SystemHeight = 'cm';	
+			$this->AlternateSystem = 'Imperial';
+		}
+		if($_REQUEST['system'] == 'Imperial'){
+			$this->System = 'Imperial';
+			$this->SystemWeight = 'lbs';
+			$this->SystemHeight = 'inches';	
+			$this->AlternateSystem = 'Metric';	
+		}
+
 	if($_REQUEST['firstname'] == '')
 		$this->Message = 'Firstname Required';
 	elseif($_REQUEST['lastname'] == '')
@@ -38,7 +60,7 @@ if($_REQUEST['formsubmitted'] == 'yes')
 	elseif($_REQUEST['gender'] == '')		
 		$this->Message = 'Select Gender';
 		
-	if($this->Message == '')
+	if($this->Message == '' && $_REQUEST['submit'] == 'Save')
 	{
 		$_CREDENTIALS=array(
 			'FirstName'=>''.$_REQUEST['firstname'].'',
@@ -47,6 +69,7 @@ if($_REQUEST['formsubmitted'] == 'yes')
 			'Email'=>''.$_REQUEST['email'].'',		
 			'UserName'=>''.$_REQUEST['username'].'',
 			'PassWord'=>''.$_REQUEST['password'].'',
+			'SystemOfMeasure'=>''.$_REQUEST['system'].'',
 			'DOB'=>''.$_REQUEST['year'].'-'.$_REQUEST['month'].'-'.$_REQUEST['day'].'',
 			'Weight'=>''.$_REQUEST['weight'].'',
 			'Height'=>''.$_REQUEST['height'].'',

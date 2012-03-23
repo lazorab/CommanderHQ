@@ -15,6 +15,7 @@ if(isset($_SESSION['UID'])){ ?>
 <wall:a href="?module=exerciselog">QuickLog</wall:a>
 <wall:a href="?module=foodlog">FoodLog</wall:a>
 <wall:a href="?module=recipes">Recipes</wall:a>
+<wall:a href="?module=products">Products</wall:a>
 <wall:a href="?module=videos">Videos</wall:a>
 <wall:a href="?module=logout">LogOut</wall:a>
 

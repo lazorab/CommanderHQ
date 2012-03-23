@@ -4,6 +4,10 @@ class EditController extends Controller
 	var $Message;
 	var $Model;
 	var $MemberDetails;
+	var $SystemWeight;
+	var $SystemHeight;	
+	var $System;
+	var $AlternateSystem;	
 	
 	function __construct()
 	{
@@ -13,10 +17,24 @@ class EditController extends Controller
 			header('location: index.php?module=login');
 		
 		$this->Model = new EditModel;
-		$Validate = new ValidationUtils;
+		$Validate = new ValidationUtils;		
 		$this->Message = '';
-if($_REQUEST['formsubmitted'] == 'yes')
-{
+		
+		if($_REQUEST['formsubmitted'] == 'yes')
+		{
+			if($_REQUEST['system'] == 'Metric'){
+				$this->System = 'Metric';
+				$this->SystemWeight = 'Kg';
+				$this->SystemHeight = 'cm';	
+				$this->AlternateSystem = 'Imperial';
+			}
+			if($_REQUEST['system'] == 'Imperial'){
+				$this->System = 'Imperial';
+				$this->SystemWeight = 'lbs';
+				$this->SystemHeight = 'inches';	
+				$this->AlternateSystem = 'Metric';	
+			}
+
 	if($_REQUEST['FirstName'] == '')
 		$this->Message = 'Firstname Required';
 	elseif($_REQUEST['LastName'] == '')
@@ -45,16 +63,28 @@ if($_REQUEST['formsubmitted'] == 'yes')
 		$this->Message = 'Select Gender';
 	
 	$this->Model->setCredentials();	
-	if($this->Message == '')
+	if($this->Message == '' && $_REQUEST['submit'] == 'Save')
 	{
 		$this->Model->Save($this->Model->MemberDetails());
 		header('location: index.php?module=memberhome');
 	}
 }	
 else{
-	$this->Model->getCredentials($_SESSION['UID']);
-}
-	$this->MemberDetails = $this->Model->MemberDetails();
+		$this->Model->getCredentials($_SESSION['UID']);
+	}
+		$this->MemberDetails = $this->Model->MemberDetails();
+		if($this->MemberDetails->SystemOfMeasure == 'Metric'){
+			$this->System = 'Metric';
+			$this->SystemWeight = 'Kg';
+			$this->SystemHeight = 'cm';	
+			$this->AlternateSystem = 'Imperial';
+		}
+		if($this->MemberDetails->SystemOfMeasure == 'Imperial'){
+			$this->System = 'Imperial';
+			$this->SystemWeight = 'lbs';
+			$this->SystemHeight = 'inches';	
+			$this->AlternateSystem = 'Metric';	
+		}
 	}
 	
 	function Model()

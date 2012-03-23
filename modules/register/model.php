@@ -23,18 +23,31 @@ class RegisterModel extends Model
 				Cell,
 				Email,
 				UserName,
-				PassWord) 
+				PassWord,
+				SystemOfMeasure) 
 				VALUES('".$Credentials['FirstName']."',
 				'".$Credentials['LastName']."',
 				'".$Credentials['Cell']."',
 				'".$Credentials['Email']."',
 				'".$Credentials['UserName']."',
-				'".$Credentials['PassWord']."')";
+				'".$Credentials['PassWord']."',
+				'".$Credentials['SystemOfMeasure']."')";
 
 			mysql_query($sql);
-			
+		
 			$this->ReturnValue = mysql_insert_id();
-			$BMI = round($Credentials['Weight'] / ($Credentials['Height'] * $Credentials['Height']), 2);
+			
+			if($Credentials['SystemOfMeasure'] == 'Imperial'){
+			//convert to metric for storage in db. Displaying of values will be converted back.
+				$Weight = round($Credentials['Weight'] * 0.45, 2);
+				$Height = floor($Credentials['Height'] * 2.54);
+			}
+			else{
+				$Weight = $Credentials['Weight'];
+				$Height = $Credentials['Height'];			
+			}
+			$HeightInMeters = $Height / 100;
+			$BMI = floor($Weight / ($HeightInMeters * $HeightInMeters));
 			
 			$sql="INSERT INTO MemberDetails(
 				MemberId,
@@ -45,8 +58,8 @@ class RegisterModel extends Model
 				BMI) 
 				VALUES('".$this->ReturnValue."',
 				'".$Credentials['DOB']."',
-				'".$Credentials['Weight']."',
-				'".$Credentials['Height']."',
+				'".$Weight."',
+				'".$Height."',
 				'".$Credentials['Gender']."',
 				'".$BMI."')";
 
@@ -131,7 +144,7 @@ class RegisterModel extends Model
 	function YearOptions($SelectedValue='')
 	{
 		$Options = '<'.$this->Wall.'option value="">Year</'.$this->Wall.'option>';
-		for($i=1940;$i<2012;$i++)
+		for($i=2012;$i>=1940;$i--)
 		{
 			$Options .= '<'.$this->Wall.'option value="'.$i.'"';
 			if($SelectedValue == $i)

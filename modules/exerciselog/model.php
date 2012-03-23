@@ -263,12 +263,12 @@ class ExerciselogModel extends Model
 
 	function Evaluate($Row, $EvalLevel)
 	{
-		if($Row['Weight'] == null || $Row['Weight'] == '' || $Row['Weight'] < $this->Weight
-			|| $Row['Height'] == null || $Row['Height'] == '' || $Row['Height'] < $this->Height
-			|| $Row['TimeToComplete'] == null || $Row['TimeToComplete'] == '' || $Row['TimeToComplete'] > $this->TimeToComplete
-			|| $Row['Duration'] == null || $Row['Duration'] == '' || $Row['Duration'] < $this->Duration
-			|| $Row['Reps'] == null || $Row['Reps'] == '' || $Row['Reps'] < $this->Reps)
-		$ReturnLevel = $EvalLevel;
+		if($Row['Weight'] == null || $Row['Weight'] == '' || $Row['Weight'] <= $this->Weight
+		|| $Row['Height'] == null || $Row['Height'] == '' || $Row['Height'] <= $this->Height
+		|| $Row['TimeToComplete'] == null || $Row['TimeToComplete'] == '' || $Row['TimeToComplete'] >= $this->TimeToComplete
+		|| $Row['Duration'] == null || $Row['Duration'] == '' || $Row['Duration'] <= $this->Duration
+		|| $Row['Reps'] == null || $Row['Reps'] == '' || $Row['Reps'] <= $this->Reps)
+			$ReturnLevel = $EvalLevel;
 		else
 			$ReturnLevel = 0;
 		return $ReturnLevel;
@@ -377,6 +377,23 @@ class ExerciselogModel extends Model
 		return $Html;
 	}
 	
+	function BodyWeight()
+	{
+		$Sql = 'SELECT M.SystemOfMeasure, MD.Weight FROM Members M JOIN MemberDetails MD ON MD.MemberId = M.UserId
+		WHERE M.UserId = '.$_SESSION['UID'].'';
+		$Result = mysql_query($Sql);
+		$Row = mysql_fetch_assoc($Result);
+		$Unit = 'Kg';
+		$Weight = $Row['Weight'];
+		if($Row['SystemOfMeasure'] == 'Imperial'){
+			$Unit = 'lbs';
+			$Weight = ceil($Row['Weight'] * 2.22);
+		}
+		$Html ='<'.$this->Wall.'input type="text" name=weight" value="'.$Weight.'"/>'.$Unit.'';
+		
+		return $Html;
+	}
+	
 	function getHtml($ExerciseId)
 	{
 		$this->Html ='
@@ -389,6 +406,9 @@ class ExerciselogModel extends Model
 			$this->Html .= 'Time to Complete<'.$this->Wall.'br/>';
 			$this->Html .= $this->TimeInput('Time');
 			$this->Html .= '<'.$this->Wall.'br/>';
+			$this->Html .= 'Update Weight?<'.$this->Wall.'br/>';
+			$this->Html .= $this->BodyWeight();
+			$this->Html .= '<'.$this->Wall.'br/>';			
 		$Attributes = $this->getAttributes($ExerciseId);
 		foreach($Attributes AS $Attribute)
 		{	

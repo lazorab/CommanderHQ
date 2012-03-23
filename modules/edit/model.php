@@ -24,6 +24,7 @@ class EditModel extends Model
 			DOB,
 			Weight,
 			Height,
+			SystemOfMeasure,
 			BMI,
 			RestHR,
 			RecHR
@@ -57,12 +58,23 @@ class EditModel extends Model
 
 			mysql_query($sql);
 			
-			$BMI = round($Details->Weight / ($Details->Height * $Details->Height), 2);
+			if($Details->SystemOfMeasure == 'Imperial'){
+			//convert to metric for storage in db. Displaying of values will be converted back.
+				$Weight = round($Details->Weight * 0.45, 2);
+				$Height = floor($Details->Height * 2.54);
+			}
+			else{
+				$Weight = $Details->Weight;
+				$Height = $Details->Height;			
+			}
+			$HeightInMeters = $Height / 100;
+			$BMI = floor($Weight / ($HeightInMeters * $HeightInMeters));
 			
 			$sql="UPDATE MemberDetails SET 
 				DOB = '".$Details->Year."-".$Details->Month."-".$Details->Day."',
-				Weight = '".$Details->Weight."',
-				Height = '".$Details->Height."',
+				Weight = '".$Weight."',
+				Height = '".$Height."',
+				SystemOfMeasure = '".$Details->SystemOfMeasure."',
 				Gender = '".$Details->Gender."',
 				BMI = '".$BMI."'		
 				WHERE MemberId = ".$Details->UserId."";
@@ -169,6 +181,7 @@ class MemberObject
 	var $Day;
 	var $Weight;
 	var $Height;
+	var $SystemOfMeasure;
 	var $BMI;
 	var $RestHR;
 	var $RecHR;
@@ -196,8 +209,21 @@ class MemberObject
 			$this->Month = $Row['Month'];
 			$this->Day = $Row['Day'];
 		}
-		$this->Weight = $Row['Weight'];
-		$this->Height = $Row['Height'];
+		$this->SystemOfMeasure = $Row['SystemOfMeasure'];
+		if(isset($Row['system']) && $Row['system'] != $Row['SystemOfMeasure']){	
+			if($Row['system'] == 'Imperial'){
+				//convert to metric for storage in db. Displaying of values will be converted back.
+				$this->Weight = ceil($Row['Weight'] * 2.22);
+				$this->Height = ceil($Row['Height'] * 0.39);
+			}else{
+				$this->Weight = round($Row['Weight'] * 0.45, 2);
+				$this->Height = floor($Row['Height'] * 2.54);
+			}
+		}else{
+			$this->Weight = $Row['Weight'];
+			$this->Height = $Row['Height'];		
+		}
+
 		$this->BMI = $Row['BMI'];
 		$this->RestHR = $Row['RestHR'];
 		$this->RecHR = $Row['RecHR'];	
