@@ -7,6 +7,7 @@ $MemberDetails = $Display->MemberDetails();
 <wall:input type="hidden" name="module" value="edit"/>
 <wall:input type="hidden" name="formsubmitted" value="yes"/>
 <wall:input type="hidden" name="UserId" value="<?php echo $MemberDetails->UserId;?>"/>
+<wall:input type="hidden" name="SystemOfMeasure" value="<?php echo $Display->System;?>"/>
 First Name<wall:br/>
 <wall:input type="text" name="FirstName" value="<?php echo $MemberDetails->FirstName;?>"/><wall:br/>
 Last Name<wall:br/>
@@ -29,13 +30,16 @@ Date of Birth<wall:br/>
 <wall:select name="Year">
 <?php echo $Display->Model()->YearOptions($MemberDetails->Year);?>
 </wall:select>
-<wall:br/>
-Weight (kg)<wall:br/>
-<wall:input type="text" name="Weight" value="<?php echo $MemberDetails->Weight;?>"/><wall:br/>
-Height (meters)<wall:br/>
-<wall:input type="text" name="Height" value="<?php echo $MemberDetails->Height;?>"/><wall:br/>
-Gender<wall:br/>
+<wall:br/><wall:br/>
 Male<wall:input type="radio" name="Gender" value="M" <?php if($MemberDetails->Gender == 'M') echo 'checked="checked"';?>/>Female<input type="radio" name="gender" value="F" <?php if($MemberDetails->Gender == 'F') echo 'checked="checked"';?>/><wall:br/>
-<wall:br/>
+<wall:br/><wall:br/>
+Weight (<?php echo $Display->SystemWeight;?>)<wall:br/>
+<wall:input type="text" name="Weight" value="<?php echo $MemberDetails->Weight;?>"/><wall:br/>
+Height (<?php echo $Display->SystemHeight;?>)<wall:br/>
+<wall:input type="text" name="Height" value="<?php echo $MemberDetails->Height;?>"/><wall:br/>
+<wall:br/><wall:br/>
+Preferred Sytem of Measurement<br/>
+<wall:input type="submit" name="system" value="<?php echo $Display->AlternateSystem;?>"/>
+<wall:br/><wall:br/>
 <wall:input type="submit" name="submit" value="Save"/><wall:br/><wall:br/>
 </wall:form>

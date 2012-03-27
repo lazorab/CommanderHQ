@@ -12,8 +12,10 @@ class ReportsModel extends Model
 	
 	function getDetails()
 	{
-		$SQL = 'SELECT MD.SkillLevel, MG.GoalTitle, MG.GoalDescription 
-		FROM MemberGoals MG JOIN MemberDetails MD ON MD.MemberID = MG.MemberId
+		$SQL = 'SELECT M.SystemOfMeasure, MD.SkillLevel, MG.GoalTitle, MG.GoalDescription 
+		FROM MemberGoals MG 
+		JOIN Members M ON M.UserId = MG.MemberId
+		JOIN MemberDetails MD ON MD.MemberID = MG.MemberId
 		WHERE MG.MemberId = '.$this->UID.' AND MG.Achieved = 0';
 		$Result = mysql_query($SQL);	
 		$Row = mysql_fetch_assoc($Result);
@@ -51,6 +53,20 @@ class ReportsModel extends Model
 		return $Data;	
 	}
 	
+	function getWeightHistory()
+	{
+		$Data = array();
+		$Sql = 'SELECT BodyWeight, TimeCreated 
+		FROM ExerciseLog
+		WHERE MemberId = '.$this->UID.' AND BodyWeight <> ""';
+		$Result = mysql_query($Sql);	
+		while($Row = mysql_fetch_assoc($Result))
+		{
+			array_push($Data,new WeightObject($Row));
+		}	
+		return $Data;	
+	}
+	
 	function getPendingExercises()
 	{
 		$PendingExercises=array();
@@ -78,12 +94,14 @@ class ReportsModel extends Model
 
 class DetailsObject
 {
+	var $SystemOfMeasure;
 	var $SkillLevel;
 	var $GoalTitle;
 	var $GoalDescription;
 
 	function __construct($Row)
 	{
+		$this->SystemOfMeasure = $Row['SystemOfMeasure'];
 		$this->SkillLevel = $Row['SkillLevel'];
 		$this->GoalTitle = $Row['GoalTitle'];
 		$this->GoalDescription = $Row['GoalDescription'];
@@ -125,6 +143,18 @@ class PerformanceObject
 		$this->Height = $Row['Height'];
 		$this->LevelAchieved = $Row['LevelAchieved'];
 		$this->TimeCreated = $Row['TimeCreated'];
+	}
+}
+
+class WeightObject
+{
+	var $TimeCreated;
+	var $Weight;
+
+	function __construct($Row)
+	{
+		$this->TimeCreated = $Row['TimeCreated'];
+		$this->Weight = $Row['BodyWeight'];
 	}
 }
 ?>

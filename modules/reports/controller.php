@@ -24,6 +24,10 @@ class ReportsController extends Controller
 			{
 				$this->CompletedExercises();	
 			}
+			else if($_REQUEST['action'] == 'Weight History')
+			{
+				$this->WeightHistory($this->Details->SystemOfMeasure);	
+			}
 		}
 		else if(isset($_REQUEST['id']))
 			$this->PerformanceHistory($_REQUEST['id']);
@@ -39,6 +43,8 @@ class ReportsController extends Controller
 				<'.$this->Wall.'input type="submit" name="action" value="Pending Exercises"/>
 				<'.$this->Wall.'br/><'.$this->Wall.'br/>
 				<'.$this->Wall.'input type="submit" name="action" value="Performance History"/>
+				<'.$this->Wall.'br/><'.$this->Wall.'br/>
+				<'.$this->Wall.'input type="submit" name="action" value="Weight History"/>				
 				</'.$this->Wall.'form>
 		';
 	}
@@ -90,6 +96,21 @@ class ReportsController extends Controller
 			$this->Html.='<div style="height:20px"><div style="width:120px;float:left">'.$Data->TimeCreated.'</div><div style="width:80px;float:left">'.$Data->Duration.'</div><div style="width:100px;float:left">'.$direction.''.$performance.'</div></div>';
 		}
 		return $this->Html;	
+	}
+	
+	function WeightHistory($System)
+	{
+		$this->Html='';
+		$History=$this->Model->getWeightHistory();
+		if($System == 'Metric')
+			$Units = 'kg';
+		else
+			$Units = 'lbs';
+		foreach($History AS $Item)
+		{
+			$this->Html.=''.$Item->TimeCreated.'	'.$Item->Weight.'	'.$Units.'<'.$this->Wall.'br/>';
+		}
+		return $this->Html;
 	}
 	
 	function PendingExercises()

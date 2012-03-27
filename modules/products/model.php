@@ -105,9 +105,50 @@ class ProductsModel extends Model
 		return $Response;
 	}
 	
-	function RemoveFromBasket($ProductId, $Quantity)
+	function RemoveFromBasket($MemberId, $BasketId, $ProductId)
 	{
-
+		$Response='';
+		$SQL='DELETE FROM MemberPurchases WHERE MemberId='.$MemberId.' AND BasketId='.$BasketId.' AND ProductId='.$ProductId.'';
+		if(!mysql_query($SQL))
+			$Response='Action Failed!';
+		else
+			$Response='Successfully Removed';
+		return $Response;
+	}
+	
+	function UpdateBasket($MemberId, $BasketId)
+	{
+		$Basket = $this->ViewBasket($MemberId, $BasketId);
+		$Response='';
+		foreach($Basket AS $item)
+		{
+			$Quantity='Quantity_'.$item->ProductId.'';
+			$ProductId='Product_'.$item->ProductId.'';
+			$SQL='UPDATE MemberPurchases SET Quantity = '.$_REQUEST[$Quantity].' WHERE MemberId='.$MemberId.' AND BasketId='.$BasketId.' AND ProductId='.$_REQUEST[$ProductId].'';
+			mysql_query($SQL);
+		}
+		/*
+		if(!mysql_query($SQL))
+			$Response='Action Failed!';
+		else
+			$Response='Successfully Updated';
+			*/
+		return $Response;
+	}	
+	
+	function ViewBasket($MemberId, $BasketId)
+	{
+		$Basket=array();
+		$SQL='SELECT P.recid, P.ProductName, MP.Quantity, P.ProductPrice FROM MemberPurchases MP
+		JOIN Products P ON P.recid = MP.ProductId 
+		WHERE MemberId='.$MemberId.' AND BasketId='.$BasketId.'';
+		$Result = mysql_query($SQL);	
+		while($Row = mysql_fetch_assoc($Result))
+		{
+			array_push($Basket, new BasketObject($Row));
+		}
+		
+		return $Basket;
 	}
 }
 
@@ -140,6 +181,22 @@ class ProductObject
 		$this->ProductImage = $Row['ProductImage'];
 		$this->ProductPrice = $Row['ProductPrice'];
 		$this->Category = $Row['ProductCategory'];
+	}
+}
+
+class BasketObject
+{
+	var $ProductId;
+	var $ProductName;
+	var $Quantity;
+	var $ProductPrice;
+
+	function __construct($Row)
+	{
+		$this->ProductId = $Row['recid'];
+		$this->ProductName = $Row['ProductName'];
+		$this->Quantity = $Row['Quantity'];
+		$this->ProductPrice = $Row['ProductPrice'];
 	}
 }
 ?>

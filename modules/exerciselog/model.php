@@ -9,6 +9,7 @@ class ExerciselogModel extends Model
 	var $Duration;
 	var $Reps;
 	var $Weight;
+	var $BodyWeight;
 	var $Height;
 	var $Gender;
 	var $LevelAchieved;
@@ -51,6 +52,11 @@ class ExerciselogModel extends Model
 			$Fields .= ', Weight';
 			$Values .= ', "'.$this->Weight.'"';			
 		}
+		if($this->BodyWeight != $Details['bodyweight']){
+			$BodyWeight = $Details['bodyweight'];
+			$Fields .= ', BodyWeight';
+			$Values .= ', "'.$BodyWeight.'"';			
+		}		
 		if($Details['height'] != ""){
 			$this->Height = $Details['height'];
 			$Fields .= ', Height';
@@ -73,7 +79,7 @@ class ExerciselogModel extends Model
 		$MemberHeight = $Row['Height'];
 		$this->Gender = $Row['Gender'];
 		//not sure how we gonna use bodyweight yet:
-		if($Details['bodyweight'] > 0){
+		if($this->BodyWeight != $Details['bodyweight']){
 			$BMI = round($Details['bodyweight'] / ($MemberHeight * $MemberHeight), 2);
 			$Sql = 'UPDATE MemberDetails SET Weight = "'.$Details['bodyweight'].'", BMI = '.$BMI.' WHERE MemberId = '.$this->UID.'';
 			$Success = mysql_query($Sql);
@@ -384,12 +390,12 @@ class ExerciselogModel extends Model
 		$Result = mysql_query($Sql);
 		$Row = mysql_fetch_assoc($Result);
 		$Unit = 'Kg';
-		$Weight = $Row['Weight'];
+		$this->BodyWeight = $Row['Weight'];
 		if($Row['SystemOfMeasure'] == 'Imperial'){
 			$Unit = 'lbs';
 			$Weight = ceil($Row['Weight'] * 2.22);
 		}
-		$Html ='<'.$this->Wall.'input type="text" name=weight" value="'.$Weight.'"/>'.$Unit.'';
+		$Html ='<'.$this->Wall.'input type="text" name="bodyweight" value="'.$this->BodyWeight.'"/>'.$Unit.'';
 		
 		return $Html;
 	}
