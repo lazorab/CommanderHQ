@@ -1,7 +1,6 @@
 <?php
 class ExerciselogModel extends Model
 {
-	var $Wall='';
 	var $ExerciseId;
 	var $UID;
 	var $ExerciseType;
@@ -17,8 +16,6 @@ class ExerciselogModel extends Model
 	
 	function __construct()
 	{
-		if($Display->Environment == 'mobile' || $Display->Environment == 'legacy')
-			$this->Wall = 'wall:';
 		mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
 		@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");	
 	}
