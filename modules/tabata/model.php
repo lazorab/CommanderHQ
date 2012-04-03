@@ -7,15 +7,18 @@ class TabataModel extends Model
 		@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");	
 	}
 	
-	function Log($Details)
+	function Log($Details, $Count)
 	{
 		$Success = false;
 
 		$UID = $Details['UID'];
+		$TabataId = $this->getTabataId($UID);
+		if($Count == 1)
+			$TabataId++;
 		$ExerciseId = $Details['exercise'];
 		$Reps = $Details['reps'];
-		$Fields = 'MemberId, ExerciseId, Reps';
-		$Values = '"'.$UID.'", "'.$ExerciseId.'", "'.$Reps.'"';	
+		$Fields = 'TabataId, MemberId, ExerciseId, Reps';
+		$Values = '"'.$TabataId.'", "'.$UID.'", "'.$ExerciseId.'", "'.$Reps.'"';	
 
 		$Sql = 'INSERT INTO TabataLog('.$Fields.')
 			VALUES('.$Values.')';
@@ -52,6 +55,21 @@ class TabataModel extends Model
 		return $Options;
 	}	
 	
+	function RepOptions($SelectedValue='')
+	{
+		$Options = '<'.$this->Wall.'option value="">Select Number</'.$this->Wall.'option>';
+		for($i=1;$i<100;$i++)
+		{
+			$FormattedNumber = sprintf("%02d",$i);
+			$Options .= '<'.$this->Wall.'option value="'.$i.'"';
+			if($SelectedValue == $i)
+				$Options .=' selected="selected"';
+			$Options .='>'.$FormattedNumber.'</'.$this->Wall.'option>';
+		}
+
+		return $Options;
+	}
+	
 	function getExercises()
 	{
 		$Exercises=array();
@@ -64,19 +82,25 @@ class TabataModel extends Model
 		return $Exercises;
 	}
 	
-	function getHtml($ExerciseId)
+	function getHtml()
 	{
+
 		$this->Html ='
-			<'.$this->Wall.'br/><'.$this->Wall.'br/>
+			<'.$this->Wall.'br/>
 			Completed Exercise:
-			'.$this->SelectedExercise($_REQUEST['exercise']).'
-			<'.$this->Wall.'input type="hidden" name="exercise" value="'.$_REQUEST['exercise'].'"/>
+			<'.$this->Wall.'br/>
+			<'.$this->Wall.'select name="exercise">
+			'.$this->ExerciseOptions($_REQUEST['exercise']).'
+			</'.$this->Wall.'select>
+			<'.$this->Wall.'br/>
 			<'.$this->Wall.'br/>		
 			Reps<'.$this->Wall.'br/>
-			<'.$this->Wall.'input type="text" name="reps" value="'.$_REQUEST['reps'].'"/>
+			<'.$this->Wall.'select name="reps">
+			'.$this->RepOptions($_REQUEST['reps']).'
+			</'.$this->Wall.'select>			
 			<'.$this->Wall.'br/>
 			<'.$this->Wall.'br/>
-			<'.$this->Wall.'input type="submit" name="submit" value="Save"/><'.$this->Wall.'br/><'.$this->Wall.'br/>';
+			<'.$this->Wall.'input type="submit" name="submit" value="Log"/><'.$this->Wall.'br/><'.$this->Wall.'br/>';
 
 		return $this->Html;	
 	}	
@@ -84,7 +108,7 @@ class TabataModel extends Model
 	function defaultHtml()
 	{
 		$this->Html.='
-		<'.$this->Wall.'br/><'.$this->Wall.'br/>
+		<'.$this->Wall.'br/>
 		Which Exercise did you Complete?<'.$this->Wall.'br/>
 		<'.$this->Wall.'select name="exercise">
 			'.$this->ExerciseOptions($_REQUEST['exercise']).'
@@ -95,6 +119,20 @@ class TabataModel extends Model
 
 		return $this->Html;
 	}
+	
+	function getTabataId($MemberId)
+	{
+		$SQL='SELECT MAX(TabataId) AS LastId FROM TabataLog WHERE MemberId = '.$MemberId.'';
+		$Result = mysql_query($SQL);	
+		$Row = mysql_fetch_assoc($Result);
+		if($Row['LastId'] == null)
+			$TabataId = 0;
+		else
+			$TabataId = $Row['LastId'];
+			
+		return $TabataId;
+	}	
+	
 }
 
 class TabataObject

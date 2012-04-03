@@ -77,10 +77,11 @@ class RegisterModel extends Model
 		$Options = '<'.$this->Wall.'option value="">Day</'.$this->Wall.'option>';
 		for($i=1;$i<32;$i++)
 		{
+			$FormattedNumber = sprintf("%02d",$i);
 			$Options .= '<'.$this->Wall.'option value="'.$i.'"';
 			if($SelectedValue == $i)
 				$Options .=' selected="selected"';
-			$Options .='>'.$i.'</'.$this->Wall.'option>';
+			$Options .='>'.$FormattedNumber.'</'.$this->Wall.'option>';
 		}
 
 		return $Options;
