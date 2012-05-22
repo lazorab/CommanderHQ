@@ -1,7 +1,9 @@
 <?php
+
 //include base classes
 require_once('/home/bemobile/public_html/global/library/2_0/includes.php');
 require_once('/home/bemobile/public_html/framework/general/browser.class.php');
+require_once('/home/bemobile/public_html/framework/html5coremanager.class.php');
 require_once('/home/bemobile/public_html/framework/image.class.php');
 require_once('/home/bemobile/public_html/framework/Paging/paging.class.php');
 require_once('/home/bemobile/public_html/framework/globalconst.php');
@@ -18,5 +20,4 @@ require_once('./library/asset.class.php');
 require_once('./library/dropdownmenu.class.php');
 
 require_once('const.php');
-
 ?>

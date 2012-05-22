@@ -1,6 +1,3 @@
-<div id="header">
-	<wall:img alt="Header" src="<?php echo $RENDER->Image('img.jpg', $request->get_screen_width_new());?>"/>
-</div>
 <?php
 session_start();
 if(isset($_SESSION['UID'])){ ?>

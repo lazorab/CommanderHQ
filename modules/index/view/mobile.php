@@ -1,16 +1,34 @@
-<wall:body>
-<h3>Mobile View</h3>
-<p>
-Far far away, behind the word mountains, far from the countries Vokalia and
-Consonantia, there live the blind texts. Separated they live in
-Bookmarksgrove right at the coast of the Semantics, a large language ocean.
-A small river named Duden flows by their place and supplies it with the
-necessary regelialia. It is a paradisematic country, in which roasted parts of
-sentences fly into your mouth.
-Even the all-powerful Pointing has no control about the blind texts it is an
-almost unorthographic life One day however a small line of blind text by the
-name of Lorem Ipsum decided to leave for the far World of Grammar. The
-Big Oxmox advised her not to do so, because there were thousands of bad
-Commas.
-</p>
-</wall:body>
+<?php 
+$ratio = $request->get_screen_width_new() / 500;
+$margin = floor(((500*$ratio) - (324*$ratio)) / 4);
+$GridIconSize = floor(108*$ratio);?>
+<div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
+<wall:img alt="Header" src="<?php echo $RENDER->Image('wodlog.png', $request->get_screen_width_new());?>"/>
+</div>
+<div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
+<wall:img alt="Header" src="<?php echo $RENDER->Image('benchmarks.png', $request->get_screen_width_new());?>"/>
+</div>
+<div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
+<wall:img alt="Header" src="<?php echo $RENDER->Image('baseline.png', $request->get_screen_width_new());?>"/>
+</div>
+<div class="clear"></div>
+<div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
+<wall:img alt="Header" src="<?php echo $RENDER->Image('challenges.png', $request->get_screen_width_new());?>"/>
+</div>
+<div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
+<wall:img alt="Header" src="<?php echo $RENDER->Image('nutrition.png', $request->get_screen_width_new());?>"/>
+</div>
+<div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
+<wall:img alt="Header" src="<?php echo $RENDER->Image('booking.png', $request->get_screen_width_new());?>"/>
+</div>
+<div class="clear"></div>
+<div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px <?php echo $margin;?>px <?php echo $margin;?>px;">
+<wall:img alt="Header" src="<?php echo $RENDER->Image('reports.png', $request->get_screen_width_new());?>"/>
+</div>
+<div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px <?php echo $margin;?>px <?php echo $margin;?>px;">
+<wall:img alt="Header" src="<?php echo $RENDER->Image('skills.png', $request->get_screen_width_new());?>"/>
+</div>
+<div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px <?php echo $margin;?>px <?php echo $margin;?>px;">
+<wall:img alt="Header" src="<?php echo $RENDER->Image('videos.png', $request->get_screen_width_new());?>"/>
+</div>
+<div class="clear"></div>

@@ -1,6 +1,3 @@
-<div id="header">
-	<img alt="Header" src="/images/img.jpg"/>
-</div>
 <?php
 session_start();
 if(isset($_SESSION['UID'])){ ?>

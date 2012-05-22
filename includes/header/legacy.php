@@ -16,6 +16,9 @@
 <?php echo CustomHeader($_REQUEST['module']);?>
 </wall:head>
 
+<div id="header">
+	<wall:img alt="Header" src="<?php echo $RENDER->Image('header.png', $request->get_screen_width_new());?>"/>
+</div>
 
 <?php	
 function CustomHeader($Module)
