@@ -1,7 +1,19 @@
+<div id="menu" style="width:30%;float:left">
+<div id="menuitem" style="margin:5%">
+	<a href="?module=register"><img alt="Register" src="<?php echo $RENDER->Image('register.png', $request->get_screen_width_new());?>"/></a>
+</div>
+<div id="menuitem" style="margin:5%">	
+	<a href="?module=registergym"><img alt="GymRegister" src="<?php echo $RENDER->Image('registergym.png', $request->get_screen_width_new());?>"/></a>
+</div>
+<div id="menuitem" style="margin:5%">
+	<a href="?module=goals"><img alt="Goals" src="<?php echo $RENDER->Image('goals.png', $request->get_screen_width_new());?>"/></a>
+</div>
+</div>
+
 <?php echo $Display->Message;
 $MemberDetails = $Display->MemberDetails();
 ?>
-
+<div id="content" style="width:70%;float:left;color:#fff">
 <wall:br/><wall:br/>
 <wall:form action="index.php" method="post">
 <wall:input type="hidden" name="module" value="edit"/>
@@ -43,3 +55,5 @@ Preferred Sytem of Measurement<br/>
 <wall:br/><wall:br/>
 <wall:input type="submit" name="submit" value="Save"/><wall:br/><wall:br/>
 </wall:form>
+</div>
+<div class="clear"></div>

@@ -1,5 +1,12 @@
+<div id="menu">
+	<img onclick="GetMenuItem('reg')" alt="Register" src="<?php echo $RENDER->Image('register.png', $request->get_screen_width_new());?>"/>
+	<img onclick="GetMenuItem('gymreg')" alt="GymRegister" src="<?php echo $RENDER->Image('registergym.png', $request->get_screen_width_new());?>"/>
+	<img onclick="GetMenuItem('goals')" alt="Goals" src="<?php echo $RENDER->Image('goals.png', $request->get_screen_width_new());?>"/>
+</div>
+
 <?php echo $Display->Message;?>
 
+<div id="content">
 <wall:br/><wall:br/>
 <wall:form action="index.php" method="post">
 <wall:input type="hidden" name="module" value="register"/>
@@ -41,3 +48,4 @@ Preferred Sytem of Measurement<wall:br/>
 <wall:br/><wall:br/>
 <wall:input type="submit" name="submit" value="Save"/>
 </wall:form>
+</div>

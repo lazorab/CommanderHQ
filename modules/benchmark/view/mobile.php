@@ -1,5 +1,2 @@
-<?php
-
-echo $Display->html();
-
-?>
+<div id="video"></div>
+<?php echo $Display->html();?>

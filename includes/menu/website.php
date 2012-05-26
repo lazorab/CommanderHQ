@@ -1,5 +1,21 @@
 <?php
-session_start();
+$ratio = $request->get_screen_width_new() / 500;
+$NavIconSize = floor(58*$ratio);
+?>
+<div id="nav" style="height:<?php echo floor(106*$ratio);?>px;background-image:url(<?php echo $RENDER->Image('navbar_slice.png', $request->get_screen_width_new());?>);repeat-x">
+<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 10%;">
+<img alt="Header" src="<?php echo $RENDER->Image('reports2.png', $request->get_screen_width_new());?>"/>
+</div>
+<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 4%;">
+<img alt="Header" src="<?php echo $RENDER->Image('shop.png', $request->get_screen_width_new());?>"/>
+</div>
+<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 4%;">
+<img alt="Header" src="<?php echo $RENDER->Image('profile.png', $request->get_screen_width_new());?>"/>
+</div>
+<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 4%;">
+<img alt="Header" src="<?php echo $RENDER->Image('search.png', $request->get_screen_width_new());?>"/>
+</div>
+<?php
 if(isset($_SESSION['UID'])){ ?>
 
 <a href="?module=memberhome">Home</a>
@@ -24,3 +40,4 @@ if(isset($_SESSION['UID'])){ ?>
 <a href="?module=login">Login</a>
 
 <?php } ?>
+</div>

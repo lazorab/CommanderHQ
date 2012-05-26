@@ -104,7 +104,19 @@ else{
 	
 	function CustomHeader()
 	{
-		$CustomHeader='';
+		$RENDER = new Image(SITE_ID);
+		$Register = $RENDER->Image('register.png', $this->Device->GetScreenWidth());
+		$GymRegister = $RENDER->Image('registergym.png', $this->Device->GetScreenWidth());
+		$Goals = $RENDER->Image('goals.png', $this->Device->GetScreenWidth());
+
+		$CustomHeader='
+		<script type="text/javascript">
+			function GetMenuItem(selected)
+			{
+				document.getElementById("menu").innerHTML = \'<img onclick="" alt="Register" src="'.$Register.'"/><img onclick="" alt="GymRegister" src="'.$GymRegister.'"/><img onclick="" alt="Goals" src="'.$Goals.'"/>\';
+				document.getElementById("content").innerHTML = \'test\';
+			}
+		</script>';
 		
 		return $CustomHeader;
 	}

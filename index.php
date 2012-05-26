@@ -1,7 +1,7 @@
 <?php
 	require_once("includes/includes.php");
 	  session_start();
-	header('Content-Type: text/xml;charset=UTF-8');
+	
   $device = new DeviceManager();
   $htmlOutput = new HTML5CoreManager();	
 	$request = new BRequest();
@@ -36,7 +36,7 @@
 	/*MENU*/	
 		if (file_exists("includes/menu/$Environment.php")) 
 			include("includes/menu/$Environment.php");
-	echo $htmlOutput->GetOpenBodyTag();	
+
 		echo '<div id="canvas" style="background-image:url('.$RENDER->Image('background_slice.png', $request->get_screen_width_new()).');repeat-y">';
 	/*CONTENT*/	
 		if (file_exists("modules/$Module/view/$Environment.php")) 
@@ -45,5 +45,5 @@
 	/*FOOTER*/
 		if (file_exists("includes/footer/$Environment.php")) 
 			include("includes/footer/$Environment.php");
-	echo $htmlOutput->GetCloseBodyTag();		
+		
 ?>

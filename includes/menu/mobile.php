@@ -4,17 +4,23 @@ $NavIconSize = floor(58*$ratio);
 ?>
 <div id="nav" style="height:<?php echo floor(106*$ratio);?>px;background-image:url(<?php echo $RENDER->Image('navbar_slice.png', $request->get_screen_width_new());?>);repeat-x">
 <div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 10%;">
-<wall:img alt="Header" src="<?php echo $RENDER->Image('reports2.png', $request->get_screen_width_new());?>"/>
+<?php 
+if($_REQUEST['module'] == 'edit' || $_REQUEST['module'] == 'register' || $_REQUEST['module'] == 'goals')
+	$MenuImage = 'menu_active';
+else
+	$MenuImage = 'menu';
+if(isset($_SESSION['UID'])){ ?>
+	<a href="?module=edit" id="menuselect"><wall:img alt="Header" src="<?php echo $RENDER->Image(''.$MenuImage.'.png', $request->get_screen_width_new());?>"/></a>
+<?php }else{ ?>
+	<a href="?module=register" id="menuselect"><wall:img alt="Header" src="<?php echo $RENDER->Image(''.$MenuImage.'.png', $request->get_screen_width_new());?>"/></a>
+<?php } ?>
 </div>
+<?php
+if(isset($_REQUEST['video']) && $_REQUEST['video'] != ''){ ?>
 <div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 4%;">
-<wall:img alt="Header" src="<?php echo $RENDER->Image('shop.png', $request->get_screen_width_new());?>"/>
+<a id="videobutton" onclick="GetVideo('http://www.youtube.com/embed/<?php echo $_REQUEST['video'];?>')" href="#"><wall:img alt="Header" src="<?php echo $RENDER->Image('video_specific.png', $request->get_screen_width_new());?>"/></a>
 </div>
-<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 4%;">
-<wall:img alt="Header" src="<?php echo $RENDER->Image('profile.png', $request->get_screen_width_new());?>"/>
-</div>
-<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 4%;">
-<wall:img alt="Header" src="<?php echo $RENDER->Image('search.png', $request->get_screen_width_new());?>"/>
-</div>
+<?php } ?>
 <?php
 if(isset($_SESSION['UID'])){ ?>
 

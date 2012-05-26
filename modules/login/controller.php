@@ -43,5 +43,6 @@ class LoginController extends Controller
 		
 		return $CustomHeader;
 	}
+	
 }
 ?>

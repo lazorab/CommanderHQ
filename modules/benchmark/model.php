@@ -27,10 +27,33 @@ class BenchmarkModel extends Model
 		mysql_query($SQL);	
 	}
 	
+	function getCategories()
+	{
+		$Categories=array();
+		$SQL = 'SELECT recid, Category, Image, Banner FROM BenchmarkCategories';
+		$Result = mysql_query($SQL);	
+		while($Row = mysql_fetch_assoc($Result))
+		{
+			array_push($Categories, new CategoryObject($Row));
+		}
+		return $Categories;
+	}
+	
+	function getCategory($Id)
+	{
+		$SQL = 'SELECT Category FROM BenchmarkCategories WHERE recid = '.$Id.'';
+		$Result = mysql_query($SQL);	
+		$Row = mysql_fetch_assoc($Result);
+		return $Row['Category'];
+	}	
+	
 	function GetBMWS($_SEARCH)
 	{
 		$Workouts = array();
-		$SQL = 'SELECT recid, WorkoutName, WorkoutDescription, VideoId FROM BenchmarkWorkouts WHERE WorkoutName <> "Baseline"';
+		$SQL = 'SELECT recid, Banner, WorkoutName, WorkoutDescription, VideoId 
+		FROM BenchmarkWorkouts 
+		WHERE CategoryId = '.$_SEARCH['catid'].'
+		AND WorkoutName <> "Baseline"';
 		if(isset($_SEARCH['searchword']))
 			$SQL .= 'WHERE WorkoutName LIKE "'.$_SEARCH['searchword'].'%"';
 		$Result = mysql_query($SQL);	
@@ -55,18 +78,38 @@ class BenchmarkModel extends Model
 class BenchmarkObject
 {
 	var $Id;
-	var $WorkoutName;
-	var $WorkoutDescription;
+	var $Name;
+	var $Banner;
+	var $Description;
+	var $Video;
 	var $SmartVideoLink;
 	var $LegacyVideoLink;
 
 	function __construct($Row)
 	{
 		$this->Id = $Row['recid'];
-		$this->WorkoutName = $Row['WorkoutName'];
-		$this->WorkoutDescription = $Row['WorkoutDescription'];
+		$this->Name = $Row['WorkoutName'];
+		$this->Banner = $Row['Banner'];
+		$this->Description = $Row['WorkoutDescription'];
+		$this->Video = $Row['VideoId'];
 		$this->SmartVideoLink = 'http://www.youtube.com/embed/'.$Row['VideoId'].'';
 		$this->LegacyVideoLink = 'http://m.youtube.com/details?v='.$Row['VideoId'].'';
+	}
+}
+
+class CategoryObject
+{
+	var $Id;
+	var $Name;
+	var $Image;
+	var $Banner;
+
+	function __construct($Row)
+	{
+		$this->Id = $Row['recid'];
+		$this->Name = $Row['Category'];
+		$this->Image = $Row['Image'];
+		$this->Banner = $Row['Banner'];
 	}
 }
 ?>

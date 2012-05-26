@@ -19,6 +19,6 @@ class MemberhomeController extends Controller
 		$CustomHeader='';
 		
 		return $CustomHeader;
-	}
+	}	
 }
 ?>

@@ -1,3 +1,4 @@
+<?php header('Content-Type: text/xml;charset=UTF-8');?>
 <wall:document>
 <wall:xmlpidtd />
 <wall:head>
@@ -17,18 +18,24 @@
 <script type="text/javascript" src="http://www.be-mobile.co.za/framework/js/device.js"></script>
 <?php echo CustomHeader($_REQUEST['module']);?>
 </wall:head>
-
+<?php echo $htmlOutput->GetOpenBodyTag();	?>
 <div id="header">
-	<wall:img alt="Header" src="<?php echo $RENDER->Image('header.png', $request->get_screen_width_new());?>"/>
+<?php 
+$Banner = 'header';
+if($_REQUEST['module'] != 'index' && $_REQUEST['module'] != 'logon' && $_REQUEST['module'] != 'memberhome')
+	$Banner = $_REQUEST['module'];
+else if(isset($_REQUEST['banner']))
+	$Banner = $_REQUEST['banner'];
+?>
+<wall:img alt="Header" src="<?php echo $RENDER->Image(''.$Banner.'.png', $request->get_screen_width_new());?>"/>
 </div>
-
 <?php	
 	function CustomHeader($Module)
 	{
-	if($Module=='')
-		$Module='index';
+		if($Module=='')
+			$Module='index';
 		$ContollerClass = ''.$Module.'Controller';
-		$CustomHeader = new $ContollerClass;
-		return $CustomHeader->CustomHeader();
+		$Contoller = new $ContollerClass;
+		return $Contoller->CustomHeader();
 	}
 ?>
