@@ -11,11 +11,15 @@ class LoginController extends Controller
 			$Model = new LoginModel();
 			$UserId = $Model->Login($_REQUEST['username'], $_REQUEST['password']);
 			if(!$UserId){
-				$this->Message = 'Invalid Login, Please try again.';
+				$this->Message = 'Invalid Credentials, Please try again.';
 			}
 			else{
 				session_start();
 				$_SESSION['UID'] = $UserId;
+				if($_REQUEST['remember'] == 'yes'){
+					setcookie("Username", $_REQUEST['username']);
+					setcookie("Password", $_REQUEST['password']);
+				}
 				header('location: index.php?module=memberhome');
 			}	
 		}

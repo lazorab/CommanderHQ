@@ -18,6 +18,7 @@ require_once('./library/util.class.php');
 require_once('./library/content.class.php');
 require_once('./library/asset.class.php');
 require_once('./library/dropdownmenu.class.php');
+require_once('./modules/login/model.php');
 
 require_once('const.php');
 ?>

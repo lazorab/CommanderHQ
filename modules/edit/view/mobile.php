@@ -1,6 +1,6 @@
 <div id="menu" style="width:30%;float:left">
 <div id="menuitem" style="margin:5%">
-	<a href="?module=register"><img alt="Register" src="<?php echo $RENDER->Image('register.png', $request->get_screen_width_new());?>"/></a>
+	<img alt="Register" src="<?php echo $RENDER->Image('register_active.png', $request->get_screen_width_new());?>"/>
 </div>
 <div id="menuitem" style="margin:5%">	
 	<a href="?module=registergym"><img alt="GymRegister" src="<?php echo $RENDER->Image('registergym.png', $request->get_screen_width_new());?>"/></a>
@@ -14,7 +14,7 @@
 $MemberDetails = $Display->MemberDetails();
 ?>
 <div id="content" style="width:70%;float:left;color:#fff">
-<wall:br/><wall:br/>
+<wall:br/>
 <wall:form action="index.php" method="post">
 <wall:input type="hidden" name="module" value="edit"/>
 <wall:input type="hidden" name="formsubmitted" value="yes"/>

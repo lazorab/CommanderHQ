@@ -18,21 +18,22 @@ class RegisterController extends Controller
 		$this->SystemWeight = 'Kg';
 		$this->SystemHeight = 'cm';		
 		
-if($_REQUEST['formsubmitted'] == 'yes')
-{
+		if($_REQUEST['formsubmitted'] == 'yes'){
+		
 		if($_REQUEST['system'] == 'Metric'){
 			$this->System = 'Metric';
 			$this->SystemWeight = 'Kg';
 			$this->SystemHeight = 'cm';	
 			$this->AlternateSystem = 'Imperial';
 		}
-		if($_REQUEST['system'] == 'Imperial'){
+		else if($_REQUEST['system'] == 'Imperial'){
 			$this->System = 'Imperial';
 			$this->SystemWeight = 'lbs';
 			$this->SystemHeight = 'inches';	
 			$this->AlternateSystem = 'Metric';	
 		}
-
+		else if($_REQUEST['submit'] == 'Save'){	
+	
 	if($_REQUEST['firstname'] == '')
 		$this->Message = 'Firstname Required';
 	elseif($_REQUEST['lastname'] == '')
@@ -59,8 +60,8 @@ if($_REQUEST['formsubmitted'] == 'yes')
 		$this->Message = 'Height Required';
 	elseif($_REQUEST['gender'] == '')		
 		$this->Message = 'Select Gender';
-		
-	if($this->Message == '' && $_REQUEST['submit'] == 'Save')
+	
+	if($this->Message == '')
 	{
 		$_CREDENTIALS=array(
 			'FirstName'=>''.$_REQUEST['firstname'].'',
@@ -84,6 +85,7 @@ if($_REQUEST['formsubmitted'] == 'yes')
 			$_SESSION['UID'] = $this->Model->ReturnValue();
 			header('location: index.php?module=memberhome');
 		}
+	}
 	}
 }	
 	}

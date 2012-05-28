@@ -22,9 +22,11 @@
 <div id="header">
 <?php 
 $Banner = 'header';
-if($_REQUEST['module'] != 'index' && $_REQUEST['module'] != 'logon' && $_REQUEST['module'] != 'memberhome')
-	$Banner = $_REQUEST['module'];
-else if(isset($_REQUEST['banner']))
+if(isset($_REQUEST['module'])){
+	if($_REQUEST['module'] == 'benchmark')
+		$Banner = $_REQUEST['module'];
+}	
+if(isset($_REQUEST['banner']))
 	$Banner = $_REQUEST['banner'];
 ?>
 <wall:img alt="Header" src="<?php echo $RENDER->Image(''.$Banner.'.png', $request->get_screen_width_new());?>"/>

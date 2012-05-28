@@ -10,8 +10,23 @@ class BenchmarkController extends Controller
 	{
 		parent::__construct();
 		session_start();
-		if(!isset($_SESSION['UID']))
-			header('location: index.php?module=login');			
+		if(!isset($_SESSION['UID'])){
+			if(isset($_COOKIE['Username']) && isset($_COOKIE['Password']))
+			{
+			
+				$Model = new LoginModel();
+				$UserId = $Model->Login($_COOKIE['Username'], $_COOKIE['Password']);
+				if(!$UserId){
+					header('location: index.php?module=login');	
+				}
+				else{
+					session_start();
+					$_SESSION['UID'] = $UserId;
+				}		
+			}	
+			else
+				header('location: index.php?module=login');		
+		}
 		$Model = new BenchmarkModel;
 		if(isset($_REQUEST['id']))
 			$this->Workout = $Model->getWorkoutDetails($_REQUEST['id']);
@@ -26,33 +41,53 @@ class BenchmarkController extends Controller
 	function html()
 	{
 	$RENDER = new Image(SITE_ID);
-		$html='';
+		$html='<br/>';
 		
 if(isset($_REQUEST['id']))
 {
-
-if ($this->SupportOnlineVideo) {				
-	$html.= '<h3>'.$this->Workout->Name.'</h3>
-	<a onclick="GetVideo(\''.$this->Workout->SmartVideoLink.'\')" href="#">Click here for video</a><'.$this->Wall.'br/><'.$this->Wall.'br/>';
-	}else{
-		$html.= '<h3>'.$this->Workout->Name.'</h3>
-		<a onclick="GetVideo(\''.$this->Workout->LegacyVideoLink.'\')" href="#">Click here for video</a><'.$this->Wall.'br/><'.$this->Wall.'br/>';
-	}
-	$html.='<textarea cols="15" rows="5" style="margin:10%;">';
+	$Start = $RENDER->Image('start.png', $this->Device->GetScreenWidth());
+	$Stop = $RENDER->Image('stop.png', $this->Device->GetScreenWidth());
+	$Reset = $RENDER->Image('report.png', $this->Device->GetScreenWidth());
+	$Save = $RENDER->Image('save.png', $this->Device->GetScreenWidth());
+	$html.='<form name="clockform" action="index.php">
+	<input type="hidden" name="module" value="benchmark"/>
+	<input type="hidden" name="benchmarkId" value="'.$_REQUEST['id'].'"/>
+		<textarea cols="15" rows="5" style="margin:10%;">';
 	$html.= $this->Workout->Description;
-	$html.='</textarea>';
+	$html.='</textarea>
+<input id="clock" name="clock" value="00:00:0" style="margin:5%;text-align:center; width:90%; font-size:xx-large; font-weight:bold"/>
+</form>	
+<div style="margin:5%; width:90%">
+<img src="'.$Start.'" onclick="start()"/>
+<img src="'.$Stop.'" onclick="stop()"/><br/>
+<img src="'.$Reset.'" onclick="reset()"/>
+<img src="'.$Save.'" onclick="save()"/>
+</div>
+	';
 }
 else if(isset($_REQUEST['catid']))
 {
+	$Image = $RENDER->Image('BM_Select.png', $this->Device->GetScreenWidth());
+	$explode = explode("_", $Image);
+	$height = $explode[2] + 4;
 	foreach($this->BMWS AS $BMW){ 
 
-		$html.='<div>
+		$html.='<div style="width:70%;height:'.$height.'px;margin:4% 0 4% 12%;background-color:#fff;">
+		<div style="width:60%;padding:5%;float:left;font-size:large;background-color:#fff;">
 		<a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'">
 		'.$BMW->Name.'
 		</a>
-		</div>';
+		</div>
+		<div style="width:16%;padding:1% 1% 0 1%;background-color:#fff;float:right">
+		<a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'">
+		<img alt="Header" src="'.$Image.'"/>
+		</a>
+		</div>
+		</div>
+		<div class="clear"></div>';
 		//$html.='<h3><a href="index.php?module=benchmark&id='.$BMW->Id.'&banner='.$BMW->Name.'">'.$BMW->Name.'</a></h3>';
 	}
+	$html.='<br/>';
 }
 else
 {
@@ -85,10 +120,120 @@ else{
 		$VideoImage = $RENDER->Image('video_specific_active.png', $this->Device->GetScreenWidth());
 		$CustomHeader='
 		<script type="text/javascript">
+	var flagclock = 0;
+	var flagstop = 0;
+	var stoptime = 0;
+	var splitcounter = 0;
+	var currenttime;
+	var splitdate = "";
+	var clock;
+	
+	function save()
+	{
+		clockform.submit();
+	}
+		
+	function start()
+		{
+		var startdate = new Date();
+		var starttime = startdate.getTime();
+
+		flagclock = 1;
+		counter(starttime);
+		}
+		
+	function stop()
+		{
+		var startdate = new Date();
+		var starttime = startdate.getTime();
+
+		flagclock = 0;
+		flagstop = 1;
+		splitdate = "";
+		}	
+		
+	function counter(starttime)
+		{
+		clock = document.getElementById("clock");
+		currenttime = new Date();
+		var timediff = currenttime.getTime() - starttime;
+		if(flagstop == 1)
+			{
+			timediff = timediff + stoptime
+			}
+		if(flagclock == 1)
+			{
+			clock.value = formattime(timediff,"");
+			refresh = setTimeout("counter(" + starttime + ");",10);
+			}
+		else
+			{
+			window.clearTimeout(refresh);
+			stoptime = timediff;
+			}
+		}
+		
+	function formattime(rawtime,roundtype)
+		{
+		if(roundtype == "round")
+			{
+			var ds = Math.round(rawtime/100) + "";
+			}
+		else
+			{
+			var ds = Math.floor(rawtime/100) + "";		
+			}
+		var sec = Math.floor(rawtime/1000);
+		var min = Math.floor(rawtime/60000);
+		ds = ds.charAt(ds.length - 1);
+		if(min >= 60)
+			{
+			start();
+			}
+		sec = sec - 60 * min + "";
+		if(sec.charAt(sec.length - 2) != "")
+			{
+			sec = sec.charAt(sec.length - 2) + sec.charAt(sec.length - 1);
+			}
+		else
+			{
+			sec = 0 + sec.charAt(sec.length - 1);
+			}	
+		min = min + "";
+		if(min.charAt(min.length - 2) != "")
+			{
+			min = min.charAt(min.length - 2)+min.charAt(min.length - 1);
+			}
+		else
+			{
+			min = 0 + min.charAt(min.length - 1);
+			}
+		return min + ":" + sec + ":" + ds;
+		}
+		
+	function reset()
+		{
+		flagstop = 0;
+		stoptime = 0;
+		splitdate = "";
+		window.clearTimeout(refresh);
+		splitcounter = 0;
+		if(flagclock == 1)
+			{
+			var resetdate = new Date();
+			var resettime = resetdate.getTime();
+			counter(resettime);
+			}
+		else
+			{
+			clock.value = "00:00:0";
+			}
+		}
+		
     function GetVideo(filename)
     {
 		document.getElementById("videobutton").innerHTML = \'<wall:img alt="Header" src="'.$VideoImage.'"/>\';
-        document.getElementById("video").innerHTML = \'<iframe marginwidth="0px" marginheight="0px" width="'.$this->Device->GetScreenWidth().'" height="'.($this->Device->GetScreenWidth() * 0.717).'" src="\' + filename + \'" frameborder="0"></iframe>\';
+        document.getElementById("video").innerHTML = \'<iframe marginwidth="0px" marginheight="0px" width="'.$this->Device->GetScreenWidth().'" height="'.($this->Device->GetScreenWidth() * 0.717).'" src="\' + filename + \'" frameborder="0"><\/iframe>\';
     }
 </script>';
 }
