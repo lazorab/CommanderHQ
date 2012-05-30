@@ -17,6 +17,49 @@ img
 	vertical-align:bottom;	
 }
 
+.benchmark
+{
+	width:70%;
+	margin:4% 0 4% 12%;
+	background-color:#fff;
+	border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+	border: 1px solid #fff;
+}
+
+.benchmark a
+{
+	color:#021937;
+	font-weight:bold;
+}
+
+#bmdescription
+{
+	width:50%;
+	margin:10% 20% 10% 20%;
+	padding:5%;
+	background-color:#fff;
+	border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+	border: 1px solid #fff;	
+	color:#000;
+	font-weight:bold;
+	font-size:medium;
+}
+
+#clock{
+	margin:8% 25% 8% 20%;
+	text-align:center;
+	width:50%;
+	font-size:xx-large;
+	font-weight:bold;
+	border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px;	
+}
+
 .clsFooter
 {
 	background-color: #C2B99A;

@@ -13,16 +13,7 @@ class BenchmarkController extends Controller
 		if(!isset($_SESSION['UID'])){
 			if(isset($_COOKIE['Username']) && isset($_COOKIE['Password']))
 			{
-			
-				$Model = new LoginModel();
-				$UserId = $Model->Login($_COOKIE['Username'], $_COOKIE['Password']);
-				if(!$UserId){
-					header('location: index.php?module=login');	
-				}
-				else{
-					session_start();
-					$_SESSION['UID'] = $UserId;
-				}		
+				header('location: index.php?module=login&redirect=benchmark');			
 			}	
 			else
 				header('location: index.php?module=login');		
@@ -35,6 +26,10 @@ class BenchmarkController extends Controller
 		if(isset($_REQUEST['catid'])){
 			$this->Category = $Model->getCategory($_REQUEST['catid']);
 			$this->BMWS = $Model->getBMWS($_REQUEST);
+		}
+		
+		if($_REQUEST['form'] == 'submitted'){
+			$Success = $Model->Log($_REQUEST);
 		}
 	}
 	
@@ -49,36 +44,36 @@ if(isset($_REQUEST['id']))
 	$Stop = $RENDER->Image('stop.png', $this->Device->GetScreenWidth());
 	$Reset = $RENDER->Image('report.png', $this->Device->GetScreenWidth());
 	$Save = $RENDER->Image('save.png', $this->Device->GetScreenWidth());
+	$html.='<div id="bmdescription">';
+	$html.= $this->Workout->Description;
+	$html.='</div>';
 	$html.='<form name="clockform" action="index.php">
 	<input type="hidden" name="module" value="benchmark"/>
 	<input type="hidden" name="benchmarkId" value="'.$_REQUEST['id'].'"/>
-		<textarea cols="15" rows="5" style="margin:10%;">';
-	$html.= $this->Workout->Description;
-	$html.='</textarea>
-<input id="clock" name="clock" value="00:00:0" style="margin:5%;text-align:center; width:90%; font-size:xx-large; font-weight:bold"/>
+	<input type="hidden" name="form" value="submitted"/>
+<input id="clock" name="clock" value="00:00:0"/>
 </form>	
-<div style="margin:5%; width:90%">
-<img src="'.$Start.'" onclick="start()"/>
-<img src="'.$Stop.'" onclick="stop()"/><br/>
-<img src="'.$Reset.'" onclick="reset()"/>
+<div style="margin:0 30% 0 30%; width:50%">
+<img src="'.$Start.'" onclick="start()"/>&nbsp;&nbsp;
+<img src="'.$Stop.'" onclick="stop()"/><br/><br/>
+<img src="'.$Reset.'" onclick="reset()"/>&nbsp;&nbsp;
 <img src="'.$Save.'" onclick="save()"/>
-</div>
-	';
+</div><br/><br/>';
 }
 else if(isset($_REQUEST['catid']))
 {
 	$Image = $RENDER->Image('BM_Select.png', $this->Device->GetScreenWidth());
 	$explode = explode("_", $Image);
-	$height = $explode[2] + 4;
+	$height = $explode[2];
 	foreach($this->BMWS AS $BMW){ 
 
-		$html.='<div style="width:70%;height:'.$height.'px;margin:4% 0 4% 12%;background-color:#fff;">
-		<div style="width:60%;padding:5%;float:left;font-size:large;background-color:#fff;">
+		$html.='<div class="benchmark" style="height:'.$height.'px;">
+		<div style="width:70%;padding:4%;margin:1%;float:left;font-size:large;background-color:#fff;">
 		<a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'">
 		'.$BMW->Name.'
 		</a>
 		</div>
-		<div style="width:16%;padding:1% 1% 0 1%;background-color:#fff;float:right">
+		<div style="width:15%;margin:0 1% 1% 0;background-color:#fff;float:right">
 		<a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'">
 		<img alt="Header" src="'.$Image.'"/>
 		</a>
@@ -232,7 +227,7 @@ else{
 		
     function GetVideo(filename)
     {
-		document.getElementById("videobutton").innerHTML = \'<wall:img alt="Header" src="'.$VideoImage.'"/>\';
+		document.getElementById("videobutton").innerHTML = \'<wall:img alt="Video" src="'.$VideoImage.'"/>\';
         document.getElementById("video").innerHTML = \'<iframe marginwidth="0px" marginheight="0px" width="'.$this->Device->GetScreenWidth().'" height="'.($this->Device->GetScreenWidth() * 0.717).'" src="\' + filename + \'" frameborder="0"><\/iframe>\';
     }
 </script>';

@@ -73,6 +73,137 @@ class BenchmarkModel extends Model
 		
 		return $Workout;
 	}		
+	
+	function Log($Details)
+	{
+		$Success = false;
+		$BenchmarkId = $Details['benchmarkId'];
+		
+		$Sql = 'SELECT recid FROM Exercises WHERE BenchMarkId = '.$BenchmarkId.'';
+		$Result = mysql_query($Sql);
+		$Row = mysql_fetch_assoc($Result);		
+		$ExerciseId = $Row['recid'];
+		
+		$Sql = 'SELECT ExerciseTypeId FROM SkillsLevel 
+		WHERE ExerciseId = '.$ExerciseId.'';
+		$Result = mysql_query($Sql);
+		$Row = mysql_fetch_assoc($Result);
+		
+		$UID = $Details['UID'];
+		$ExerciseTypeId = $Row['ExerciseTypeId'];
+		$TimeToComplete = $Details['clock'];
+
+		$this->LevelAchieved = $this->ExerciseLevelAchieved();
+		$Fields .= ', LevelAchieved';
+		$Values .= ', "'.$this->LevelAchieved.'"';	
+
+		$Sql = 'INSERT INTO ExerciseLog(MemberId, ExerciseId, ExerciseTypeId, TimeToComplete)
+			VALUES('.$Values.')';
+
+		$Success = mysql_query($Sql);
+
+		$this->OverallLevelAchieved = $this->OverallLevelAchieved();
+
+		$Sql = 'SELECT Gender, Height, SkillLevel FROM MemberDetails WHERE MemberId = '.$this->UID.'';
+		$Result = mysql_query($Sql);
+		$Row = mysql_fetch_assoc($Result);
+		$MemberHeight = $Row['Height'];
+		$this->Gender = $Row['Gender'];
+		//not sure how we gonna use bodyweight yet:
+		if($this->BodyWeight != $Details['bodyweight']){
+			$BMI = round($Details['bodyweight'] / ($MemberHeight * $MemberHeight), 2);
+			$Sql = 'UPDATE MemberDetails SET Weight = "'.$Details['bodyweight'].'", BMI = '.$BMI.' WHERE MemberId = '.$this->UID.'';
+			$Success = mysql_query($Sql);
+		}
+		if($Row['SkillLevel'] < $this->OverallLevelAchieved){
+			$Sql = 'UPDATE MemberDetails SET SkillLevel = '.$this->OverallLevelAchieved.' WHERE MemberId = '.$this->UID.'';
+			$Success = mysql_query($Sql);
+		}	
+		return $Success;
+	}	
+	
+	function ExerciseLevelAchieved()
+	{
+		$Level = 0;
+
+		$Sql = 'SELECT Weight, Height, TimeToComplete, Duration, Reps, Description
+			FROM SkillsLevel4 SL JOIN SkillsLevel SE ON SL.recid = SE.LevelFourId
+			WHERE SE.ExerciseId = '.$this->ExerciseId.' AND (Gender = "U" OR Gender = "'.$this->Gender.'")';
+		$Result = mysql_query($Sql);
+		if(mysql_num_rows($Result) > 0){
+			$Level = $this->Evaluate(mysql_fetch_assoc($Result),4);
+		}
+
+		if($Level == 0){
+			$Sql = 'SELECT Weight, Height, TimeToComplete, Duration, Reps, Description
+				FROM SkillsLevel3 SL JOIN SkillsLevel SE ON SL.recid = SE.LevelThreeId
+				WHERE SE.ExerciseId = '.$this->ExerciseId.' AND (Gender = "U" OR Gender = "'.$this->Gender.'")';
+			$Result = mysql_query($Sql);
+			if(mysql_num_rows($Result) > 0){
+				$Level = $this->Evaluate(mysql_fetch_assoc($Result),3);
+			}
+		}
+
+		if($Level == 0){
+			$Sql = 'SELECT Weight, Height, TimeToComplete, Duration, Reps, Description
+				FROM SkillsLevel2 SL JOIN SkillsLevel SE ON SL.recid = SE.LevelTwoId
+				WHERE SE.ExerciseId = '.$this->ExerciseId.' AND (Gender = "U" OR Gender = "'.$this->Gender.'")';
+			$Result = mysql_query($Sql);
+			if(mysql_num_rows($Result) > 0){
+				$Level = $this->Evaluate(mysql_fetch_assoc($Result),2);
+			}
+		}
+
+		if($Level == 0){
+			$Sql = 'SELECT Weight, Height, TimeToComplete, Duration, Reps, Description
+				FROM SkillsLevel1 SL JOIN SkillsLevel SE ON SL.recid = SE.LevelOneId
+				WHERE SE.ExerciseId = '.$this->ExerciseId.' AND (Gender = "U" OR Gender = "'.$this->Gender.'")';
+			$Result = mysql_query($Sql);
+			if(mysql_num_rows($Result) > 0){
+				$Level = $this->Evaluate(mysql_fetch_assoc($Result),1);
+			}
+		}
+
+		return $Level;
+	}	
+	function Evaluate($Row, $EvalLevel)
+	{
+		if($Row['Weight'] == null || $Row['Weight'] == '' || $Row['Weight'] <= $this->Weight
+		|| $Row['Height'] == null || $Row['Height'] == '' || $Row['Height'] <= $this->Height
+		|| $Row['TimeToComplete'] == null || $Row['TimeToComplete'] == '' || $Row['TimeToComplete'] >= $this->TimeToComplete
+		|| $Row['Duration'] == null || $Row['Duration'] == '' || $Row['Duration'] <= $this->Duration
+		|| $Row['Reps'] == null || $Row['Reps'] == '' || $Row['Reps'] <= $this->Reps)
+			$ReturnLevel = $EvalLevel;
+		else
+			$ReturnLevel = 0;
+		return $ReturnLevel;
+	}
+
+	function OverallLevelAchieved()
+	{
+		$Level = 4;
+		$CompletedExercises = array();
+		$Sql = 'SELECT ExerciseId, MAX(LevelAchieved) FROM ExerciseLog WHERE MemberId = '.$this->UID.' GROUP BY ExerciseId';
+		$Result = mysql_query($Sql);
+		while($Row = mysql_fetch_assoc($Result))
+		{
+			if($Row['LevelAchieved'] < $Level)
+				$Level = $Row['LevelAchieved'];
+			array_push($CompletedExercises,$Row['ExerciseId']);
+		}
+
+		$PendingExercises=array();
+		$AllExercises = $this->getExercises();
+		foreach($AllExercises AS $Exercise)
+		{
+			if(!in_array($Exercise->Id, $CompletedExercises))
+				array_push($PendingExercises,$Exercise->Id);
+		}
+		if(count($PendingExercises) == 0)
+			return $Level;
+		else
+			return 0;
+	}	
 }
 
 class BenchmarkObject

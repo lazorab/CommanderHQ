@@ -6,11 +6,12 @@ class LoginController extends Controller
 	function __construct()
 	{
 		parent::__construct();	
+		$Model = new LoginModel();
+		
 		if($_REQUEST['submit'] == 'Submit')
 		{
-			$Model = new LoginModel();
-			$UserId = $Model->Login($_REQUEST['username'], $_REQUEST['password']);
-			if(!$UserId){
+			$UserId = $Model->Login($_REQUEST['username'], $_REQUEST['password']);	
+				if(!$UserId){
 				$this->Message = 'Invalid Credentials, Please try again.';
 			}
 			else{
@@ -21,8 +22,21 @@ class LoginController extends Controller
 					setcookie("Password", $_REQUEST['password']);
 				}
 				header('location: index.php?module=memberhome');
-			}	
+			}		
 		}
+		else if(isset($_REQUEST['redirect']))
+		{	
+			$UserId = $Model->Login($_COOKIE['Username'], $_COOKIE['Password']);
+			if(!$UserId){
+				$this->Message = 'Invalid Credentials, Please try again.';
+			}
+			else{
+				session_start();
+				$_SESSION['UID'] = $UserId;
+				header('location: index.php?module='.$_REQUEST['redirect'].'');
+			}			
+		}				
+		
 		if($_REQUEST['submit'] == 'Retrieve')
 		{
 			$Model = new LoginModel();

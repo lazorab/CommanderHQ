@@ -37,7 +37,7 @@
 		if (file_exists("includes/menu/$Environment.php")) 
 			include("includes/menu/$Environment.php");
 
-		echo '<div id="canvas" style="background-image:url('.$RENDER->Image('background_slice.png', $request->get_screen_width_new()).');repeat-y">';
+	echo '<div id="canvas" style="background-image:url('.$RENDER->Image('background_slice.png', $request->get_screen_width_new()).');repeat-y">';
 	/*CONTENT*/	
 		if (file_exists("modules/$Module/view/$Environment.php")) 
 			include("modules/$Module/view/$Environment.php");
