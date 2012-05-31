@@ -5,21 +5,21 @@
 </div>
 <div id="content" style="width:70%;float:left;color:#fff">
 <?php echo $Display->Message;?>
-<wall:br/>
-<wall:form action="index.php" method="post">
-<wall:input type="hidden" name="module" value="login"/>
-<wall:input type="hidden" name="formsubmitted" value="yes"/>
-Username<wall:br/>
-<wall:input type="text" name="username"/><wall:br/>
-Password<wall:br/>
-<wall:input type="password" name="password"/><wall:br/><wall:br/>
+<br/>
+<form action="index.php" method="post">
+<input type="hidden" name="module" value="login"/>
+<input type="hidden" name="formsubmitted" value="yes"/>
+Username<br/>
+<input type="text" name="username"/><br/>
+Password<br/>
+<input type="password" name="password"/><br/><br/>
 Remember me
-<wall:input type="checkbox" name="remember" value="yes"/><wall:br/><wall:br/>
-<wall:input type="submit" name="submit" value="Submit"/><wall:br/><wall:br/>
-Forgot Password?<wall:br/>
-Enter your Email<wall:br/>
-<wall:input type="text" name="email"/><wall:br/><wall:br/>
-<wall:input type="submit" name="submit" value="Retrieve"/><wall:br/><wall:br/>
-</wall:form>
+<input type="checkbox" name="remember" value="yes"/><br/><br/>
+<input type="submit" name="submit" value="Submit"/><br/><br/>
+Forgot Password?<br/>
+Enter your Email<br/>
+<input type="text" name="email"/><br/><br/>
+<input type="submit" name="submit" value="Retrieve"/><br/><br/>
+</form>
 </div>
 <div class="clear"></div>

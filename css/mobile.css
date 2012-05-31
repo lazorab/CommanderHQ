@@ -463,7 +463,7 @@ a {
 }
 
 /*main footer*/
-#footer{
+.footer{
 	background-color:#0d3d5f;
 	font-family:Arial, Helvetica, sans-serif;
 	font-size:12px;
@@ -473,18 +473,18 @@ a {
 	text-align:center;
 }
 
-#footer img{
+.footer img{
 	vertical-align:middle;
 }
 
-#FooterIcons{
+.FooterIcons{
 	padding: 2% 0 0 5%;
 	font-size:12px;
 	color:#333;
 	font-weight:bold;	
 }
 
-#FooterIcons img
+.FooterIcons img
 {
 	vertical-align:middle;
 }

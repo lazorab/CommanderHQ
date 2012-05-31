@@ -47,15 +47,17 @@ class BenchmarkModel extends Model
 		return $Row['Category'];
 	}	
 	
-	function GetBMWS($_SEARCH)
+	function GetBMWS($Filter)
 	{
-		$Workouts = array();
 		$SQL = 'SELECT recid, Banner, WorkoutName, WorkoutDescription, VideoId 
-		FROM BenchmarkWorkouts 
-		WHERE CategoryId = '.$_SEARCH['catid'].'
-		AND WorkoutName <> "Baseline"';
-		if(isset($_SEARCH['searchword']))
-			$SQL .= 'WHERE WorkoutName LIKE "'.$_SEARCH['searchword'].'%"';
+		FROM BenchmarkWorkouts WHERE '; 	
+		if(!is_int($Filter)){
+			$SQL .= 'CategoryId = '.$Filter.'';
+		}
+		else{
+			$SQL .= 'WorkoutName LIKE "'.$Filter.'%"';
+		}
+		$Workouts = array();
 		$Result = mysql_query($SQL);	
 		while($Row = mysql_fetch_assoc($Result))
 		{

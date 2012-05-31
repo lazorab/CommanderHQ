@@ -10,21 +10,21 @@ if($_REQUEST['module'] == 'edit' || $_REQUEST['module'] == 'register' || $_REQUE
 else
 	$MenuImage = 'menu';
 if(isset($_SESSION['UID'])){ ?>
-	<a href="?module=edit" id="menuselect"><wall:img alt="Menu" src="<?php echo $RENDER->Image(''.$MenuImage.'.png', $request->get_screen_width_new());?>"/></a>
+	<a href="?module=edit" id="menuselect" data-prefetch><img alt="Menu" src="<?php echo $RENDER->Image(''.$MenuImage.'.png', $request->get_screen_width_new());?>"/></a>
 <?php }else{ ?>
-	<a href="?module=register" id="menuselect"><wall:img alt="Menu" src="<?php echo $RENDER->Image(''.$MenuImage.'.png', $request->get_screen_width_new());?>"/></a>
+	<a href="?module=register" id="menuselect" data-prefetch><img alt="Menu" src="<?php echo $RENDER->Image(''.$MenuImage.'.png', $request->get_screen_width_new());?>"/></a>
 <?php } ?>
 </div>
 <?php
 if(isset($_REQUEST['video']) && $_REQUEST['video'] != ''){ ?>
 <div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 4%;">
-<a id="videobutton" onclick="GetVideo('http://www.youtube.com/embed/<?php echo $_REQUEST['video'];?>')" href="#"><wall:img alt="Video" src="<?php echo $RENDER->Image('video_specific.png', $request->get_screen_width_new());?>"/></a>
+<a id="videobutton" onclick="GetVideo('http://www.youtube.com/embed/<?php echo $_REQUEST['video'];?>')" href="#"><img alt="Video" src="<?php echo $RENDER->Image('video_specific.png', $request->get_screen_width_new());?>"/></a>
 </div>
 <?php } ?>
 
 <?php if(isset($_REQUEST['module']) && ($_REQUEST['module'] != 'memberhome' && $_REQUEST['module'] != 'index')){ ?>
 <div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 4%;">
-	<a href="?module=memberhome" id="menuselect"><wall:img alt="Home" src="<?php echo $RENDER->Image('home.png', $request->get_screen_width_new());?>"/></a>
+	<a class="menuitem" href="?module=memberhome" data-prefetch><img alt="Home" src="<?php echo $RENDER->Image('home.png', $request->get_screen_width_new());?>"/></a>
 </div>	
 <?php }
 
