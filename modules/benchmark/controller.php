@@ -56,6 +56,7 @@ else
 {
 	$Categories = $Model->getCategories();
 	$Header = $RENDER->Image('benchmark.png', $this->Device->GetScreenWidth());
+    $Background = $RENDER->Image('background_slice.png', $this->Device->GetScreenWidth());
 	$Image = $RENDER->Image('BM_Select.png', $this->Device->GetScreenWidth());
 	$explode = explode("_", $Image);
 	$height = $explode[2];
@@ -63,27 +64,28 @@ else
 		<div class="header" data-role="header">
 		<img alt="Header" src="'.$Header.'"/>
 	</div><!-- /header -->
-	<div data-role="content">';
+	<div data-role="content" style="background-image:url('.$Background.');repeat-y">';
 	
 	foreach($Categories AS $Category){ 
 	$bmwhtml.='<div data-role="page" id="Category_'.$Category->Id.'">
 		<div class="header" data-role="header">
 		<img alt="Header" src="'.$Header.'"/>
 	</div><!-- /header -->
-	<div data-role="content">';
+	<div data-role="content" style="background-image:url('.$Background.');repeat-y">';
+
 	//$Model->getCategory($Category->Id);
 	$BMWS = $Model->getBMWS($Category->Id);
-		$Image = $RENDER->Image(''.$Category->Image.'.png', $this->Device->GetScreenWidth());
+		$CatImage = $RENDER->Image(''.$Category->Image.'.png', $this->Device->GetScreenWidth());
 		
-		$categoryhtml.='<a href="#Category_'.$Category->Id.'"><img style="margin:2% 5% 3% 5%" alt="Header" src="'.$Image.'"/></a>';	
+		$categoryhtml.='<a href="#Category_'.$Category->Id.'"><img style="margin:2% 5% 3% 5%" alt="Header" src="'.$CatImage.'"/></a>';	
 		//$html.='<h3><a href="index.php?module=benchmark&catid='.$Category->Id.'&banner='.$Category->Name.'">'.$Category->Name.'</a></h3>';
-	$bmwhtml.='<ul data-role="listview" data-inset="true" data-filter="true">';
+	//$bmwhtml.='<ul data-role="listview" data-inset="true" data-filter="true">';
 	foreach($BMWS AS $BMW){ 
 	
-		$bmwhtml.='<li><a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'">'.$BMW->Name.'</a></li>';
+		//$bmwhtml.='<li><a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'">'.$BMW->Name.'</a></li>';
 	
-	/*
-		$html.='<div class="benchmark" style="height:'.$height.'px;">
+	
+		$bmwhtml.='<div class="benchmark" style="height:'.$height.'px;">
 		<div style="width:70%;padding:4%;margin:1%;float:left;font-size:large;background-color:#fff;">
 		<a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'">
 		'.$BMW->Name.'
@@ -96,11 +98,11 @@ else
 		</div>
 		</div>
 		<div class="clear"></div>';
-		*/
+		
 		//$html.='<h3><a href="index.php?module=benchmark&id='.$BMW->Id.'&banner='.$BMW->Name.'">'.$BMW->Name.'</a></h3>';
 	}
 	//$html.='<br/>';
-	$bmwhtml.='</ul></div><div class="footer" data-role="footer">
+	$bmwhtml.='</div><div class="footer" data-role="footer">
 		Terms &amp; Conditions | About | Contact
 	</div><!-- /footer --></div>';
 	
