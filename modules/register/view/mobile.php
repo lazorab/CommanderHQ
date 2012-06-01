@@ -3,10 +3,10 @@
 	<img alt="Register" src="<?php echo $RENDER->Image('register_active.png', $request->get_screen_width_new());?>"/>
 </div>
 <div class="menuitem" style="margin:5%">	
-	<a href="?module=registergym" data-prefetch><img alt="GymRegister" src="<?php echo $RENDER->Image('registergym.png', $request->get_screen_width_new());?>"/></a>
+	<a href="?module=registergym"><img alt="GymRegister" src="<?php echo $RENDER->Image('registergym.png', $request->get_screen_width_new());?>"/></a>
 </div>
 <div class="menuitem" style="margin:5%">
-	<a href="?module=goals" data-prefetch><img alt="Goals" src="<?php echo $RENDER->Image('goals.png', $request->get_screen_width_new());?>"/></a>
+	<a href="?module=goals"><img alt="Goals" src="<?php echo $RENDER->Image('goals.png', $request->get_screen_width_new());?>"/></a>
 </div>
 </div>
 

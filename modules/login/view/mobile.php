@@ -1,5 +1,5 @@
 <div id="menu" style="width:30%;float:left">
-<div id="menuitem" style="margin:5%">
+<div class="menuitem" style="margin:5%">
 	<img alt="Register" src="<?php echo $RENDER->Image('register.png', $request->get_screen_width_new());?>"/>
 </div>
 </div>

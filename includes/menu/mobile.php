@@ -3,30 +3,38 @@ $ratio = $request->get_screen_width_new() / 500;
 $NavIconSize = floor(58*$ratio);
 ?>
 <div id="nav" style="height:<?php echo floor(106*$ratio);?>px;background-image:url(<?php echo $RENDER->Image('navbar_slice.png', $request->get_screen_width_new());?>);repeat-x">
-<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 10%;">
+
 <?php 
 if($_REQUEST['module'] == 'edit' || $_REQUEST['module'] == 'register' || $_REQUEST['module'] == 'goals')
 	$MenuImage = 'menu_active';
 else
 	$MenuImage = 'menu';
 if(isset($_SESSION['UID'])){ ?>
+<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 10%;">
 	<a href="?module=edit" id="menuselect" data-prefetch><img alt="Menu" src="<?php echo $RENDER->Image(''.$MenuImage.'.png', $request->get_screen_width_new());?>"/></a>
-<?php }else{ ?>
-	<a href="?module=register" id="menuselect" data-prefetch><img alt="Menu" src="<?php echo $RENDER->Image(''.$MenuImage.'.png', $request->get_screen_width_new());?>"/></a>
-<?php } ?>
 </div>
-<?php
-if(isset($_REQUEST['video']) && $_REQUEST['video'] != ''){ ?>
-<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 4%;">
-<a id="videobutton" onclick="GetVideo('http://www.youtube.com/embed/<?php echo $_REQUEST['video'];?>')" href="#"><img alt="Video" src="<?php echo $RENDER->Image('video_specific.png', $request->get_screen_width_new());?>"/></a>
-</div>
-<?php } ?>
-
 <?php if(isset($_REQUEST['module']) && ($_REQUEST['module'] != 'memberhome' && $_REQUEST['module'] != 'index')){ ?>
 <div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 4%;">
 	<a class="menuitem" href="?module=memberhome" data-prefetch><img alt="Home" src="<?php echo $RENDER->Image('home.png', $request->get_screen_width_new());?>"/></a>
 </div>	
-<?php }
+<?php }	
+ }else{ ?>
+<?php if(isset($_REQUEST['module']) && ($_REQUEST['module'] != '' && $_REQUEST['module'] != 'index')){ ?>
+<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 4%;">
+	<a class="menuitem" href="index.php" data-prefetch><img alt="Home" src="<?php echo $RENDER->Image('home.png', $request->get_screen_width_new());?>"/></a>
+</div>	
+<?php } ?>
+<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 4%;">
+	<a href="?module=register" id="menuselect" data-prefetch><img alt="Menu" src="<?php echo $RENDER->Image(''.$MenuImage.'.png', $request->get_screen_width_new());?>"/></a>
+</div>	
+<?php } 
+if(isset($_REQUEST['video']) && $_REQUEST['video'] != ''){ ?>
+<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 4%;">
+	<img id="videobutton" onclick="GetVideo('http://www.youtube.com/embed/<?php echo $_REQUEST['video'];?>')" alt="Video" src="<?php echo $RENDER->Image('video_specific.png', $request->get_screen_width_new());?>"/>
+</div>
+<?php } 
+
+
 
 /*
 if(isset($_SESSION['UID'])){ ?>

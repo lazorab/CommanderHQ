@@ -17,7 +17,17 @@ class BenchmarkController extends Controller
 			}	
 			else
 				header('location: index.php?module=login');		
-		}	
+		}
+		$Model = new BenchmarkModel;
+		if(isset($_REQUEST['id']))
+			$this->Workout = $Model->getWorkoutDetails($_REQUEST['id']);
+		
+		$this->Categories = $Model->getCategories();
+		if(isset($_REQUEST['catid'])){
+			$this->Category = $Model->getCategory($_REQUEST['catid']);
+			$this->BMWS = $Model->getBMWS($_REQUEST['catid']);
+		}
+		
 		if($_REQUEST['form'] == 'submitted'){
 			$Success = $Model->Log($_REQUEST);
 		}
@@ -25,13 +35,11 @@ class BenchmarkController extends Controller
 	
 	function html()
 	{
-	$Model = new BenchmarkModel;
 	$RENDER = new Image(SITE_ID);
 		$html='<br/>';
 		
 if(isset($_REQUEST['id']))
 {
-	$this->Workout = $Model->getWorkoutDetails($_REQUEST['id']);
 	$Start = $RENDER->Image('start.png', $this->Device->GetScreenWidth());
 	$Stop = $RENDER->Image('stop.png', $this->Device->GetScreenWidth());
 	$Reset = $RENDER->Image('report.png', $this->Device->GetScreenWidth());
@@ -46,53 +54,27 @@ if(isset($_REQUEST['id']))
 <input id="clock" name="clock" value="00:00:0"/>
 </form>	
 <div style="margin:0 30% 0 30%; width:50%">
-<img src="'.$Start.'" onclick="start()"/>&nbsp;&nbsp;
-<img src="'.$Stop.'" onclick="stop()"/><br/><br/>
-<img src="'.$Reset.'" onclick="reset()"/>&nbsp;&nbsp;
-<img src="'.$Save.'" onclick="save()"/>
+<img alt="Start" src="'.$Start.'" onclick="start()"/>&nbsp;&nbsp;
+<img alt="Stop" src="'.$Stop.'" onclick="stop()"/><br/><br/>
+<img alt="Reset" src="'.$Reset.'" onclick="reset()"/>&nbsp;&nbsp;
+<img alt="Save" src="'.$Save.'" onclick="save()"/>
 </div><br/><br/>';
 }
-else
+else if(isset($_REQUEST['catid']))
 {
-	$Categories = $Model->getCategories();
-	$Header = $RENDER->Image('benchmark.png', $this->Device->GetScreenWidth());
-    $Background = $RENDER->Image('background_slice.png', $this->Device->GetScreenWidth());
 	$Image = $RENDER->Image('BM_Select.png', $this->Device->GetScreenWidth());
 	$explode = explode("_", $Image);
 	$height = $explode[2];
-	$categoryhtml.='<div data-role="page" id="categories">
-		<div class="header" data-role="header">
-		<img alt="Header" src="'.$Header.'"/>
-	</div><!-- /header -->
-	<div data-role="content" style="background-image:url('.$Background.');repeat-y">';
-	
-	foreach($Categories AS $Category){ 
-	$bmwhtml.='<div data-role="page" id="Category_'.$Category->Id.'">
-		<div class="header" data-role="header">
-		<img alt="Header" src="'.$Header.'"/>
-	</div><!-- /header -->
-	<div data-role="content" style="background-image:url('.$Background.');repeat-y">';
+	foreach($this->BMWS AS $BMW){ 
 
-	//$Model->getCategory($Category->Id);
-	$BMWS = $Model->getBMWS($Category->Id);
-		$CatImage = $RENDER->Image(''.$Category->Image.'.png', $this->Device->GetScreenWidth());
-		
-		$categoryhtml.='<a href="#Category_'.$Category->Id.'"><img style="margin:2% 5% 3% 5%" alt="Header" src="'.$CatImage.'"/></a>';	
-		//$html.='<h3><a href="index.php?module=benchmark&catid='.$Category->Id.'&banner='.$Category->Name.'">'.$Category->Name.'</a></h3>';
-	//$bmwhtml.='<ul data-role="listview" data-inset="true" data-filter="true">';
-	foreach($BMWS AS $BMW){ 
-	
-		//$bmwhtml.='<li><a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'">'.$BMW->Name.'</a></li>';
-	
-	
-		$bmwhtml.='<div class="benchmark" style="height:'.$height.'px;">
+		$html.='<div class="benchmark" style="height:'.$height.'px;">
 		<div style="width:70%;padding:4%;margin:1%;float:left;font-size:large;background-color:#fff;">
-		<a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'">
+		<a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'" data-transition="slide">
 		'.$BMW->Name.'
 		</a>
 		</div>
 		<div style="width:15%;margin:0 1% 1% 0;background-color:#fff;float:right">
-		<a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'">
+		<a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'" data-transition="slide">
 		<img alt="Header" src="'.$Image.'"/>
 		</a>
 		</div>
@@ -101,18 +83,21 @@ else
 		
 		//$html.='<h3><a href="index.php?module=benchmark&id='.$BMW->Id.'&banner='.$BMW->Name.'">'.$BMW->Name.'</a></h3>';
 	}
-	//$html.='<br/>';
-	$bmwhtml.='</div><div class="footer" data-role="footer">
-		Terms &amp; Conditions | About | Contact
-	</div><!-- /footer --></div>';
-	
-	}
-	$html=''.$categoryhtml.'</div><div class="footer" data-role="footer">
-		Terms &amp; Conditions | About | Contact
-	</div><!-- /footer --></div>'.$bmwhtml.'';
+	$html.='<br/>';
 }
-	
+else
+{
+	foreach($this->Categories AS $Category){ 
+		$Image = $RENDER->Image(''.$Category->Image.'.png', $this->Device->GetScreenWidth());
+		$html.='<div>
+		<a href="index.php?module=benchmark&catid='.$Category->Id.'&banner='.$Category->Banner.'" data-transition="slide">
+		<img style="margin:2% 5% 3% 5%" alt="Header" src="'.$Image.'"/>
+		</a>
+		</div>';	
+		//$html.='<h3><a href="index.php?module=benchmark&catid='.$Category->Id.'&banner='.$Category->Name.'">'.$Category->Name.'</a></h3>';
+	}
+}	
 return $html;
-	}	
+	}
 }
 ?>

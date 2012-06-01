@@ -53,14 +53,6 @@ class LoginController extends Controller
 					$this->Message = 'You have been sent an email';
 			}
 		}
-	}
-	
-	function CustomHeader()
-	{
-		$CustomHeader='';
-		
-		return $CustomHeader;
-	}
-	
+	}	
 }
 ?>
