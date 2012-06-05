@@ -18,8 +18,8 @@ class LoginController extends Controller
 				session_start();
 				$_SESSION['UID'] = $UserId;
 				if($_REQUEST['remember'] == 'yes'){
-					setcookie("Username", $_REQUEST['username']);
-					setcookie("Password", $_REQUEST['password']);
+					setcookie("Username", $_REQUEST['username'],time() + (20 * 365 * 24 * 60 * 60));
+					setcookie("Password", $_REQUEST['password'],time() + (20 * 365 * 24 * 60 * 60));
 				}
 				header('location: index.php?module=memberhome');
 			}		

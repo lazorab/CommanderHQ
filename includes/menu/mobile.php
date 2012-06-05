@@ -5,13 +5,9 @@ $NavIconSize = floor(58*$ratio);
 <div id="nav" style="height:<?php echo floor(106*$ratio);?>px;background-image:url(<?php echo $RENDER->Image('navbar_slice.png', $request->get_screen_width_new());?>);repeat-x">
 
 <?php 
-if($_REQUEST['module'] == 'edit' || $_REQUEST['module'] == 'register' || $_REQUEST['module'] == 'goals')
-	$MenuImage = 'menu_active';
-else
-	$MenuImage = 'menu';
 if(isset($_SESSION['UID'])){ ?>
 <div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 10%;">
-	<a href="?module=edit" id="menuselect" data-prefetch><img alt="Menu" src="<?php echo $RENDER->Image(''.$MenuImage.'.png', $request->get_screen_width_new());?>"/></a>
+	<img onclick="MenuAction();" id="menuselect" alt="Menu" src="<?php echo $RENDER->Image('menu.png', $request->get_screen_width_new());?>"/>
 </div>
 <?php if(isset($_REQUEST['module']) && ($_REQUEST['module'] != 'memberhome' && $_REQUEST['module'] != 'index')){ ?>
 <div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 4%;">
@@ -25,7 +21,7 @@ if(isset($_SESSION['UID'])){ ?>
 </div>	
 <?php } ?>
 <div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 4%;">
-	<a href="?module=register" id="menuselect" data-prefetch><img alt="Menu" src="<?php echo $RENDER->Image(''.$MenuImage.'.png', $request->get_screen_width_new());?>"/></a>
+	<img onclick="MenuAction();" id="menuselect" alt="Menu" src="<?php echo $RENDER->Image('menu.png', $request->get_screen_width_new());?>"/>
 </div>	
 <?php } 
 if(isset($_REQUEST['video']) && $_REQUEST['video'] != ''){ ?>
@@ -62,3 +58,4 @@ if(isset($_SESSION['UID'])){ ?>
 
 <?php } */?>
 </div>
+<div class="clear"></div>
