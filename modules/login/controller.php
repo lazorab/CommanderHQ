@@ -8,36 +8,25 @@ class LoginController extends Controller
 		parent::__construct();	
 		$Model = new LoginModel();
 		
-		if($_REQUEST['submit'] == 'Submit')
+		if($_REQUEST['action'] == 'Login')
 		{
 			$UserId = $Model->Login($_REQUEST['username'], $_REQUEST['password']);	
-				if(!$UserId){
-				$this->Message = 'Invalid Credentials, Please try again.';
-			}
-			else{
-				session_start();
-				$_SESSION['UID'] = $UserId;
-				if($_REQUEST['remember'] == 'yes'){
-					setcookie("Username", $_REQUEST['username'],time() + (20 * 365 * 24 * 60 * 60));
-					setcookie("Password", $_REQUEST['password'],time() + (20 * 365 * 24 * 60 * 60));
-				}
-				header('location: index.php?module=memberhome');
-			}		
-		}
-		else if(isset($_REQUEST['redirect']))
-		{	
-			$UserId = $Model->Login($_COOKIE['Username'], $_COOKIE['Password']);
 			if(!$UserId){
 				$this->Message = 'Invalid Credentials, Please try again.';
 			}
 			else{
+				if($_REQUEST['remember'] == 'yes'){
+					setcookie("CommanderUsername", $_REQUEST['username'], time() + (20 * 365 * 24 * 60 * 60), '/', 'crossfit.be-mobile.co.za', false, false);
+					setcookie("CommanderPassword", $_REQUEST['password'], time() + (20 * 365 * 24 * 60 * 60), '/', 'crossfit.be-mobile.co.za', false, false);
+				}			
 				session_start();
 				$_SESSION['UID'] = $UserId;
-				header('location: index.php?module='.$_REQUEST['redirect'].'');
-			}			
+
+				header('location: index.php?module=memberhome');
+			}		
 		}				
 		
-		if($_REQUEST['submit'] == 'Retrieve')
+		else if($_REQUEST['action'] == 'Retrieve')
 		{
 			$Model = new LoginModel();
 			if($_REQUEST['username'] == '')

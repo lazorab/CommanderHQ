@@ -20,4 +20,5 @@ require_once('./library/asset.class.php');
 require_once('./library/dropdownmenu.class.php');
 
 require_once('const.php');
+require_once('authenticate.php');
 ?>

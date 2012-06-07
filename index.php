@@ -1,13 +1,10 @@
 <?php
 	require_once("includes/includes.php");
-	  session_start();
+	session_start();
 	
-  $device = new DeviceManager();
-  $htmlOutput = new HTML5CoreManager();	
+	$device = new DeviceManager();
+	$htmlOutput = new HTML5CoreManager();	
 	$request = new BRequest();
-	//If a cookie has been set we can set the session id to the user id
-	if($request->cookie['BeMobileUserId_'.$request->get_site_id()] != '')
-		$request->session['membermember_id'] = $request->cookie['BeMobileUserId_'.$request->get_site_id()];
 		
 	global $RENDER;
 	$RENDER = new Image(SITE_ID);	

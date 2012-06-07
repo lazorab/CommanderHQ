@@ -21,13 +21,7 @@ define("DB_CUSTOM_DATABASE", "bemobile_CrossFit");
 define('GLOBAL_PAGES', '../../global/pages/');
 
 /* Asset URL */
-$handset = new DeviceManager;
-if($handset->IsSmartPhone()){
-	define('SMARTPHONE', true);
-}
-else{
-	define('SMARTPHONE', false);	
-}
+
 define('ASSET_URL', 'http://www.be-mobile.co.za/framework/img.php?account_id=5&amp;disp=1&amp;meta=~~meta~~&amp;site_width=');
 
 define('ASSET_API_URL', 'http://asset.be-mobile.co.za/api/');

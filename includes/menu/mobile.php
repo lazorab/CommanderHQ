@@ -7,7 +7,7 @@ $NavIconSize = floor(58*$ratio);
 <?php 
 if(isset($_SESSION['UID'])){ ?>
 <div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 10%;">
-	<img onclick="MenuAction();" id="menuselect" alt="Menu" src="<?php echo $RENDER->Image('menu.png', $request->get_screen_width_new());?>"/>
+	<img onclick="getMenu();" id="menuselect" alt="Menu" src="<?php echo $RENDER->Image('menu.png', $request->get_screen_width_new());?>"/>
 </div>
 <?php if(isset($_REQUEST['module']) && ($_REQUEST['module'] != 'memberhome' && $_REQUEST['module'] != 'index')){ ?>
 <div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 4%;">
@@ -21,7 +21,7 @@ if(isset($_SESSION['UID'])){ ?>
 </div>	
 <?php } ?>
 <div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:4% 0 4% 4%;">
-	<img onclick="MenuAction();" id="menuselect" alt="Menu" src="<?php echo $RENDER->Image('menu.png', $request->get_screen_width_new());?>"/>
+	<img onclick="getMenu();" id="menuselect" alt="Menu" src="<?php echo $RENDER->Image('menu.png', $request->get_screen_width_new());?>"/>
 </div>	
 <?php } 
 if(isset($_REQUEST['video']) && $_REQUEST['video'] != ''){ ?>

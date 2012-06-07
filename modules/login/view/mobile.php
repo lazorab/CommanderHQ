@@ -15,11 +15,11 @@ Password<br/>
 <input type="password" name="password"/><br/><br/>
 Remember me
 <input type="checkbox" name="remember" value="yes"/><br/><br/>
-<input type="submit" name="submit" value="Submit"/><br/><br/>
+<input type="submit" name="action" value="Login"/><br/><br/>
 Forgot Password?<br/>
 Enter your Email<br/>
 <input type="text" name="email"/><br/><br/>
-<input type="submit" name="submit" value="Retrieve"/><br/><br/>
+<input type="submit" name="action" value="Retrieve"/><br/><br/>
 </form>
 </div>
 <div class="clear"></div>
