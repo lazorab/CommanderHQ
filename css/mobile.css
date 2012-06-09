@@ -14,11 +14,35 @@ body {
 {
 }
 
+#video
+{
+	display:none;
+}
+
+#video.active
+{
+	display:block;
+}
+
 img
 {
 	border: none;
 	margin: 0; padding: 0; border: 0;
 	vertical-align:bottom;	
+}
+
+select
+{
+	border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+}
+
+input
+{
+	border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
 }
 
 .benchmark

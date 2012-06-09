@@ -7,8 +7,11 @@ class LoginController extends Controller
 	{
 		parent::__construct();	
 		$Model = new LoginModel();
-		
-		if($_REQUEST['action'] == 'Login')
+		session_start();
+		if(isset($_SESSION['UID'])){
+			header('location: index.php?module=memberhome');	
+		}
+		else if($_REQUEST['action'] == 'Login')
 		{
 			$UserId = $Model->Login($_REQUEST['username'], $_REQUEST['password']);	
 			if(!$UserId){
@@ -19,7 +22,6 @@ class LoginController extends Controller
 					setcookie("CommanderUsername", $_REQUEST['username'], time() + (20 * 365 * 24 * 60 * 60), '/', 'crossfit.be-mobile.co.za', false, false);
 					setcookie("CommanderPassword", $_REQUEST['password'], time() + (20 * 365 * 24 * 60 * 60), '/', 'crossfit.be-mobile.co.za', false, false);
 				}			
-				session_start();
 				$_SESSION['UID'] = $UserId;
 
 				header('location: index.php?module=memberhome');

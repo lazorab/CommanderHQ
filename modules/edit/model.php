@@ -51,9 +51,7 @@ class EditModel extends Model
 				FirstName = '".$Details->FirstName."',
 				LastName = '".$Details->LastName."',
 				Cell = '".$Details->Cell."',
-				Email = '".$Details->Email."',
-				UserName = '".$Details->UserName."',
-				PassWord = '".$Details->PassWord."'
+				Email = '".$Details->Email."'
 				WHERE UserId = ".$Details->UserId."";
 
 			mysql_query($sql);
@@ -71,7 +69,7 @@ class EditModel extends Model
 			$BMI = floor($Weight / ($HeightInMeters * $HeightInMeters));
 			
 			$sql="UPDATE MemberDetails SET 
-				DOB = '".$Details->Year."-".$Details->Month."-".$Details->Day."',
+				DOB = '".$Details->DOB."',
 				Weight = '".$Weight."',
 				Height = '".$Height."',
 				SystemOfMeasure = '".$Details->SystemOfMeasure."',
@@ -80,88 +78,6 @@ class EditModel extends Model
 				WHERE MemberId = ".$Details->UserId."";
 
 			mysql_query($sql);				
-	}
-	
-	function DayOptions($SelectedValue='')
-	{
-		$Options = '<'.$this->Wall.'option value="">Day</'.$this->Wall.'option>';
-		for($i=1;$i<32;$i++)
-		{
-			$Options .= '<'.$this->Wall.'option value="'.$i.'"';
-			if($SelectedValue == $i)
-				$Options .=' selected="selected"';
-			$Options .='>'.$i.'</'.$this->Wall.'option>';
-		}
-
-		return $Options;
-	}
-	
-	function MonthOptions($SelectedValue='')
-	{
-		$Options = '<'.$this->Wall.'option value="">Month</'.$this->Wall.'option>';
-		$Options .= '<'.$this->Wall.'option value="01"';
-		if($SelectedValue == "01")
-			$Options .=' selected="selected"';		
-		$Options .= '>January</'.$this->Wall.'option>';
-		$Options .= '<'.$this->Wall.'option value="02"';
-		if($SelectedValue == "02")
-			$Options .=' selected="selected"';		
-		$Options .= '>February</'.$this->Wall.'option>';
-		$Options .= '<'.$this->Wall.'option value="03"';
-		if($SelectedValue == "03")
-			$Options .=' selected="selected"';		
-		$Options .= '>March</'.$this->Wall.'option>';
-		$Options .= '<'.$this->Wall.'option value="04"';
-		if($SelectedValue == "04")
-			$Options .=' selected="selected"';		
-		$Options .= '>April</'.$this->Wall.'option>';
-		$Options .= '<'.$this->Wall.'option value="05"';
-		if($SelectedValue == "05")
-			$Options .=' selected="selected"';		
-		$Options .= '>May</'.$this->Wall.'option>';
-		$Options .= '<'.$this->Wall.'option value="06"';
-		if($SelectedValue == "06")
-			$Options .=' selected="selected"';		
-		$Options .= '>June</'.$this->Wall.'option>';
-		$Options .= '<'.$this->Wall.'option value="07"';
-		if($SelectedValue == "07")
-			$Options .=' selected="selected"';		
-		$Options .= '>July</'.$this->Wall.'option>';
-		$Options .= '<'.$this->Wall.'option value="08"';
-		if($SelectedValue == "08")
-			$Options .=' selected="selected"';		
-		$Options .= '>August</'.$this->Wall.'option>';
-		$Options .= '<'.$this->Wall.'option value="09"';
-		if($SelectedValue == "09")
-			$Options .=' selected="selected"';		
-		$Options .= '>September</'.$this->Wall.'option>';
-		$Options .= '<'.$this->Wall.'option value="10"';
-		if($SelectedValue == "10")
-			$Options .=' selected="selected"';	
-		$Options .= '>October</'.$this->Wall.'option>';
-		$Options .= '<'.$this->Wall.'option value="11"';
-		if($SelectedValue == "11")
-			$Options .=' selected="selected"';		
-		$Options .= '>November</'.$this->Wall.'option>';
-		$Options .= '<'.$this->Wall.'option value="12"';
-		if($SelectedValue == "12")
-			$Options .=' selected="selected"';		
-		$Options .= '>December</'.$this->Wall.'option>';
-
-		return $Options;
-	}
-
-	function YearOptions($SelectedValue='')
-	{
-		$Options = '<'.$this->Wall.'option value="">Year</'.$this->Wall.'option>';
-		for($i=1940;$i<2012;$i++)
-		{
-			$Options .= '<'.$this->Wall.'option value="'.$i.'"';
-			if($SelectedValue == $i)
-				$Options .=' selected="selected"';
-			$Options .='>'.$i.'</'.$this->Wall.'option>';
-		}
-		return $Options;
 	}	
 }
 
@@ -176,9 +92,7 @@ class MemberObject
 	var $PassWord;
 	var $SkillLevel;
 	var $Gender;
-	var $Year;
-	var $Month;
-	var $Day;
+	var $DOB;
 	var $Weight;
 	var $Height;
 	var $SystemOfMeasure;
@@ -197,18 +111,8 @@ class MemberObject
 		$this->PassWord = $Row['PassWord'];
 		$this->SkillLevel = $Row['SkillLevel'];
 		$this->Gender = $Row['Gender'];
-	
-		if(isset($Row['DOB'])){
-			$DOB = explode("-",$Row['DOB']);
-			$this->Year = $DOB[0];
-			$this->Month = $DOB[1];
-			$this->Day = $DOB[2];
-		}
-		else{
-			$this->Year = $Row['Year'];
-			$this->Month = $Row['Month'];
-			$this->Day = $Row['Day'];
-		}
+		$this->DOB = $Row['DOB'];
+
 		$this->SystemOfMeasure = $Row['SystemOfMeasure'];
 		if(isset($Row['system']) && $Row['system'] != $Row['SystemOfMeasure']){	
 			if($Row['system'] == 'Imperial'){

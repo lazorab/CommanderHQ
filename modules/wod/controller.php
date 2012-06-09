@@ -10,7 +10,6 @@ class WodController extends Controller
 				header('location: index.php?module=login');	
 			}else{
 				$this->Save();
-				header('location: index.php?module=wod');
 			}
 	}
 	

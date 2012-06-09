@@ -1,10 +1,22 @@
+#menu
+{
+	display:none;
+	float:left;
+	color:#fff;
+	background-color:#091f40
+}
+
+#menu.active
+{
+	display:block;
+}
+
 div.sc_menu_wrapper {
 	position: relative; 	
 	height: 500px;
 	/* Make bigger than a photo, because we need a place for a scrollbar. */
-	width: 160px;
+	width: 100%;
 	
-	margin-top: 30px;
 	overflow: auto;
 }
 div.sc_menu {

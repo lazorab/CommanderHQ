@@ -45,16 +45,8 @@ class EditController extends Controller
 		$this->Message = 'Cell number invalid!';
 	elseif($_REQUEST['Email'] != '' && !$Validate->CheckEmailAddress($_REQUEST['Email']))
 		$this->Message = 'Email Address invalid!';
-	elseif($_REQUEST['UserName'] == '')
-		$this->Message = 'Username Required';		
-	elseif($_REQUEST['PassWord'] == '')
-		$this->Message = 'Password Required';
-	elseif($_REQUEST['Day'] == '')
-		$this->Message = 'Invalid Date of Birth';		
-	elseif($_REQUEST['Month'] == '')
-		$this->Message = 'Invalid Date of Birth';
-	elseif($_REQUEST['Year'] == '')
-		$this->Message = 'Invalid Date of Birth';		
+	elseif($_REQUEST['DOB'] == '')
+		$this->Message = 'Invalid Date of Birth';				
 	elseif($_REQUEST['Weight'] == '')
 		$this->Message = 'Weight Required';
 	elseif($_REQUEST['Height'] == '')

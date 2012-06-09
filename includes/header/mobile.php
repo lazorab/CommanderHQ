@@ -15,19 +15,31 @@
 <link href="css/mobiscroll-2.0.custom.min.css" rel="stylesheet" type="text/css" />
 <?php echo utility::mobile_stylesheet($request->get_screen_width_new(), 'css/mobile.css');?>
 <script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
-<script type="text/javascript" src="/js/jquery.mobile-1.1.0.min.js"></script>
+
 <script type="text/javascript" src="/js/jquery.easing.1.3.js"></script>
 <script type="text/javascript" src="/js/jquery.color.js"></script>
 <script type="text/javascript" src="/js/stopwatch.js"></script>
 <script type="text/javascript" src="/js/mobiscroll-2.0.custom.min.js"></script>
 <script type="text/javascript" src="http://www.be-mobile.co.za/framework/js/device.js"></script>
 <script type="text/javascript">
+$(document).ready(function() {
+	//Trigger menu drop down
+	$("img#menuselect").bind('click', function(){
+		//Set vars
+		var $MenuTrigger = $('img#menuselect');
+		var $Menu = $('#menu');
 
-    function GetVideo(filename)
-    {
-		document.getElementById("videobutton").src = '<?php echo $RENDER->Image('video_specific_active.png', $device->GetScreenWidth());?>';
-        document.getElementById("video").innerHTML = '<iframe marginwidth="0px" marginheight="0px" width="<?php echo $device->GetScreenWidth();?>" height="<?php echo floor($device->GetScreenWidth() * 0.717);?>" src="' + filename + '" frameborder="0"><\/iframe>';
-    }
+		//If visible hide else show
+		if($Menu.hasClass('active')) {
+	    	$MenuTrigger.attr("src", '<?php echo $RENDER->Image('menu.png', $request->get_screen_width_new());?>');
+	    	$Menu.removeClass('active');
+		} else {
+	    	$MenuTrigger.attr("src",'<?php echo $RENDER->Image('menu_active.png', $request->get_screen_width_new());?>');
+	    	$Menu.addClass('active');
+			//makeScrollable("div.sc_menu_wrapper", "div.sc_menu");
+	    }
+	});
+});	
 
 function makeScrollable(wrapper, scrollable){
 	// Get jQuery elements
@@ -89,30 +101,6 @@ function makeScrollable(wrapper, scrollable){
 		});		
 	}
 }
-
-function getMenu()
-{
-	var menu = '<div class="sc_menu_wrapper">';
-	menu += '<div class="sc_menu">';
-menu += 'Personal';
-menu += '<a href="?module=register">Register</a>';
-menu += '<a href="?module=goals">Goals</a>';
-menu += '<a href="#">Converter</a>';
-menu += '<a onclick="clearMenu();" href="?module=edit">Profile</a>';
-menu += 'Workouts';
-menu += '<a href="?module=wod">WOD</a>';
-menu += '<a href="?module=benchmark">Benchmark</a>';
-menu += '<a href="?module=baseline">Baseline</a>';
-menu += '<a href="#">Challenge</a>';
-menu += '</div>';
-menu += '</div>';
-	//$('#canvas').inner = menu;
-	document.getElementById("menu").innerHTML = menu;
-	
-makeScrollable("div.sc_menu_wrapper", "div.sc_menu");
-
-}
-
 </script>
 </head>
 <?php echo $htmlOutput->GetOpenBodyTag();?>

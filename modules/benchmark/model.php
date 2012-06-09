@@ -74,9 +74,15 @@ class BenchmarkModel extends Model
 		$Workout = new BenchmarkObject($Row);
 		
 		return $Workout;
-	}		
+	}	
+
+	function Log()
+	{
+		$SQL = 'INSERT INTO BenchmarkLog(MemberId, BenchmarkId, TimeToComplete) VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$_REQUEST['clock'].'")';
+		mysql_query($SQL);	
+	}	
 	
-	function Log($Details)
+	function Log2($Details)
 	{
 		$Success = false;
 		$BenchmarkId = $Details['benchmarkId'];

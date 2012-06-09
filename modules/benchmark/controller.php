@@ -10,14 +10,12 @@ class BenchmarkController extends Controller
 	{
 		parent::__construct();
 		session_start();
-		if(!isset($_SESSION['UID'])){
-			if(isset($_COOKIE['Username']) && isset($_COOKIE['Password']))
-			{
-				header('location: index.php?module=login&redirect=benchmark');			
-			}	
-			else
-				header('location: index.php?module=login');		
-		}
+		if($_REQUEST['action'] == 'save')
+			if(!isset($_SESSION['UID'])){
+				header('location: index.php?module=login');	
+			}else{
+				$this->Save();
+			}
 		$Model = new BenchmarkModel;
 		if(isset($_REQUEST['id']))
 			$this->Workout = $Model->getWorkoutDetails($_REQUEST['id']);
@@ -33,7 +31,13 @@ class BenchmarkController extends Controller
 		}
 	}
 	
-	function html()
+	function Save()
+	{
+		$Model = new BenchmarkModel;
+		$Benchmark = $Model->Log();
+	}	
+	
+	function Output()
 	{
 	$RENDER = new Image(SITE_ID);
 		$html='<br/>';
@@ -50,7 +54,7 @@ if(isset($_REQUEST['id']))
 	$html.='<form name="clockform" action="index.php">
 	<input type="hidden" name="module" value="benchmark"/>
 	<input type="hidden" name="benchmarkId" value="'.$_REQUEST['id'].'"/>
-	<input type="hidden" name="form" value="submitted"/>
+		<input type="hidden" name="action" value="save"/>
 <input id="clock" name="clock" value="00:00:0"/>
 </form>	
 <div style="margin:0 30% 0 30%; width:50%">
@@ -69,12 +73,12 @@ else if(isset($_REQUEST['catid']))
 
 		$html.='<div class="benchmark" style="height:'.$height.'px;">
 		<div style="width:70%;padding:4%;margin:1%;float:left;font-size:large;background-color:#fff;">
-		<a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'" data-transition="slide">
+		<a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'"">
 		'.$BMW->Name.'
 		</a>
 		</div>
 		<div style="width:15%;margin:0 1% 1% 0;background-color:#fff;float:right">
-		<a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'" data-transition="slide">
+		<a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'"">
 		<img alt="Header" src="'.$Image.'"/>
 		</a>
 		</div>
@@ -90,7 +94,7 @@ else
 	foreach($this->Categories AS $Category){ 
 		$Image = $RENDER->Image(''.$Category->Image.'.png', $this->Device->GetScreenWidth());
 		$html.='<div>
-		<a href="index.php?module=benchmark&catid='.$Category->Id.'&banner='.$Category->Banner.'" data-transition="slide">
+		<a href="index.php?module=benchmark&catid='.$Category->Id.'&banner='.$Category->Banner.'">
 		<img style="margin:2% 5% 3% 5%" alt="Header" src="'.$Image.'"/>
 		</a>
 		</div>';	

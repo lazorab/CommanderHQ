@@ -33,12 +33,35 @@
 	/*MENU*/	
 		if (file_exists("includes/menu/$Environment.php")) 
 			include("includes/menu/$Environment.php");
-		echo '<div id="menu"></div>';
-	echo '<div id="canvas" style="background-image:url('.$RENDER->Image('background_slice.png', $request->get_screen_width_new()).');repeat-y">';
+?>
+		
+	<div id="canvas" style="width:100%;float:left;color:#fff;background-color:#091f40">
+	<div id="menu">
+<div class="sc_menu_wrapper">
+	<div class="sc_menu">
+		Personal
+		<a href="?module=register"><img alt="Register" src="<?php echo $RENDER->Image('register_active.png', $request->get_screen_width_new());?>"/></a>
+		<a href="?module=goals"><img alt="Goals" src="<?php echo $RENDER->Image('goals.png', $request->get_screen_width_new());?>"/></a>
+		<a href="#">Converter</a>
+		<a href="?module=edit">Profile</a>
+		Workouts
+		<a href="?module=wod">WOD</a>
+		<a href="?module=benchmark">Benchmark</a>
+		<a href="?module=baseline">Baseline</a>
+		<a href="#">Challenge</a>
+	</div>
+</div>
+</div>		
+	<div id="content" style="float:left;color:#fff;background-color:#091f40">
+<?php
 	/*CONTENT*/	
 		if (file_exists("modules/$Module/view/$Environment.php")) 
 			include("modules/$Module/view/$Environment.php");
-	echo '</div>';
+?>
+	</div>
+	</div>
+	<div class="clear"></div>
+<?php		
 	/*FOOTER*/
 		if (file_exists("includes/footer/$Environment.php")) 
 			include("includes/footer/$Environment.php");
