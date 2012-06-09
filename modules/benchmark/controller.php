@@ -44,10 +44,15 @@ class BenchmarkController extends Controller
 		
 if(isset($_REQUEST['id']))
 {
-	$Start = $RENDER->Image('start.png', $this->Device->GetScreenWidth());
+	$Start = $RENDER->Image('start.png', SCREENWIDTH);
 	$Stop = $RENDER->Image('stop.png', $this->Device->GetScreenWidth());
 	$Reset = $RENDER->Image('report.png', $this->Device->GetScreenWidth());
 	$Save = $RENDER->Image('save.png', $this->Device->GetScreenWidth());
+    $Height = floor($this->Device->GetScreenWidth() * 0.717);
+	$html.='<div id="video">
+    <iframe marginwidth="0px" marginheight="0px" width="'.$this->Device->GetScreenWidth().'" height="'.$Height.'" src="http://www.youtube.com/embed/'.$this->Workout->Video.'" frameborder="0">
+    </iframe>    
+	</div>';    
 	$html.='<div id="bmdescription">';
 	$html.= $this->Workout->Description;
 	$html.='</div>';
@@ -72,16 +77,16 @@ else if(isset($_REQUEST['catid']))
 	foreach($this->BMWS AS $BMW){ 
 
 		$html.='<div class="benchmark" style="height:'.$height.'px;">
-		<div style="width:70%;padding:4%;margin:1%;float:left;font-size:large;background-color:#fff;">
-		<a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'"">
-		'.$BMW->Name.'
-		</a>
-		</div>
-		<div style="width:15%;margin:0 1% 1% 0;background-color:#fff;float:right">
-		<a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'"">
-		<img alt="Header" src="'.$Image.'"/>
-		</a>
-		</div>
+		<div style="width:70%;padding:4%;margin:1%;float:left;font-size:large;background-color:#fff;">';
+		//<a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'"">
+		$html.=''.$BMW->Name.'';
+		//</a>
+		$html.='</div>
+		<div style="width:15%;margin:0 1% 1% 0;background-color:#fff;float:right">';
+		//<a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'"">
+		$html.='<img onclick="getDetails(\''.$BMW->Id.'\');" alt="'.$BMW->Name.'" src="'.$Image.'"/>';
+		//</a>
+		$html.='</div>
 		</div>
 		<div class="clear"></div>';
 		
@@ -93,11 +98,11 @@ else
 {
 	foreach($this->Categories AS $Category){ 
 		$Image = $RENDER->Image(''.$Category->Image.'.png', $this->Device->GetScreenWidth());
-		$html.='<div>
-		<a href="index.php?module=benchmark&catid='.$Category->Id.'&banner='.$Category->Banner.'">
-		<img style="margin:2% 5% 3% 5%" alt="Header" src="'.$Image.'"/>
-		</a>
-		</div>';	
+		$html.='<div>';
+		//$test='<a href="index.php?module=benchmark&catid='.$Category->Id.'&banner='.$Category->Banner.'">';
+		$html.='<img onclick="getBenchmarks(\''.$Category->Id.'\');" style="margin:2% 5% 3% 5%" alt="'.$Category->Name.'" src="'.$Image.'"/>';
+		//$test='</a>';
+		$html.='</div>';	
 		//$html.='<h3><a href="index.php?module=benchmark&catid='.$Category->Id.'&banner='.$Category->Name.'">'.$Category->Name.'</a></h3>';
 	}
 }	
