@@ -26,20 +26,27 @@ class WodController extends Controller
 		$WOD = $Model->Log();
 	}
 	
-	function Content($Params)
+	function Output()
 	{
 		$WODdata = '';
 		$RENDER = new Image(SITE_ID);
+		$Model = new WodModel;
 		
-		if($Params['wodtype'] == 1){
-		
-		}
-		else if($Params['wodtype'] == 2){
+		if($_REQUEST['wodtype'] == 1){
 		
 		}
-		else if($Params['wodtype'] == 3 && isset($Params['benchmark'])){
-			$Model = new WodModel;
-			$WOD = $Model->getBenchmark($Params['benchmark']);
+		else if($_REQUEST['wodtype'] == 2){
+		
+		}
+		else if($_REQUEST['wodtype'] == 3){
+			$Benchmarks = $Model->getBenchmarks();	
+			foreach($Benchmarks as $WOD)
+			{
+				$WODdata .= '<a href="#" onclick="getBenchmark('.$WOD->recid.');">'.$WOD->ActivityName.'</a><br/><br/>';	
+			}			
+		}
+		else if(isset($_REQUEST['benchmark'])){
+			$WOD = $Model->getBenchmark($_REQUEST['benchmark']);
 	$Start = $RENDER->Image('start.png', $this->Device->GetScreenWidth());
 	$Stop = $RENDER->Image('stop.png', $this->Device->GetScreenWidth());
 	$Reset = $RENDER->Image('report.png', $this->Device->GetScreenWidth());
@@ -48,9 +55,10 @@ class WodController extends Controller
 	$WODdata.= $WOD->Description;
 	$WODdata.='</div>';
 	$WODdata.='<form name="clockform" action="index.php">
-	<input type="hidden" name="module" value="benchmark"/>
-	<input type="hidden" name="benchmarkId" value="'.$Params['benchmark'].'"/>
-	<input type="hidden" name="form" value="submitted"/>
+	<input type="hidden" name="module" value="wod"/>
+	<input type="hidden" name="wodtype" value="3"/>
+	<input type="hidden" name="exercise" value="'.$_REQUEST['benchmark'].'"/>
+	<input type="hidden" name="action" value="save"/>
 <input id="clock" name="clock" value="00:00:0"/>
 </form>	
 <div style="margin:0 30% 0 30%; width:50%">
@@ -58,8 +66,8 @@ class WodController extends Controller
 <img alt="Stop" src="'.$Stop.'" onclick="stop()"/><br/><br/>
 <img alt="Reset" src="'.$Reset.'" onclick="reset()"/>&nbsp;&nbsp;
 <img alt="Save" src="'.$Save.'" onclick="save()"/>
-</div><br/><br/>';			
-		}
+</div><br/><br/>';
+		}		
 		else{
 			$WODdata = 'Make your selection above';
 		}

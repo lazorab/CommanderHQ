@@ -43,7 +43,7 @@ class WodModel extends Model
 		return $SQL;
 	}
 
-	function GetBenchmark($Id)
+	function getBenchmark($Id)
 	{
 		$SQL = 'SELECT WorkoutName as ActivityName, WorkoutDescription as Description FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
 		$Result = mysql_query($SQL);	
@@ -52,10 +52,24 @@ class WodModel extends Model
 		
 		return $Workout;
 	}	
+	
+	function getBenchmarks()
+	{
+		$Benchmarks = array();
+		$SQL = 'SELECT recid, WorkoutName as ActivityName FROM BenchmarkWorkouts';
+		$Result = mysql_query($SQL);	
+		while($Row = mysql_fetch_assoc($Result))
+		{
+			array_push($Benchmarks, new WODObject($Row));
+		}
+		
+		return $Benchmarks;
+	}	
 }
 
 class WODObject
 {
+	var $recid;
 	var $ActivityName;
 	var $ActivityType;
 	var $Description;
@@ -65,6 +79,7 @@ class WODObject
 
 	function __construct($Row)
 	{
+		$this->recid = isset($Row['recid']) ? $Row['recid'] : "";
 		$this->ActivityName = isset($Row['ActivityName']) ? $Row['ActivityName'] : "";
 		$this->ActivityType = isset($Row['ActivityType']) ? $Row['ActivityType'] : "";
 		$this->Description = isset($Row['Description']) ? $Row['Description'] : "";

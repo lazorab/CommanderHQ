@@ -11,9 +11,14 @@ $(document).ready(function () {
 });
 
 
-function getContent(wodtype, val, width)
+function getWOD(wodtype)
 {
-	$.getJSON("/modules/wod/ajax/getContent.php",{wodtype:wodtype, val:val, width:width},display);
+    $.getJSON("ajax.php?module=wod",{wodtype:wodtype},display);
+}
+
+function getBenchmark(id)
+{
+    $.getJSON("ajax.php?module=wod",{benchmark:id},display);
 }
 
 function display(data)
@@ -26,16 +31,16 @@ function display(data)
 <h3>Workout of the Day</h3>
     <form id="wodform">
 			<label for="selecttype">WOD Type</label>
-				<select id="selecttype" name="wodtype" onchange="getContent(this.value, 0, <?php echo $Display->Device->GetScreenWidth();?>);">
+				<select id="selecttype" name="wodtype" onchange="getWOD(this.value);">
 					<option value="0">Please Select</option>
 					<option value="1">Custom</option>
 					<option value="2">My Gym</option>
 					<option value="3" <?php if(isset($_REQUEST['benchmark'])){ ?>selected="selected"<?php } ?>>Benchmarks</option>
 				</select><br/><br/><br/>
 			<label for="datetime">Date</label>
-			<input type="text" name="datetime" id="datetime" value="<?php echo date('d/m/Y');?>" onchange="getContent(wodtype.value, 0, <?php echo $Display->Device->GetScreenWidth();?>);/>	
+			<input type="text" name="datetime" id="datetime" value="<?php echo date('d/m/Y');?>" onchange="getWOD(wodtype.value);/>	
     </form>
 
 <div id="WOD">
-	<?php echo $Display->Content($_REQUEST);?>
+	<?php echo $Display->Output();?>
 </div>
