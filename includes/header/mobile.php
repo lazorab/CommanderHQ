@@ -39,6 +39,10 @@ $(document).ready(function() {
 			//makeScrollable("div.sc_menu_wrapper", "div.sc_menu");
 	    }
 	});
+                  
+    $("img#menuselect").click(function () {
+        $("#menu").slideToggle("slow");
+    });                  
 });	
 
 function makeScrollable(wrapper, scrollable){

@@ -26,7 +26,7 @@ class Controller
 		else
 			$this->Environment = 'website';		
 			
-		if($this->Environment == 'mobile' || $this->Environment == 'legacy')
+		if($this->Environment == 'legacy')
 			$this->Wall = 'wall:';		
 	}
 	

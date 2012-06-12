@@ -1,19 +1,16 @@
 #menu
 {
+	position: absolute; 
+    top: 50%;
+    left: 2%;
 	display:none;
-	float:left;
 	color:#fff;
-	background-color:#091f40
-}
-
-#menu.active
-{
-	display:block;
+	background-color:#091f40;
 }
 
 div.sc_menu_wrapper {
 	position: relative; 	
-	height: 500px;
+	height: auto;
 	/* Make bigger than a photo, because we need a place for a scrollbar. */
 	width: 100%;
 	
@@ -25,7 +22,7 @@ div.sc_menu {
 .sc_menu a {
 	display: block;
 	margin-bottom: 5px;
-	width: 130px;
+	width: auto;
 	
 	border: 2px rgb(79, 79, 79) solid;
     -webkit-border-radius: 4px;

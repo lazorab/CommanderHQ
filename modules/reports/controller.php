@@ -1,74 +1,165 @@
 <?php
 class ReportsController extends Controller
 {
-	var $Details;
-	var $Html;
-	var $Model;
+	var $MemberDetails;
 	
 	function __construct()
 	{
 		parent::__construct();
 		session_start();
-		if(!isset($_SESSION['UID']))
+		if(!isset($_SESSION['UID'])){
 			header('location: index.php?module=login');	
-			
-		$this->Model=new ReportsModel($_SESSION['UID']);
-		$this->Details=$this->Model->getDetails();
-		if($_REQUEST['form'] == 'submitted')
+        }
+        else{
+            $Model=new ReportsModel();
+            $this->MemberDetails=$Model->getDetails();
+        }
+	}
+    
+    function Output()
+    {        
+		$Model=new ReportsModel();
+		
+		if(isset($_REQUEST['action']))
 		{
-			if($_REQUEST['action'] == 'Pending Exercises')
+
+			if($_REQUEST['action'] == 'Pending')
 			{
-				$this->PendingExercises();
+				return $this->PendingExercises();
 			}
-			else if($_REQUEST['action'] == 'Performance History')
+			else if($_REQUEST['action'] == 'Performance')
 			{
-				$this->CompletedExercises();	
+				return $this->CompletedExercises();	
 			}
-			else if($_REQUEST['action'] == 'Weight History')
+            else if($_REQUEST['action'] == 'WOD')
 			{
-				$this->WeightHistory($this->Details->SystemOfMeasure);	
+				return $this->WODExercises();	
+			}
+            else if($_REQUEST['action'] == 'Benchmarks')
+			{
+				return $this->BenchmarkExercises();	
+			}
+            else if($_REQUEST['action'] == 'Baseline')
+			{
+				return $this->BaselineExercises();	
+			}
+			else if($_REQUEST['action'] == 'Weight')
+			{
+				return $this->WeightHistory($this->MemberDetails->SystemOfMeasure);	
 			}
 		}
-		else if(isset($_REQUEST['id']))
-			$this->PerformanceHistory($_REQUEST['id']);
+		else if(isset($_REQUEST['PerformanceId']))
+			return $this->PerformanceHistory($_REQUEST['PerformanceId']);
+        else if(isset($_REQUEST['WODId']))
+			return $this->WODHistory($_REQUEST['WODId']);
+        else if(isset($_REQUEST['BenchmarkId']))
+			return $this->BenchmarkHistory($_REQUEST['BenchmarkId']);
+        else if(isset($_REQUEST['BaselineId']))
+			return $this->BaselineHistory($_REQUEST['BaselineId']);
 		else
-			$this->DrawForm();
-	}
-	
-	function DrawForm()
-	{
-		$this->Html='<'.$this->Wall.'form action = "" method="post">
-				<'.$this->Wall.'input type="hidden" name="module" value="reports"/>
-				<'.$this->Wall.'input type="hidden" name="form" value="submitted"/>
-				<'.$this->Wall.'input type="submit" name="action" value="Pending Exercises"/>
-				<'.$this->Wall.'br/><'.$this->Wall.'br/>
-				<'.$this->Wall.'input type="submit" name="action" value="Performance History"/>
-				<'.$this->Wall.'br/><'.$this->Wall.'br/>
-				<'.$this->Wall.'input type="submit" name="action" value="Weight History"/>				
-				</'.$this->Wall.'form>
-		';
-	}
+			return 'Please make selection';    
+    }
+    
 	
 	function Details()
 	{
-		return $this->Details;
+        $Model=new ReportsModel();
+        $Details=$Model->getDetails();
+		return $Details;
 	}
 	
 	function CompletedExercises()
 	{
-		$ExerciseItems = $this->Model->getCompletedExercises();
-		$this->Html='Completed Exercises:';
+        $Model=new ReportsModel();
+		$ExerciseItems = $Model->getCompletedExercises();
+		$Html='Completed Exercises:';
 		foreach($ExerciseItems AS $Exercise) { 
-			$this->Html.='<'.$this->Wall.'br/><'.$this->Wall.'a href="index.php?module=reports&id='.$Exercise->Id.'">'.$Exercise->Exercise.'</'.$this->Wall.'a>';
+			$Html.='<'.$this->Wall.'br/><'.$this->Wall.'a href="index.php?module=reports&id='.$Exercise->Id.'">'.$Exercise->Exercise.'</'.$this->Wall.'a>';
 		}
-		return $this->Html;	
+		return $Html;	
 	}
+    
+    function WODExercises()
+	{
+        $Model=new ReportsModel();
+		$ExerciseItems = $Model->getWODExercises();
+		$Html='<'.$this->Wall.'select name="WODId" id="WODId" onchange="getWODReport(this.value, reportform.datetime.value);">';
+        $Html.='<'.$this->Wall.'option value=" ">Please Select</'.$this->Wall.'option>';
+		foreach($ExerciseItems AS $Exercise) { 
+			$Html.='<'.$this->Wall.'option value="'.$Exercise->ExerciseId.'">'.$Exercise->Exercise.'</'.$this->Wall.'option>';
+		}
+        $Html.='</'.$this->Wall.'select>';
+		return $Html;	
+	}
+    
+    function WODHistory()
+    {
+        $Model=new ReportsModel();
+        $WODData = $Model->getWODHistory();
+        $Html='';
+        foreach($WODData as $Data)
+        {
+            $Html.=''.$Data->Exercise.'';
+        }
+        return $Html;
+    }
+    
+    function BenchmarkExercises()
+	{
+        $Model=new ReportsModel();
+		$ExerciseItems = $Model->getBenchmarkExercises();
+		$Html='<'.$this->Wall.'select name="BenchmarkId" id="BenchmarkId" onchange="getBenchmarkReport(this.value, reportform.datetime.value);">';
+        $Html.='<'.$this->Wall.'option value=" ">Please Select</'.$this->Wall.'option>';
+		foreach($ExerciseItems AS $Exercise) { 
+			$Html.='<'.$this->Wall.'option value="'.$Exercise->ExerciseId.'">'.$Exercise->Exercise.'</'.$this->Wall.'option>';
+		}
+        $Html.='</'.$this->Wall.'select>';
+		return $Html;	
+	}
+    
+    function BenchmarkHistory()
+    {
+        $Model=new ReportsModel();
+        $BenchmarkData = $Model->getBenchmarkHistory();
+        $Html='';
+        foreach($BenchmarkData as $Data)
+        {
+            $Html.=''.$Data->Exercise.'';
+        }
+        return $Html;
+    }    
+    
+    function BaselineExercises()
+	{
+        $Model=new ReportsModel();
+		$ExerciseItems = $Model->getBaselineExercises();
+		$Html='<'.$this->Wall.'select name="BaselineId" id="BaselineId" onchange="getBaselineReport(this.value, reportform.datetime.value);">';
+        $Html.='<'.$this->Wall.'option value=" ">Please Select</'.$this->Wall.'option>';
+		foreach($ExerciseItems AS $Exercise) { 
+			$Html.='<'.$this->Wall.'option value="'.$Exercise->ExerciseId.'">'.$Exercise->Exercise.'</'.$this->Wall.'option>';
+		}
+        $Html.='</'.$this->Wall.'select>';
+		return $Html;	
+	}
+    
+    function BaselineHistory()
+    {
+        $Model=new ReportsModel();
+        $BaselineData = $Model->getBaselineHistory();
+        $Html='';
+        foreach($BaselineData as $Data)
+        {
+           $Html.=''.$Data->Exercise.'';
+        }
+        return $Html;
+    }    
 	
 	function PerformanceHistory($Id)
 	{
-		$this->Html.='<div style="height:20px">';
-		$this->Html.='<div style="width:120px;float:left">Date</div><div style="width:80px;float:left">Recorded Time</div><div style="width:100px;float:left">Performance</div></div>';
-		$PerformanceData = $this->Model->getPerformanceHistory($Id);
+        $Model=new ReportsModel();
+		$Html.='<div style="height:20px">';
+		$Html.='<div style="width:120px;float:left">Date</div><div style="width:80px;float:left">Recorded Time</div><div style="width:100px;float:left">Performance</div></div>';
+		$PerformanceData = $Model->getPerformanceHistory($Id);
 		$previous = '';
 		foreach($PerformanceData AS $Data)
 		{
@@ -93,41 +184,36 @@ class ReportsController extends Controller
 				$performance = '--';
 			}
 			$previous = $TotalSeconds;
-			$this->Html.='<div style="height:20px"><div style="width:120px;float:left">'.$Data->TimeCreated.'</div><div style="width:80px;float:left">'.$Data->Duration.'</div><div style="width:100px;float:left">'.$direction.''.$performance.'</div></div>';
+			$Html.='<div style="height:20px"><div style="width:120px;float:left">'.$Data->TimeCreated.'</div><div style="width:80px;float:left">'.$Data->Duration.'</div><div style="width:100px;float:left">'.$direction.''.$performance.'</div></div>';
 		}
-		return $this->Html;	
+		return $Html;	
 	}
 	
 	function WeightHistory($System)
 	{
-		$this->Html='';
-		$History=$this->Model->getWeightHistory();
+        $Model=new ReportsModel();
+		$Html='';
+		$History=$Model->getWeightHistory();
 		if($System == 'Metric')
 			$Units = 'kg';
 		else
 			$Units = 'lbs';
 		foreach($History AS $Item)
 		{
-			$this->Html.=''.$Item->TimeCreated.'	'.$Item->Weight.'	'.$Units.'<'.$this->Wall.'br/>';
+			$Html.=''.$Item->TimeCreated.'	'.$Item->Weight.'	'.$Units.'<'.$this->Wall.'br/>';
 		}
-		return $this->Html;
+		return $Html;
 	}
 	
 	function PendingExercises()
 	{
-		$PendingExercises = $this->Model->getPendingExercises();
-		$this->Html='Pending Skill Exercises:';
+        $Model=new ReportsModel();
+		$PendingExercises = $Model->getPendingExercises();
+		$Html='Pending Skill Exercises:';
 		foreach($PendingExercises AS $Exercise) { 
-			$this->Html.='<'.$this->Wall.'br/><'.$this->Wall.'a href="index.php?module=exercisedetails&id='.$Exercise->Id.'">'.$Exercise->Exercise.'</'.$this->Wall.'a>';
+			$Html.='<'.$this->Wall.'br/><'.$this->Wall.'a href="index.php?module=exercisedetails&id='.$Exercise->Id.'">'.$Exercise->Exercise.'</'.$this->Wall.'a>';
 		}
-		return $this->Html;
-	}
-	
-	function CustomHeader()
-	{
-		$CustomHeader='';
-		
-		return $CustomHeader;
+		return $Html;
 	}
 }
 ?>
