@@ -1,15 +1,16 @@
 <script type="text/javascript">
 $(document).ready(function () {
-                  var curr = new Date().getFullYear();
-                  var opt = {}
-                  opt.select = {preset : 'select'};
-                  opt.datetime = { preset : 'datetime', dateOrder: 'ddMMyy', timeWheels: '', dateFormat: 'dd/mm/yy', timeFormat: ''  };
+    var curr = new Date().getFullYear();
+    var opt = {}
+    opt.select = {preset : 'select'};
+    opt.datetime = { preset : 'datetime', dateOrder: 'ddMMyy', timeWheels: '', dateFormat: 'dd/mm/yy', timeFormat: ''  };
                   
-                  $('.datetime').scroller($.extend(opt['datetime'], { theme: 'default', mode: 'scroller', display: 'model' }));
+    $('#datetime').scroller($.extend(opt['datetime'], { theme: 'default', mode: 'scroller', display: 'model' }));
                   
-                  $('#action').scroller($.extend(opt['select'], { theme: 'default', mode: 'scroller', display: 'model' }));
-                  });
-
+    $('#action').scroller($.extend(opt['select'], { theme: 'default', mode: 'scroller', display: 'model' }));
+	
+	$("#dateselect").scroller($.extend(opt["datetime"], { theme: "default", mode: "scroller", display: "model" }));
+});
 
 function getContent(action)
 {
@@ -39,7 +40,7 @@ function display(data)
 <option value="failed" <?php if($_REQUEST['action'] == 'failed'){echo 'selected="selected"';};?>>Failed</option>
 </select><br/><br/><br/>
 <label for="datetime">Date</label>
-<input type="text" name="datetime" class="datetime" value="<?php echo date('d/m/Y');?>" onchange="getContent(action.value);"/>	
+<input type="text" name="datetime" id="datetime" value="<?php echo date('d/m/Y');?>" onchange="getContent(action.value);"/>	
 </form>
 
 <div id="goal">

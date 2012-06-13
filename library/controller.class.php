@@ -34,5 +34,11 @@ class Controller
 	{
 		return $this->Environment;
 	}	
+	
+	function RandomMessage()
+	{
+		$Model= new Model;
+		return $Model->getRandomMessage();
+	}	
 }
 ?>

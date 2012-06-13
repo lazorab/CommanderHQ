@@ -32,13 +32,26 @@ class WodController extends Controller
 		$RENDER = new Image(SITE_ID);
 		$Model = new WodModel;
 		
-		if($_REQUEST['wodtype'] == 1){
+		if($_REQUEST['wodtype'] == 1){//custom
+			$WODdata .= '
+<form id="test">
+<label for="custom">Custom Type</label>
+<select id="customselect" name="custom"  onchange="getCustomContent(this.value);">
+<option value="">Please Select</option>
+<option value="Timed">Timed</option>
+<option value="AMRAP">AMRAP</option>
+<option value="Weight">Total Weight</option>
+<option value="load">Max load</option>
+<option value="Reps">Total Reps</option>
+<option value="Tabata">Tabata</option>
+<option value="Other">Other</option>
+</select></form><br/><br/><br/>
+';
+		}
+		else if($_REQUEST['wodtype'] == 2){//my gym
 		
 		}
-		else if($_REQUEST['wodtype'] == 2){
-		
-		}
-		else if($_REQUEST['wodtype'] == 3){
+		else if($_REQUEST['wodtype'] == 3){//benchmarks
 			$Benchmarks = $Model->getBenchmarks();	
 			foreach($Benchmarks as $WOD)
 			{

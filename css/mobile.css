@@ -24,6 +24,11 @@ body {
 	display:block;
 }
 
+#random
+{
+	text-align:center;
+}
+
 img
 {
 	border: none;

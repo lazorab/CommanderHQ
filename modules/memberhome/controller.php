@@ -8,17 +8,7 @@ class MemberhomeController extends Controller
 		parent::__construct();
 		session_start();
 		if(!isset($_SESSION['UID']))
-			header('location: index.php?module=login');		
-		$Member = new Member($_SESSION['UID']);
-		$this->MemberDetails = $Member->Details();
-	}
-	
-	
-	function CustomHeader()
-	{
-		$CustomHeader='';
-		
-		return $CustomHeader;
+			header('location: index.php?module=login');
 	}	
 }
 ?>

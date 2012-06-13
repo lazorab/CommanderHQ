@@ -46,7 +46,7 @@ class GoalsController extends Controller
         $Model = new GoalsModel();
         $Goals=$Model->getActiveGoals();
         foreach($Goals as $Goal){
-            $Html.='<a href="?module=goals&id='.$Goal->recid.'">'.$Goal->GoalTitle.'</a>';
+            $Html.='<a href="?module=goals&id='.$Goal->recid.'">'.$Goal->GoalTitle.'</a><br/>';
         }
         return $Html;        
     }
@@ -57,7 +57,7 @@ class GoalsController extends Controller
         $Model = new GoalsModel();
         $Goals=$Model->getAchievedGoals();
         foreach($Goals as $Goal){
-            $Html.='<a href="?module=goals&id='.$Goal->recid.'">'.$Goal->GoalTitle.'</a>';
+            $Html.='<a href="?module=goals&id='.$Goal->recid.'">'.$Goal->GoalTitle.'</a><br/>';
         }
         return $Html;        
     }
@@ -68,7 +68,7 @@ class GoalsController extends Controller
         $Model = new GoalsModel();
         $Goals=$Model->getFailedGoals();
         foreach($Goals as $Goal){
-            $Html.='<a href="?module=goals&id='.$Goal->recid.'">'.$Goal->GoalTitle.'</a>';
+            $Html.='<a href="?module=goals&id='.$Goal->recid.'">'.$Goal->GoalTitle.'</a><br/>';
         }
         return $Html;        
     }
@@ -77,7 +77,8 @@ class GoalsController extends Controller
     {
         $Model = new GoalsModel();
         $Goal=$Model->getGoal($Id);
-        $Html='<form action="index.php" method="post">
+        $Html='
+		<form action="index.php" method="post">
         <input type="hidden" name="module" value="goals"/>
         <input type="hidden" name="id" value="'.$Goal->recid.'"/><br/>
         Goal:<br/>
@@ -92,7 +93,7 @@ class GoalsController extends Controller
             $Html.=' checked="checked"';
         $Html.='/><br/>
         Achieve By:<br/>
-        <input type="text" class="datetime" name="AchieveByDate" value="'.$Goal->AchieveByDate.'"/><br/>
+        <input type="text" id="dateselect" name="AchieveByDate" value="'.$Goal->AchieveByDate.'"/><br/>
         <input type="submit" name="action" value="Update"/>
         </form>';
         return $Html;        

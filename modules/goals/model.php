@@ -97,7 +97,7 @@ class GoalObject
             $this->GoalDescription = isset($Row['GoalDescription']) ? $Row['GoalDescription'] : "";
             $this->Achieved = isset($Row['Achieved']) ? $Row['Achieved'] : "";
             $this->SetDate = isset($Row['SetDate']) ? $Row['SetDate'] : "";
-            $this->AchieveByDate = isset($Row['AchieveByDate']) ? $Row['AchieveByDate'] : "";
+            $this->AchieveByDate = isset($Row['AchieveByDate']) ? date('d/m/Y', strtotime($Row['AchieveByDate'])) : "";
             $this->AchievedDate = isset($Row['AchieveDate']) ? $Row['AchievedDate'] : "";            
         }
         
