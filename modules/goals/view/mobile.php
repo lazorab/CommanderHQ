@@ -28,7 +28,7 @@ function display(data)
 }
 
 </script>
-
+<br/>
 <h3>Goals</h3>
 <form id="goalform">
 <label for="action">Action</label>

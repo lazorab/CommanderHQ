@@ -78,8 +78,17 @@ class BenchmarkModel extends Model
 
 	function Log()
 	{
-		$SQL = 'INSERT INTO BenchmarkLog(MemberId, BenchmarkId, TimeToComplete) VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$_REQUEST['clock'].'")';
-		mysql_query($SQL);	
+        $SQL = 'SELECT recid, Attribute FROM Attributes';
+        $Result = mysql_query($SQL);	
+		while($Row = mysql_fetch_assoc($Result))
+        {
+            if(isset($_REQUEST[''.$Row['Attribute'].''])){
+                $AttributeValue = $_REQUEST[''.$Row['Attribute'].''];
+                $SQL = 'INSERT INTO BenchmarkLog(MemberId, BenchmarkId, AttributeId, AttributeValue) 
+                VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$Row['recid'].'", "'.$AttributeValue.'")';
+                mysql_query($SQL);	
+            }
+        }        
 	}	
 	
 	function Log2($Details)

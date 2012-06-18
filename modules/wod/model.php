@@ -29,8 +29,17 @@ class WodModel extends Model
 	
 	function Log()
 	{
-		$SQL = 'INSERT INTO WODLog(MemberId, ExerciseId, WODTypeId, TimeToComplete) VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['exercise'].'", "'.$_REQUEST['wodtype'].'", "'.$_REQUEST['clock'].'")';
-		mysql_query($SQL);	
+        $SQL = 'SELECT recid, Attribute FROM Attributes';
+        $Result = mysql_query($SQL);	
+		while($Row = mysql_fetch_assoc($Result))
+        {
+            if(isset($_REQUEST[''.$Row['Attribute'].''])){
+                $AttributeValue = $_REQUEST[''.$Row['Attribute'].''];
+                $SQL = 'INSERT INTO WODLog(MemberId, ExerciseId, WODTypeId, AttributeId, AttributeValue) 
+                VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['exercise'].'", "'.$_REQUEST['wodtype'].'", "'.$Row['recid'].'", "'.$AttributeValue.'")';
+                mysql_query($SQL);	
+            }
+        }
 	}
 	
 	function getWOD($type, $date)

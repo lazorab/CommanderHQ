@@ -37,7 +37,7 @@ function display(data)
 }
 
 </script>
-
+<br/>
 <h3>Reports</h3>
 <form id="reportform" name="reportform">
 <label for="action">Report Type</label>

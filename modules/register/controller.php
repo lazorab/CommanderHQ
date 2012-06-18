@@ -11,7 +11,7 @@ class RegisterController extends Controller
 	function __construct()
 	{
 		parent::__construct();
-		$this->Model = new RegisterModel;
+		$Model = new RegisterModel;
 		$Validate = new ValidationUtils;
 		$this->System = 'Metric';
 		$this->AlternateSystem = 'Imperial';
@@ -19,7 +19,7 @@ class RegisterController extends Controller
 		$this->SystemHeight = 'cm';		
 		
 		if($_REQUEST['formsubmitted'] == 'yes'){
-		
+
 		if($_REQUEST['system'] == 'Metric'){
 			$this->System = 'Metric';
 			$this->SystemWeight = 'Kg';
@@ -32,8 +32,9 @@ class RegisterController extends Controller
 			$this->SystemHeight = 'inches';	
 			$this->AlternateSystem = 'Metric';	
 		}
-		else if($_REQUEST['submit'] == 'Save'){	
-	
+            
+		if($_REQUEST['save'] == 'Save'){	
+
 	if($_REQUEST['firstname'] == '')
 		$this->Message = 'Firstname Required';
 	elseif($_REQUEST['lastname'] == '')
@@ -48,11 +49,7 @@ class RegisterController extends Controller
 		$this->Message = 'Username Required';		
 	elseif($_REQUEST['password'] == '')
 		$this->Message = 'Password Required';
-	elseif($_REQUEST['day'] == '')
-		$this->Message = 'Invalid Date of Birth';		
-	elseif($_REQUEST['month'] == '')
-		$this->Message = 'Invalid Date of Birth';
-	elseif($_REQUEST['year'] == '')
+	elseif($_REQUEST['DOB'] == '')
 		$this->Message = 'Invalid Date of Birth';		
 	elseif($_REQUEST['weight'] == '')
 		$this->Message = 'Weight Required';
@@ -62,27 +59,14 @@ class RegisterController extends Controller
 		$this->Message = 'Select Gender';
 	
 	if($this->Message == '')
-	{
-		$_CREDENTIALS=array(
-			'FirstName'=>''.$_REQUEST['firstname'].'',
-			'LastName'=>''.$_REQUEST['lastname'].'',
-			'Cell'=>''.$_REQUEST['cell'].'',
-			'Email'=>''.$_REQUEST['email'].'',		
-			'UserName'=>''.$_REQUEST['username'].'',
-			'PassWord'=>''.$_REQUEST['password'].'',
-			'SystemOfMeasure'=>''.$_REQUEST['system'].'',
-			'DOB'=>''.$_REQUEST['year'].'-'.$_REQUEST['month'].'-'.$_REQUEST['day'].'',
-			'Weight'=>''.$_REQUEST['weight'].'',
-			'Height'=>''.$_REQUEST['height'].'',
-			'Gender'=>''.$_REQUEST['gender'].'',
-			'Goals'=>''.serialize($_REQUEST['goals']).'');		
-		$this->Model->Register($_CREDENTIALS);
-		if(!$this->Model->ReturnValue()){
+	{	
+		$Model->Register();
+		if(!$Model->ReturnValue()){
 			$this->Message = 'Member already exists, Please try again.';
 		}
 		else{
 			session_start();
-			$_SESSION['UID'] = $this->Model->ReturnValue();
+			$_SESSION['UID'] = $Model->ReturnValue();
 			header('location: index.php?module=memberhome');
 		}
 	}
@@ -90,21 +74,9 @@ class RegisterController extends Controller
 }	
 	}
 	
-	function Model()
-	{
-		return $this->Model;
-	}
-	
 	function Message()
 	{
 		return $this->Message;
-	}
-	
-	function CustomHeader()
-	{
-		$CustomHeader='';
-		
-		return $CustomHeader;
 	}
 }
 ?>

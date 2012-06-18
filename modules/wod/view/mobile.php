@@ -9,7 +9,7 @@ $(document).ready(function () {
 
     $('#selecttype').scroller($.extend(opt['select'], { theme: 'default', mode: 'scroller', display: 'model' }));
 	
-	$("#customselect").scroller($.extend(opt["select"], { theme: "default", mode: "scroller", display: "model" }));
+	$('#customselect').scroller($.extend(opt['select'], { theme: 'default', mode: 'scroller', display: 'model' }));
 });
 
 
@@ -38,6 +38,7 @@ function display(data)
 
 </script>
 
+<br/>
 <h3>Workout of the Day</h3>
     <form action="index.php" method="post" name="wodform">
 	<input type="hidden" name="module" value="wod"/>

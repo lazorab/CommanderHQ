@@ -1,3 +1,16 @@
+<script type="text/javascript">
+$(document).ready(function () {
+                  var curr = new Date().getFullYear();
+                  var opt = {}
+
+                  opt.datetime = { preset : 'datetime', dateOrder: 'ddMMyy', timeWheels: '', dateFormat: 'dd/mm/yy', timeFormat: ''  };
+                  
+                  $('#DOB').scroller($.extend(opt['datetime'], { theme: 'default', mode: 'scroller', display: 'model' }));
+                  
+                  });	
+
+</script>
+
 <div id="menu" style="width:30%;float:left">
 <div class="menuitem" style="margin:5%">
 	<img alt="Register" src="<?php echo $RENDER->Image('register_active.png', $request->get_screen_width_new());?>"/>
@@ -32,15 +45,7 @@ Username<br/>
 Password<br/>
 <input type="password" name="password" value="<?php echo $_REQUEST['password'];?>"/><br/><br/>
 Date of Birth<br/>
-<select name="day">
-<?php echo $Display->Model()->DayOptions($_REQUEST['day']);?>
-</select>
-<select name="month">
-<?php echo $Display->Model()->MonthOptions($_REQUEST['month']);?>
-</select>
-<select name="year">
-<?php echo $Display->Model()->YearOptions($_REQUEST['year']);?>
-</select>
+<input type="text" id="DOB" name="DOB" value="<?php echo $_REQUEST['DOB'];?>"/>
 <br/><br/>
 Male<input type="radio" name="gender" value="M" <?php if($_REQUEST['gender'] == 'M') echo 'checked="checked"';?>/>Female<input type="radio" name="gender" value="F" <?php if($_REQUEST['gender'] == 'F') echo 'checked="checked"';?>/><br/>
 <br/><br/>
@@ -53,7 +58,7 @@ Height (<?php echo $Display->SystemHeight;?>)<br/>
 Preferred Sytem of Measurement<br/>
 <input type="submit" name="system" value="<?php echo $Display->AlternateSystem;?>"/>
 <br/><br/>
-<input type="submit" name="submit" value="Save"/>
+<input type="submit" name="save" value="Save"/>
 </form>
 <br/>
 </div>

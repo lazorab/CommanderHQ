@@ -72,7 +72,7 @@ class WodController extends Controller
 	<input type="hidden" name="wodtype" value="3"/>
 	<input type="hidden" name="exercise" value="'.$_REQUEST['benchmark'].'"/>
 	<input type="hidden" name="action" value="save"/>
-<input id="clock" name="clock" value="00:00:0"/>
+<input id="clock" name="TimeToComplete" value="00:00:0"/>
 </form>	
 <div style="margin:0 30% 0 30%; width:50%">
 <img alt="Start" src="'.$Start.'" onclick="start()"/>&nbsp;&nbsp;

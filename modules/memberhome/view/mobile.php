@@ -1,9 +1,8 @@
 <?php 
 $ratio = $request->get_screen_width_new() / 500;
-$margin = floor(((500*$ratio) - (324*$ratio)) / 4);
-$GridIconSize = floor(108*$ratio);?>
-<div class="clear"></div>
-<br/>
+$margin = floor(((500*$ratio) - (276*$ratio)) / 4);
+$GridIconSize = floor(92*$ratio);?>
+
 <div id="random"><?php echo $Display->RandomMessage();?></div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
 <a href="?module=wod">
@@ -48,8 +47,8 @@ $GridIconSize = floor(108*$ratio);?>
 </a>
 </div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px <?php echo $margin;?>px <?php echo $margin;?>px;">
-<a href="?module=videos">
-<img alt="Videos" src="<?php echo $RENDER->Image('videos.png', $request->get_screen_width_new());?>"/>
+<a href="?module=products">
+<img alt="Store" src="<?php echo $RENDER->Image('store.png', $request->get_screen_width_new());?>"/>
 </a>
 </div>
 <div class="clear"></div>

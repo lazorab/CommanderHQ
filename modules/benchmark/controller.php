@@ -61,7 +61,7 @@ if(isset($_REQUEST['id']))
 	<input type="hidden" name="module" value="benchmark"/>
 	<input type="hidden" name="benchmarkId" value="'.$_REQUEST['id'].'"/>
 		<input type="hidden" name="action" value="save"/>
-<input id="clock" name="clock" value="00:00:0"/>
+<input id="clock" name="TimeToComplete" value="00:00:0"/>
 </form>	
 <div style="margin:0 30% 0 30%; width:50%">
 <img alt="Start" src="'.$Start.'" onclick="start()"/>&nbsp;&nbsp;
