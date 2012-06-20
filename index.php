@@ -10,7 +10,7 @@
 	$RENDER = new Image(SITE_ID);	
 
 	if( !isset( $_REQUEST['module'] ) )
-		$Module = 'memberhome';
+		$Module = 'login';
 	else
 		$Module = $_REQUEST['module'];
 

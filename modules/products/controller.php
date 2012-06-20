@@ -1,8 +1,6 @@
 <?php
 class ProductsController extends Controller
 {
-	var $Model;
-	var $Html;
 	var $Message;
 	
 	function __construct()
@@ -11,38 +9,36 @@ class ProductsController extends Controller
 		session_start();
 		if(!isset($_SESSION['UID']))
 			header('location: index.php?module=login');
-					
-		$this->Model = new ProductsModel;
 	}
 	
-	function getHtml()
+	function Output()
 	{
 		if($_REQUEST['form'] != 'submitted')
-			$this->Html = $this->getCategories();
+			$Html = $this->getCategories();
 		else if($_REQUEST['submit'] == 'Submit')
-			$this->Html = $this->getProductsByCategory($_REQUEST['category']);
+			$Html = $this->getProductsByCategory($_REQUEST['category']);
 		else if($_REQUEST['id'] > 0)
-			$this->Html = $this->getProductDetails($_REQUEST['id']);
+			$Html = $this->getProductDetails($_REQUEST['id']);
 		else if($_REQUEST['submit'] == 'Add to basket'){
 			$this->ShoppingBasket($_REQUEST['product'], $_REQUEST['quantity'], 'add');
-			$this->Html = $this->getCategories();
+			$Html = $this->getCategories();
 		}
 		else if($_REQUEST['action'] == 'remove'){
 			$this->ShoppingBasket($_REQUEST['product'], 0, 'remove');
-			$this->Html = $this->ShoppingBasket(0, 0, 'view');	
+			$Html = $this->ShoppingBasket(0, 0, 'view');	
 		}
 		else if($_REQUEST['submit'] == 'View basket')
-			$this->Html = $this->ShoppingBasket(0, 0, 'view');	
+			$Html = $this->ShoppingBasket(0, 0, 'view');	
 		else if($_REQUEST['submit'] == 'Update Basket'){
 			$this->ShoppingBasket(0, 0, 'update');	
-			$this->Html = $this->ShoppingBasket(0, 0, 'view');	
+			$Html = $this->ShoppingBasket(0, 0, 'view');	
 		}
 		else if($_REQUEST['submit'] == 'Back to Products')
-			$this->Html = $this->getCategories();
+			$Html = $this->getCategories();
 		else if($_REQUEST['submit'] == 'CheckOut')
-			$this->Html = $this->CheckOut();			
+			$Html = $this->CheckOut();			
 			
-		return $this->Html;
+		return $Html;
 	}
 	
 	function getMessage()
@@ -52,8 +48,9 @@ class ProductsController extends Controller
 	
 	function getProducts($_REQUEST)
 	{
+        $Model = new ProductsModel;
 		$Html='';
-		$Products = $this->Model->getProducts($_REQUEST['searchword']);
+		$Products = $Model->getProducts($_REQUEST['searchword']);
 		foreach($Products AS $Product){
 			$Html.=''.$Product->ProductName.'';
 		}
@@ -64,8 +61,9 @@ class ProductsController extends Controller
 	
 	function getProductDetails($Id)
 	{
+        $Model = new ProductsModel;
 		$Html='';
-		$Details = $this->Model->getProductDetails($Id);
+		$Details = $Model->getProductDetails($Id);
 
 		$Html.=''.$Details->ProductName.'<'.$this->Wall.'br/>';
 		$Html.=''.$Details->ProductDescription.'<'.$this->Wall.'br/>';
@@ -86,7 +84,8 @@ class ProductsController extends Controller
 	
 	function getCategories()
 	{
-		$Categories = $this->Model->getCategories();
+        $Model = new ProductsModel;
+		$Categories = $Model->getCategories();
 		$Html='<'.$this->Wall.'select name="category">';
 		foreach($Categories AS $Category){
 			$Html.='<'.$this->Wall.'option value="'.$Category->Id.'">'.$Category->Category.'</'.$this->Wall.'option>';
@@ -100,8 +99,9 @@ class ProductsController extends Controller
 	
 	function getProductsByCategory($Category)
 	{
+        $Model = new ProductsModel;
 		$Html='';
-		$Products = $this->Model->getProductsByCategory($Category);
+		$Products = $Model->getProductsByCategory($Category);
 		foreach($Products AS $Product){
 			$Html.='<'.$this->Wall.'a href="?module=products&form=submitted&id='.$Product->Id.'">'.$Product->ProductName.'</'.$this->Wall.'a>';
 		}
@@ -112,25 +112,26 @@ class ProductsController extends Controller
 	
 	function ShoppingBasket($ProductId=0, $Quantity=0, $Action)
 	{
+        $Model = new ProductsModel;
 		if(!isset($_SESSION['BasketId'])){
-			$_SESSION['BasketId'] = $this->Model->getBasketId($_SESSION['UID']);
+			$_SESSION['BasketId'] = $Model->getBasketId($_SESSION['UID']);
 		}
 		
 		$Html='';
 		if($Action == 'add'){
-			$Response = $this->Model->AddToBasket($_SESSION['UID'], $_SESSION['BasketId'], $ProductId, $Quantity);
+			$Response = $Model->AddToBasket($_SESSION['UID'], $_SESSION['BasketId'], $ProductId, $Quantity);
 			$this->Message.=''.$Response.'';
 		}
 		else if($Action == 'remove'){
-			$Response = $this->Model->RemoveFromBasket($_SESSION['UID'], $_SESSION['BasketId'], $ProductId);
+			$Response = $Model->RemoveFromBasket($_SESSION['UID'], $_SESSION['BasketId'], $ProductId);
 			$this->Message.=''.$Response.'';
 		}	
 		else if($Action == 'update'){
-			$Response = $this->Model->UpdateBasket($_SESSION['UID'], $_SESSION['BasketId']);
+			$Response = $Model->UpdateBasket($_SESSION['UID'], $_SESSION['BasketId']);
 			$this->Message.=''.$Response.'';
 		}		
 		else if($Action == 'view'){
-			$Basket = $this->Model->ViewBasket($_SESSION['UID'], $_SESSION['BasketId']);
+			$Basket = $Model->ViewBasket($_SESSION['UID'], $_SESSION['BasketId']);
 			$Html.='Quantity	ProductName		Unit Price	Total<'.$this->Wall.'br/>';
 			$GrandTotal=0;
 			foreach($Basket AS $Item)
@@ -163,10 +164,6 @@ class ProductsController extends Controller
 		
 		unset($_SESSION['BasketId']);
 	}
-	
-	function CustomHeader()
-	{
-		return $CustomHeader;
-	}
+
 }
 ?>

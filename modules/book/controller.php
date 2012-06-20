@@ -1,11 +1,6 @@
 <?php
-class AboutController extends Controller
+class BookController extends Controller
 {
-	function CustomHeader()
-	{
-		$CustomHeader='';
-		
-		return $CustomHeader;
-	}
+
 }
 ?>

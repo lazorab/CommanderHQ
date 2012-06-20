@@ -1,7 +1,7 @@
 <?php
 class ProductsModel extends Model
 {
-	function __construct()
+    function __construct()
 	{
 		mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
 		@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");	

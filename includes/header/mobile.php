@@ -107,11 +107,9 @@ function makeScrollable(wrapper, scrollable){
 }
 </script>
 </head>
-<?php echo $htmlOutput->GetOpenBodyTag();
+<?php echo $htmlOutput->GetOpenBodyTag();?>
 
-if($Module != 'login'){ ?>
-
-<div class="header" style="background-image:url(<?php echo $RENDER->Image('header_slice.png', $device->GetScreenWidth());?>);repeat-x">
+<div class="header">
 <?php
 
 if(isset($_REQUEST['banner']))
@@ -125,4 +123,3 @@ else
 ?>
 <img alt="Header" src="<?php echo $RENDER->Image(''.$Banner.'.png', $device->GetScreenWidth());?>"/>
 </div>
-    <?php } ?>

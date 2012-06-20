@@ -1,7 +1,7 @@
 <?php 
 $ratio = $request->get_screen_width_new() / 500;
-$margin = floor(((500*$ratio) - (276*$ratio)) / 4);
-$GridIconSize = floor(92*$ratio);?>
+$margin = floor(((500*$ratio) - (327*$ratio)) / 4);
+$GridIconSize = floor(109*$ratio);?>
 
 <div id="random"><?php echo $Display->RandomMessage();?></div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">

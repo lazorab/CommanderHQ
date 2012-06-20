@@ -33,20 +33,30 @@ class WodController extends Controller
 		$Model = new WodModel;
 		
 		if($_REQUEST['wodtype'] == 1){//custom
-			$WODdata .= '
-<form id="test">
-<label for="custom">Custom Type</label>
-<select id="customselect" name="custom"  onchange="getCustomContent(this.value);">
-<option value="">Please Select</option>
-<option value="Timed">Timed</option>
-<option value="AMRAP">AMRAP</option>
-<option value="Weight">Total Weight</option>
-<option value="load">Max load</option>
-<option value="Reps">Total Reps</option>
-<option value="Tabata">Tabata</option>
-<option value="Other">Other</option>
-</select></form><br/><br/><br/>
-';
+            $MemberCustomExercises = $Model->getMemberCustomExercises();
+            if(count($MemberCustomExercises) > 0){
+               $WODdata .= '<select id="customexercises" name="customexercises">
+                <option value="">Please Select</option>';
+                foreach($MemberCustomExercises AS $Exercise){
+                    $WODdata .= '<option value="'.$Exercise->recid.'">'.$Exercise->ActivityName.'</option>';
+                }
+                $WODdata .= '</select>';
+            }
+            else{
+                $WODdata .= 'New Exercise Name<br/>
+                <input type="text" name="newcustom"/>';
+                $CustomTypes = $Model->getCustomTypes();
+                $WODdata .= '
+                <form id="test">
+                <label for="custom">Type</label>
+                    <select id="customselect" name="custom"  onchange="getCustomContent(this.value);">
+                    <option value="">Please Select</option>';
+                    foreach($CustomTypes AS $Type){
+                        $WODdata .= '<option value="'.$Type->recid.'">'.$Type->ActivityType.'</option>';
+                    }
+                $WODdata .= '</select>';               
+            }
+            $WODdata .= '</form><br/><br/><br/>';
 		}
 		else if($_REQUEST['wodtype'] == 2){//my gym
 		

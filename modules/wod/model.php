@@ -51,6 +51,32 @@ class WodModel extends Model
 		
 		return $SQL;
 	}
+    
+    function getMemberCustomExercises()
+    {
+		$Exercises = array();
+		$SQL = 'SELECT recid, ExerciseName as ActivityName FROM CustomExercises WHERE MemberId = "'.$_SESSION['UID'].'"';
+		$Result = mysql_query($SQL);	
+		while($Row = mysql_fetch_assoc($Result))
+		{
+			array_push($Exercises, new WODObject($Row));
+		}
+		
+		return $Exercises;        
+    }
+    
+    function getCustomTypes()
+    {
+		$Types = array();
+		$SQL = 'SELECT recid, CustomType as ActivityType FROM CustomTypes';
+		$Result = mysql_query($SQL);	
+		while($Row = mysql_fetch_assoc($Result))
+		{
+			array_push($Types, new WODObject($Row));
+		}
+		
+		return $Types;        
+    }
 
 	function getBenchmark($Id)
 	{
