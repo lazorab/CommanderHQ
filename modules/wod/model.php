@@ -77,10 +77,37 @@ class WodModel extends Model
 		
 		return $Types;        
     }
+    
+    function getCustomDetails($Id)
+    {
+		$SQL = 'SELECT CE.recid, CE.ExerciseName AS ActivityName, CT.CustomType AS ActivityType
+        FROM CustomExercises CE
+        JOIN CustomTypes CT ON CT.recid = CE.CustomTypeId
+        WHERE CE.recid = '.$Id.'';
+		$Result = mysql_query($SQL);	
+		$Row = mysql_fetch_assoc($Result);
+		$Details = new WODObject($Row);
+		
+		return $Details;       
+    }
+    
+    function SaveCustom()
+    {
+        $SQL = 'INSERT INTO CustomExercises(MemberId, ExerciseName, CustomTypeId) 
+        VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['newcustom'].'", "'.$_REQUEST['customtype'].'")';
+		$Result = mysql_query($SQL);
+    }
 
 	function getBenchmark($Id)
-	{
-		$SQL = 'SELECT WorkoutName as ActivityName, WorkoutDescription as Description FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
+	{   
+        $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
+ 		$Result = mysql_query($SQL);	
+		$Row = mysql_fetch_assoc($Result);
+        if($Row['Gender'] == 'M')
+            $DescriptionField = 'MaleWorkoutDescription';
+        else
+            $DescriptionField = 'FemaleWorkoutDescription';
+		$SQL = 'SELECT WorkoutName as ActivityName, '.$DescriptionField.' as Description FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
 		$Result = mysql_query($SQL);	
 		$Row = mysql_fetch_assoc($Result);
 		$Workout = new WODObject($Row);

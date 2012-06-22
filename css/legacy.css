@@ -1,13 +1,47 @@
 body {
-	margin: 0 0 0 0;
+	margin: 0;
 	padding: 0;
-	font-family: Arial;
+	font-family: helvetica;
 	width: ~|~width~|~px;
-	font-size: x-small;
+	font-size: small;
 	color: #333333;
 	line-height: 130%;
 	font-weight: normal;
-	/* background-color: #3363AD; */
+}
+
+.header
+{
+
+}
+
+#canvas
+{
+	width:100%;
+	color:#fff;
+	background-color:#0d3e5f;
+}
+
+#content
+{
+	color:#fff;
+	background-color:#0d3e5f;
+}
+
+#video
+{
+	display:none;
+}
+
+#video.active
+{
+	display:block;
+}
+
+#random
+{
+	background-color:#021f3f;
+	padding:2%;
+	text-align:center;
 }
 
 img
@@ -15,6 +49,65 @@ img
 	border: none;
 	margin: 0; padding: 0; border: 0;
 	vertical-align:bottom;	
+}
+
+select
+{
+	border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+}
+
+input
+{
+	border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+}
+
+.benchmark
+{
+	width:70%;
+	margin:4% 0 4% 12%;
+	background-color:#fff;
+	border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+	border: 1px solid #fff;
+	color:#021937;
+	font-weight:bold;
+}
+
+.benchmark a
+{
+	color:#021937;
+	font-weight:bold;
+}
+
+#bmdescription
+{
+	width:50%;
+	margin:10% 20% 10% 20%;
+	padding:5%;
+	background-color:#fff;
+	border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+	border: 1px solid #fff;	
+	color:#000;
+	font-weight:bold;
+	font-size:medium;
+}
+
+#clock{
+	margin:8% 25% 8% 20%;
+	text-align:center;
+	width:50%;
+	font-size:xx-large;
+	font-weight:bold;
+	border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px;	
 }
 
 .clsFooter
@@ -420,26 +513,28 @@ a {
 }
 
 /*main footer*/
-#footer{
-	background-color:#024e8c;
+.footer{
+	background-color:#6f747a;
 	font-family:Arial, Helvetica, sans-serif;
 	font-size:12px;
 	color:#fff;
-	margin: 2% 0 0 0;
+	margin:0;
+	padding:2%;
+	text-align:center;
 }
 
-#footer img{
+.footer img{
 	vertical-align:middle;
 }
 
-#FooterIcons{
+.FooterIcons{
 	padding: 2% 0 0 5%;
 	font-size:12px;
 	color:#333;
 	font-weight:bold;	
 }
 
-#FooterIcons img
+.FooterIcons img
 {
 	vertical-align:middle;
 }

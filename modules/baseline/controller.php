@@ -25,8 +25,7 @@ class BaselineController extends Controller
 	{
 		$Model = new BaselineModel;
         $RENDER = new Image(SITE_ID);
-		$html='<br/>
-        <h3>Baseline Workout</h3>';
+		$html='';
 		
 		if(isset($_REQUEST['id']))
 		{
@@ -38,11 +37,11 @@ class BaselineController extends Controller
            if(count($Baselines) > 0)
            {
            $html.='<form id="selectform">
-           <label for="baseline">Baseline</label>
+           <label for="baselineselect">Baseline</label>
            <select id="baselineselect" name="baselineselect"  onchange="getCustomContent(this.value);">
            <option value="">Please Select</option>';
                 foreach($Baselines as $Baseline){//select form
-                    $Detail = $Model->getBaselineDetails($Baseline);
+                    $Detail = $Model->getBaselineDetails($Baseline->Id);
                     $html.='<option value="'.$Detail->ExerciseId.'">'.$Detail->ExerciseName.'</option>';
                 }
            $html.= '</select></form><br/><br/><br/>';
@@ -87,9 +86,9 @@ class BaselineController extends Controller
             else if(isset($_REQUEST['benchmark'])){
                 $BaselineId = $Model->setMemberBaseline();
                 $Benchmark = $Model->getBenchmarkDetails($_REQUEST['benchmark']);
-                $Start = $RENDER->Image('start.png', SCREENWIDTH);
+                $Start = $RENDER->Image('start.png', $this->Device->GetScreenWidth());
                 $Stop = $RENDER->Image('stop.png', $this->Device->GetScreenWidth());
-                $Reset = $RENDER->Image('report.png', $this->Device->GetScreenWidth());
+                $Reset = $RENDER->Image('reset.png', $this->Device->GetScreenWidth());
                 $Save = $RENDER->Image('save.png', $this->Device->GetScreenWidth());
     
                 $html.='<div id="bmdescription">';

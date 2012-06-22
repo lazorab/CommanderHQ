@@ -1,26 +1,25 @@
 <?php
-session_start();
-if(isset($_SESSION['UID'])){ ?>
+    $ratio = $request->get_screen_width_new() / 640;
+    $NavIconSize = floor(72*$ratio);
+    ?>
+<div id="nav" style="height:<?php echo floor(100*$ratio);?>px;background-color:#6e747a">
 
-<wall:a href="?module=memberhome">Home</wall:a>
-<wall:a href="?module=reports">Reports</wall:a>
-<wall:a href="?module=exerciseplan">ExercisePlan</wall:a>
-<wall:a href="?module=benchmark">BenchmarkWorkouts</wall:a>
-<wall:a href="?module=wod">WOD</wall:a>
-<wall:a href="?module=challenge">Challenge</wall:a>
-<wall:a href="?module=travelworkouts">TravelWorkouts</wall:a>
-<wall:a href="?module=exerciselog">QuickLog</wall:a>
-<wall:a href="?module=foodlog">FoodLog</wall:a>
-<wall:a href="?module=recipes">Recipes</wall:a>
-<wall:a href="?module=products">Products</wall:a>
-<wall:a href="?module=videos">Videos</wall:a>
-<wall:a href="?module=logout">LogOut</wall:a>
-
-<?php } else { ?>
-
-<wall:a href="?module=about">About</wall:a>
-<wall:a href="?module=map">Map</wall:a>
-<wall:a href="?module=register">Register</wall:a>
-<wall:a href="?module=login">Login</wall:a>
-
+<?php 
+    if(isset($_SESSION['UID'])){ ?>
+<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 0 10%;">
+<wall:img id="menuselect" alt="Menu" <?php echo $RENDER->NewImage('menu.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>menu.png"/>
+</div>
+<?php }
+    
+    if(isset($_REQUEST['module']) && ($_REQUEST['module'] != 'memberhome' && $_REQUEST['module'] != 'index')){ ?>
+<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 0 4%;">
+<wall:a class="menuitem" href="?module=memberhome">
+<wall:img alt="Home" <?php echo $RENDER->NewImage('home.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>home.png"/>
+</wall:a>
+</div>	
 <?php } ?>
+
+<div id="menuvideo" class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 2% 4%;"></div>
+
+</div>
+<div class="clear"></div>

@@ -49,7 +49,14 @@ class BenchmarkModel extends Model
 	
 	function GetBMWS($Filter)
 	{
-		$SQL = 'SELECT recid, Banner, WorkoutName, WorkoutDescription, VideoId 
+        $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
+ 		$Result = mysql_query($SQL);	
+		$Row = mysql_fetch_assoc($Result);
+        if($Row['Gender'] == 'M')
+            $DescriptionField = 'MaleWorkoutDescription';
+        else
+            $DescriptionField = 'FemaleWorkoutDescription';
+		$SQL = 'SELECT recid, Banner, WorkoutName, '.$DescriptionField.' AS WorkoutDescription, VideoId 
 		FROM BenchmarkWorkouts WHERE '; 	
 		if(!is_int($Filter)){
 			$SQL .= 'CategoryId = '.$Filter.'';
@@ -67,8 +74,15 @@ class BenchmarkModel extends Model
 	}	
 	
 	function GetWorkoutDetails($Id)
-	{
-		$SQL = 'SELECT WorkoutName, WorkoutDescription, VideoId FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
+	{   
+        $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
+ 		$Result = mysql_query($SQL);	
+		$Row = mysql_fetch_assoc($Result);
+        if($Row['Gender'] == 'M')
+            $DescriptionField = 'MaleWorkoutDescription';
+        else
+            $DescriptionField = 'FemaleWorkoutDescription';
+		$SQL = 'SELECT WorkoutName, '.$DescriptionField.' AS WorkoutDescription, VideoId FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
 		$Result = mysql_query($SQL);	
 		$Row = mysql_fetch_assoc($Result);
 		$Workout = new BenchmarkObject($Row);

@@ -38,7 +38,7 @@ function display(data)
 
 </script>
 <br/>
-<h3>Reports</h3>
+<div id="topselection">
 <form id="reportform" name="reportform">
 <label for="action">Report Type</label>
 <select id="action" name="action" onchange="getOptions(this.value, datetime.value);">
@@ -48,10 +48,13 @@ function display(data)
 <option value="WOD">WOD</option>
 <option value="Pending">Pending Exercises</option>
 <option value="Weight">Weight History</option>
-</select><br/><br/><br/>
-<label for="datetime">Date</label>
-<input type="text" name="datetime" id="datetime" value="<?php echo date('d/m/Y');?>" onchange="getOptions(action.value, this.value);"/>	
+</select><br/><br/>
+<!--
+<label for="datetime">Date</label><br/>
+<input type="text" name="datetime" id="datetime" value="<?php echo date('d/m/Y');?>" onchange="getWOD(wodtype.value);/><br/>
+-->
 </form>
+</div>
 
 <div id="reportdata">
 <?php echo $Display->Output();?>

@@ -31,10 +31,10 @@ $(document).ready(function() {
 
 		//If visible hide else show
 		if($Menu.hasClass('active')) {
-	    	$MenuTrigger.attr("src", '<?php echo $RENDER->Image('menu.png', $request->get_screen_width_new());?>');
+	    	$MenuTrigger.attr("src", '<?php echo ImagePath;?>menu.png');
 	    	$Menu.removeClass('active');
 		} else {
-	    	$MenuTrigger.attr("src",'<?php echo $RENDER->Image('menu_active.png', $request->get_screen_width_new());?>');
+	    	$MenuTrigger.attr("src",'<?php echo ImagePath;?>menu_active.png');
 	    	$Menu.addClass('active');
 			//makeScrollable("div.sc_menu_wrapper", "div.sc_menu");
 	    }
@@ -107,19 +107,20 @@ function makeScrollable(wrapper, scrollable){
 }
 </script>
 </head>
-<?php echo $htmlOutput->GetOpenBodyTag();?>
-
-<div class="header">
-<?php
-
+<?php 
+echo $htmlOutput->GetOpenBodyTag();
+    
 if(isset($_REQUEST['banner']))
     $Banner = $_REQUEST['banner'];
 else if($_REQUEST['module'] != '' && $_REQUEST['module'] != 'memberhome'){
     $Banner = ''.$_REQUEST['module'].'_header';
 }
 else
-    $Banner = 'header';
-
+    $Banner = 'header'; 
+$Text = 'TestFont';
+//$Header = new ImageCreate($Text);
 ?>
-<img alt="Header" src="<?php echo $RENDER->Image(''.$Banner.'.png', $device->GetScreenWidth());?>"/>
+
+<div id="header">
+<img alt="Header" <?php echo $RENDER->NewImage(''.$Banner.'.png', $request->get_screen_width_new());?> src="<?php echo ImagePath.$Banner;?>.png"/>
 </div>

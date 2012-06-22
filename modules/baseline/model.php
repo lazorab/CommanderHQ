@@ -37,7 +37,9 @@ class BaselineModel extends Model
     
     function getBenchmarkDetails($Id)
     {
-		$SQL = 'SELECT recid, WorkoutName as ExerciseName, WorkoutDescription as ExerciseDescription FROM BenchmarkWorkouts WHERE recid = "'.$Id.'"';
+		$SQL = 'SELECT recid, WorkoutName as ExerciseName, WorkoutDescription as ExerciseDescription 
+        FROM BenchmarkWorkouts 
+        WHERE recid = "'.$Id.'"';
 		$Result = mysql_query($SQL);	
 		$Row = mysql_fetch_assoc($Result);
         $Benchmark = new BaselineObject($Row);
@@ -90,17 +92,23 @@ class BaselineModel extends Model
         return $InsertId;
     }
                        
-    function getBaselineDetails(&$Baseline)
+    function getBaselineDetails($Id)
     {
-        if($Baseline->ExerciseType == 'Custom'){
-            $SQL = '';
+        $SQL = 'SELECT ExerciseType
+        FROM MemberBaselines
+        WHERE recid = '.$Id.'';           
+        $Result = mysql_query($SQL);
+        $Row = mysql_fetch_assoc($Result);
+        if($Row['ExerciseType'] == 'Custom'){
+            $Table = 'CustomExercises';
         }
-        else if($Baseline->ExerciseType == 'Benchmark'){
-            $SQL = 'SELECT recid, WorkoutName AS ExerciseName,
-                       WorkoutDescription AS ExerciseDescription
-                       FROM BenchmarkWorkouts
+        else if($Row['ExerciseType'] == 'Benchmark'){
+            $Table = 'BenchmarkExercises';
+        }
+            $SQL = 'SELECT recid, WorkoutName AS ExerciseName
+                       FROM '.$Table.'
                        WHERE recid = '.$Baseline->ExerciseId.'';           
-        }
+    
 
         $Result = mysql_query($SQL);	
                        
