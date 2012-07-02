@@ -10,13 +10,13 @@ class BenchmarkController extends Controller
 	{
 		parent::__construct();
 		session_start();
-		if($_REQUEST['action'] == 'save'){
-			if(!isset($_SESSION['UID'])){
-				header('location: index.php?module=login');	
-			}else{
-				$this->Save();
-			}
+        if(!isset($_SESSION['UID'])){
+            header('location: index.php?module=login');
         }
+		if($_REQUEST['action'] == 'save'){
+				$this->Save();
+        }
+        
 		$Model = new BenchmarkModel;
 		if(isset($_REQUEST['id']))
 			$this->Workout = $Model->getWorkoutDetails($_REQUEST['id']);

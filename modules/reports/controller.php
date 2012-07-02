@@ -49,15 +49,13 @@ class ReportsController extends Controller
 			}
 		}
 		else if(isset($_REQUEST['PerformanceId']))
-			return $this->PerformanceHistory($_REQUEST['PerformanceId']);
+			return $this->PerformanceHistory();
         else if(isset($_REQUEST['WODId']))
-			return $this->WODHistory($_REQUEST['WODId']);
+			return $this->WODHistory();
         else if(isset($_REQUEST['BenchmarkId']))
-			return $this->BenchmarkHistory($_REQUEST['BenchmarkId']);
+			return $this->BenchmarkHistory();
         else if(isset($_REQUEST['BaselineId']))
-			return $this->BaselineHistory($_REQUEST['BaselineId']);
-		else
-			return 'Please make selection';    
+			return $this->BaselineHistory();    
     }
     
 	
@@ -88,7 +86,7 @@ class ReportsController extends Controller
 		foreach($ExerciseItems AS $Exercise) { 
 			$Html.='<'.$this->Wall.'option value="'.$Exercise->ExerciseId.'">'.$Exercise->Exercise.'</'.$this->Wall.'option>';
 		}
-        $Html.='</'.$this->Wall.'select>';
+        $Html.='</'.$this->Wall.'select><br/><br/>';
 		return $Html;	
 	}
     
@@ -109,11 +107,11 @@ class ReportsController extends Controller
         $Model=new ReportsModel();
 		$ExerciseItems = $Model->getBenchmarkExercises();
 		$Html='<'.$this->Wall.'select name="BenchmarkId" id="BenchmarkId" onchange="getBenchmarkReport(this.value, reportform.datetime.value);">';
-        $Html.='<'.$this->Wall.'option value=" ">Please Select</'.$this->Wall.'option>';
+        $Html.='<'.$this->Wall.'option value="">Logged Benchmarks</'.$this->Wall.'option>';
 		foreach($ExerciseItems AS $Exercise) { 
 			$Html.='<'.$this->Wall.'option value="'.$Exercise->ExerciseId.'">'.$Exercise->Exercise.'</'.$this->Wall.'option>';
 		}
-        $Html.='</'.$this->Wall.'select>';
+        $Html.='</'.$this->Wall.'select><br/><br/>';
 		return $Html;	
 	}
     
@@ -124,7 +122,7 @@ class ReportsController extends Controller
         $Html='';
         foreach($BenchmarkData as $Data)
         {
-            $Html.=''.$Data->Exercise.'';
+            $Html.=''.$Data->TimeCreated.' - '.$Data->TimeToComplete.'<br/>';
         }
         return $Html;
     }    
@@ -134,11 +132,11 @@ class ReportsController extends Controller
         $Model=new ReportsModel();
 		$ExerciseItems = $Model->getBaselineExercises();
 		$Html='<'.$this->Wall.'select name="BaselineId" id="BaselineId" onchange="getBaselineReport(this.value, reportform.datetime.value);">';
-        $Html.='<'.$this->Wall.'option value=" ">Please Select</'.$this->Wall.'option>';
+        $Html.='<'.$this->Wall.'option value="">Baseline Exercises</'.$this->Wall.'option>';
 		foreach($ExerciseItems AS $Exercise) { 
 			$Html.='<'.$this->Wall.'option value="'.$Exercise->ExerciseId.'">'.$Exercise->Exercise.'</'.$this->Wall.'option>';
 		}
-        $Html.='</'.$this->Wall.'select>';
+        $Html.='</'.$this->Wall.'select><br/><br/>';
 		return $Html;	
 	}
     
@@ -149,7 +147,7 @@ class ReportsController extends Controller
         $Html='';
         foreach($BaselineData as $Data)
         {
-           $Html.=''.$Data->Exercise.'';
+           $Html.=''.$Data->TimeCreated.' - '.$Data->Attribute.':'.$Data->AttributeValue.'<br/>';
         }
         return $Html;
     }    

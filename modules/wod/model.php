@@ -93,8 +93,8 @@ class WodModel extends Model
     
     function SaveCustom()
     {
-        $SQL = 'INSERT INTO CustomExercises(MemberId, ExerciseName, CustomTypeId) 
-        VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['newcustom'].'", "'.$_REQUEST['customtype'].'")';
+        $SQL = 'INSERT INTO CustomExercises(MemberId, ExerciseName, ExerciseDescription, CustomTypeId) 
+        VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['newcustom'].'", "'.$_REQUEST['customdescription'].'"), "'.$_REQUEST['customtype'].'")';
 		$Result = mysql_query($SQL);
     }
 

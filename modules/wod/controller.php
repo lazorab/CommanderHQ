@@ -5,12 +5,12 @@ class WodController extends Controller
 	{
 		parent::__construct();
 		session_start();
-		if($_REQUEST['action'] == 'save')
-			if(!isset($_SESSION['UID'])){
-				header('location: index.php?module=login');	
-			}else{
+        if(!isset($_SESSION['UID'])){
+            header('location: index.php?module=login');
+        }
+        if($_REQUEST['action'] == 'save'){
 				$this->Save();
-			}
+        }
 	}
 	
 	function WodDetails()
@@ -97,9 +97,6 @@ class WodController extends Controller
             $WODdata.='</div>';
             $WODdata.= $this->StopWatch(3, $_REQUEST['benchmark']);        
 		}		
-		else{
-			$WODdata = 'Make your selection above';
-		}
 		return $WODdata;	
 	}
     

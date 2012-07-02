@@ -40,9 +40,8 @@ function display(data)
 <div id="topselection">
     <form action="index.php" method="post" name="wodform">
 	<input type="hidden" name="module" value="wod"/>
-			<label for="selecttype">WOD Type</label><br/>
 				<select id="selecttype" name="wodtype" onchange="getWOD(this.value);" style="width:100%">
-					<option value="0">Please Select</option>
+					<option value="0">Select WOD Type</option>
 					<option value="1" <?php if($_REQUEST['wodtype'] == 1){ ?>selected="selected"<?php } ?>>Custom</option>
 					<option value="2" <?php if($_REQUEST['wodtype'] == 2){ ?>selected="selected"<?php } ?>>My Gym</option>
 					<option value="3" <?php if($_REQUEST['wodtype'] == 3){ ?>selected="selected"<?php } ?>>Benchmarks</option>
