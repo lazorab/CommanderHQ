@@ -7,7 +7,7 @@ define('ERROR_REPORT_EMAIL_ADDRESS', 'support@be-mobile.co.za');
 
 if (QA) {
     define('TEST_EMAIL', 'devguru@be-mobile.co.za');
-    define("THIS_ADDRESS", "http://crossfit.be-mobile.co.za");
+    define("THIS_ADDRESS", "http://qatest6.be-mobile.co.za");
 } else {
     define('TEST_EMAIL', '');
     define("THIS_ADDRESS", "");
