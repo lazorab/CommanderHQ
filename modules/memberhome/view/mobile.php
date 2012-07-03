@@ -2,7 +2,6 @@
 $ratio = $request->get_screen_width_new() / 640;
 $margin = floor(((640*$ratio) - (422*$ratio)) / 4);
 $GridIconSize = floor(144*$ratio);
-    
 ?>
 
 <div id="random"><?php echo $Display->RandomMessage();?></div>

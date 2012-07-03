@@ -2,45 +2,31 @@
 $(document).ready(function () {
     var curr = new Date().getFullYear();
     var opt = {}
+    opt.select = {preset : 'select'};
 	opt.datetime = { preset : 'datetime', dateOrder: 'ddMMyy', timeWheels: '', dateFormat: 'dd-mm-yy', timeFormat: ''  };
 
-    $('#dob').scroller($.extend(opt['datetime'], { theme: 'default', mode: 'scroller', display: 'model' }));
+    $('#DOB').scroller($.extend(opt['datetime'], { theme: 'default', mode: 'scroller', display: 'model' }));
+    $('#system').scroller($.extend(opt['select'], { theme: 'default', mode: 'scroller', display: 'model' }));
 });
+
+function getSystem(val)
+{
+    if(val == 'Metric'){
+        document.getElementById("heightlabel").innerHTML = 'Height(cm)';
+        document.getElementById("height").value = '<?php echo $Display->Height();?>';
+        document.getElementById("weightlabel").innerHTML = 'Weight(kg)';
+        document.getElementById("weight").value = '<?php echo $Display->Weight();?>';
+    }
+    else if(val == 'Imperial'){
+        document.getElementById("heightlabel").innerHTML = 'Height(inches)';
+        document.getElementById("height").value = Math.ceil(<?php echo $Display->Height();?> * 0.39);
+        document.getElementById("weightlabel").innerHTML = 'Weight(lbs)';
+        document.getElementById("weight").value = Math.ceil(<?php echo $Display->Weight();?> * 2.22);     
+    }
+}
 </script>
 
-<?php echo $Display->Message;
-$MemberDetails = $Display->MemberDetails();
-?>
-
+<?php echo $Display->Message;?>
 <br/>
-<form action="index.php" method="post">
-<div data-role="fieldcontain">
-<input type="hidden" name="module" value="edit"/>
-<input type="hidden" name="formsubmitted" value="yes"/>
-<input type="hidden" name="UserId" value="<?php echo $MemberDetails->UserId;?>"/>
-<input type="hidden" name="SystemOfMeasure" value="<?php echo $Display->System;?>"/>
-First Name<br/>
-<input type="text" name="FirstName" value="<?php echo $MemberDetails->FirstName;?>"/><br/>
-Last Name<br/>
-<input type="text" name="LastName" value="<?php echo $MemberDetails->LastName;?>"/><br/>
-Cell<br/>
-<input type="text" name="Cell" value="<?php echo $MemberDetails->Cell;?>"/><br/>
-Email<br/>
-<input type="text" name="Email" value="<?php echo $MemberDetails->Email;?>"/><br/>
-<label for="dob">Date of Birth</label><br/>
-	<input type="text" name="dob" id="dob" value="<?php echo date('d-m-Y',strtotime($MemberDetails->DOB));?>"/>	
-<br/><br/>
-Male<input type="radio" name="Gender" value="M" <?php if($MemberDetails->Gender == 'M') echo 'checked="checked"';?>/>
-Female<input type="radio" name="gender" value="F" <?php if($MemberDetails->Gender == 'F') echo 'checked="checked"';?>/>
-<br/><br/>
-Weight (<?php echo $Display->SystemWeight;?>)<br/>
-<input type="text" name="Weight" value="<?php echo $MemberDetails->Weight;?>"/><br/>
-Height (<?php echo $Display->SystemHeight;?>)<br/>
-<input type="text" name="Height" value="<?php echo $MemberDetails->Height;?>"/><br/>
-<br/><br/>
-Preferred Sytem of Measurement<br/>
-<input type="submit" name="system" value="<?php echo $Display->AlternateSystem;?>"/>
-<br/><br/>
-<input type="submit" name="submit" value="Save"/><br/><br/>
-</div>
-</form>
+
+<?php echo $Display->Output();?>

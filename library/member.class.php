@@ -21,7 +21,8 @@ class Member
 		@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");
 
 		$sql='SELECT M.FirstName, M.LastName, M.UserName, D.Weight, D.Height, D.Gender 
-		FROM Members M JOIN MemberDetails D ON D.MemberId = M.UserId
+		FROM Members M 
+        LEFT JOIN MemberDetails D ON D.MemberId = M.UserId
 		WHERE M.UserId = '.$UserId.'';
 		$result = mysql_query($sql);
 		$row = mysql_fetch_assoc($result);

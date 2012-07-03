@@ -1,11 +1,11 @@
 <?php
 class EditController extends Controller
 {
+    var $Model;
 	var $Message;
-	var $Model;
 	var $MemberDetails;
-	var $SystemWeight;
-	var $SystemHeight;	
+	var $Weight;
+	var $Height;	
 	var $System;
 	var $AlternateSystem;	
 	
@@ -15,25 +15,12 @@ class EditController extends Controller
 		session_start();
 		if(!isset($_SESSION['UID']))
 			header('location: index.php?module=login');
-		
-		$this->Model = new EditModel;
+
 		$Validate = new ValidationUtils;		
 		$this->Message = '';
 		
 		if($_REQUEST['formsubmitted'] == 'yes')
 		{
-			if($_REQUEST['system'] == 'Metric'){
-				$this->System = 'Metric';
-				$this->SystemWeight = 'Kg';
-				$this->SystemHeight = 'cm';	
-				$this->AlternateSystem = 'Imperial';
-			}
-			if($_REQUEST['system'] == 'Imperial'){
-				$this->System = 'Imperial';
-				$this->SystemWeight = 'lbs';
-				$this->SystemHeight = 'inches';	
-				$this->AlternateSystem = 'Metric';	
-			}
 
 	if($_REQUEST['FirstName'] == '')
 		$this->Message = 'Firstname Required';
@@ -53,64 +40,108 @@ class EditController extends Controller
 		$this->Message = 'Height Required';
 	elseif($_REQUEST['Gender'] == '')		
 		$this->Message = 'Select Gender';
-	
-	$this->Model->setCredentials();	
-	if($this->Message == '' && $_REQUEST['submit'] == 'Save')
+		
+	if($this->Message == '')
 	{
-		$this->Model->Save($this->Model->MemberDetails());
-		header('location: index.php?module=memberhome');
+		$this->Save();
+		//header('location: index.php?module=memberhome');
 	}
 }	
-else{
-		$this->Model->getCredentials($_SESSION['UID']);
 	}
-		$this->MemberDetails = $this->Model->MemberDetails();
-		if($this->MemberDetails->SystemOfMeasure == 'Metric'){
-			$this->System = 'Metric';
-			$this->SystemWeight = 'Kg';
-			$this->SystemHeight = 'cm';	
-			$this->AlternateSystem = 'Imperial';
-		}
-		if($this->MemberDetails->SystemOfMeasure == 'Imperial'){
-			$this->System = 'Imperial';
-			$this->SystemWeight = 'lbs';
-			$this->SystemHeight = 'inches';	
-			$this->AlternateSystem = 'Metric';	
-		}
-	}
-	
-	function Model()
-	{
-		return $this->Model;
-	}
-	
-	function MemberDetails()
-	{
-		return $this->MemberDetails;
-	}
+    
+    function Save()
+    {
+        $Model = new EditModel;
+        $Model->Save();
+    }
+    
+    function Output()
+    {
+        $Model = new EditModel;
+        $MemberDetails = $Model->getMemberDetails();
+        $this->Height = $MemberDetails->Height;
+        $this->Weight = $MemberDetails->Weight;
+        if($MemberDetails->DOB == '')
+           $DOB = '';
+        else
+            $DOB = date('d-m-Y',strtotime($MemberDetails->DOB));
+        if($MemberDetails->SystemOfMeasure == 'Metric'){
+            $WeightUnit = 'kg';
+            $HeightUnit = 'cm';
+        }
+        if($MemberDetails->SystemOfMeasure == 'Imperial'){
+            $WeightUnit = 'lbs';
+            $HeightUnit = 'inches';
+        }
+        $Html='
+        <form action="index.php" method="post">
+        <div data-role="fieldcontain">
+        <input type="hidden" name="module" value="edit"/>
+        <input type="hidden" name="formsubmitted" value="yes"/>
+        <input type="hidden" name="UserId" value="'.$MemberDetails->UserId.'"/>
+<input id="systemofmeasure" type="hidden" name="SystemOfMeasure" value="'.$MemberDetails->SystemOfMeasure.'"/>
+First Name<br/>
+<input type="text" name="FirstName" value="'.$MemberDetails->FirstName.'"/><br/>
+Last Name<br/>
+<input type="text" name="LastName" value="'.$MemberDetails->LastName.'"/><br/>
+Cell<br/>
+<input type="text" name="Cell" value="'.$MemberDetails->Cell.'"/><br/>
+Email<br/>
+<input type="text" name="Email" value="'.$MemberDetails->Email.'"/><br/>
+<label for="DOB">Date of Birth</label><br/>
+<input type="text" name="DOB" id="DOB" value="'.$DOB.'"/>	
+<br/><br/>
+Male<input type="radio" name="Gender" value="M"';
+if($MemberDetails->Gender == 'M') 
+    $Html.='checked="checked"';
+$Html.='/>
+Female<input type="radio" name="Gender" value="F"';
+if($MemberDetails->Gender == 'F')
+    $Html.='checked="checked"';
+$Html.='/><br/>
+<div id="weightlabel">Height('.$HeightUnit.')</div>
+<input id="weight" type="text" name="Weight" value="'.$MemberDetails->Weight.'"/><br/>
+<div id="heightlabel">Weight('.$WeightUnit.')</div>
+<input id="height" type="text" name="Height" value="'.$MemberDetails->Height.'"/><br/>
+<br/>
+Preferred Sytem of Measurement<br/>
+<select id="system" name="system" onchange="getSystem(this.value);">
+<option value="">Please Select</option>
+<option value="Metric"';
+if($MemberDetails->SystemOfMeasure == 'Metric')
+    $Html.=' selected="selected"';
+$Html.='>Metric</option>
+<option value="Imperial"';
+if($MemberDetails->SystemOfMeasure == 'Imperial')
+    $Html.=' selected="selected"';
+$Html.='>Imperial</option>
+</select>
+<br/><br/>
+<input type="submit" name="submit" value="Save"/><br/><br/>
+</div>
+</form>';
+return $Html;
+    }
+
+    function Height()
+    {
+        if($this->Height == '')
+            return 0;
+        else
+        return $this->Height;
+    }
+
+    function Weight()
+    {
+        if($this->Weight == '')
+            return 0;
+        else
+        return $this->Weight;
+    }
 	
 	function Message()
 	{
 		return $this->Message;
-	}
-	
-	function CustomHeader()
-	{
-		$RENDER = new Image(SITE_ID);
-		$Register = $RENDER->Image('register.png', $this->Device->GetScreenWidth());
-		$GymRegister = $RENDER->Image('registergym.png', $this->Device->GetScreenWidth());
-		$Goals = $RENDER->Image('goals.png', $this->Device->GetScreenWidth());
-
-		$CustomHeader='
-		<script type="text/javascript">
-			function GetMenuItem(selected)
-			{
-				document.getElementById("menu").innerHTML = \'<img onclick="" alt="Register" src="'.$Register.'"/><img onclick="" alt="GymRegister" src="'.$GymRegister.'"/><img onclick="" alt="Goals" src="'.$Goals.'"/>\';
-				document.getElementById("content").innerHTML = \'test\';
-			}
-		</script>';
-		
-		return $CustomHeader;
 	}
 }
 ?>
