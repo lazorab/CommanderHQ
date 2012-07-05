@@ -23,7 +23,7 @@ Remember me
 </form>
 <br/>
 Not a member yet?
-<a href="?module=register" style="margin-left:0.1%">
+<a href="?module=profile" style="margin-left:0.1%">
 <img alt="Signup" <?php echo $RENDER->NewImage('register.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>register.png"/>
 </a>
 <br/>

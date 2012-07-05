@@ -12,14 +12,14 @@
 <link rel="apple-touch-icon" type="image/x-icon" href="http://images/favicon.ico" />
 <link type="text/css" rel="stylesheet" href="/css/jquery.mobile-1.1.0.min.css" />
 <link type="text/css" rel="stylesheet" href="/css/scrollmenu.css" />
-<link href="css/mobiscroll-2.0.custom.min.css" rel="stylesheet" type="text/css" />
-<?php echo utility::mobile_stylesheet($request->get_screen_width_new(), , 'css/mobile.css');?>
+<link href="/css/mobiscroll-2.0.custom.min.css" rel="stylesheet" type="text/css" />
+<?php echo utility::mobile_stylesheet($request->get_screen_width_new(), 'css/mobile.css');?>
 <script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
-<script type="text/javascript" src="/js/jquery.mobile-1.1.0.min.js"></script>
+
 <script type="text/javascript" src="/js/jquery.easing.1.3.js"></script>
 <script type="text/javascript" src="/js/jquery.color.js"></script>
 <script type="text/javascript" src="/js/stopwatch.js"></script>
-<script type="text/javascript" src="/js/app.js?v=30"></script>
+<script type="text/javascript" src="/js/mobiscroll-2.0.custom.min.js"></script>
 <script type="text/javascript" src="http://www.be-mobile.co.za/framework/js/device.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {

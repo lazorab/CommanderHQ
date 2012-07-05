@@ -24,10 +24,7 @@ if (!empty($_GET['oauth_verifier']) && !empty($_SESSION['oauth_token']) && !empt
         $userdata = $user->checkUser($user_info, 'twitter');
         if(!empty($userdata)){
             session_start();
-            $_SESSION['UID'] = $userdata['UserId'];
             $_SESSION['oauth_id'] = $uid;
-            $_SESSION['UserName'] = $userdata['UserName'];
-            $_SESSION['FirstName'] = $userdata['FirstName'];
             $_SESSION['oauth_provider'] = $userdata['oauth_provider'];
             $Redirect = $userdata['redirect'];
             header("Location: index.php?module=".$Redirect."");

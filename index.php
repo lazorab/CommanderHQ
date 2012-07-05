@@ -31,7 +31,7 @@
 		if (file_exists("includes/header/$Environment.php")) 
 			include("includes/header/$Environment.php");
     
-    if($Module != 'login'){    
+    if(isset($_SESSION['UID'])){    
 	/*MENU*/	
 		if (file_exists("includes/menu/$Environment.php")) 
 			include("includes/menu/$Environment.php");

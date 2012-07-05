@@ -4,12 +4,9 @@ $NavIconSize = floor(72*$ratio);
 ?>
 <div id="nav" style="height:<?php echo floor(100*$ratio);?>px;background-color:#6e747a">
 
-<?php 
-if(isset($_SESSION['UID'])){ ?>
 <div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 0 10%;">
 	<img id="menuselect" alt="Menu" <?php echo $RENDER->NewImage('menu.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>menu.png"/>
 </div>
-<?php }
     
 if(isset($_REQUEST['module']) && ($_REQUEST['module'] != 'memberhome' && $_REQUEST['module'] != 'index')){ ?>
 <div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 0 4%;">
@@ -38,7 +35,7 @@ if(isset($_REQUEST['module']) && ($_REQUEST['module'] != 'memberhome' && $_REQUE
 <a href="?module=converter">
     <img alt="Converter" <?php echo $RENDER->NewImage('menu_converter.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>menu_converter.png"/>
 </a>
-<a href="?module=edit">
+<a href="?module=profile">
     <img alt="Profile" <?php echo $RENDER->NewImage('menu_profile.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>menu_profile.png"/>
 </a>
     <img alt="Workouts" <?php echo $RENDER->NewImage('menu_workouts.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>menu_workouts.png"/>
