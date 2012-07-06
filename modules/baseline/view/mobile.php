@@ -1,17 +1,4 @@
-<script type="text/javascript">
-$(document).ready(function () {
-                  var curr = new Date().getFullYear();
-                  var opt = {}
-                  opt.select = {preset : 'select'};
-                  opt.datetime = { preset : 'datetime', dateOrder: 'ddMMyy', timeWheels: '', dateFormat: 'dd/mm/yy', timeFormat: ''  };
-                  
-                  $('#datetime').scroller($.extend(opt['datetime'], { theme: 'default', mode: 'scroller', display: 'model' }));
-                  $('#baselineselect').scroller($.extend(opt['select'], { theme: 'default', mode: 'scroller', display: 'model' }));
-                  $('#newbaseline').scroller($.extend(opt['select'], { theme: 'default', mode: 'scroller', display: 'model' }));
-                  $('#benchmark').scroller($.extend(opt['select'], { theme: 'default', mode: 'scroller', display: 'model' }));
-                  $('#customtype').scroller($.extend(opt['select'], { theme: 'default', mode: 'scroller', display: 'model' }));
-
-});	
+<script type="text/javascript">	
 
 function getBaseline(catid)
 {

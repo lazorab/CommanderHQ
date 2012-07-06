@@ -9,12 +9,40 @@ body {
 	font-weight: normal;
 }
 
+#menu
+{ 
+	position:fixed;
+    top: 25%;
+    left: 0;
+	display:none;
+	color:#fff;
+	background-color:#0d3e5f;
+}
+
+#menu.active
+{ 
+	display:block;
+}
+
+div.sc_menu_wrapper {
+	position: relative; 	
+	height: auto;
+	/* Make bigger than a photo, because we need a place for a scrollbar. */
+	width: 100%;
+	
+	overflow: auto;
+}
+
 #header
 {
 	font-family:Airstrip Four;
 	font-size:medium;
 	color:#ffea00;
 	background-color:#021f3f;
+}
+
+#nav{
+	background-color:#6e747a;
 }
 
 #canvas
@@ -27,6 +55,8 @@ body {
 
 #content
 {
+	width:100%;
+	min-height: 344px;
 	color:#fff;
 	background-color:#0d3e5f;
 }

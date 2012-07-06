@@ -73,7 +73,7 @@ class ProfileController extends Controller
         if($MemberDetails->DOB == '')
            $DOB = '';
         else
-            $DOB = date('d-m-Y',strtotime($MemberDetails->DOB));
+            $DOB = date('j M Y',strtotime($MemberDetails->DOB));
 
         $WeightUnit = 'kg';
         $HeightUnit = 'cm';
@@ -89,32 +89,34 @@ class ProfileController extends Controller
         <input type="hidden" name="formsubmitted" value="yes"/>
         <input type="hidden" name="UserId" value="'.$MemberDetails->UserId.'"/>
 <input id="systemofmeasure" type="hidden" name="SystemOfMeasure" value="'.$MemberDetails->SystemOfMeasure.'"/>
-First Name<br/>
-<input type="text" name="FirstName" value="'.$MemberDetails->FirstName.'"/><br/>
-Last Name<br/>
-<input type="text" name="LastName" value="'.$MemberDetails->LastName.'"/><br/>
-Cell<br/>
-<input type="text" name="Cell" value="'.$MemberDetails->Cell.'" placeholder="+2778000000"/><br/>
-Email<br/>
-<input type="text" name="Email" value="'.$MemberDetails->Email.'"/><br/>
-<label for="DOB">Date of Birth</label><br/>
-<input type="text" name="DOB" id="DOB" value="'.$DOB.'"/>	
-<br/><br/>
-Male<input type="radio" name="Gender" value="M"';
+<label for="firstname">First Name</label>
+<input style="width:75%;" type="text" id="firstname" name="FirstName" value="'.$MemberDetails->FirstName.'"/>
+<label for="lastname">Last Name</label>
+<input style="width:75%;" type="text" id="lastname" name="LastName" value="'.$MemberDetails->LastName.'"/>
+<label for="cell">Cell</label>
+<input style="width:75%;" type="tel" id="cell" name="Cell" value="'.$MemberDetails->Cell.'" placeholder="+2778000000"/>
+<label for="email">Email</label>
+<input style="width:75%;" type="email" id="email" name="Email" value="'.$MemberDetails->Email.'"/>
+<label for="DOB">Date of Birth</label>
+<input style="width:75%;" type="date" name="DOB" id="DOB" value="'.$DOB.'"/>	
+Male
+<input id="male" type="radio" name="Gender" value="M" data-role="none"';
 if($MemberDetails->Gender == 'M') 
     $Html.='checked="checked"';
 $Html.='/>
-Female<input type="radio" name="Gender" value="F"';
+<br/>
+Female
+<input id="female" type="radio" name="Gender" value="F" data-role="none"';
 if($MemberDetails->Gender == 'F')
     $Html.='checked="checked"';
-$Html.='/><br/>
+$Html.='/><br/><br/>
 <div id="weightlabel">Height('.$HeightUnit.')</div>
-<input id="weight" type="text" name="Weight" value="'.$MemberDetails->Weight.'"/><br/>
+<input style="width:75%;" id="weight" type="text" name="Weight" value="'.$MemberDetails->Weight.'"/>
 <div id="heightlabel">Weight('.$WeightUnit.')</div>
-<input id="height" type="text" name="Height" value="'.$MemberDetails->Height.'"/><br/>
+<input style="width:75%;" id="height" type="text" name="Height" value="'.$MemberDetails->Height.'"/>
 <br/>
-Preferred Sytem of Measurement<br/>
-<select id="system" name="system" onchange="getSystem(this.value);">
+<label for="system">Preferred Sytem of Measurement</label>
+<select style="width:75%;" id="system" name="system" class="select" onchange="getSystem(this.value);">
 <option value="Metric"';
 if($MemberDetails->SystemOfMeasure == 'Metric')
     $Html.=' selected="selected"';
@@ -125,7 +127,7 @@ if($MemberDetails->SystemOfMeasure == 'Imperial')
 $Html.='>Imperial</option>
 </select>
 <br/><br/>
-<input type="submit" name="submit" value="Save"/><br/><br/>
+<input type="submit" name="submit" value="Save" data-role="none"/><br/><br/>
 </div>
 </form>';
 return $Html;

@@ -1,13 +1,4 @@
 <script type="text/javascript">
-$(document).ready(function () {
-    var curr = new Date().getFullYear();
-    var opt = {}
-    opt.select = {preset : 'select'};
-	opt.datetime = { preset : 'datetime', dateOrder: 'ddMMyy', timeWheels: '', dateFormat: 'dd-mm-yy', timeFormat: ''  };
-
-    $('#DOB').scroller($.extend(opt['datetime'], { theme: 'default', mode: 'scroller', display: 'model' }));
-    $('#system').scroller($.extend(opt['select'], { theme: 'default', mode: 'scroller', display: 'model' }));
-});
 
 function getSystem(val)
 {

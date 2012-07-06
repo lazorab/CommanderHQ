@@ -44,7 +44,7 @@ class WodController extends Controller
             }
             else if(count($MemberCustomExercises) > 1){
                $WODdata .= 'Available Exercises:<br/>
-                <select id="customexercises" name="customexercise" onchange="document.form.submit();">
+                <select id="customexercises" name="customexercise" class="select" onchange="document.form.submit();">
                 <option value="">Please Select</option>';
                 foreach($MemberCustomExercises AS $Exercise){
                     $WODdata .= '<option value="'.$Exercise->recid.'">'.$Exercise->ActivityName.'</option>';
@@ -60,7 +60,7 @@ class WodController extends Controller
                 <br/>New Exercise Name:<br/>
                 <input type="text" name="newcustom"/><br/><br/>
                 <label for="custom">Type</label><br/>
-                    <select id="customselect" name="customtype" onchange="document.form.submit();">
+                    <select id="customselect" name="customtype" class="select" onchange="document.form.submit();">
                     <option value="">Please Select</option>';
                     foreach($CustomTypes AS $Type){
                         $WODdata .= '<option value="'.$Type->recid.'">'.$Type->ActivityType.'</option>';
@@ -106,27 +106,27 @@ class WodController extends Controller
         $Details = $Model->getCustomDetails($Id);
         $WODdata = '<div style="text-align:center"><h3>'.$Details->ActivityName.'</h3></div>';
         if($Details->ActivityType == 'Timed'){
-            $WODdata.= $this->StopWatch(1, $Details->recid); 
+            $WODdata.= $this->getStopWatch(1, $Details->recid); 
         }
         else if($Details->ActivityType == 'AMRAP'){
-            $WODdata .= '';
+            $WODdata .= $this->getAMRAP();
         }
         else if($Details->ActivityType == 'Weight'){
-            $WODdata .= '';
+            $WODdata .= $this->getWeight();
         }
         else if($Details->ActivityType == 'Reps'){
-            $WODdata .= '';
+            $WODdata .= $this->getReps();
         }
         else if($Details->ActivityType == 'Tabata'){
-            $WODdata .= '';
+            $WODdata .= $this->getTabata();
         }
         else if($Details->ActivityType == 'Other'){
-            $WODdata .= '';
+            $WODdata .= '?';
         }
         return $WODdata;
     }
     
-    function StopWatch($Type, $Value)
+    function getStopWatch($Type, $Value)
     {
         $RENDER = new Image(SITE_ID);
         $Start = $RENDER->NewImage('start.png', $this->Device->GetScreenWidth());
@@ -139,6 +139,58 @@ class WodController extends Controller
         <input type="hidden" name="exercise" value="'.$Value.'"/>
         <input type="hidden" name="action" value="save"/>
         <input id="clock" name="TimeToComplete" value="00:00:0"/>
+        </form>	
+        <div style="margin:0 30% 0 30%; width:50%">
+        <img alt="Start" '.$Start.' src="'.ImagePath.'start.png" onclick="start()"/>&nbsp;&nbsp;
+        <img alt="Stop" '.$Stop.' src="'.ImagePath.'stop.png" onclick="stop()"/><br/><br/>
+        <img alt="Reset" '.$Reset.' src="'.ImagePath.'reset.png" onclick="reset()"/>&nbsp;&nbsp;
+        <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="save()"/>
+        </div><br/><br/>';
+        
+        return $WODdata;
+    }
+    
+    function getAMRAP()
+    {
+        $Html='AMRAP';
+        
+        return $Html;
+    }
+    
+    function getWeight()
+    {
+        $Html='Weight';
+        
+        return $Html;        
+    }
+    
+    function getReps()
+    {
+        $Html='Reps';
+        
+        return $Html;        
+    }
+    
+    function getTabata()
+    {
+        $Html='Tabata';
+        
+        return $Html;       
+    }
+    
+    function getCountDown($Type, $Value)
+    {
+        $RENDER = new Image(SITE_ID);
+        $Start = $RENDER->NewImage('start.png', $this->Device->GetScreenWidth());
+        $Stop = $RENDER->NewImage('stop.png', $this->Device->GetScreenWidth());
+        $Reset = $RENDER->NewImage('report.png', $this->Device->GetScreenWidth());
+        $Save = $RENDER->NewImage('save.png', $this->Device->GetScreenWidth());
+        $WODdata='<form name="clockform" action="index.php">
+        <input type="hidden" name="module" value="wod"/>
+        <input type="hidden" name="wodtype" value="'.$Type.'"/>
+        <input type="hidden" name="exercise" value="'.$Value.'"/>
+        <input type="hidden" name="action" value="save"/>
+        <input id="clock" name="TimeToComplete" value="'.$Time.'"/>
         </form>	
         <div style="margin:0 30% 0 30%; width:50%">
         <img alt="Start" '.$Start.' src="'.ImagePath.'start.png" onclick="start()"/>&nbsp;&nbsp;

@@ -6,49 +6,49 @@ $GridIconSize = floor(144*$ratio);
 
 <div id="random"><?php echo $Display->RandomMessage();?></div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
-<a href="?module=wod">
+<a href="?module=wod" rel="external">
 <img alt="WOD" <?php echo $RENDER->NewImage('wodlog.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>wodlog.png"/>
 </a>
 </div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
-<a href="?module=benchmark">
+<a href="?module=benchmark" rel="external">
 <img alt="Benchmark" <?php echo $RENDER->NewImage('benchmarks.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>benchmarks.png"/>
 </a>
 </div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
-<a href="?module=baseline">
+<a href="?module=baseline" rel="external">
 <img alt="Baseline" <?php echo $RENDER->NewImage('baseline.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>baseline.png"/>
 </a>
 </div>
 <div class="clear"></div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
-<a href="?module=challenge">
+<a href="?module=challenge" rel="external">
 <img alt="Challenge" <?php echo $RENDER->NewImage('challenges.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>challenges.png"/>
 </a>
 </div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
-<a href="?module=foodlog">
+<a href="?module=foodlog" rel="external">
 <img alt="Nutrition" <?php echo $RENDER->NewImage('nutrition.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>nutrition.png"/>
 </a>
 </div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
-<a href="?module=book">
+<a href="?module=book" rel="external">
 <img alt="Book" <?php echo $RENDER->NewImage('booking.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>booking.png"/>
 </a>
 </div>
 <div class="clear"></div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px <?php echo $margin;?>px <?php echo $margin;?>px;">
-<a href="?module=reports">
+<a href="?module=reports" rel="external">
 <img alt="Reports" <?php echo $RENDER->NewImage('reports.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>reports.png"/>
 </a>
 </div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px <?php echo $margin;?>px <?php echo $margin;?>px;">
-<a href="?module=skills">
+<a href="?module=skills" rel="external">
 <img alt="Skills" <?php echo $RENDER->NewImage('skills.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>skills.png"/>
 </a>
 </div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px <?php echo $margin;?>px <?php echo $margin;?>px;">
-<a href="?module=products">
+<a href="?module=products" rel="external">
 <img alt="Store" <?php echo $RENDER->NewImage('store.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>store.png"/>
 </a>
 </div>

@@ -26,12 +26,31 @@
 
 	$Display = new $ControllerClass;
 	$Environment = $Display->getEnvironment();
-
+?>
+<!DOCTYPE html> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<?php
 	/*HEADER*/
 		if (file_exists("includes/header/$Environment.php")) 
 			include("includes/header/$Environment.php");
-    
-    if(isset($_SESSION['UID'])){    
+
+echo $htmlOutput->GetOpenBodyTag();
+  
+    $Banner = 'header';//default
+    if(isset($_REQUEST['banner']))
+        $Banner = $_REQUEST['banner'];
+    else if($_REQUEST['module'] != '' && $_REQUEST['module'] != 'memberhome'){
+        if (file_exists(''.ImagePath.$_REQUEST['module'].'.php'))
+        $Banner = ''.$_REQUEST['module'].'_header';
+    }
+?>
+
+<div data-role="page">
+
+<div id="header">
+<img alt="Header" <?php echo $RENDER->NewImage(''.$Banner.'.png', $request->get_screen_width_new());?> src="<?php echo ImagePath.$Banner;?>.png"/>
+</div>    
+<?php if(isset($_SESSION['UID'])){    
 	/*MENU*/	
 		if (file_exists("includes/menu/$Environment.php")) 
 			include("includes/menu/$Environment.php");
@@ -39,18 +58,19 @@
 ?>
 		
 	<div id="content">
-<?php 
-    
+<?php    
 	/*CONTENT*/	
-		if (file_exists("modules/$Module/view/$Environment.php")) 
+    if (file_exists("modules/$Module/view/$Environment.php")) 
 			include("modules/$Module/view/$Environment.php");
 ?>
-	</div>
-	</div>
+
+	</div><!-- /content -->
 	<div class="clear"></div>
 <?php		
 	/*FOOTER*/
-		if (file_exists("includes/footer/$Environment.php")) 
+    if (file_exists("includes/footer/$Environment.php")) 
 			include("includes/footer/$Environment.php");
-		
 ?>
+</div><!-- /page -->
+<?php echo $htmlOutput->GetCloseBodyTag();?>
+</html>

@@ -44,7 +44,7 @@ class BaselineController extends Controller
         {
             $html.='<form name="selectform" action="index.php" method="post" id="selectform">
             <input type="hidden" name="module" value="baseline"/>
-                    <select id="baselineselect" name="baselineselect"  onchange="this.form.submit();">
+                    <select id="baselineselect" name="baselineselect" class="select" onchange="this.form.submit();">
                     <option value="">Select Baseline</option>
                     <option value="new"';
                     if($_REQUEST['baselineselect'] == 'new')
@@ -68,7 +68,7 @@ class BaselineController extends Controller
                 <form name="baselinetype" action="index.php" method="post" id="baselinetype">
                 <input type="hidden" name="module" value="baseline"/>
                 <input type="hidden" name="baselineselect" value="new"/>
-                    <select id="newbaseline" name="newbaseline" onchange="this.form.submit();">
+                    <select id="newbaseline" name="newbaseline" class="select" onchange="this.form.submit();">
                     <option value="">Baseline Type</option>
                     <option value="Benchmark"';
                 if($_REQUEST['newbaseline'] == 'Benchmark')
@@ -89,7 +89,7 @@ class BaselineController extends Controller
             
             
             if($_REQUEST['newbaseline'] == 'Benchmark'){
-                $html.='<select id="benchmark" name="benchmark"  onchange="this.form.submit();">
+                $html.='<select id="benchmark" name="benchmark" class="select" onchange="this.form.submit();">
                         <option value="">Select Benchmark</option>';
                         $Benchmarks = $Model->getBenchmarks();
                     foreach($Benchmarks as $Benchmark){
@@ -103,7 +103,7 @@ class BaselineController extends Controller
             
             if($_REQUEST['newbaseline'] == 'Custom'){
                                         
-                    $html.='<select id="customtype" name="customtype">
+                    $html.='<select id="customtype" name="customtype" class="select">
                     <option value="">Select Type</option>';
                     $CustomTypes = $Model->getCustomTypes();
                     foreach($CustomTypes as $CustomType){

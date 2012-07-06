@@ -1,16 +1,4 @@
 <script type="text/javascript">
-$(document).ready(function () {
-    var curr = new Date().getFullYear();
-    var opt = {}
-    opt.select = {preset : 'select'};
-    opt.datetime = { preset : 'datetime', dateOrder: 'ddMMyy', timeWheels: '', dateFormat: 'dd/mm/yy', timeFormat: ''  };
-                  
-    $('#datetime').scroller($.extend(opt['datetime'], { theme: 'default', mode: 'scroller', display: 'model' }));
-                  
-    $('#action').scroller($.extend(opt['select'], { theme: 'default', mode: 'scroller', display: 'model' }));
-	
-	$("#dateselect").scroller($.extend(opt["datetime"], { theme: "default", mode: "scroller", display: "model" }));
-});
 
 function getContent(action)
 {
@@ -32,7 +20,7 @@ function display(data)
 <div id="topselection">
 <form id="goalform">
 <label for="action">Action</label><br/>
-<select id="action" name="action" onchange="getContent(this.value);">
+<select id="action" name="action" class="select" onchange="getContent(this.value);">
 <option value="">Please Select</option>
 <option value="new" <?php if($_REQUEST['action'] == 'new'){echo 'selected="selected"';};?>>New Goal</option>
 <option value="active" <?php if($_REQUEST['action'] == 'active'){echo 'selected="selected"';};?>>Active</option>
