@@ -3,7 +3,7 @@
     $height = floor(660*$ratio);
     $spacer = floor(190*$ratio);
     ?>
-<div id="loginback" style="height:<?php echo $height;?>px;background-image:url(<?php echo $RENDER->Image('signup.png', $request->get_screen_width_new());?>);">
+<div id="loginback" style="height:<?php echo $height;?>px;background-image:url(<?php echo $RENDER->Image('signup.png', $request->get_screen_width_new());?>);background-repeat:no-repeat">
 
 <?php echo $Display->Message;?><br/>
 
@@ -46,7 +46,7 @@ Enter your Email<br/>
 <!--
 <a href="https://developers.google.com/accounts/docs/OpenID#settingup">
 -->
-<a href="?module=login&action=google" rel="external">
+<a href="?module=login&oauth_provider=google" rel="external">
 <img alt="Google" <?php echo $RENDER->NewImage('google.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>google.png"/>
 </a>
 <!--

@@ -34,6 +34,12 @@ class User {
                     $Gender = 'M';
                 else if($user->gender == 'female')
                     $Gender = 'F';
+            }else if($oauth_provider == 'google'){
+                $UserName = $user->email;
+                if($user->gender == 'male')
+                    $Gender = 'M';
+                else if($user->gender == 'female')
+                    $Gender = 'F';
             }
             $Sql = "INSERT INTO `Members` (oauth_provider, oauth_uid, FirstName, LastName, UserName) VALUES ('$oauth_provider', $user->id, '$FirstName', '$LastName','$UserName')";
             //echo $Sql;

@@ -35,6 +35,11 @@ class WodController extends Controller
             $Model->SaveCustom();
         }
 		if($_REQUEST['wodtype'] == 1){//custom
+		    $WODdata .= '
+                <form action="index.php" id="test" name="form">
+                <input type="hidden" name="module" value="wod"/>
+                <input type="hidden" name="wodtype" value="1"/>';
+				
             $MemberCustomExercises = $Model->getMemberCustomExercises();
             if(count($MemberCustomExercises) == 1){
                 echo $this->CustomDetails($MemberCustomExercises[0]->recid);
@@ -43,9 +48,9 @@ class WodController extends Controller
                 echo $this->CustomDetails($_REQUEST['customexercise']);               
             }
             else if(count($MemberCustomExercises) > 1){
-               $WODdata .= 'Available Exercises:<br/>
+               $WODdata .= '
                 <select id="customexercises" name="customexercise" class="select" onchange="document.form.submit();">
-                <option value="">Please Select</option>';
+                <option value="">Available Exercises</option>';
                 foreach($MemberCustomExercises AS $Exercise){
                     $WODdata .= '<option value="'.$Exercise->recid.'">'.$Exercise->ActivityName.'</option>';
                 }
@@ -54,19 +59,15 @@ class WodController extends Controller
             else{
                 $CustomTypes = $Model->getCustomTypes();
                 $WODdata .= '
-                <form action="index.php" id="test" name="form">
-                <input type="hidden" name="module" value="wod"/>
-                <input type="hidden" name="wodtype" value="1"/>
-                <br/>New Exercise Name:<br/>
-                <input type="text" name="newcustom"/><br/><br/>
-                <label for="custom">Type</label><br/>
+                <input type="text" name="newcustom" placeholder="Exercise Name"/><br/>
                     <select id="customselect" name="customtype" class="select" onchange="document.form.submit();">
-                    <option value="">Please Select</option>';
+                    <option value="">Type</option>';
                     foreach($CustomTypes AS $Type){
                         $WODdata .= '<option value="'.$Type->recid.'">'.$Type->ActivityType.'</option>';
                     }
-                $WODdata .= '</select></form><br/><br/>';               
+                $WODdata .= '</select>';               
             }
+			$WODdata .= '</form><br/><br/>'; 
 		}
 		else if($_REQUEST['wodtype'] == 2){//my gym
 		
@@ -106,10 +107,11 @@ class WodController extends Controller
         $Details = $Model->getCustomDetails($Id);
         $WODdata = '<div style="text-align:center"><h3>'.$Details->ActivityName.'</h3></div>';
         if($Details->ActivityType == 'Timed'){
-            $WODdata.= $this->getStopWatch(1, $Details->recid); 
+            $WODdata.= $this->getStopWatch($Details->recid); 
         }
         else if($Details->ActivityType == 'AMRAP'){
-            $WODdata .= $this->getAMRAP();
+			
+            $WODdata .= $this->getCountDown($Details);
         }
         else if($Details->ActivityType == 'Weight'){
             $WODdata .= $this->getWeight();
@@ -135,7 +137,7 @@ class WodController extends Controller
         $Save = $RENDER->NewImage('save.png', $this->Device->GetScreenWidth());
         $WODdata='<form name="clockform" action="index.php">
         <input type="hidden" name="module" value="wod"/>
-        <input type="hidden" name="wodtype" value="'.$Type.'"/>
+        <input type="hidden" name="wodtype" value="'.$_REQUEST['wodtype'].'"/>
         <input type="hidden" name="exercise" value="'.$Value.'"/>
         <input type="hidden" name="action" value="save"/>
         <input id="clock" name="TimeToComplete" value="00:00:0"/>
@@ -148,13 +150,6 @@ class WodController extends Controller
         </div><br/><br/>';
         
         return $WODdata;
-    }
-    
-    function getAMRAP()
-    {
-        $Html='AMRAP';
-        
-        return $Html;
     }
     
     function getWeight()
@@ -178,7 +173,7 @@ class WodController extends Controller
         return $Html;       
     }
     
-    function getCountDown($Type, $Value)
+    function getCountDown($Details)
     {
         $RENDER = new Image(SITE_ID);
         $Start = $RENDER->NewImage('start.png', $this->Device->GetScreenWidth());
@@ -187,15 +182,18 @@ class WodController extends Controller
         $Save = $RENDER->NewImage('save.png', $this->Device->GetScreenWidth());
         $WODdata='<form name="clockform" action="index.php">
         <input type="hidden" name="module" value="wod"/>
-        <input type="hidden" name="wodtype" value="'.$Type.'"/>
-        <input type="hidden" name="exercise" value="'.$Value.'"/>
+        <input type="hidden" name="wodtype" value="'.$_REQUEST['wodtype'].'"/>
+        <input type="hidden" name="exercise" value="'.$Details->recid.'"/>
         <input type="hidden" name="action" value="save"/>
-        <input id="clock" name="TimeToComplete" value="'.$Time.'"/>
+		<input type="hidden" name="CountDown" value="'.$Details->AttributeValue.'"/>
+		<input style="width:50%" type="number" name="Rounds" id="rounds" value="0"/>
+        <input id="clock" name="timer" value="'.$Details->AttributeValue.'"/>
         </form>	
+		<button onclick="countclicks();">Rounds +</button>
         <div style="margin:0 30% 0 30%; width:50%">
-        <img alt="Start" '.$Start.' src="'.ImagePath.'start.png" onclick="start()"/>&nbsp;&nbsp;
-        <img alt="Stop" '.$Stop.' src="'.ImagePath.'stop.png" onclick="stop()"/><br/><br/>
-        <img alt="Reset" '.$Reset.' src="'.ImagePath.'reset.png" onclick="reset()"/>&nbsp;&nbsp;
+        <img alt="Start" '.$Start.' src="'.ImagePath.'start.png" onclick="startcountdown(document.clockform.timer.value)"/>&nbsp;&nbsp;
+        <img alt="Stop" '.$Stop.' src="'.ImagePath.'stop.png" onclick="stopcountdown()"/><br/><br/>
+        <img alt="Reset" '.$Reset.' src="'.ImagePath.'reset.png" onclick="resetcountdown(\''.$Details->AttributeValue.'\')"/>&nbsp;&nbsp;
         <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="save()"/>
         </div><br/><br/>';
         

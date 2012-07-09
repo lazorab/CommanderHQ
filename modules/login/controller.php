@@ -31,9 +31,9 @@ class LoginController extends Controller
 		{
             header("Location: login-twitter.php");		
 		}
-        else if($_REQUEST['action'] == 'google')
+        else if($_REQUEST['oauth_provider'] == 'google')
 		{
-            
+            header("Location: gplus_login.php");		
 		}
         else if($_REQUEST['oauth_provider'] == 'facebook')
 		{

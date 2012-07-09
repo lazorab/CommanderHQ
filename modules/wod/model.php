@@ -80,9 +80,12 @@ class WodModel extends Model
     
     function getCustomDetails($Id)
     {
-		$SQL = 'SELECT CE.recid, CE.ExerciseName AS ActivityName, CT.CustomType AS ActivityType
+		$SQL = 'SELECT CE.recid, CE.ExerciseName AS ActivityName, CT.CustomType AS ActivityType, A.Attribute, CMAV.AttributeValue
         FROM CustomExercises CE
-        JOIN CustomTypes CT ON CT.recid = CE.CustomTypeId
+        LEFT JOIN CustomTypes CT ON CT.recid = CE.CustomTypeId
+        LEFT JOIN CustomTypeAttributes CTA ON CTA.CustomTypeId = CT.recid
+        LEFT JOIN Attributes A ON A.recid = CTA.AttributeId
+        LEFT JOIN CustomMemberAttributeValues CMAV ON CMAV.AttributeId = CTA.AttributeId
         WHERE CE.recid = '.$Id.'';
 		$Result = mysql_query($SQL);	
 		$Row = mysql_fetch_assoc($Result);
@@ -135,8 +138,8 @@ class WODObject
 	var $ActivityName;
 	var $ActivityType;
 	var $Description;
-	var $Repetitions;
-	var $Duration;
+	var $Attribute;
+	var $AttributeValue;
 	var $WODate;
 
 	function __construct($Row)
@@ -145,8 +148,8 @@ class WODObject
 		$this->ActivityName = isset($Row['ActivityName']) ? $Row['ActivityName'] : "";
 		$this->ActivityType = isset($Row['ActivityType']) ? $Row['ActivityType'] : "";
 		$this->Description = isset($Row['Description']) ? $Row['Description'] : "";
-		$this->Repetitions = isset($Row['Repetitions']) ? $Row['Repetitions'] : "";
-		$this->Duration = isset($Row['Duration']) ? $Row['Duration'] : "";
+		$this->Attribute = isset($Row['Attribute']) ? $Row['Attribute'] : "";
+		$this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : "";
 		$this->WODate = isset($Row['WODate']) ? $Row['WODate'] : "";
 	}
 }
