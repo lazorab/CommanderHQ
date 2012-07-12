@@ -13,7 +13,7 @@ class Controller
         define('SCREENWIDTH',$this->Device->GetScreenWidth());
 		$this->SupportOnlineVideo = $this->Device->SupportOnlineVideo();
 		if($this->Device->IsTabletPC()){
-				$this->Environment = 'tablet';
+				$this->Environment = 'mobile'; //tablet
 		}
 
 		elseif($this->Device->GetScreenWidth() < 500){
@@ -24,7 +24,7 @@ class Controller
 			}
 		}
 		else
-			$this->Environment = 'website';		
+			$this->Environment = 'mobile';	//website
 			
 		if($this->Environment == 'legacy')
 			$this->Wall = 'wall:';		

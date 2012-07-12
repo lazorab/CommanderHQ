@@ -13,39 +13,30 @@
     echo utility::mobile_stylesheet($request->get_screen_width_new(), 'css/mobile.css');
 ?>
 <script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
-<script type="text/javascript" src="/js/jquery.mobile-1.1.0.min.js"></script>
+
+<script type="text/javascript" src="/js/jquery.easing.1.3.js"></script>
+<script type="text/javascript" src="/js/jquery.nicescroll.min.js"></script>
 <script type="text/javascript" src="/js/stopwatch.js"></script>
 <script type="text/javascript" src="http://www.be-mobile.co.za/framework/js/device.js"></script>
-<script type="text/javascript">
-$(function(){
-  var menuStatus;
-  //Trigger menu drop down
-  $(document).on("click","img#menuselect",function(){
 
-                           if($('#menu').hasClass('active')) {
-                           $('img#menuselect').attr("src", '<?php echo ImagePath;?>menu.png');
-                           $('#menu').removeClass('active');
-                 
-                 $("#menu").animate({
-                                    marginLeft: "0px",
-                                    }, 300, function(){menuStatus = false});
-                 return false;            
-                 
-                 
-                           } else {
-                           $('img#menuselect').attr("src",'<?php echo ImagePath;?>menu_active.png');
-                           $('#menu').addClass('active');
-                 
-                 $("#menu").animate({
-                                    marginLeft: "25%",
-                                    }, 300, function(){menuStatus = true});
-                 return false;
-                 
-                 
-                 
-                           }
-                  });
-  
-  });
+<script type="text/javascript">
+
+$(document).ready(function() {
+	$("#menu").niceScroll();
+	$('#menu').hide();
+	$(document).on("click","img#menuselect",function(){
+		if($('#menu').hasClass('active')) {
+			$('img#menuselect').attr("src", '<?php echo ImagePath;?>menu.png');
+			$('#menu').hide('slow');
+			$('#menu').removeClass('active');
+		}else{
+			$('img#menuselect').attr("src",'<?php echo ImagePath;?>menu_active.png');
+			$('#menu').show('slow');
+			$('#menu').addClass('active');   
+		}
+	});
+});
+
 </script>
+<script type="text/javascript" src="/js/jquery.mobile-1.1.0.min.js"></script>
 </head>

@@ -38,7 +38,7 @@ function display(data)
 <option value="Weight">Weight History</option>
 </select><br/><br/>
 
-<input type="text" name="datetime" id="datetime" value="<?php echo date('d/m/Y');?>" onchange="getWOD(wodtype.value);/><br/>
+<input type="date" name="datetime" id="datetime" value="<?php echo date('d M Y');?>"/><br/>
 
 </form>
 </div>

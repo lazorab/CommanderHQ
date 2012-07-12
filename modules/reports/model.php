@@ -66,9 +66,9 @@ class ReportsModel extends Model
 		$SQL = 'SELECT DISTINCT mb.recid, 
         mb.ExerciseId,
         et.ExerciseType
-        FROM BaselineLog L
+        FROM WODLog L
         ExerciseTypes et ON et.recid = mb.ExerciseTypeId
-        LEFT JOIN BaselineLog L ON L.ExerciseId = mb.recid
+        LEFT JOIN WODLog L ON L.ExerciseId = mb.recid
         WHERE L.MemberId = "'.$_SESSION['UID'].'"';
 		$Result = mysql_query($SQL);	
         

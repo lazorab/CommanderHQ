@@ -16,6 +16,7 @@ function countclicks()
 {
 	var rounds = parseInt(document.getElementById("rounds").value);
 	document.getElementById("rounds").value = rounds + 1;
+	$('.ui-li-count').html(rounds + 1);
 }
 
 function stopcountdown()

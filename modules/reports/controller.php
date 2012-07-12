@@ -81,7 +81,7 @@ class ReportsController extends Controller
 	{
         $Model=new ReportsModel();
 		$ExerciseItems = $Model->getWODExercises();
-		$Html='<'.$this->Wall.'select name="WODId" id="WODId" onchange="getWODReport(this.value, reportform.datetime.value);">';
+		$Html='<'.$this->Wall.'select name="WODId" id="WODId" class="select" onchange="getWODReport(this.value, reportform.datetime.value);">';
         $Html.='<'.$this->Wall.'option value=" ">Please Select</'.$this->Wall.'option>';
 		foreach($ExerciseItems AS $Exercise) { 
 			$Html.='<'.$this->Wall.'option value="'.$Exercise->ExerciseId.'">'.$Exercise->Exercise.'</'.$this->Wall.'option>';
@@ -106,7 +106,7 @@ class ReportsController extends Controller
 	{
         $Model=new ReportsModel();
 		$ExerciseItems = $Model->getBenchmarkExercises();
-		$Html='<'.$this->Wall.'select name="BenchmarkId" id="BenchmarkId" onchange="getBenchmarkReport(this.value, reportform.datetime.value);">';
+		$Html='<'.$this->Wall.'select name="BenchmarkId" id="BenchmarkId" class="select" onchange="getBenchmarkReport(this.value, reportform.datetime.value);">';
         $Html.='<'.$this->Wall.'option value="">Logged Benchmarks</'.$this->Wall.'option>';
 		foreach($ExerciseItems AS $Exercise) { 
 			$Html.='<'.$this->Wall.'option value="'.$Exercise->ExerciseId.'">'.$Exercise->Exercise.'</'.$this->Wall.'option>';
@@ -131,7 +131,7 @@ class ReportsController extends Controller
 	{
         $Model=new ReportsModel();
 		$ExerciseItems = $Model->getBaselineExercises();
-		$Html='<'.$this->Wall.'select name="BaselineId" id="BaselineId" onchange="getBaselineReport(this.value, reportform.datetime.value);">';
+		$Html='<'.$this->Wall.'select name="BaselineId" id="BaselineId" class="select" onchange="getBaselineReport(this.value, reportform.datetime.value);">';
         $Html.='<'.$this->Wall.'option value="">Baseline Exercises</'.$this->Wall.'option>';
 		foreach($ExerciseItems AS $Exercise) { 
 			$Html.='<'.$this->Wall.'option value="'.$Exercise->ExerciseId.'">'.$Exercise->Exercise.'</'.$this->Wall.'option>';

@@ -12,25 +12,19 @@ body {
 #menu
 { 
 	position:fixed;
-    top: 25%;
-    left: 0;
+	overflow: auto;
+	height:300px;
+    	top: 25%;
+    	left: 0;
 	display:none;
 	color:#fff;
 	background-color:#0d3e5f;
+	z-index:99;
 }
 
 #menu.active
 { 
 	display:block;
-}
-
-div.sc_menu_wrapper {
-	position: relative; 	
-	height: auto;
-	/* Make bigger than a photo, because we need a place for a scrollbar. */
-	width: 100%;
-	
-	overflow: auto;
 }
 
 #header
@@ -120,8 +114,16 @@ input
 
 #topselection
 {
-	width:50%;
-	margin:2% 25% 0 25%;
+	width:80%;
+	margin:2% 10% 0 10%;
+	font-weight:bold;
+	font-size:medium;
+}
+
+#WOD
+{
+	width:80%;
+	margin:2% 10% 0 10%;
 	font-weight:bold;
 	font-size:medium;
 }

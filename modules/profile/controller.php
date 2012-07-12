@@ -116,7 +116,7 @@ $Html.='/><br/><br/>
 <input style="width:75%;" id="height" type="text" name="Height" value="'.$MemberDetails->Height.'"/>
 <br/>
 <label for="system">Preferred Sytem of Measurement</label>
-<select style="width:75%;" id="system" name="system" class="select" onchange="getSystem(this.value);">
+<select id="system" name="system" class="select" onchange="getSystem(this.value);">
 <option value="Metric"';
 if($MemberDetails->SystemOfMeasure == 'Metric')
     $Html.=' selected="selected"';

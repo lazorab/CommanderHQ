@@ -14,8 +14,6 @@ function display(data)
 
 <div id="content">
 <br/>
-<h3>Skills</h3>
-<br/>
 <form name="skillsform" id="skillsform" action="index.php" method="post">
 <input type="hidden" name="module" value="skills"/>
 <select id="exerciseselect" name="exercise" class="select" onchange="getExercise(this.value);">
@@ -30,7 +28,6 @@ foreach($Exercises as $Exercise){
 <?php } ?>
 </select><br/>
 </form>
-<br/>
 <br/>
 <div id="Skills">
 <?php echo $Display->Output();?>

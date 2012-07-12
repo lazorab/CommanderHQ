@@ -51,11 +51,21 @@ class WodModel extends Model
 		
 		return $SQL;
 	}
+	
+	function getWODTypes()
+	{
+		$SQL = 'SELECT recid, WODType AS ActivityType FROM WODTypes';
+		$Result = mysql_query($SQL);	
+		$Row = mysql_fetch_assoc($Result);
+		$WODTypes = new WODObject($Row);
+		
+		return $WODTypes;
+	}	
     
     function getMemberCustomExercises()
     {
 		$Exercises = array();
-		$SQL = 'SELECT recid, ExerciseName as ActivityName FROM CustomExercises WHERE MemberId = "'.$_SESSION['UID'].'"';
+		$SQL = 'SELECT recid, ExerciseName AS ActivityName, ExerciseDescription AS Description FROM CustomExercises WHERE MemberId = "'.$_SESSION['UID'].'"';
 		$Result = mysql_query($SQL);	
 		while($Row = mysql_fetch_assoc($Result))
 		{
@@ -68,7 +78,7 @@ class WodModel extends Model
     function getCustomTypes()
     {
 		$Types = array();
-		$SQL = 'SELECT recid, CustomType as ActivityType FROM CustomTypes';
+		$SQL = 'SELECT recid, CustomType AS ActivityType FROM CustomTypes';
 		$Result = mysql_query($SQL);	
 		while($Row = mysql_fetch_assoc($Result))
 		{
@@ -80,7 +90,7 @@ class WodModel extends Model
     
     function getCustomDetails($Id)
     {
-		$SQL = 'SELECT CE.recid, CE.ExerciseName AS ActivityName, CT.CustomType AS ActivityType, A.Attribute, CMAV.AttributeValue
+		$SQL = 'SELECT CE.recid, CE.ExerciseName AS ActivityName, ExerciseDescription AS Description, CT.CustomType AS ActivityType, A.Attribute, CMAV.AttributeValue
         FROM CustomExercises CE
         LEFT JOIN CustomTypes CT ON CT.recid = CE.CustomTypeId
         LEFT JOIN CustomTypeAttributes CTA ON CTA.CustomTypeId = CT.recid
@@ -97,16 +107,24 @@ class WodModel extends Model
     function SaveCustom()
     {
         $SQL = 'INSERT INTO CustomExercises(MemberId, ExerciseName, ExerciseDescription, CustomTypeId) 
-        VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['newcustom'].'", "'.$_REQUEST['customdescription'].'"), "'.$_REQUEST['customtype'].'")';
+        VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['newcustom'].'", "'.$_REQUEST['customdescription'].'", "'.$_REQUEST['customtype'].'")';
 		$Result = mysql_query($SQL);
-    }
 
-	function getBenchmark($Id)
-	{   
+		return mysql_insert_id();
+    }
+	
+	function getGender()
+	{
         $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
  		$Result = mysql_query($SQL);	
 		$Row = mysql_fetch_assoc($Result);
-        if($Row['Gender'] == 'M')
+
+		return $Row['Gender'];
+	}
+
+	function getBenchmark($Id)
+	{   
+        if($this->getGender() == 'M')
             $DescriptionField = 'MaleWorkoutDescription';
         else
             $DescriptionField = 'FemaleWorkoutDescription';
@@ -121,7 +139,11 @@ class WodModel extends Model
 	function getBenchmarks()
 	{
 		$Benchmarks = array();
-		$SQL = 'SELECT recid, WorkoutName as ActivityName FROM BenchmarkWorkouts';
+        if($this->getGender() == 'M')
+            $DescriptionField = 'MaleWorkoutDescription';
+        else
+            $DescriptionField = 'FemaleWorkoutDescription';		
+		$SQL = 'SELECT recid, WorkoutName as ActivityName, '.$DescriptionField.' as Description FROM BenchmarkWorkouts';
 		$Result = mysql_query($SQL);	
 		while($Row = mysql_fetch_assoc($Result))
 		{
