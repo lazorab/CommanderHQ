@@ -42,7 +42,7 @@ body {
 #canvas
 {
 	width:100%;
-	min-height: 344px;
+	min-height: 340px;
 	color:#fff;
 	background-color:#0d3e5f;
 }
@@ -114,16 +114,16 @@ input
 
 #topselection
 {
-	width:80%;
-	margin:2% 10% 0 10%;
+	width:90%;
+	margin:2% 5% 0 5%;
 	font-weight:bold;
 	font-size:medium;
 }
 
-#WOD
+#AjaxOutput
 {
-	width:80%;
-	margin:2% 10% 0 10%;
+	width:90%;
+	margin:2% 5% 0 5%;
 	font-weight:bold;
 	font-size:medium;
 }

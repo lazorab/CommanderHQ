@@ -36,13 +36,7 @@ class WodController extends Controller
             $exerciseId = $Model->SaveCustom();
 			$WODdata .= $this->CustomDetails($exerciseId);
         }
-		else if($_REQUEST['wodtype'] == 1){//custom
-/*		
-		    $WODdata .= '
-                <form action="index.php" id="test" name="form">
-                <input type="hidden" name="module" value="wod"/>
-                <input type="hidden" name="wodtype" value="1"/>';
-*/				
+		else if($_REQUEST['wodtype'] == '1'){//custom
             $MemberCustomExercises = $Model->getMemberCustomExercises();
             if(isset($_REQUEST['customexercise']) && $_REQUEST['customexercise'] != 'new'){
                 $WODdata .= $this->CustomDetails($_REQUEST['customexercise']);               
@@ -56,21 +50,7 @@ class WodController extends Controller
                 }	
 				
 				$WODdata .= '</ul>';
-/*				
-                <select id="customexercises" name="customexercise" class="select" onchange="document.form.submit();">
-                <option value="">Available Exercises</option>
-				<option value="new"';
-				if($_REQUEST['customexercise'] == 'new')
-				$WODdata .= ' selected="selected"';
-				$WODdata .= '>Create New</option>';
-                foreach($MemberCustomExercises AS $Exercise){
-                    $WODdata .= '<option value="'.$Exercise->recid.'"';
-					if($_REQUEST['customexercise'] == $Exercise->recid)
-						$WODdata .= ' selected="selected"';
-					$WODdata .= '>'.$Exercise->ActivityName.'</option>';
-                }
-                $WODdata .= '</select><br/><br/>';
-*/
+
             }
             if(count($MemberCustomExercises) == 0 || $_REQUEST['customexercise'] == 'new'){
                 $CustomTypes = $Model->getCustomTypes();
@@ -87,59 +67,31 @@ class WodController extends Controller
 				$WODdata .= '</div>
 				<button type="submit" data-theme="b" name="submit" value="submit-value">Next</button>
 				</form><br/>';
-/*
-                $WODdata .= '
-				<input type="hidden" name="action" value="savecustom"/>
-                <input type="text" name="newcustom" placeholder="Exercise Name"/><br/>
-                    <select id="customselect" name="customtype" class="select" onchange="document.form.submit();">
-                    <option value="">Type</option>';
-                    foreach($CustomTypes AS $Type){
-                        $WODdata .= '<option value="'.$Type->recid.'">'.$Type->ActivityType.'</option>';
-                    }
-                $WODdata .= '</select>';    
-*/				
+				
             }
-/*			
-			$WODdata .= '</form><br/><br/>'; 
-*/
 		}
-		else if($_REQUEST['wodtype'] == 2){//my gym
+		else if($_REQUEST['wodtype'] == '2'){//my gym
 		
 		}
-		else if($_REQUEST['wodtype'] == 3){//benchmarks
+		else if($_REQUEST['wodtype'] == '3'){//benchmarks
 			$Benchmarks = $Model->getBenchmarks();	
-/*
-            $ImageSize = $RENDER->NewImage('BM_Select.png', $this->Device->GetScreenWidth());
-            $explode = explode('"',$ImageSize);
-            $height = $explode[1];
-			foreach($Benchmarks as $WOD)
-			{
-                $WODdata.='<div class="benchmark" style="height:'.$height.'px;">
-                    <div style="width:70%;margin:4% 0 0 4%;float:left;font-size:large;background-color:#fff;">';
-                $WODdata.=''.$WOD->ActivityName.'';
-                $WODdata.='</div>
-                    <div style="width:15%;margin:0 0.5% 1% 0;background-color:#fff;float:right">';
-                $WODdata.='<img onclick="getBenchmark(\''.$WOD->recid.'\');" '.$ImageSize.' alt="'.$WOD->ActivityName.'" src="'.ImagePath.'BM_Select.png"/>';
-                $WODdata.='</div>
-                    </div>
-                    <div class="clear"></div>';
-            }
-            $WODdata.='<br/>';
-*/
+
                $WODdata .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
                 foreach($Benchmarks AS $Exercise){
 					$Description = str_replace('{br}',' | ',$Exercise->Description);
-					$WODdata .= '<li><a href="" onclick="Benchmark('.$Exercise->recid.');">'.$Exercise->ActivityName.':<br/>'.$Description.'</a></li>';
+					$WODdata .= '<li>
+                        <a href="" onclick="getBenchmark('.$Exercise->recid.');">'.$Exercise->ActivityName.':<br/><span style="font-size:small">'.$Description.'</span></a>
+                    </li>';
                 }	
 				$WODdata .= '</ul><br/>';
 
 		}
 		else if(isset($_REQUEST['benchmark'])){
-			$WOD = $Model->getBenchmark($_REQUEST['benchmark']);
-            $WODdata.='<div id="bmdescription">';
-            $WODdata.= $WOD->Description;
-            $WODdata.='</div>';
-            $WODdata.= $this->StopWatch(3, $_REQUEST['benchmark']);        
+			$Benchmark = $Model->getBenchmark($_REQUEST['benchmark']);
+            $WODdata .='<div id="bmdescription">';
+            $WODdata .= str_replace('{br}','<br/>',$Benchmark->Description);
+            $WODdata .='</div>';
+            $WODdata .= $this->getStopWatch($_REQUEST['benchmark']);        
 		}		
 		return $WODdata;	
 	}
@@ -183,7 +135,7 @@ class WodController extends Controller
         <input type="hidden" name="wodtype" value="'.$_REQUEST['wodtype'].'"/>
         <input type="hidden" name="exercise" value="'.$exerciseId.'"/>
         <input type="hidden" name="action" value="save"/>
-        <input id="clock" name="TimeToComplete" value="00:00:0"/>
+        <input type="text" id="clock" name="TimeToComplete" value="00:00:0"/>
         </form>	
         <div style="margin:0 30% 0 30%; width:50%">
         <img alt="Start" '.$Start.' src="'.ImagePath.'start.png" onclick="start()"/>&nbsp;&nbsp;

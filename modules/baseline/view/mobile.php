@@ -2,22 +2,32 @@
 
 function getBaseline(catid)
 {
-    $.getJSON("ajax.php?module=baseline",{catid:catid},maindisplay);
+    $.getJSON("ajax.php?module=baseline",{catid:catid},display);
 }
 
-function getCustomContent(baseline)
+function getBenchmark(id)
 {
-    $.getJSON("ajax.php?module=baseline",{baselineselect:baseline},topdisplay);
+    $.getJSON("ajax.php?module=baseline",{benchmark:id},display);
 }
 
-function topdisplay(data)
+function getContent(selection)
 {
-	document.getElementById("topselection").innerHTML = data;
+    $.getJSON("ajax.php?module=baseline",{baseline:selection},display);
 }
 
-function maindisplay(data)
+function getCustomExercise(id)
 {
-	document.getElementById("Baseline").innerHTML = data;
+    $.getJSON("ajax.php?module=baseline",{customexercise:id, baseline:'custom'},display);
+}
+
+function display(data)
+{
+	$('#AjaxOutput').html(data);
+	$('#listview').listview();
+	$('#listview').listview('refresh');
+	$("input").checkboxradio ();
+	$("input").closest ("div:jqmData(role=controlgroup)").controlgroup ();
+    $('.textinput').textinput();
 }
 
 $(function() {
@@ -42,9 +52,13 @@ $(function() {
 </script>
 <br/>
 <div id="topselection">
-    <?php echo $Display->TopSelection();?>
+<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+<li><a href="" onclick="getContent('Custom');">Custom</a></li>
+<li><a href="" onclick="getContent('Baseline');">Baseline</a></li>
+<li><a href="" onclick="getContent('Benchmark');">Benchmarks</a></li>	
+</ul>
 </div>
 
-<div id="Baseline">       
+<div id="AjaxOutput">       
     <?php echo $Display->Output();?>
 </div>

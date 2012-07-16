@@ -1,6 +1,6 @@
 <?php
 session_start();
-		
+    
 		if(!isset($_SESSION['UID']))
 		{
 			if(isset($_COOKIE['CommanderUsername']) && isset($_COOKIE['CommanderPassword'])){

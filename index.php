@@ -28,7 +28,7 @@
 	$Environment = $Display->getEnvironment();
 ?>
 <!DOCTYPE html> 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html manifest="manifest.php" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <?php
 	/*HEADER*/
 		if (file_exists("includes/header/$Environment.php")) 
