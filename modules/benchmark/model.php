@@ -98,8 +98,13 @@ class BenchmarkModel extends Model
         {
             if(isset($_REQUEST[''.$Row['Attribute'].''])){
                 $AttributeValue = $_REQUEST[''.$Row['Attribute'].''];
+				/*
                 $SQL = 'INSERT INTO BenchmarkLog(MemberId, BenchmarkId, AttributeId, AttributeValue) 
                 VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$Row['recid'].'", "'.$AttributeValue.'")';
+                mysql_query($SQL);	
+				*/
+				$SQL = 'INSERT INTO WODLog(MemberId, ExerciseId, WODTypeId, AttributeId, AttributeValue) 
+                VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$_REQUEST['wodtype'].'", "'.$Row['recid'].'", "'.$AttributeValue.'")';
                 mysql_query($SQL);	
             }
         }        
@@ -235,6 +240,22 @@ class BenchmarkModel extends Model
 		else
 			return 0;
 	}	
+	
+	function getHistory()
+	{
+		$Data = array();
+		$Sql = 'SELECT B.recid, B.WorkoutName, A.Attribute, L.AttributeValue, L.TimeCreated 
+		FROM WODLog L 
+        LEFT JOIN BenchmarkWorkouts B ON B.recid = L.ExerciseId 
+        LEFT JOIN Attributes A ON A.recid = L.AttributeId
+		WHERE L.MemberId = '.$_SESSION['UID'].' AND L.WODTypeId = 3';
+		$Result = mysql_query($Sql);	
+		while($Row = mysql_fetch_assoc($Result))
+		{
+			array_push($Data,new BenchmarkObject($Row));
+		}	
+		return $Data; 
+	}
 }
 
 class BenchmarkObject
@@ -246,6 +267,9 @@ class BenchmarkObject
 	var $Video;
 	var $SmartVideoLink;
 	var $LegacyVideoLink;
+	var $Attribute;
+    var $AttributeValue;
+	var $TimeCreated;
 
 	function __construct($Row)
 	{
@@ -256,6 +280,9 @@ class BenchmarkObject
 		$this->Video = $Row['VideoId'];
 		$this->SmartVideoLink = 'http://www.youtube.com/embed/'.$Row['VideoId'].'';
 		$this->LegacyVideoLink = 'http://m.youtube.com/details?v='.$Row['VideoId'].'';
+		$this->Attribute = isset($Row['Attribute']) ? $Row['Attribute'] : "";
+        $this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : "";
+		$this->TimeCreated = isset($Row['TimeCreated']) ? $Row['TimeCreated'] : "";
 	}
 }
 

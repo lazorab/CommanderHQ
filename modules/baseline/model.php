@@ -27,6 +27,10 @@ class BaselineModel extends Model
             $SQL = 'INSERT INTO BaselineLog(MemberId, ExerciseTypeId, ExerciseId, AttributeId, AttributeValue) 
             VALUES("'.$_SESSION['UID'].'", "'.$ExerciseTypeId.'", "'.$Activity->recid.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
             mysql_query($SQL);
+			
+			$SQL = 'INSERT INTO WODLog(MemberId, WODTypeId, ExerciseId, AttributeId, AttributeValue) 
+            VALUES("'.$_SESSION['UID'].'", "'.$ExerciseTypeId.'", "'.$Activity->recid.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
+            mysql_query($SQL);
         }
         /*
         $SQL = 'SELECT recid, Attribute FROM Attributes';

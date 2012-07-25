@@ -15,35 +15,62 @@ class ReportsController extends Controller
             $this->MemberDetails=$Model->getDetails();
         }
 	}
+	
+	function WODOutput()
+	{
+		$Html = '<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+		<li>WOD</li>
+		</ul><br/>';
+		$Html.= $this->WODHistory();
+		return $Html;
+	}
+	
+	function BaselineOutput()
+	{
+		$Html = '<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+		<li>Baseline</li>
+		</ul><br/>';
+		$Html.=  $this->BaselineHistory();
+		return $Html;
+	}
+	
+	function SkillsOutput()
+	{
+			$Html = '<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+		<li>Skills</li>
+		</ul><br/>';
+		$Html.= $this->MemberDetails->SkillLevel;
+		return $Html;
+	}
     
     function Output()
     {        
 		$Model=new ReportsModel();
 		
-		if(isset($_REQUEST['action']))
+		if(isset($_REQUEST['report']))
 		{
 
-			if($_REQUEST['action'] == 'Pending')
+			if($_REQUEST['report'] == 'Pending')
 			{
 				return $this->PendingExercises();
 			}
-			else if($_REQUEST['action'] == 'Performance')
+			else if($_REQUEST['report'] == 'Performance')
 			{
 				return $this->CompletedExercises();	
 			}
-            else if($_REQUEST['action'] == 'WOD')
+            else if($_REQUEST['report'] == 'WOD')
 			{
 				return $this->WODExercises();	
 			}
-            else if($_REQUEST['action'] == 'Benchmarks')
+            else if($_REQUEST['report'] == 'Benchmarks')
 			{
 				return $this->BenchmarkExercises();	
 			}
-            else if($_REQUEST['action'] == 'Baseline')
+            else if($_REQUEST['report'] == 'Baseline')
 			{
 				return $this->BaselineExercises();	
 			}
-			else if($_REQUEST['action'] == 'Weight')
+			else if($_REQUEST['report'] == 'Weight')
 			{
 				return $this->WeightHistory($this->MemberDetails->SystemOfMeasure);	
 			}
@@ -97,7 +124,7 @@ class ReportsController extends Controller
         $Html='';
         foreach($WODData as $Data)
         {
-            $Html.=''.$Data->Exercise.'';
+            $Html.=''.$Data->TimeCreated.' - '.$Data->Exercise.' : '.$Data->Attribute.' - '.$Data->AttributeValue.' -<br/>';
         }
         return $Html;
     }
@@ -106,12 +133,15 @@ class ReportsController extends Controller
 	{
         $Model=new ReportsModel();
 		$ExerciseItems = $Model->getBenchmarkExercises();
-		$Html='<'.$this->Wall.'select name="BenchmarkId" id="BenchmarkId" class="select" onchange="getBenchmarkReport(this.value, reportform.datetime.value);">';
-        $Html.='<'.$this->Wall.'option value="">Logged Benchmarks</'.$this->Wall.'option>';
-		foreach($ExerciseItems AS $Exercise) { 
-			$Html.='<'.$this->Wall.'option value="'.$Exercise->ExerciseId.'">'.$Exercise->Exercise.'</'.$this->Wall.'option>';
-		}
-        $Html.='</'.$this->Wall.'select><br/><br/>';
+		
+		$Html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
+	
+        foreach($ExerciseItems AS $Exercise){
+			$Html .= '<li><a href="" onclick="getBenchmarkReport(\''.$Exercise->ExerciseId.'\',\'\');">'.$Exercise->Exercise.'</a></li>';
+        }	
+				
+		$Html .= '</ul>';
+
 		return $Html;	
 	}
     

@@ -53,9 +53,13 @@ $(function() {
 <br/>
 <div id="topselection">
 <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-<li><a href="" onclick="getContent('Custom');">Custom</a></li>
-<li><a href="" onclick="getContent('Baseline');">Baseline</a></li>
-<li><a href="" onclick="getContent('Benchmark');">Benchmarks</a></li>	
+<?php if(!isset($_REQUEST['baseline'])){ ?>
+<li><a href="#" onclick="OpenThisPage('?module=baseline&baseline=Baseline');">Baseline</a></li>
+<li><a href="#" onclick="OpenThisPage('?module=benchmark&origin=baseline');">Benchmarks</a></li>
+<li><a href="#" onclick="OpenThisPage('?module=custom&origin=baseline');">Custom</a></li>
+<?php } else if($_REQUEST['baseline'] == 'Baseline'){ ?>	
+<li>Baseline</li>
+<?php } ?>
 </ul>
 </div>
 

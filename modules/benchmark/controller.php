@@ -16,7 +16,7 @@ class BenchmarkController extends Controller
 		if($_REQUEST['action'] == 'save'){
 				$this->Save();
         }
-        
+		
 		$Model = new BenchmarkModel;
 		if(isset($_REQUEST['id']))
 			$this->Workout = $Model->getWorkoutDetails($_REQUEST['id']);
@@ -24,12 +24,15 @@ class BenchmarkController extends Controller
 		$this->Categories = $Model->getCategories();
 		if(isset($_REQUEST['catid'])){
 			$this->Category = $Model->getCategory($_REQUEST['catid']);
-			$this->BMWS = $Model->getBMWS($_REQUEST['catid']);
+			if($this->Category != 'Historic'){
+				$this->BMWS = $Model->getBMWS($_REQUEST['catid']);
+			}
 		}
 		
 		if($_REQUEST['form'] == 'submitted'){
 			$Success = $Model->Log($_REQUEST);
 		}
+		return $this->BenchmarkSelection();
 	}
 	
 	function Save()
@@ -42,7 +45,7 @@ class BenchmarkController extends Controller
 	{
 	$RENDER = new Image(SITE_ID);
 		$html='<br/>';
-		
+
 if(isset($_REQUEST['id']))
 {
     $Start = $RENDER->NewImage('start.png', $this->Device->GetScreenWidth());
@@ -55,23 +58,49 @@ if(isset($_REQUEST['id']))
     </iframe>    
 	</div>';    
 	$html.='<div id="bmdescription">';
-	$html.= $this->Workout->Description;
+	$html.= str_replace('{br}','<br/>',$this->Workout->Description);
 	$html.='</div>';
 	$html.='<form name="clockform" action="index.php">
         <input type="hidden" name="module" value="benchmark"/>
         <input type="hidden" name="benchmarkId" value="'.$_REQUEST['id'].'"/>
+		<input type="hidden" name="wodtype" value="3"/>
 		<input type="hidden" name="action" value="save"/>
         <input id="clock" name="TimeToComplete" value="00:00:0"/>
-    </form>	
-    <div style="margin:0 30% 0 30%; width:50%">
+    </form>';
+	
+	$html.='<div id="buttongroup">
+		<a href="#" class="controlbutton" data-inline="true" onclick="start()" data-theme="b" data-role="button">Start</a>
+		<a href="#" class="controlbutton" data-inline="true" onclick="stop()" data-theme="b" data-role="button">Stop</a>
+		<br/>
+		<a href="#" class="controlbutton" data-inline="true" onclick="reset()" data-theme="b" data-role="button">Reset</a>
+		<a href="#" class="controlbutton" data-inline="true" onclick="save()" data-theme="b" data-role="button">Save</a>
+		</div>';
+/*	
+    $html.='<div style="margin:0 30% 0 30%; width:50%">
         <img alt="Start" '.$Start.' src="'.ImagePath.'start.png" onclick="start()"/>&nbsp;&nbsp;
         <img alt="Stop" '.$Stop.' src="'.ImagePath.'stop.png" onclick="stop()"/><br/><br/>
         <img alt="Reset" '.$Reset.' src="'.ImagePath.'reset.png" onclick="reset()"/>&nbsp;&nbsp;
         <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="save()"/>
-        </div><br/><br/>';
+        </div>';
+*/
+	$html.='<br/><br/>';
 }
 else if(isset($_REQUEST['catid']))
 {
+	if($this->Category == 'Historic'){
+		$html.= $this->getHistory();
+	}
+	else{
+               $html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
+                foreach($this->BMWS AS $Exercise){
+					$Description = str_replace('{br}',' | ',$Exercise->Description);
+					$html .= '<li>
+                        <a href="" onclick="getDetails('.$Exercise->Id.');">'.$Exercise->Name.':<br/><span style="font-size:small">'.$Description.'</span></a>
+                    </li>';
+                }	
+				$html .= '</ul><br/>';
+	}
+/*
 	$ImageSize = $RENDER->NewImage('BM_Select.png', $this->Device->GetScreenWidth());
     $explode = explode('"',$ImageSize);
     $height = $explode[1];
@@ -94,9 +123,14 @@ else if(isset($_REQUEST['catid']))
 		//$html.='<h3><a href="index.php?module=benchmark&id='.$BMW->Id.'&banner='.$BMW->Name.'">'.$BMW->Name.'</a></h3>';
 	}
 	$html.='<br/>';
+*/
 }
+/*
 else
 {
+
+	$html.=$this->BenchmarkSelection();
+
 	foreach($this->Categories AS $Category){ 
 		$ImageSize = $RENDER->NewImage(''.$Category->Image.'.png', $this->Device->GetScreenWidth());
 		$html.='<div>';
@@ -107,7 +141,43 @@ else
 		//$html.='<h3><a href="index.php?module=benchmark&catid='.$Category->Id.'&banner='.$Category->Name.'">'.$Category->Name.'</a></h3>';
 	}
 }	
+*/
 return $html;
+	}
+	
+	function getHistory()
+	{
+		$Model = new BenchmarkModel;
+		$HistoricalData = $Model->getHistory();
+		if(empty($HistoricalData)){
+			$History = 'Oops! You have not recorded any Benchmark workouts yet.';
+		}else{
+			foreach($HistoricalData AS $Data){
+				$History.=''.$Data->TimeCreated.' : '.$Data->Name.' : '.$Data->AttributeValue.'<br/>';
+			}
+		}
+		return $History;
+	}
+	
+	function BenchmarkSelection()
+	{
+		$Html='<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
+		if($_REQUEST['catid'] == '1'){
+			$Html.='<li>The Girls</li>';
+		}else if($_REQUEST['catid'] == '2'){
+			$Html.='<li>The Heros</li>';
+		}else if($_REQUEST['catid'] == '3'){
+			$Html.='<li>Travel</li>';
+		}else if($_REQUEST['catid'] == '4'){
+			$Html.='<li>Historic</li>';		
+		}else{
+			$Html.='<li><a href="#" onclick="OpenThisPage(\'?module=benchmark&catid=1\')">The Girls</a></li>
+				<li><a href="#" onclick="OpenThisPage(\'?module=benchmark&catid=2\')">The Heros</a></li>
+				<li><a href="#" onclick="OpenThisPage(\'?module=benchmark&catid=3\')">Travel</a></li>
+				<li><a href="#" onclick="OpenThisPage(\'?module=benchmark&catid=4\')">Historic</a></li>';
+		}
+		$Html.='</ul>';
+		return $Html;	
 	}
 }
 ?>

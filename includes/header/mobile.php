@@ -6,22 +6,36 @@
 <meta http-equiv="expires" content="Fri, 30 Dec 2011 12:00:00 GMT" />
 <META NAME="ROBOTS" CONTENT="ALL" />
 <meta name="HandheldFriendly" content="True" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="YES" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <link rel="apple-touch-icon" href="images/icon.png" />
-<link rel="apple-touch-startup-image" href="images/splashscreen.png" />
+	<link rel="apple-touch-icon" href="/images/touch-icon-iphone.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="/images/touch-icon-ipad.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="/images/touch-icon-iphone4.png">
+<!-- startup image for web apps (320x460) -->
+<link rel="apple-touch-startup-image" href="/images/splash.png" media="screen and (max-device-width: 320px)" />
 <link type="text/css" rel="stylesheet" href="/css/jquery.mobile-1.1.0.min.css" />
 <?php 
     echo utility::mobile_stylesheet($request->get_screen_width_new(), 'css/mobile.css');
 ?>
+<link rel="stylesheet" href="/css/add2home.css">
+<link rel="stylesheet" href="/css/slideshow.css">
 <script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
 
 <script type="text/javascript" src="/js/jquery.easing.1.3.js"></script>
 <script type="text/javascript" src="/js/jquery.nicescroll.min.js"></script>
 <script type="text/javascript" src="/js/stopwatch.js"></script>
+<script type="text/javascript" src="/js/slides.min.jquery.js"></script>
 <script type="text/javascript" src="http://www.be-mobile.co.za/framework/js/device.js"></script>
 <script type="text/javascript">
+		var deviceIsAndroid = (window.navigator.userAgent.toLowerCase().search('android') > -1);
+		if (deviceIsAndroid) {
+			var targetDPI = 160;
+			if (window.navigator.userAgent.match(/gt-p10\d0|sgh-i987|sph-p100|sgh-t849|sch-i800|shw-m180s|sc-01c/i)) targetDPI = 'device-dpi';
+			document.write('<meta name="viewport" content="target-densityDpi='+targetDPI+',width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />');
+		} else {
+			document.write('<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />');
+		}
 // Mobile Safari in standalone mode
 if(("standalone" in window.navigator) && window.navigator.standalone){
     
@@ -62,7 +76,14 @@ $(document).ready(function() {
 			$('#menu').addClass('active');   
 		}
 	});
+	$('#AjaxLoading').html('');
 });
+
+function OpenThisPage(page)
+{
+	document.getElementById('AjaxLoading').innerHTML ='<center><img alt="loading" src="/css/images/ajax-loader.gif" /><br />Loading...</center>';
+	window.location = page;
+}
 
 </script>
 <script type="text/javascript" src="/js/jquery.mobile-1.1.0.min.js"></script>

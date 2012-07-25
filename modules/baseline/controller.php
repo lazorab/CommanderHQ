@@ -44,44 +44,10 @@ class BaselineController extends Controller
 			$Html .= $this->CustomDetails($exerciseId);
         }
 		else if($_REQUEST['baseline'] == 'Custom'){//custom
-			
-            $MemberCustomExercises = $Model->getMemberCustomExercises();
-            if(isset($_REQUEST['customexercise']) && $_REQUEST['customexercise'] != 'new'){
-                $Html .= $this->CustomDetails($_REQUEST['customexercise']);               
-            }
-            else if(count($MemberCustomExercises) > 0 && $_REQUEST['customexercise'] != 'new'){
-                $Html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-                <li><a href="" onclick="getCustomExercise(\'new\');">Create New Exercise</a></li>';
-                
-                foreach($MemberCustomExercises AS $Exercise){
-					$Html .= '<li><a href="" onclick="getCustomExercise('.$Exercise->recid.');">'.$Exercise->ActivityName.':<br/>'.$Exercise->Description.'</a></li>';
-                }	
-				
-				$Html .= '</ul>';
-                
-            }
-            if(count($MemberCustomExercises) == 0 || $_REQUEST['customexercise'] == 'new'){
-                $CustomTypes = $Model->getCustomTypes();
-				$Html .= '<form action="index.php" id="test" name="form">
-                <input type="hidden" name="module" value="baseline"/>
-                <input type="hidden" name="baseline" value="Custom"/>
-				<input type="hidden" name="action" value="savecustom"/>
-				<input type="text" name="newcustom" placeholder="Exercise Name"/><br/><br/>
-                <div data-role="controlgroup">';
-                foreach($CustomTypes AS $Type){
-					$Html .= '<input type="radio" name="customtype" id="radio-choice-'.$Type->recid.'" value="'.$Type->recid.'" />
-                    <label for="radio-choice-'.$Type->recid.'">'.$Type->ActivityType.'</label>';
-                        }	
-				$Html .= '</div>
-				<button type="submit" data-theme="b" name="submit" value="submit-value">Next</button>
-				</form><br/>';
-				
-            }
+	
 		}
 		else if($_REQUEST['baseline'] == 'Baseline'){//Baseline
-
             $Html.= $this->getStopWatch('0'); 
-            
 		}
 		else if($_REQUEST['baseline'] == 'Benchmark'){//Benchmarks
 			$Benchmarks = $Model->getBenchmarks();	
@@ -150,51 +116,6 @@ class BaselineController extends Controller
                 $Html.='<input class="textinput" style="width:75%" type="text" data-inline="true" name="'.$Activity->recid.'___Reps" value="'.$Activity->AttributeValue.'"/>';
             $Html.='</div>';        
         }        
-        
-       $temp=' <!-- next row -->
-        <div class="ui-block-a">
-        <input class="textinput" style="width:75%" type="text" data-inline="true" readonly="readonly" name="Row" value="Row"/>
-        </div>
-        <div class="ui-block-b">
-        <input class="textinput" style="width:75%" type="text" data-inline="true" name="Row1_Distance" value="500"/>
-        </div>
-        <div class="ui-block-c"></div>
-        
-        <!-- next row -->
-        <div class="ui-block-a">
-        <input class="textinput" style="width:75%" type="text" data-inline="true" name="Squats" value="Squats"/>
-        </div>
-        <div class="ui-block-b"></div>
-        <div class="ui-block-c">
-        <input class="textinput" style="width:75%" type="text" data-inline="true" name="Row2_Reps" value="40"/>
-        </div>           
-        
-        <!-- next row -->
-        <div class="ui-block-a">
-        <input class="textinput" style="width:75%" type="text" data-inline="true" name="Situps" value="Sit Ups"/>
-        </div>
-        <div class="ui-block-b"></div>
-        <div class="ui-block-c">
-        <input class="textinput" style="width:75%" type="text" data-inline="true" name="Row3_Reps" value="30"/>
-        </div>
-        
-        <!-- next row -->
-        <div class="ui-block-a">
-        <input class="textinput" style="width:75%" type="text" data-inline="true" name="Pushups" value="Push Ups"/>
-        </div>
-        <div class="ui-block-b"></div>
-        <div class="ui-block-c">
-        <input class="textinput" style="width:75%" type="text" data-inline="true" name="Row4_Reps" value="20"/>
-        </div>            
-        
-        <!-- next row -->
-        <div class="ui-block-a">
-        <input class="textinput" style="width:75%" type="text" data-inline="true" name="Pullups" value="Pull Ups"/>
-        </div>
-        <div class="ui-block-b"></div>
-        <div class="ui-block-c">
-        <input class="textinput" style="width:75%" type="text" data-inline="true" name="Row5_Reps" value="10"/>
-        </div>';
         
         $Html.='</div>';
         

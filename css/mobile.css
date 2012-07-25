@@ -9,22 +9,69 @@ body {
 	font-weight: normal;
 }
 
+#buttongroup{
+	margin:0 10% 0 10%; 
+	width:80%;
+}
+
+.controlbutton{
+	width:40%;
+}
+
+#AjaxLoading{
+	position:fixed;
+    	top: 50%;
+	z-index:99;
+	color:#000;
+	font-weight:bold;
+	text-align:center;
+	width:100%;
+}
+
 #menu
 { 
 	position:fixed;
 	overflow: auto;
-	height:300px;
-    	top: 25%;
+	height:280px;
+    	top: 35%;
     	left: 0;
 	display:none;
 	color:#fff;
 	background-color:#0d3e5f;
-	z-index:99;
+	z-index:100;
 }
 
 #menu.active
 { 
 	display:block;
+}
+
+#loginback
+{
+	background-color:#021f3f;
+	min-height: 326px;
+}
+
+#error
+{
+	background-color:RED;
+	color:#fff;
+	font-weight:bold;
+	padding:1%;
+	width:75%
+}
+
+.remove
+{
+	float:left;
+}
+
+#message
+{
+	color:#fff;
+	font-weight:bold;
+	padding:1%;
+	width:75%
 }
 
 #header
@@ -42,7 +89,7 @@ body {
 #canvas
 {
 	width:100%;
-	min-height: 340px;
+	min-height: 320px;
 	color:#fff;
 	background-color:#0d3e5f;
 }
@@ -50,7 +97,7 @@ body {
 #content
 {
 	width:100%;
-	min-height: 344px;
+	min-height: 320px;
 	color:#fff;
 	background-color:#0d3e5f;
 }
@@ -130,9 +177,9 @@ input
 
 #bmdescription
 {
-	width:50%;
-	margin:2% 20% 0 20%;
-	padding:5%;
+	width:80%;
+	margin:2% 6% 0 6%;
+	padding:4%;
 	background-color:#fff;
 	border-radius: 5px; 
 	-moz-border-radius: 5px; 

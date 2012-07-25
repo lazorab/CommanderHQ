@@ -1,8 +1,35 @@
+<?php $ChartData = "<chart showLabels='0' showYAxisValues='0' animation='0' lineColor='00008B' xAxisNamePadding='0' caption='Performance' xAxisName='Time' yAxisName='Output' showValues= '0'>";
+
+  $ChartData .= "<set label='Jan' value='420'/>";
+   $ChartData .= "<set label='Feb' value='910'/>";
+   $ChartData .= "<set label='Mar' value='720'/>";
+   $ChartData .= "<set label='Apr' value='550'/>";
+   $ChartData .= "<set label='May' value='810'/>";
+   $ChartData .= "<set label='Jun' value='510'/>";
+
+   $ChartData .= "<trendLines>";
+      $ChartData .= "<line startValue='700' color='009933' lineThickness='3' displayvalue='Average' />";
+   $ChartData .= "</trendLines>";
+
+$ChartData .= "</chart>";
+	         ?>
+			 
+<script type='text/javascript' src='includes/FusionCharts/FusionCharts.js'></script>	
 <script type="text/javascript">
+            $(function(){
+                $('#slides').slides({
+                    preload: true,
+                    preloadImage: 'images/ajax-loader.gif',
+					pagination: false,
+					generatePagination: false,
+					slideSpeed: 500,
+					effect: 'slide'
+                });
+            });
 
 function getOptions(action,date)
 {
-    $.getJSON("ajax.php?module=reports",{action:action, date:date},display);
+    $.getJSON("ajax.php?module=reports",{report:action, date:date},display);
 }
 
 function getWODReport(id,date)
@@ -24,26 +51,44 @@ function display(data)
 {
 	document.getElementById("reportdata").innerHTML = data;
 }
-
+var i = 1;//prevent double rendering problem
 </script>
+		 
 <br/>
 <div id="topselection">
-<form id="reportform" name="reportform">
-<select id="action" name="action" class="select" onchange="getOptions(this.value, datetime.value);">
-<option value="">Select Report</option>
-<option value="Benchmarks">Benchmarks</option>
-<option value="Baseline">Baseline</option>
-<option value="WOD">WOD</option>
-<option value="Pending">Pending Exercises</option>
-<option value="Weight">Weight History</option>
-</select><br/><br/>
 
-<input type="date" name="datetime" id="datetime" value="<?php echo date('d M Y');?>"/><br/>
-
-</form>
 </div>
 
 <div id="reportdata">
-<?php echo $Display->Output();?>
-Current Skills Level:<?php echo $Display->MemberDetails->SkillLevel; ?>
+                                            <div id="slides">
+                                                <div class="slides_container">
+                                                    <div class="slide">
+ <div id="chartContainer">FusionCharts will load here!</div>   
+ <script type="text/javascript">
+if(i == 1){
+i++;
+  	var myChart = new FusionCharts( "includes/FusionCharts/Line.swf", 
+                    "myChartId", "250", "280", "0", "1" );
+
+      myChart.setXMLData('<?php echo $ChartData;?>');
+
+      myChart.render("chartContainer");
+	  }
+	  
+</script>                                                        
+                                                    </div>
+                                                    <div class="slide">
+                                                        <?php echo $Display->BaselineOutput();?>
+                                                    </div>
+                                                    <div class="slide">
+                                                        <?php echo $Display->SkillsOutput();?>
+                                                    </div>
+													<div class="slide">
+                                              <?php echo $Display->WODOutput();?>       
+                                                    </div>
+                                                </div>
+                                                <a href="#" class="prev"><img src="images/arrow-next.png" width="24" height="43" alt="Arrow Prev"></a>
+                                                <a href="#" class="next"><img src="images/arrow-prev.png" width="24" height="43" alt="Arrow Next"></a>
+                                            </div>
+
 </div>

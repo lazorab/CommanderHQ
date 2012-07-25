@@ -1,23 +1,35 @@
 <script type="text/javascript">
 
 function getWOD(wodtype)
-{
-	$.getJSON("ajax.php?module=wod",{wodtype:wodtype},display);		
+{    
+	$('#AjaxLoading').html('<center><img alt="loading" src="/css/images/ajax-loader.gif" /><br />Loading...</center>');
+	//$.getJSON("ajax.php?module=wod",{wodtype:wodtype},display);	
+	$.getJSON("ajax.php?module=wod",{selection:wodtype},topdisplay);	
 }
 
 function getBenchmark(id)
 {
+	$('#AjaxLoading').html('<center><img alt="loading" src="/css/images/ajax-loader.gif" /><br />Loading...</center>');
     $.getJSON("ajax.php?module=wod",{benchmark:id},display);
 }
 
 function getCustomContent(customid)
 {
+	$('#AjaxLoading').html('<center><img alt="loading" src="/css/images/ajax-loader.gif" /><br />Loading...</center>');
     $.getJSON("ajax.php?module=wod",{customid:customid},display);
 }
 
 function getCustomExercise(id)
 {
-    $.getJSON("ajax.php?module=wod",{customexercise:id, wodtype:1},display);
+	$('#AjaxLoading').html('<center><img alt="loading" src="/css/images/ajax-loader.gif" /><br />Loading...</center>');
+    $.getJSON("ajax.php?module=wod",{customexercise:id, wodtype:1},display); 	
+}
+
+function topdisplay(data)
+{
+	$('#topselection').html(data);
+	$('#toplist').listview();
+	$('#toplist').listview('refresh');
 }
 
 function display(data)
@@ -27,15 +39,12 @@ function display(data)
 	$('#listview').listview('refresh');
 	$("input").checkboxradio ();
 	$("input").closest ("div:jqmData(role=controlgroup)").controlgroup ();
+	$('#AjaxLoading').html('');
 }
 </script>
 <br/>
 <div id="topselection">
-		<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-					<li><a href="" onclick="getWOD('1');">Custom</a></li>
-					<li><a href="" onclick="getWOD('2');">My Gym</a></li>
-					<li><a href="" onclick="getWOD('3');">Benchmarks</a></li>	
-				</ul>
+	<?php echo $Display->TopSelection();?>
 </div>
 <div id="AjaxOutput">
 	<?php echo $Display->Output();?>

@@ -25,18 +25,25 @@ function getBenchmarks(catid)
 function getDetails(id)
 {
     $.getJSON("ajax.php?module=benchmark",{id:id},display);
-    var html = '<img id="videoselect" alt="Video" src="<?php echo $RENDER->Image('video_specific.png', $request->get_screen_width_new());?>"/>';
-    document.getElementById("menuvideo").innerHTML = html;
+	$('#menuvideo').html('<img id="videoselect" alt="Video" src="<?php echo $RENDER->Image('video_specific.png', $request->get_screen_width_new());?>"/>');
 }
 
 function display(data)
 {
-	document.getElementById("Benchmark").innerHTML = data;
+	$('#AjaxOutput').html(data);
+	$('#listview').listview();
+	$('#listview').listview('refresh');
+	$('.controlbutton').button();
+	$('.controlbutton').button('refresh');	
+	$('#AjaxLoading').html('');	
 }
 
 </script>
-<div id="content">
-    <div id="Benchmark">
-        <?php echo $Display->Output();?>
-    </div>
+<br/>
+<div id="topselection">
+    <?php echo $Display->BenchmarkSelection();?>
+</div>
+
+<div id="AjaxOutput">
+    <?php echo $Display->Output();?>
 </div>

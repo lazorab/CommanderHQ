@@ -12,6 +12,11 @@ function save()
 	document.clockform.submit();
 }
 
+function savecustom()
+{
+	document.customform.submit();
+}
+
 function countclicks()
 {
 	var rounds = parseInt(document.getElementById("rounds").value);

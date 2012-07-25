@@ -11,6 +11,27 @@ class WodController extends Controller
         if($_REQUEST['action'] == 'save'){
 				$this->Save();
         }
+
+		return $this->TopSelection();
+		
+		if(isset($_REQUEST['wodtype'])){
+			return $this->Output();
+		}
+	}
+	
+	function TopSelection()
+	{
+		$Html='<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
+		if($_REQUEST['wodtype'] == '2'){
+			$Html.='<li>My Gym</li>';
+		}else{
+			$Html.='<li><a href="#" onclick="OpenThisPage(\'?module=baseline&origin=wod&baseline=Baseline\')">Baseline</a></li>
+				<li><a href="#" onclick="OpenThisPage(\'?module=benchmark&origin=wod\')">Benchmarks</a></li>
+				<li><a href="#" onclick="OpenThisPage(\'?module=custom&origin=wod\')">Custom</a></li>
+				<li><a href="#" onclick="OpenThisPage(\'?module=wod&wodtype=2\')">My Gym</a></li>';
+		}
+		$Html.='</ul>';
+		return $Html;
 	}
 	
 	function WodDetails()
@@ -71,9 +92,26 @@ class WodController extends Controller
             }
 		}
 		else if($_REQUEST['wodtype'] == '2'){//my gym
-		
+			//check for registered gym
+			$Gym = $this->MemberGym();
+			if(!$Gym){//must register gym
+				header('location: index.php?module=registergym');	
+			}
+			else{//show details:
+				$WODdata .= 'Gym Name: '.$Gym->GymName.'<br/>';
+				if($Gym->Country != '')
+					$WODdata .= 'Country: '.$Gym->Country.'<br/>';
+				if($Gym->Region != '')
+					$WODdata .= 'Region: '.$Gym->Region.'<br/>';
+				if($Gym->TelNo != '')
+					$WODdata .= 'TelNo: '.$Gym->TelNo.'<br/>';
+				if($Gym->Email != '')
+					$WODdata .= 'Email: '.$Gym->Email.'<br/>';
+				$WODdata .= 'URL: '.$Gym->URL.'<br/>';
+			}	
 		}
 		else if($_REQUEST['wodtype'] == '3'){//benchmarks
+		
 			$Benchmarks = $Model->getBenchmarks();	
 
                $WODdata .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
@@ -93,9 +131,16 @@ class WodController extends Controller
             $WODdata .='</div>';
             $WODdata .= $this->getStopWatch($_REQUEST['benchmark']);        
 		}		
-		return $WODdata;	
+		return $WODdata;
 	}
     
+	function MemberGym()
+	{
+        $Model = new WodModel;
+        $MemberGym = $Model->getMemberGym();	
+		return $MemberGym;
+	}
+	
     function CustomDetails($Id)
     {
         $Model = new WodModel;

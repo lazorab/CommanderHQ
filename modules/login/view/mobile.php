@@ -1,10 +1,9 @@
 <?php
     $ratio = $request->get_screen_width_new() / 500;
     $height = floor(660*$ratio);
-    $spacer = floor(190*$ratio);
+    $spacer = floor(150*$ratio);
     ?>
-<div id="loginback" style="height:<?php echo $height;?>px;background-image:url(<?php echo $RENDER->Image('signup.png', $request->get_screen_width_new());?>);background-repeat:no-repeat">
-
+<div id="loginback">
 <?php echo $Display->Message;?><br/>
 
 <div id="container" style="padding-left:5%">
@@ -36,7 +35,8 @@ Enter your Email<br/>
 <input type="submit" name="action" value="Retrieve"/><br/><br/>
 </form>
 -->
-<div style="height:<?php echo $spacer;?>px"></div>
+<br/>
+<br/>
 <div style="padding:0 15% 2% 15%">Login with</div>
 <!--
 <a href="https://dev.twitter.com/docs/auth/implementing-sign-twitter">
@@ -55,4 +55,4 @@ Enter your Email<br/>
 <a href="?module=login&oauth_provider=facebook" rel="external">
 <img alt="Facebook" <?php echo $RENDER->NewImage('facebook.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>facebook.png"/>
 </a>
-</div>
+</div></div>

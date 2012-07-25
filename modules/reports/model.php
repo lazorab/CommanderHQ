@@ -97,11 +97,23 @@ class ReportsModel extends Model
     function getWODHistory()
     {
 		$Data = array();
-		$Sql = 'SELECT L.ExerciseId, W.WorkoutName, A.Attribute, L.AttributeValue, L.TimeCreated 
+		$Sql = 'SELECT ET.ExerciseType AS WODType,
+CASE WHEN ExerciseType = "Custom" 
+THEN (SELECT ExerciseName FROM CustomExercises WHERE recid = L.ExerciseId)
+WHEN ExerciseType = "Benchmark"
+THEN (SELECT WorkoutName FROM BenchmarkWorkouts WHERE recid = L.ExerciseId)
+ELSE
+E.Exercise 
+END
+AS Exercise, 
+
+A.Attribute AS Attribute, L.AttributeValue AS AttributeValue, L.TimeCreated 
 		FROM WODLog L 
-        LEFT JOIN WOD W on W.recid = L.ExerciseId 
+        LEFT JOIN ExerciseTypes ET ON ET.recid = L.WODTypeId
+        LEFT JOIN Exercises E ON E.recid = L.ExerciseId
         LEFT JOIN Attributes A ON A.recid = L.AttributeId
-		WHERE L.MemberId = '.$_SESSION['UID'].' AND L.ExerciseId = '.$_REQUEST['WODId'].'';
+		WHERE L.MemberId = '.$_SESSION['UID'].'
+		GROUP BY Exercise,TimeCreated';;// AND L.ExerciseId = '.$_REQUEST['WODId'].'';
 		$Result = mysql_query($Sql);	
 		while($Row = mysql_fetch_assoc($Result))
 		{
@@ -147,11 +159,24 @@ class ReportsModel extends Model
     function getBaselineHistory()
     {
 		$Data = array();
-		$Sql = 'SELECT L.ExerciseId as ExerciseId, A.Attribute as Attribute, L.AttributeValue as AttributeValue, L.TimeCreated 
+		$Sql = 'SELECT ET.ExerciseType AS ExerciseType,
+CASE WHEN ExerciseType = "Custom" 
+THEN (SELECT ExerciseName FROM CustomExercises WHERE recid = L.ExerciseId)
+WHEN ExerciseType = "Benchmark"
+THEN (SELECT WorkoutName FROM BenchmarkWorkouts WHERE recid = L.ExerciseId)
+ELSE
+E.Exercise 
+END
+AS Exercise, 
+
+A.Attribute AS Attribute, L.AttributeValue AS AttributeValue, L.TimeCreated 
 		FROM BaselineLog L 
-        LEFT JOIN MemberBaseline B on B.recid = L.ExerciseId 
+        LEFT JOIN MemberBaseline B ON B.ExerciseId = L.ExerciseId 
+        LEFT JOIN ExerciseTypes ET ON ET.recid = L.ExerciseTypeId
+        LEFT JOIN Exercises E ON E.recid = L.ExerciseId
         LEFT JOIN Attributes A ON A.recid = L.AttributeId
-		WHERE L.MemberId = '.$_SESSION['UID'].' AND L.ExerciseId = '.$_REQUEST['BaselineId'].'';
+		WHERE L.MemberId = '.$_SESSION['UID'].'
+		GROUP BY Exercise,TimeCreated';// AND L.ExerciseId = '.$_REQUEST['BaselineId'].'';
 		$Result = mysql_query($Sql);	
 		while($Row = mysql_fetch_assoc($Result))
 		{
@@ -163,10 +188,10 @@ class ReportsModel extends Model
     function getBenchmarkExercises()
     {
 		$Data = array();
-		$Sql = 'SELECT DISTINCT BM.recid as ExerciseId, BM.WorkoutName as Exercise 
+		$Sql = 'SELECT DISTINCT BM.recid AS ExerciseId, BM.WorkoutName AS Exercise 
         FROM BenchmarkWorkouts BM
-        LEFT JOIN BenchmarkLog BL ON BL.BenchmarkId = BM.recid
-        WHERE BL.MemberId = '.$_SESSION['UID'].'';
+        LEFT JOIN WODLog WL ON WL.ExerciseId = BM.recid
+        WHERE WL.MemberId = '.$_SESSION['UID'].' AND WL.WodTypeId = 3';
 		$Result = mysql_query($Sql);	
 		while($Row = mysql_fetch_assoc($Result))
 		{
@@ -178,11 +203,12 @@ class ReportsModel extends Model
     function getBenchmarkHistory()
     {
 		$Data = array();
-		$Sql = 'SELECT L.BenchmarkId as ExerciseId, B.WorkoutName as Exercise, A.Attribute as Attribute, L.AttributeValue as AttributeValue, L.TimeCreated 
-		FROM BenchmarkLog L 
-        LEFT JOIN BenchmarkWorkouts B on B.recid = L.BenchmarkId 
+		$Sql = 'SELECT B.recid, B.WorkoutName, A.Attribute, L.AttributeValue, L.TimeCreated 
+		FROM WODLog L 
+        LEFT JOIN BenchmarkWorkouts B ON B.recid = L.ExerciseId 
         LEFT JOIN Attributes A ON A.recid = L.AttributeId
-		WHERE L.MemberId = '.$_SESSION['UID'].' AND L.BenchmarkId = '.$_REQUEST['BenchmarkId'].'';
+		WHERE L.MemberId = '.$_SESSION['UID'].' AND L.WODTypeId = 3';// AND L.ExerciseId = '.$_REQUEST['BenchmarkId'].'';
+
 		$Result = mysql_query($Sql);	
 		while($Row = mysql_fetch_assoc($Result))
 		{

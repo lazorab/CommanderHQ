@@ -152,6 +152,24 @@ class WodModel extends Model
 		
 		return $Benchmarks;
 	}	
+	
+	function getMemberGym()
+	{
+		$MemberGym = array();
+		$Query = 'SELECT RG.GymName, RG.Country, RG.Region, RG.URL
+		FROM RegisteredGyms RG
+		JOIN MemberDetails MD ON MD.GymId = RG.recid
+		WHERE MD.MemberId = "'.$_SESSION['UID'].'"';
+		$Result = mysql_query($Query);	
+		if(mysql_num_rows($Result) > 0){
+			$Row = mysql_fetch_assoc($Result);
+			$MemberGym = new GymObject($Row);
+		}
+		else{
+			$MemberGym = false;
+		}
+		return $MemberGym;
+	}
 }
 
 class WODObject
@@ -173,6 +191,28 @@ class WODObject
 		$this->Attribute = isset($Row['Attribute']) ? $Row['Attribute'] : "";
 		$this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : "";
 		$this->WODate = isset($Row['WODate']) ? $Row['WODate'] : "";
+	}
+}
+
+class GymObject
+{
+	var $recid;
+	var $GymName;
+	var $Country;
+	var $Region;
+	var $TelNo;
+	var $Email;
+	var $URL;
+
+	function __construct($Row)
+	{
+		$this->recid = isset($Row['recid']) ? $Row['recid'] : "";
+		$this->GymName = isset($Row['GymName']) ? $Row['GymName'] : "";
+		$this->Country = isset($Row['Country']) ? $Row['Country'] : "";
+		$this->Region = isset($Row['Region']) ? $Row['Region'] : "";
+		$this->TelNo = isset($Row['TelNo']) ? $Row['TelNo'] : "";
+		$this->Email = isset($Row['Email']) ? $Row['Email'] : "";	
+		$this->URL = isset($Row['URL']) ? $Row['URL'] : "";
 	}
 }
 ?>
