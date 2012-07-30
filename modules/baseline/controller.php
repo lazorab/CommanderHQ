@@ -164,15 +164,19 @@ class BaselineController extends Controller
         if($_REQUEST['baseline'] == 'Baseline'){
             $Html.=$this->getMemberBaselineActivities();
         }
-        $Html.='<input type="text" id="clock" name="TimeToComplete" value="00:00:0"/>
-        </form>	
-        <div style="margin:0 30% 0 30%; width:50%">
+        $Html.='<input type="text" id="clock" name="TimeToComplete" value="00:00:0"/>';
+		$Html.='<input class="buttongroup" type="button" onclick="startstop()" value="Start/Stop"/>';
+        $Html.='<input class="buttongroup" type="button" onclick="reset()" value="Reset"/>';
+		$Html.='<input class="buttongroup" type="button" onclick="document.clockform.submit();" value="Save"/>';
+        $Html.='</form><br/><br/>';
+		/*
+        $Html.='<div style="margin:0 30% 0 30%; width:50%">
         <img alt="Start" '.$Start.' src="'.ImagePath.'start.png" onclick="start()"/>&nbsp;&nbsp;
         <img alt="Stop" '.$Stop.' src="'.ImagePath.'stop.png" onclick="stop()"/><br/><br/>
         <img alt="Reset" '.$Reset.' src="'.ImagePath.'reset.png" onclick="reset()"/>&nbsp;&nbsp;
         <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="document.clockform.submit();"/>
         </div><br/><br/>';
-        
+        */
         return $Html;
     }
     

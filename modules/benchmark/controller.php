@@ -57,24 +57,21 @@ if(isset($_REQUEST['id']))
     <iframe marginwidth="0px" marginheight="0px" width="'.$this->Device->GetScreenWidth().'" height="'.$Height.'" src="http://www.youtube.com/embed/'.$this->Workout->Video.'" frameborder="0">
     </iframe>    
 	</div>';    
-	$html.='<div id="bmdescription">';
-	$html.= str_replace('{br}','<br/>',$this->Workout->Description);
-	$html.='</div>';
+	//$html.='<div id="bmdescription">';
+	//$html.= str_replace('{br}','<br/>',$this->Workout->Description);
+	//$html.='</div>';
 	$html.='<form name="clockform" action="index.php">
         <input type="hidden" name="module" value="benchmark"/>
         <input type="hidden" name="benchmarkId" value="'.$_REQUEST['id'].'"/>
 		<input type="hidden" name="wodtype" value="3"/>
-		<input type="hidden" name="action" value="save"/>
-        <input id="clock" name="TimeToComplete" value="00:00:0"/>
-    </form>';
-	
-	$html.='<div id="buttongroup">
-		<a href="#" class="controlbutton" data-inline="true" onclick="start()" data-theme="b" data-role="button">Start</a>
-		<a href="#" class="controlbutton" data-inline="true" onclick="stop()" data-theme="b" data-role="button">Stop</a>
-		<br/>
-		<a href="#" class="controlbutton" data-inline="true" onclick="reset()" data-theme="b" data-role="button">Reset</a>
-		<a href="#" class="controlbutton" data-inline="true" onclick="save()" data-theme="b" data-role="button">Save</a>
-		</div>';
+		<input type="hidden" name="action" value="save"/>';
+	$html.=$this->Workout->InputFields;	
+	//id of timed activity below:
+    $html.='<input id="clock" name="63___TimeToComplete" value="00:00:0"/>';
+	$html.='<input class="buttongroup" type="button" onclick="startstop()" value="Start/Stop"/>';
+    $html.='<input class="buttongroup" type="button" onclick="reset()" value="Reset"/>';
+	 $html.='<input class="buttongroup" type="submit" value="Save"/>';
+    $html.='</form><br/><br/>';		
 /*	
     $html.='<div style="margin:0 30% 0 30%; width:50%">
         <img alt="Start" '.$Start.' src="'.ImagePath.'start.png" onclick="start()"/>&nbsp;&nbsp;
@@ -83,7 +80,6 @@ if(isset($_REQUEST['id']))
         <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="save()"/>
         </div>';
 */
-	$html.='<br/><br/>';
 }
 else if(isset($_REQUEST['catid']))
 {

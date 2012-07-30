@@ -9,22 +9,24 @@ class CustomModel extends Model
     
     function Log()
 	{
+		$ActivityFields = $this->getActivityFields();
+		//var_dump($ActivityFields);
+	
         $ExerciseTypeId = $this->getExerciseTypeId();
-        $Attributes=$this->getAttributes();
+        //$Attributes=$this->getAttributes();
         //var_dump($ActivityFields);
-        foreach($Attributes AS $Attribute)
+        foreach($ActivityFields AS $ActivityField)
         {
-			if(isset($_REQUEST[''.$Attribute->Attribute.''])){
-				$AttributeValue = $_REQUEST[''.$Attribute->Attribute.''];
+
 				if($_REQUEST['origin'] == 'baseline'){
 					$SQL = 'INSERT INTO BaselineLog(MemberId, ExerciseTypeId, ExerciseId, AttributeId, AttributeValue) 
 					VALUES("'.$_SESSION['UID'].'", "'.$ExerciseTypeId.'", "'.$_REQUEST['exercise'].'", "'.$Attribute->recid.'", "'.$AttributeValue.'")';
 					mysql_query($SQL);		
 				}
-				$SQL = 'INSERT INTO WODLog(MemberId, ExerciseId, WodTypeId, AttributeId, AttributeValue) 
-					VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['exercise'].'", "'.$ExerciseTypeId.'", "'.$Attribute->recid.'", "'.$AttributeValue.'")';
+				// ExerciseId only applies for benchmarks so we make it 0 here
+				$SQL = 'INSERT INTO WODLog(MemberId, ExerciseId, WodTypeId, ActivityId, AttributeId, AttributeValue) 
+					VALUES("'.$_SESSION['UID'].'", "0", "'.$ExerciseTypeId.'", "'.$ActivityField->recid.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
 				mysql_query($SQL);
-			}
 		}
 	}
 	
@@ -268,14 +270,32 @@ class CustomModel extends Model
 	function getExercises()
 	{
         $Exercises = array();
-        $SQL = 'SELECT recid, Exercise AS ActivityName FROM Exercises';
+        $SQL = 'SELECT recid, Exercise AS ActivityName FROM Exercises ORDER BY Exercise';
         $Result = mysql_query($SQL);
         while($Row = mysql_fetch_assoc($Result))
         {
             array_push($Exercises, new CustomObject($Row));  
         }
         return $Exercises;	
-	}                  
+	}    
+
+	function getExerciseAttributes($Exercise)
+	{
+        $Attributes = array();
+        $SQL = 'SELECT E.recid, 
+		E.Exercise AS ActivityName,
+		A.Attribute
+		FROM Attributes A
+		JOIN ExerciseAttributes EA ON EA.AttributeId = A.recid
+		JOIN Exercises E ON EA.ExerciseId = E.recid
+		WHERE E.Exercise = "'.$Exercise.'"';
+        $Result = mysql_query($SQL);
+        while($Row = mysql_fetch_assoc($Result))
+        {
+            array_push($Attributes, new CustomObject($Row));  
+        }
+        return $Attributes;	
+	}	
 }
 
 class CustomObject

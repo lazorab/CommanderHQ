@@ -78,19 +78,128 @@ class BenchmarkModel extends Model
         $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
  		$Result = mysql_query($SQL);	
 		$Row = mysql_fetch_assoc($Result);
-        if($Row['Gender'] == 'M')
+        if($Row['Gender'] == 'M'){
             $DescriptionField = 'MaleWorkoutDescription';
-        else
+			$InputFields = 'MaleInput';
+        } else {
             $DescriptionField = 'FemaleWorkoutDescription';
-		$SQL = 'SELECT WorkoutName, '.$DescriptionField.' AS WorkoutDescription, VideoId FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
+			$InputFields = 'FemaleInput';
+		}
+		$SQL = 'SELECT WorkoutName, '.$DescriptionField.' AS WorkoutDescription, '.$InputFields.' AS InputFields, VideoId FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
 		$Result = mysql_query($SQL);	
 		$Row = mysql_fetch_assoc($Result);
+		$FormattedInputFields = $this->getFormattedInputFields($Row['InputFields']);
+		$Row['InputFields'] = $FormattedInputFields;
 		$Workout = new BenchmarkObject($Row);
 		
 		return $Workout;
 	}	
 
-	function Log()
+	function getFormattedInputFields($InputFields)
+	{
+		$FormattedInputFields = $InputFields;
+		$ExerciseAttributes = $this->getExerciseAttributes();
+		foreach($ExerciseAttributes AS $ExerciseAttribute){
+			$FormattedInputFields = str_replace('{'.$ExerciseAttribute->Name.'}', ''.$ExerciseAttribute->Id.'', $FormattedInputFields);
+		}
+		return $FormattedInputFields;
+	}	
+	
+	function getExerciseAttributes()
+	{
+        $ExerciseAttributes = array();
+        $SQL = 'SELECT E.recid, 
+		E.Exercise AS WorkoutName,
+		A.Attribute
+		FROM Attributes A
+		JOIN ExerciseAttributes EA ON EA.AttributeId = A.recid
+		JOIN Exercises E ON EA.ExerciseId = E.recid';
+        $Result = mysql_query($SQL);
+        while($Row = mysql_fetch_assoc($Result))
+        {
+            array_push($ExerciseAttributes, new BenchmarkObject($Row));  
+        }
+        return $ExerciseAttributes;	
+	}	
+	
+    function Log()
+	{
+		$ActivityFields = $this->getActivityFields();
+		//var_dump($ActivityFields);
+	
+        $ExerciseTypeId = $this->getExerciseTypeId();
+        //$Attributes=$this->getAttributes();
+        //var_dump($ActivityFields);
+        foreach($ActivityFields AS $ActivityField)
+        {
+
+				if($_REQUEST['origin'] == 'baseline'){
+					$SQL = 'INSERT INTO BaselineLog(MemberId, ExerciseTypeId, ExerciseId, ActivityId, AttributeId, AttributeValue) 
+					VALUES("'.$_SESSION['UID'].'", "'.$ExerciseTypeId.'", "'.$_REQUEST['benchmarkId'].'", "'.$ActivityField->Id.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
+					mysql_query($SQL);		
+				}
+				// ExerciseId only applies for benchmarks so we need it here!
+				$SQL = 'INSERT INTO WODLog(MemberId, ExerciseId, WodTypeId, ActivityId, AttributeId, AttributeValue) 
+					VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$ExerciseTypeId.'", "'.$ActivityField->Id.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
+				mysql_query($SQL);
+		}
+	}
+	
+	function getAttributes()
+	{
+		$Attributes = array();
+		$Query = 'SELECT recid, Attribute FROM Attributes';
+		$Result = mysql_query($Query);	
+		while($Row = mysql_fetch_assoc($Result))
+		{
+			array_push($Attributes, new BenchmarkObject($Row));
+		}
+		
+		return $Attributes; 
+	}
+    
+    function getActivityFields()
+    {
+        $Activities = array();
+        foreach($_REQUEST AS $key=>$val)
+        {
+            $ExerciseId = 0;
+            $Attribute = '';
+            $ExplodedKey = explode('___', $key);
+            if(sizeof($ExplodedKey) > 1)
+            {
+                $ExerciseId = $ExplodedKey[0];
+                $Attribute = $ExplodedKey[1];
+                $Query='SELECT recid, (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, "'.$val.'" AS AttributeValue 
+                FROM Exercises
+                WHERE recid = "'.$ExerciseId.'"';
+                $Result = mysql_query($Query); 
+                $Row = mysql_fetch_assoc($Result);
+                array_push($Activities, new BenchmarkObject($Row));
+            }
+            else{
+                $SQL = 'SELECT recid FROM Attributes WHERE Attribute = "'.$key.'"';
+                $Result = mysql_query($SQL);
+                $numrows = mysql_num_rows($Result);
+                if($numrows == 1){
+                    $Row = mysql_fetch_assoc($Result);
+                    $Attribute = $Row['recid'];
+                    array_push($Activities, new BenchmarkObject(array('recid'=>'0','Attribute'=>''.$Attribute.'','AttributeValue'=>''.$val.'')));
+                }
+            }
+        }
+        return $Activities;
+    }
+
+    function getExerciseTypeId()
+    {
+        $SQL = 'SELECT recid FROM ExerciseTypes WHERE ExerciseType = "Benchmark"';
+        $Result = mysql_query($SQL);        
+        $Row = mysql_fetch_assoc($Result);
+        return $Row['recid'];
+    }	
+	
+	function Log1()
 	{
         $SQL = 'SELECT recid, Attribute FROM Attributes';
         $Result = mysql_query($SQL);	
@@ -264,6 +373,7 @@ class BenchmarkObject
 	var $Name;
 	var $Banner;
 	var $Description;
+	var $InputFields;
 	var $Video;
 	var $SmartVideoLink;
 	var $LegacyVideoLink;
@@ -277,6 +387,7 @@ class BenchmarkObject
 		$this->Name = $Row['WorkoutName'];
 		$this->Banner = $Row['Banner'];
 		$this->Description = $Row['WorkoutDescription'];
+		$this->InputFields = $Row['InputFields'];
 		$this->Video = $Row['VideoId'];
 		$this->SmartVideoLink = 'http://www.youtube.com/embed/'.$Row['VideoId'].'';
 		$this->LegacyVideoLink = 'http://m.youtube.com/details?v='.$Row['VideoId'].'';

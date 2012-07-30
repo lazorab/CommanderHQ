@@ -34,7 +34,9 @@ function display(data)
 	$('#listview').listview();
 	$('#listview').listview('refresh');
 	$('.controlbutton').button();
-	$('.controlbutton').button('refresh');	
+	$('.controlbutton').button('refresh');
+	$('.buttongroup').button();
+	$('.buttongroup').button('refresh');
 	$('#AjaxLoading').html('');	
 }
 

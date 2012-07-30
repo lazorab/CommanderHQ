@@ -126,6 +126,14 @@ var javascript_countdown = function () {
 	};
 }();
 
+function startstop()
+{
+	if(flagclock == 1)
+		stop();
+	else
+		start();
+}
+
 function start()
 {
 var startdate = new Date();

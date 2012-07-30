@@ -19,80 +19,74 @@ function display(data)
 	$('#customtype').selectmenu('refresh');
 }
 
-function getCustomInputs(type)
+function addNewExercise(exercise)
 {
-  var custom_input = $('#custom_input');
-  var field_count = document.getElementById('fieldcounter').value;
+	var new_exercise = $('#new_exercise');
+	var row_count = document.getElementById('rowcounter').value;
 	var i=0;
-  field_count++;
-  i = field_count;
-  if(type == 'Timed')
-  {
-	$("#customtype option[value='Timed']").attr("disabled","disabled");
-	$("#customtype option[value='AMRAP']").attr("disabled","disabled");
-    $('<div id="custom_input_' + i +'"><input style="float:left" type="text" id="input_' + i +'" size="20" name="Timed_' + i +'" value="Timed" readonly="readonly"/><a href="#" onclick="removeInput(\'custom_input_' + i +'\', \'' + type + '\')" class="remove" data-role="button" data-mini="true" data-icon="delete" data-iconpos="notext">Remove</a><br/></div><div class="clear"></div>').appendTo(custom_input);
-  }else if(type == 'AMRAP'){
-  	$("#customtype option[value='Timed']").attr("disabled","disabled");
-	$("#customtype option[value='AMRAP']").attr("disabled","disabled");
-    $('<div id="custom_input_' + i +'"><input style="float:left" type="time" id="input_' + i +'" size="20" name="AMRAP_' + i +'" value="" placeholder="Enter Time (mm:ss)" /><a href="#" onclick="removeInput(\'custom_input_' + i +'\', \'' + type + '\')" class="remove" data-role="button" data-mini="true" data-icon="delete" data-iconpos="notext">Remove</a><br/></div><div class="clear"></div>').appendTo(custom_input);
-  }else if(type == 'Weight'){
-	$("#customtype option[value='Weight']").attr("disabled","disabled");
-    $('<div id="custom_input_' + i +'"><input style="float:left" type="number" id="input_' + i +'" size="20" name="Weight_' + i +'" value="" placeholder="Enter Weight" /><a href="#" onclick="removeInput(\'custom_input_' + i +'\', \'' + type + '\')" class="remove" data-role="button" data-mini="true" data-icon="delete" data-iconpos="notext">Remove</a><br/></div><div class="clear"></div>').appendTo(custom_input);
-  }else if(type == 'Reps'){
-	$("#customtype option[value='Reps']").attr("disabled","disabled");
-    $('<div id="custom_input_' + i +'"><input style="float:left" type="number" id="input_' + i +'" size="20" name="Reps_' + i +'" value="" placeholder="Enter Reps" /><a href="#" onclick="removeInput(\'custom_input_' + i +'\', \'' + type + '\')" class="remove" data-role="button" data-mini="true" data-icon="delete" data-iconpos="notext">Remove</a><br/></div><div class="clear"></div>').appendTo(custom_input);
-  }else if(type == 'Tabata'){
-  
-  }else if(type == 'Other'){
-  
-  }
-document.getElementById('fieldcounter').value = field_count;
-  	$('.remove').button();
+	row_count++;
+	i = row_count;
+	$('<div id="row_' +row_count+ '"><div class="ui-block-a"><a href="#" onclick="removeRow('+ row_count +')" class="remove" data-role="button" data-mini="true" data-icon="delete" data-iconpos="notext">Remove</a><input style="float:left" type="text" size="6" name="exercise_' +row_count+ '" value="'+exercise+'" readonly="readonly"/><div class="clear"></div></div><div class="ui-block-b" id="block-b_input_' + i +'"></div><div class="ui-block-c" id="block-c_input_' + i +'"></div></div>').appendTo(new_exercise);
+	document.getElementById('rowcounter').value = row_count;
+	getInputs(exercise);
+	$('.remove').button();
 	$('.remove').button('refresh');
+}
+
+function getInputs(type)
+{
+
+ var custom_input = $('#custom_input_' + i +'');
+
+ $.getJSON("ajax.php?module=custom",{chosenexercise:type},function(json) {
+	var j = 0;
+	var html = '';
+    $.each(json, function() {
+		var i = document.getElementById('rowcounter').value;
+		if(this.Attribute == 'TimeToComplete')
+  {
+    $('#clock_input').html('<input type="text" id="clock" name="' + this.recid + '___' + this.Attribute + '" value="00:00:0"/><?php echo $Display->getStopWatch();?>');
+	html = 'Timed';
+	$('.buttongroup').button();
+	$('.buttongroup').button('refresh');
+  }else if(this.Attribute == 'CountDown'){
+    html ='<input type="time" id="input_' + i +'" size="10" name="' + this.recid + '___' + this.Attribute + '" value="" placeholder="Count Down Time (mm:ss)" />';
+  }else if(this.Attribute == 'Weight'){
+    html ='<input type="number" id="input_' + i +'" size="10" name="' + this.recid + '___' + this.Attribute + '" value="" placeholder="Weight" />';
+  }else if(this.Attribute == 'Reps'){
+    html ='<input type="number" id="input_' + i +'" size="10" name="' + this.recid + '___' + this.Attribute + '" value="" placeholder="Reps" />';
+  }else if(this.Attribute == 'Tabata'){
+  
+  }else if(this.Attribute == 'Other'){
+  
+  }else if(this.Attribute == 'Distance'){
+      html ='<input type="number" id="input_' + i +'" size="10" name="' + this.recid + '___' + this.Attribute + '" value="" placeholder="' + this.Attribute + '" />';
+  }
+  
+		if(j==1){
+			$('#block-b_input_' + i +'').html(html);
+		}else{
+			$('#block-c_input_' + i +'').html(html);
+		}
+		j++;
+    });
+});
+$("#exercise option[value='']").attr("selected","selected");
   return false;	
 }
 
-function removeInput(id, type)
+function removeRow(id)
 {
-	$('#' +id + '').remove();
-	if(type == 'Timed' || type == 'AMRAP'){
-		$("#customtype option[value='Timed']").removeAttr("disabled");
-		$("#customtype option[value='AMRAP']").removeAttr("disabled");
+	$('#row_' +id + '').remove();
+	if(document.getElementById('clock_input').html != ''){
+		$('#clock_input').html('');
 	}
-	else{
-		$("#customtype option[value='" + type + "']").removeAttr("disabled");
-	}
-	document.getElementById('fieldcounter').value--;
+	document.getElementById('rowcounter').value--;
 }
-
-$(function() {
-  var scntDiv = $('#p_scents');
-
-  var i = $('#p_scents p').size() + 1;
-
-  $('#newcount').value = i;
-  $('#addScnt').on('click', function() {
-                     $('<p><label for="p_scnts"><input type="text" id="p_scnt" size="20" name="newattribute_' + i +'" value="" placeholder="Attribute Name" /></label> <a href="#" id="remScnt">Remove</a></p>').appendTo(scntDiv);
-                     i++;
-                     return false;
-                     });
-  
-  $('#remScnt').on('click', function() {
-                     if( i > 1 ) {
-                     $(this).parents('p').remove();
-                     i--;
-                     }
-                     return false;
-                     });
-					 
-  $('#customtype').on('change', function() {
-
-                     });	 
-  });
 
 </script>
 <br/>
 
 <div id="AjaxOutput">       
-    <?php echo $Display->Output();?>
+    <?php echo $Display->MainOutput();?>
 </div>

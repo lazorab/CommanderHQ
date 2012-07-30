@@ -15,5 +15,6 @@
 	
 	$Ajax = new $ControllerClass;
 	
+
 	echo json_encode($Ajax->Output());
 ?>

@@ -22,64 +22,45 @@ class CustomController extends Controller
 		$Save = $Model->Log();
 	}
     
-    function Output()
+    function MainOutput()
     {
 		$Html = '';
-		$RENDER = new Image(SITE_ID);
 		$Model = new CustomModel;
-        if($_REQUEST['action'] == 'savecustom'){
-            //validate
-            $exerciseId = $Model->SaveCustom();
-			$Html = $this->CustomDetails($exerciseId);
-        }
-		else{			
-            $MemberCustomExercises = $Model->getMemberCustomExercises();
-            if(isset($_REQUEST['customexercise']) && $_REQUEST['customexercise'] != 'new'){
-                $Html = $this->CustomDetails($_REQUEST['customexercise']);               
-            }
-            else if($_REQUEST['customexercise'] != 'new'){
-                $Html = '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-					<li><a href="#" onclick="OpenThisPage(\'?module=custom&customexercise=new&origin='.$this->Origin.'\');">Create New Exercise</a></li>';
-                foreach($MemberCustomExercises AS $Exercise){
-					$Html .= '<li><a href="#" onclick="OpenThisPage(\'?module=custom&customexercise='.$Exercise->recid.'&origin='.$this->Origin.'\');">'.$Exercise->ActivityName.'</a></li>';
-                }	
-				$Html .= '</ul><br/>';
-            }
-            if(count($MemberCustomExercises) == 0 || $_REQUEST['customexercise'] == 'new'){
-                $CustomTypes = $Model->getCustomTypes();
+
 				$Exercises = $Model->getExercises();
                 $Html = '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
-                $Html .= '<li>New Exercise</li>';
+                $Html .= '<li>Custom Exercise</li>';
 				$Html .= '</ul><br/>';		
 				$Html .= '<form action="index.php" id="test" name="form">
 					<input type="hidden" name="module" value="custom"/>
-					<input type="hidden" name="action" value="savecustom"/>
+					<input type="hidden" name="action" value="save"/>
 					<input type="hidden" name="customexercise" value="new"/>
 					<input type="hidden" name="origin" value="'.$this->Origin.'"/>
-					<input type="hidden" name="fieldcount" id="fieldcounter" value="0"/>
-					<input type="text" name="newcustom" placeholder="Exercise Name"/><br/><br/>';
-				$Html .= '<select class="select" name="exercise" id="exercise">
-					<option value="">Exercise</option>';	
-				foreach($Exercises AS $Exercise){
+					<input type="hidden" name="rowcount" id="rowcounter" value="0"/>';
+					
+				$Html .= '<select class="select" name="exercise" id="exercise" onchange="addNewExercise(this.value);">
+					<option value="">+ Activity</option>';
+									foreach($Exercises AS $Exercise){
 					$Html .= '<option id="'.$Exercise->recid.'" value="'.$Exercise->ActivityName.'">'.$Exercise->ActivityName.'</option>';
-				}		
-				$Html .= '</select><br/>';	
-				$Html .= '<select class="select" name="customtype" id="customtype" onchange="getCustomInputs(this.value);">
-					<option value="">Activity Type</option>';
-                foreach($CustomTypes AS $Type){
-					$Disabled = '';
-					if($Type->ActivityType == 'Tabata' || $Type->ActivityType == 'Other')
-						$Disabled = ' disabled="disabled"';
-					$Html .= '<option id="'.$Type->ActivityType.'" value="'.$Type->ActivityType.'" '.$Disabled.'>'.$Type->ActivityType.'</option>';
-                        }	
+				}
 				$Html .= '</select><br/>';
-				$Html .= '<div id="custom_input"></div>';
-					$Html .= '<button type="submit" data-theme="b" name="submit">Done</button>
-					</form><br/>';
-            }
-		}
+					
+				$Html.='<div class="ui-grid-b">
+		<div id="new_exercise"></div>
+		<div id="clock_input"></div>
+		</div><br/>';	
+					
+				$Html .= '<button type="submit" data-theme="b" name="submit">Done</button>
+					</form><br/>';       
+		
 		return $Html;
     }
+	
+	function Output()
+	{
+		$Model = new CustomModel;
+		return $Model->getExerciseAttributes($_REQUEST['chosenexercise']);
+	}
     
     function getCustomActivities()
     {        
@@ -148,7 +129,7 @@ class CustomController extends Controller
 
 		foreach($Details AS $Detail){
  		if($Detail->ActivityType == 'Timed'){
-            $AddLast = $this->getStopWatch($Detail->recid);
+            $AddLast = $this->getStopWatch();
 			$SubmitOption = true;	
         }
         if($Detail->ActivityType == 'AMRAP'){
@@ -179,21 +160,25 @@ class CustomController extends Controller
         return $Html;
     }
     
-    function getStopWatch($exerciseId)
+    function getStopWatch()
     {
         $RENDER = new Image(SITE_ID);
         $Start = $RENDER->NewImage('start.png', $this->Device->GetScreenWidth());
         $Stop = $RENDER->NewImage('stop.png', $this->Device->GetScreenWidth());
         $Reset = $RENDER->NewImage('report.png', $this->Device->GetScreenWidth());
         $Save = $RENDER->NewImage('save.png', $this->Device->GetScreenWidth());
-        $Html.='<input type="text" id="clock" name="TimeToComplete" value="00:00:0"/>
- 
-        <div style="margin:0 30% 0 30%; width:50%">
-        <img alt="Start" '.$Start.' src="'.ImagePath.'start.png" onclick="start()"/>&nbsp;&nbsp;
-        <img alt="Stop" '.$Stop.' src="'.ImagePath.'stop.png" onclick="stop()"/><br/><br/>
-        <img alt="Reset" '.$Reset.' src="'.ImagePath.'reset.png" onclick="reset()"/>&nbsp;&nbsp;
-        <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="savecustom();"/>
-        </div><br/><br/>';
+       // $Html.='<input type="text" id="clock" name="TimeToComplete" value="00:00:0"/>';
+
+        $Html.='<input class="buttongroup" type="button" onclick="startstop()" value="Start/Stop"/>';
+
+        $Html.='<input class="buttongroup" type="button" onclick="reset()" value="Reset"/>';
+
+       // $Html.='<div style="margin:0 30% 0 30%; width:50%">';
+        //$Html.='<img alt="Start" '.$Start.' src="'.ImagePath.'start.png" onclick="startstop();"/>&nbsp;&nbsp;';
+        //$Html.='<img alt="Stop" '.$Stop.' src="'.ImagePath.'stop.png" onclick="stop()"/><br/><br/>';
+        //$Html.='<img alt="Reset" '.$Reset.' src="'.ImagePath.'reset.png" onclick="reset()"/>&nbsp;&nbsp;';
+        //$Html.='<img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="savecustom();"/>';
+		$Html.='</div><br/><br/>';
         
         return $Html;
     }

@@ -1,3 +1,3 @@
 <br/>
-<h3>Challenges</h3>
+<h3>Challenges coming soon!</h3>
 <br/>
