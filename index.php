@@ -7,7 +7,7 @@
 	$request = new BRequest();
 		
 	global $RENDER;
-	$RENDER = new Image(SITE_ID);	
+	$RENDER = new Image();	
 
 	if( !isset( $_REQUEST['module'] ) )
 		$Module = 'login';

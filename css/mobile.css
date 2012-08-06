@@ -20,7 +20,7 @@ body {
 
 #AjaxLoading{
 	position:fixed;
-    	top: 50%;
+    top: 50%;
 	z-index:99;
 	color:#000;
 	font-weight:bold;
@@ -32,12 +32,12 @@ body {
 { 
 	position:fixed;
 	overflow: auto;
-	height:280px;
-    	top: 35%;
-    	left: 0;
+	height:460px;
+    top: 0;
+    left: 0;
 	display:none;
 	color:#fff;
-	background-color:#0d3e5f;
+	background-color:#3f2b44;
 	z-index:100;
 }
 
@@ -48,7 +48,7 @@ body {
 
 #loginback
 {
-	background-color:#021f3f;
+	background-color:#252525;
 	min-height: 326px;
 }
 
@@ -79,27 +79,27 @@ body {
 	font-family:Airstrip Four;
 	font-size:medium;
 	color:#ffea00;
-	background-color:#021f3f;
+	background-color:#3f2b44;
 }
 
 #nav{
-	background-color:#6e747a;
+	background-color:#66486e;
 }
 
 #canvas
 {
 	width:100%;
 	min-height: 320px;
-	color:#fff;
-	background-color:#0d3e5f;
+	color:#333;
+	background-color:#fff;
 }
 
 #content
 {
 	width:100%;
 	min-height: 320px;
-	color:#fff;
-	background-color:#0d3e5f;
+	color:#333;
+	background-color:#fff;
 }
 
 #video
@@ -114,9 +114,10 @@ body {
 
 #random
 {
-	background-color:#021f3f;
+	background-color:#6f747a;
 	padding:2%;
 	text-align:center;
+	color:#fff;
 }
 
 img

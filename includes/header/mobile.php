@@ -13,7 +13,7 @@
 	<link rel="apple-touch-icon" sizes="72x72" href="/images/touch-icon-ipad.png">
 	<link rel="apple-touch-icon" sizes="114x114" href="/images/touch-icon-iphone4.png">
 <!-- startup image for web apps (320x460) -->
-<link rel="apple-touch-startup-image" href="/images/splash.png" media="screen and (max-device-width: 320px)" />
+<link rel="apple-touch-startup-image" href="/images/splashscreen.png" media="screen and (max-device-width: 320px)" />
 <link type="text/css" rel="stylesheet" href="/css/jquery.mobile-1.1.0.min.css" />
 <?php 
     echo utility::mobile_stylesheet($request->get_screen_width_new(), 'css/mobile.css');
@@ -66,16 +66,11 @@ $(document).ready(function() {
 	$("#menu").niceScroll();
 	$('#menu').hide();
 	$(document).on("click","img#menuselect",function(){
-		if($('#menu').hasClass('active')) {
-			$('img#menuselect').attr("src", '<?php echo ImagePath;?>menu.png');
-			$('#menu').hide('slow');
-			$('#menu').removeClass('active');
-		}else{
-			$('img#menuselect').attr("src",'<?php echo ImagePath;?>menu_active.png');
-			$('#menu').show('slow');
-			$('#menu').addClass('active');   
-		}
+		$('#menu').show('slow');
 	});
+	$(document).on("click","img#menuarrow",function(){
+		$('#menu').hide('slow');
+	});	
 	$('#AjaxLoading').html('');
 });
 
