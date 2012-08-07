@@ -19,13 +19,8 @@ body {
 }
 
 #AjaxLoading{
-	position:fixed;
-    top: 50%;
-	z-index:99;
-	color:#000;
 	font-weight:bold;
 	text-align:center;
-	width:100%;
 }
 
 #menu

@@ -16,11 +16,13 @@ class Image
 	var $Image;
 	var $FilePath;
 	var $RenderPath;
+    var $Width;
+    var $Height;
 	
 	function __construct()
 	{
 		$this->FilePath='/home/bemobile/public_html/crossfit/images';
-		$this->RenderPath = '/images';
+		$this->RenderPath = 'images/';
     }
 	
 	function Image($image, $ScreenWidth)
@@ -108,9 +110,39 @@ class Image
                 $ratio = $ScreenWidth / 640;
             }	
             
-            $NewWidth = floor($MasterWidth * $ratio);
-            $NewHeight = floor($MasterHeight * $ratio);
+            $Width = floor($MasterWidth * $ratio);
+            $Height = floor($MasterHeight * $ratio);
 		}
-		return 'height="'.$NewHeight.'" width="'.$NewWidth.'"';
+		return 'height="'.$Height.'" width="'.$Width.'"';
+	}
+    
+    function BackgroundImage($image, $ScreenWidth)
+	{
+		if(!file_exists(''.$this->FilePath.'/'.$image.''))
+		{
+            $ImageToRender = '';
+		}
+		else
+		{
+            $Size = getimagesize(''.$this->FilePath.'/'.$image.'', $info);
+            $MasterWidth=$Size[0];
+            $MasterHeight=$Size[1];
+            
+            if($MasterWidth > $ScreenWidth)
+            {
+                if($MasterWidth > 640)
+                    $ratio = $ScreenWidth / $MasterWidth;
+                else
+                    $ratio = $ScreenWidth / 640;
+            }
+            else
+            {
+                $ratio = $ScreenWidth / 640;
+            }	
+            
+            $Width = floor($MasterWidth * $ratio);
+            $Height = floor($MasterHeight * $ratio);
+		}
+		return "height:".$Height."px; width:".$Width."px; background-image:url('".$image."');";
 	}
 }

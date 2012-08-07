@@ -76,7 +76,7 @@ $(document).ready(function() {
 
 function OpenThisPage(page)
 {
-	document.getElementById('AjaxLoading').innerHTML ='<center><img alt="loading" src="/css/images/ajax-loader.gif" /><br />Loading...</center>';
+	document.getElementById('AjaxLoading').innerHTML ='<img alt="loading" src="/css/images/ajax-loader.gif" /><br />Loading...';
 	window.location = page;
 }
 

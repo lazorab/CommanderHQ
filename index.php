@@ -58,7 +58,7 @@ echo $htmlOutput->GetOpenBodyTag();
 ?>
 		
 	<div id="content">
-	<div id="AjaxLoading"></div>
+	
 <?php    
 	/*CONTENT*/	
     if (file_exists("modules/$Module/view/$Environment.php")) 

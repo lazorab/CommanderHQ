@@ -28,7 +28,7 @@ define('ASSET_API_URL', 'http://asset.be-mobile.co.za/api/');
 
 /* Image Direct */
 define('IMAGE_DIRECT', 'http://www.be-mobile.co.za/framework/img_direct.php');
-define('ImagePath', 'http://www.be-mobile.co.za/content/images/53/');
+define('ImagePath', '/images/');
     
 /* Site Settings */
 define("SITE_ID", "53");

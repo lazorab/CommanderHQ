@@ -21,29 +21,6 @@ $NavIconSize = floor(72*$ratio);
 <div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 0 4%;">
 	<img id="menuselect" alt="Menu" <?php echo $RENDER->NewImage('menu.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>menu.png"/>
 </div>
-
-<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 0 4%;"> 
-<?php if($_REQUEST['module'] == 'products'){ ?>
-	<a class="menuitem" href="#" onclick="OpenThisPage('?module=products');" data-transition="slidefade" data-prefetch><img alt="Store" <?php echo $RENDER->NewImage('trolley_active.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>trolley_active.png"/></a>
-<?php } else {?>
-	<a class="menuitem" href="#" onclick="OpenThisPage('?module=products');" data-transition="slidefade" data-prefetch><img alt="Store" <?php echo $RENDER->NewImage('trolley.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>trolley.png"/></a>
-<?php } ?>
-</div>
-<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 0 4%;">
-<?php if($_REQUEST['module'] == 'profile'){ ?>
-	<a class="menuitem" href="#" onclick="OpenThisPage('?module=profile');" data-transition="slidefade" data-prefetch><img alt="Profile" <?php echo $RENDER->NewImage('profile_active.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>profile_active.png"/></a>
-<?php } else {?>
-	<a class="menuitem" href="#" onclick="OpenThisPage('?module=profile');" data-transition="slidefade" data-prefetch><img alt="Profile" <?php echo $RENDER->NewImage('profile.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>profile.png"/></a>
-<?php } ?>
-</div>
-<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 0 4%;">
-
-<?php if($_REQUEST['module'] == 'search'){ ?>
-	<a class="menuitem" href="#" data-transition="slidefade" data-prefetch><img alt="Search" <?php echo $RENDER->NewImage('search_active.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>search_active.png"/></a>	
-<?php } else {?>
-	<a class="menuitem" href="#" data-transition="slidefade" data-prefetch><img alt="Search" <?php echo $RENDER->NewImage('search.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>search.png"/></a>	
-<?php } ?>
-</div>
  
 <?php if(isset($_REQUEST['module']) && ($_REQUEST['module'] != 'memberhome' && $_REQUEST['module'] != 'index')){ ?>
 <div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 0 4%;">
@@ -51,12 +28,16 @@ $NavIconSize = floor(72*$ratio);
 </div>	
 <?php } ?>
 
-<div id="menuvideo" class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 2% 4%;"></div>
-</div>	
+<div id="menuvideo" class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 2% 4%;"></div>	
+
+<div id="AjaxLoading" class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 2% 4%;"></div>
+</div>
 
 <div id="menu" data-role="menu">
 
 <img id="menuarrow" alt="Up" <?php echo $RENDER->NewImage('menu_up.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>menu_up.png"/>
+
+<input type="search" results="5" placeholder="Search" name="s"/>
 
 <a href="#" onclick="OpenThisPage('?module=products');" data-transition="slidefade" data-prefetch>
 <img alt="Store" <?php echo $RENDER->NewImage('menu_store.png', $request->get_screen_width_new());?> src="<?php echo ImagePath;?>menu_store.png"/>
