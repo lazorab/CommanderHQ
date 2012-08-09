@@ -1,7 +1,8 @@
 <head>
-	<title><?php echo $request->site->get_title();?></title>
-<meta name="Description" content="<?php echo $request->site->get_description();?>" />
-<meta name="Keywords" content="<?php echo $request->site->get_keywords();?>" />
+	<title>Commander HQ</title>
+	<meta charset="UTF-8">
+<meta name="Description" content="<?php echo $Request->site->get_description();?>" />
+<meta name="Keywords" content="<?php echo $Request->site->get_keywords();?>" />
 <meta http-equiv="cache-control" content="private" />
 <meta http-equiv="expires" content="Fri, 30 Dec 2011 12:00:00 GMT" />
 <META NAME="ROBOTS" CONTENT="ALL" />
@@ -16,7 +17,7 @@
 <link rel="apple-touch-startup-image" href="/images/splashscreen.png" media="screen and (max-device-width: 320px)" />
 <link type="text/css" rel="stylesheet" href="/css/jquery.mobile-1.1.0.min.css" />
 <?php 
-    echo utility::mobile_stylesheet($request->get_screen_width_new(), 'css/mobile.css');
+    echo utility::mobile_stylesheet(SCREENWIDTH, 'css/mobile.css');
 ?>
 <link rel="stylesheet" href="/css/add2home.css">
 <link rel="stylesheet" href="/css/slideshow.css">
@@ -76,10 +77,18 @@ $(document).ready(function() {
 
 function OpenThisPage(page)
 {
-	document.getElementById('AjaxLoading').innerHTML ='<img alt="loading" src="/css/images/ajax-loader.gif" /><br />Loading...';
+	$('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif", SCREENWIDTH);?> src="/css/images/ajax-loader.gif" />');
 	window.location = page;
 }
 
 </script>
 <script type="text/javascript" src="/js/jquery.mobile-1.1.0.min.js"></script>
+<script type="text/javascript">
+$( document ).bind( 'mobileinit', function(){
+  $.mobile.loader.prototype.options.text = "loading";
+  $.mobile.loader.prototype.options.textVisible = false;
+  $.mobile.loader.prototype.options.theme = "a";
+  $.mobile.loader.prototype.options.html = '<img <?php echo $RENDER->NewImage("ajax-loader.gif", SCREENWIDTH);?> src="/css/images/ajax-loader.gif" />';
+});
+</script>
 </head>

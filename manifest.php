@@ -8,6 +8,8 @@
   foreach (new RecursiveIteratorIterator($dir) as $file) {
       if ($file->IsFile() &&
           $file != "./manifest.php" &&
+		  $file != "./getTwitterData.php" &&
+		  $file->getFilename() != "error_log" &&
           substr($file->getFilename(), 0, 1) != ".")
       {
           echo $file."\n";

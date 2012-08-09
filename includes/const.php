@@ -48,6 +48,7 @@ define("EnquiryEmailAddress","devguru@be-mobile.co.za");
 define('ACTIVE', '1');
 define('INACTIVE', '0');
 
-
+$Device = new DeviceManager;
+define('SCREENWIDTH',$Device->GetScreenWidth());
 define('DEFAULT_SUB_NUMBER', '+27760000000');
 ?>

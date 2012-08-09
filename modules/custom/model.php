@@ -282,13 +282,43 @@ class CustomModel extends Model
 	function getExerciseAttributes($Exercise)
 	{
         $Attributes = array();
-        $SQL = 'SELECT E.recid, 
-		E.Exercise AS ActivityName,
-		A.Attribute
-		FROM Attributes A
-		JOIN ExerciseAttributes EA ON EA.AttributeId = A.recid
-		JOIN Exercises E ON EA.ExerciseId = E.recid
-		WHERE E.Exercise = "'.$Exercise.'"';
+        $SQL = 'SELECT BenchmarkId
+		FROM Exercises
+		WHERE Exercise = "'.$Exercise.'"';
+        $Result = mysql_query($SQL);
+		$Row = mysql_fetch_assoc($Result);
+		$BenchmarkId = $Row['BenchmarkId'];
+		if($BenchmarkId == 0){
+			$SQL = 'SELECT E.recid, 
+			E.Exercise AS ActivityName,
+			A.Attribute
+			FROM Attributes A
+			JOIN ExerciseAttributes EA ON EA.AttributeId = A.recid
+			JOIN Exercises E ON EA.ExerciseId = E.recid
+			WHERE E.Exercise = "'.$Exercise.'"
+			ORDER BY ActivityName, Attribute';
+		}
+		else{
+        $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
+ 		$Result = mysql_query($SQL);	
+		$Row = mysql_fetch_assoc($Result);
+        if($Row['Gender'] == 'M'){
+            $AttributeValue = 'AttributeValueMale';
+			$InputFields = 'MaleInput';
+        } else {
+            $AttributeValue = 'AttributeValueFemale';
+			$InputFields = 'FemaleInput';
+		}
+		//$SQL = 'SELECT WorkoutName, '.$DescriptionField.' AS WorkoutDescription, '.$InputFields.' AS InputFields, VideoId FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
+		
+		$SQL = 'SELECT E.Exercise AS ActivityName, E.recid, A.Attribute, BD.'.$AttributeValue.' AS AttributeValue, RoundNo
+			FROM BenchmarkDetails BD
+			LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
+			LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
+			LEFT JOIN Attributes A ON A.recid = BD.AttributeId
+			WHERE BD.BenchmarkId = '.$BenchmarkId.'
+			ORDER BY RoundNo, ActivityName, Attribute';
+		}
         $Result = mysql_query($SQL);
         while($Row = mysql_fetch_assoc($Result))
         {
@@ -305,6 +335,7 @@ class CustomObject
 	var $ActivityType;
 	var $Attribute;
 	var $AttributeValue;
+	var $RoundNo;
 
 	function __construct($Row)
 	{
@@ -313,6 +344,7 @@ class CustomObject
 		$this->ActivityType = isset($Row['ActivityType']) ? $Row['ActivityType'] : "";
 		$this->Attribute = isset($Row['Attribute']) ? $Row['Attribute'] : "";
 		$this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : "";
+		$this->RoundNo = isset($Row['RoundNo']) ? $Row['RoundNo'] : "";
 	}
 }
 ?>

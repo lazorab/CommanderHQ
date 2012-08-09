@@ -167,35 +167,26 @@ class WodController extends Controller
         }
         return $WODdata;
     }
-    
-    function getStopWatch($exerciseId)
+
+	function getStopWatch($ExerciseId)
     {
-        $RENDER = new Image(SITE_ID);
-        $Start = $RENDER->NewImage('start.png', $this->Device->GetScreenWidth());
-        $Stop = $RENDER->NewImage('stop.png', $this->Device->GetScreenWidth());
-        $Reset = $RENDER->NewImage('report.png', $this->Device->GetScreenWidth());
-        $Save = $RENDER->NewImage('save.png', $this->Device->GetScreenWidth());
-        $WODdata='<form name="clockform" action="index.php">
-        <input type="hidden" name="module" value="wod"/>
-        <input type="hidden" name="wodtype" value="'.$_REQUEST['wodtype'].'"/>
-        <input type="hidden" name="exercise" value="'.$exerciseId.'"/>
-        <input type="hidden" name="action" value="save"/>
-        <input type="text" id="clock" name="TimeToComplete" value="00:00:0"/>
-        </form>	
-        <div style="margin:0 30% 0 30%; width:50%">
-        <img alt="Start" '.$Start.' src="'.ImagePath.'start.png" onclick="start()"/>&nbsp;&nbsp;
-        <img alt="Stop" '.$Stop.' src="'.ImagePath.'stop.png" onclick="stop()"/><br/><br/>
-        <img alt="Reset" '.$Reset.' src="'.ImagePath.'reset.png" onclick="reset()"/>&nbsp;&nbsp;
-        <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="document.clockform.submit();"/>
-        </div><br/><br/>';
+		$RoundNo = 0;
+		$Html.='<form name="clockform" action="index.php">';
+        $Html.='<input type="hidden" name="module" value="wod"/>';
+        $Html.='<input type="hidden" name="wodtype" value="'.$_REQUEST['wodtype'].'"/>';
+        $Html.='<input type="hidden" name="action" value="save"/>';
+		$Html.='<input type="text" id="clock" name="'.$RoundNo.'___'.$ExerciseId.'___TimeToComplete" value="00:00:0"/>';
+		$Html.='<input class="buttongroup" type="button" onclick="startstop()" value="Start/Stop"/>';
+		$Html.='<input class="buttongroup" type="button" onclick="reset()" value="Reset"/>';
+		$Html.='<input class="buttongroup" type="submit" value="Save"/>';
         
-        return $WODdata;
+        return $Html;
     }
     
     function getWeight($exerciseId)
     {
-		$RENDER = new Image(SITE_ID);
-		$Save = $RENDER->NewImage('save.png', $this->Device->GetScreenWidth());
+		$RENDER = new Image();
+		$Save = $RENDER->NewImage('save.png', SCREENWIDTH);
         $Html='<form name="form" action="index.php">
         <input type="hidden" name="module" value="wod"/>
 		<input type="hidden" name="action" value="save"/>
@@ -210,8 +201,8 @@ class WodController extends Controller
     
     function getReps($exerciseId)
     {
-		$RENDER = new Image(SITE_ID);
-		$Save = $RENDER->NewImage('save.png', $this->Device->GetScreenWidth());
+		$RENDER = new Image();
+		$Save = $RENDER->NewImage('save.png', SCREENWIDTH);
         $Html='<form name="form" action="index.php">
         <input type="hidden" name="module" value="wod"/>
 		<input type="hidden" name="action" value="save"/>
@@ -233,11 +224,11 @@ class WodController extends Controller
     
     function getCountDown($Details)
     {
-        $RENDER = new Image(SITE_ID);
-        $Start = $RENDER->NewImage('start.png', $this->Device->GetScreenWidth());
-        $Stop = $RENDER->NewImage('stop.png', $this->Device->GetScreenWidth());
-        $Reset = $RENDER->NewImage('report.png', $this->Device->GetScreenWidth());
-        $Save = $RENDER->NewImage('save.png', $this->Device->GetScreenWidth());
+        $RENDER = new Image();
+        $Start = $RENDER->NewImage('start.png', SCREENWIDTH);
+        $Stop = $RENDER->NewImage('stop.png', SCREENWIDTH);
+        $Reset = $RENDER->NewImage('report.png', SCREENWIDTH);
+        $Save = $RENDER->NewImage('save.png', SCREENWIDTH);
         $WODdata='<form name="clockform" action="index.php">
         <input type="hidden" name="module" value="wod"/>
         <input type="hidden" name="wodtype" value="'.$_REQUEST['wodtype'].'"/>

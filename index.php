@@ -2,11 +2,11 @@
 	require_once("includes/includes.php");
 	session_start();
 	
-	$device = new DeviceManager();
-	$htmlOutput = new HTML5CoreManager();	
-	$request = new BRequest();
+	//$Device = new DeviceManager();
+	$HtmlOutput = new HTML5CoreManager();	
+	$Request = new BRequest();
 		
-	global $RENDER;
+	//global $RENDER;
 	$RENDER = new Image();	
 
 	if( !isset( $_REQUEST['module'] ) )
@@ -25,7 +25,8 @@
 	}		
 
 	$Display = new $ControllerClass;
-	$Environment = $Display->getEnvironment();
+	//$Environment = $Display->getEnvironment();
+	$Environment = 'mobile';
 ?>
 <!DOCTYPE html> 
 <html manifest="manifest.php" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -34,7 +35,7 @@
 		if (file_exists("includes/header/$Environment.php")) 
 			include("includes/header/$Environment.php");
 
-echo $htmlOutput->GetOpenBodyTag();
+echo $HtmlOutput->GetOpenBodyTag();
   
     $Banner = 'header';//default
     if(isset($_REQUEST['banner']))
@@ -48,7 +49,7 @@ echo $htmlOutput->GetOpenBodyTag();
 <div data-role="page">
 
 <div id="header">
-<img alt="Header" <?php echo $RENDER->NewImage(''.$Banner.'.png', $request->get_screen_width_new());?> src="<?php echo ImagePath.$Banner;?>.png"/>
+<img alt="Header" <?php echo $RENDER->NewImage(''.$Banner.'.png', SCREENWIDTH);?> src="<?php echo ImagePath.$Banner;?>.png"/>
 </div>    
 <?php if(isset($_SESSION['UID'])){    
 	/*MENU*/	
@@ -73,5 +74,5 @@ echo $htmlOutput->GetOpenBodyTag();
 			include("includes/footer/$Environment.php");
 ?>
 </div><!-- /page -->
-<?php echo $htmlOutput->GetCloseBodyTag();?>
+<?php echo $HtmlOutput->GetCloseBodyTag();?>
 </html>

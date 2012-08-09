@@ -9,6 +9,7 @@ class Controller
 	
 	function __construct()
 	{
+	/*
 		$this->Device = new DeviceManager;
         define('SCREENWIDTH',$this->Device->GetScreenWidth());
 		$this->SupportOnlineVideo = $this->Device->SupportOnlineVideo();
@@ -27,7 +28,8 @@ class Controller
 			$this->Environment = 'mobile';	//website
 			
 		if($this->Environment == 'legacy')
-			$this->Wall = 'wall:';		
+			$this->Wall = 'wall:';	
+*/			
 	}
 	
 	function getEnvironment()

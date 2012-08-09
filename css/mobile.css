@@ -109,10 +109,11 @@ body {
 
 #random
 {
-	background-color:#6f747a;
+	background-color:#3f2b44;
 	padding:2%;
 	text-align:center;
 	color:#fff;
+	background-repeat:no-repeat;
 }
 
 img
@@ -608,6 +609,7 @@ a {
 	margin:0;
 	padding:2%;
 	text-align:center;
+	background-repeat:no-repeat;
 }
 
 .footer img{

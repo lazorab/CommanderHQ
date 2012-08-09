@@ -43,19 +43,19 @@ class BenchmarkController extends Controller
 	
 	function Output()
 	{
-	$RENDER = new Image(SITE_ID);
+	//$RENDER = new Image(SITE_ID);
 		$html='<br/>';
 
 if(isset($_REQUEST['id']))
 {
 	//var_dump($this->Workout);
-    $Start = $RENDER->NewImage('start.png', $this->Device->GetScreenWidth());
-    $Stop = $RENDER->NewImage('stop.png', $this->Device->GetScreenWidth());
-    $Reset = $RENDER->NewImage('report.png', $this->Device->GetScreenWidth());
-    $Save = $RENDER->NewImage('save.png', $this->Device->GetScreenWidth());
-    $Height = floor($this->Device->GetScreenWidth() * 0.717);
+    //$Start = $RENDER->NewImage('start.png', $this->Device->GetScreenWidth());
+    //$Stop = $RENDER->NewImage('stop.png', $this->Device->GetScreenWidth());
+    //$Reset = $RENDER->NewImage('report.png', $this->Device->GetScreenWidth());
+    //$Save = $RENDER->NewImage('save.png', $this->Device->GetScreenWidth());
+    $Height = floor(SCREENWIDTH * 0.717);
 	$html.='<div id="video">
-    <iframe marginwidth="0px" marginheight="0px" width="'.$this->Device->GetScreenWidth().'" height="'.$Height.'" src="http://www.youtube.com/embed/'.$this->Workout[0]->Video.'" frameborder="0">
+    <iframe marginwidth="0px" marginheight="0px" width="'.SCREENWIDTH.'" height="'.$Height.'" src="http://www.youtube.com/embed/'.$this->Workout[0]->Video.'" frameborder="0">
     </iframe>    
 	</div>';    
 	//$html.='<div id="bmdescription">';

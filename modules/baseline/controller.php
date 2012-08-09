@@ -151,11 +151,11 @@ class BaselineController extends Controller
     
     function getStopWatch($exerciseId)
     {
-        $RENDER = new Image(SITE_ID);
-        $Start = $RENDER->NewImage('start.png', $this->Device->GetScreenWidth());
-        $Stop = $RENDER->NewImage('stop.png', $this->Device->GetScreenWidth());
-        $Reset = $RENDER->NewImage('report.png', $this->Device->GetScreenWidth());
-        $Save = $RENDER->NewImage('save.png', $this->Device->GetScreenWidth());
+        //$RENDER = new Image(SITE_ID);
+        //$Start = $RENDER->NewImage('start.png', $this->Device->GetScreenWidth());
+       // $Stop = $RENDER->NewImage('stop.png', $this->Device->GetScreenWidth());
+        //$Reset = $RENDER->NewImage('report.png', $this->Device->GetScreenWidth());
+        //$Save = $RENDER->NewImage('save.png', $this->Device->GetScreenWidth());
         $Html='<form name="clockform" action="index.php">
         <input type="hidden" name="module" value="baseline"/>
         <input type="hidden" name="baseline" value="'.$_REQUEST['baseline'].'"/>
@@ -182,8 +182,8 @@ class BaselineController extends Controller
     
     function getWeight($exerciseId)
     {
-		$RENDER = new Image(SITE_ID);
-		$Save = $RENDER->NewImage('save.png', $this->Device->GetScreenWidth());
+		$RENDER = new Image();
+		$Save = $RENDER->NewImage('save.png', SCREENWIDTH);
         $Html='<form name="form" action="index.php">
         <input type="hidden" name="module" value="baseline"/>
         <input type="hidden" name="baseline" value="'.$_REQUEST['baseline'].'"/>
@@ -198,8 +198,8 @@ class BaselineController extends Controller
     
     function getReps($exerciseId)
     {
-		$RENDER = new Image(SITE_ID);
-		$Save = $RENDER->NewImage('save.png', $this->Device->GetScreenWidth());
+		$RENDER = new Image();
+		$Save = $RENDER->NewImage('save.png', SCREENWIDTH);
         $Html='<form name="form" action="index.php">
         <input type="hidden" name="module" value="baseline"/>
         <input type="hidden" name="baseline" value="'.$_REQUEST['baseline'].'"/>
@@ -221,11 +221,11 @@ class BaselineController extends Controller
     
     function getCountDown($Details)
     {
-        $RENDER = new Image(SITE_ID);
-        $Start = $RENDER->NewImage('start.png', $this->Device->GetScreenWidth());
-        $Stop = $RENDER->NewImage('stop.png', $this->Device->GetScreenWidth());
-        $Reset = $RENDER->NewImage('report.png', $this->Device->GetScreenWidth());
-        $Save = $RENDER->NewImage('save.png', $this->Device->GetScreenWidth());
+        $RENDER = new Image();
+        $Start = $RENDER->NewImage('start.png', SCREENWIDTH);
+        $Stop = $RENDER->NewImage('stop.png', SCREENWIDTH);
+        $Reset = $RENDER->NewImage('report.png', SCREENWIDTH);
+        $Save = $RENDER->NewImage('save.png', SCREENWIDTH);
         $Html='<form name="clockform" action="index.php">
         <input type="hidden" name="module" value="baseline"/>
         <input type="hidden" name="baseline" value="'.$_REQUEST['baseline'].'"/>

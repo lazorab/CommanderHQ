@@ -33,12 +33,16 @@ if($_REQUEST['formsubmitted'] == 'yes')
 	{
 		if($i >= $LimitStart && $i <= $LimitEnd)
 		{
+			$this->Html.= '<p><a onclick="GetVideo(\''.$Video->SmartPhoneURL.'\')" href="#"><b>'.$Video->Title.'</b></a></p>';
+			$this->Html.= '<p>'.$Video->Content.'</p>';
+			/*
 			if ($this->SupportOnlineVideo) {		
 				$this->Html.= '<p><a onclick="GetVideo(\''.$Video->SmartPhoneURL.'\')" href="#"><b>'.$Video->Title.'</b></a></p>';
 				$this->Html.= '<p>'.$Video->Content.'</p>';
 			}else{
 				$this->Html.= '<'.$this->Wall.'a href="'.$Video->LegacyPhoneURL.'">'.$Video->Title.'</'.$this->Wall.'a><'.$this->Wall.'br/><'.$this->Wall.'br/>';
 			}
+			*/
 		}
 		$i++;
 	}
@@ -54,29 +58,6 @@ $this->Html.='
 
 	}
 }	
-	}
-	
-	function CustomHeader()
-	{
-		if($this->Environment == 'website'){
-		$CustomHeader='
-		<script type="text/javascript">
-    function GetVideo(filename)
-    {
-        document.getElementById("header").innerHTML = \'<iframe marginwidth="0px" marginheight="0px" width="608" height="436" src="\' + filename + \'" frameborder="0"></iframe>\';
-    }
-</script>';
-}
-else{
-		$CustomHeader='
-		<script type="text/javascript">
-    function GetVideo(filename)
-    {
-        document.getElementById("header").innerHTML = \'<iframe marginwidth="0px" marginheight="0px" width="'.$this->Device->GetScreenWidth().'" height="'.($this->Device->GetScreenWidth() * 0.717).'" src="\' + filename + \'" frameborder="0"></iframe>\';
-    }
-</script>';
-}
-		return $CustomHeader;
 	}
 	
 	function Html()

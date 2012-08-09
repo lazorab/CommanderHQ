@@ -8,10 +8,11 @@ $(document).ready(function() {
 
 		//If visible hide else show
 		if($Video.hasClass('active')) {
-	    	$VideoTrigger.html('<img id="videoselect" alt="Video" src="<?php echo $RENDER->Image('video_specific.png', $request->get_screen_width_new());?>"/>');
+	    	$VideoTrigger.html('<img id="videoselect" alt="Video" <?php echo $RENDER->NewImage('video_specific.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>video_specific.png"/>');
+			
 	    	$Video.removeClass('active');
 		} else {
-	    	$VideoTrigger.html('<img id="videoselect" alt="Video" src="<?php echo $RENDER->Image('video_specific_active.png', $request->get_screen_width_new());?>"/>');
+	    	$VideoTrigger.html('<img id="videoselect" alt="Video" <?php echo $RENDER->NewImage('video_specific_active.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>video_specific_active.png"/>');
 	    	$Video.addClass('active');
 	    }
 	});
@@ -25,7 +26,7 @@ function getBenchmarks(catid)
 function getDetails(id)
 {
     $.getJSON("ajax.php?module=benchmark",{id:id},display);
-	$('#menuvideo').html('<img id="videoselect" alt="Video" src="<?php echo $RENDER->Image('video_specific.png', $request->get_screen_width_new());?>"/>');
+	$('#menuvideo').html('<img id="videoselect" alt="Video" <?php echo $RENDER->NewImage('video_specific.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>video_specific.png"/>');
 }
 
 function display(data)

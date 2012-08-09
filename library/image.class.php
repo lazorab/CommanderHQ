@@ -143,6 +143,6 @@ class Image
             $Width = floor($MasterWidth * $ratio);
             $Height = floor($MasterHeight * $ratio);
 		}
-		return "height:".$Height."px; width:".$Width."px; background-image:url('".$image."');";
+		return "height:".$Height."px; width:".$Width."px; background-image:url('/images/".$image."');";
 	}
 }
