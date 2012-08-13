@@ -1,6 +1,8 @@
 <?php
 class CustomModel extends Model
 {
+    var $Message;
+    
 	function __construct()
 	{
 		mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
@@ -11,23 +13,25 @@ class CustomModel extends Model
 	{
 		$ActivityFields = $this->getActivityFields();
 		//var_dump($ActivityFields);
-	
+        if($this->Message == ''){
         $ExerciseTypeId = $this->getExerciseTypeId();
         //$Attributes=$this->getAttributes();
         //var_dump($ActivityFields);
         foreach($ActivityFields AS $ActivityField)
         {
-
-				if($_REQUEST['origin'] == 'baseline'){
-					$SQL = 'INSERT INTO BaselineLog(MemberId, ExerciseTypeId, ExerciseId, AttributeId, AttributeValue) 
-					VALUES("'.$_SESSION['UID'].'", "'.$ExerciseTypeId.'", "'.$_REQUEST['exercise'].'", "'.$Attribute->recid.'", "'.$AttributeValue.'")';
-					mysql_query($SQL);		
-				}
-				// ExerciseId only applies for benchmarks so we make it 0 here
-				$SQL = 'INSERT INTO WODLog(MemberId, ExerciseId, WodTypeId, ActivityId, AttributeId, AttributeValue) 
-					VALUES("'.$_SESSION['UID'].'", "0", "'.$ExerciseTypeId.'", "'.$ActivityField->recid.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
-				mysql_query($SQL);
+            if($_REQUEST['origin'] == 'baseline'){
+                $SQL = 'INSERT INTO BaselineLog(MemberId, ExerciseTypeId, ExerciseId, RoundNo, ActivityId, AttributeId, AttributeValue) 
+                VALUES("'.$_SESSION['UID'].'", "'.$ExerciseTypeId.'", "'.$_REQUEST['benchmarkId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->recid.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
+                mysql_query($SQL);		
+            }
+            // ExerciseId only applies for benchmarks so we need it here!
+            $SQL = 'INSERT INTO WODLog(MemberId, ExerciseId, WodTypeId, RoundNo, ActivityId, AttributeId, AttributeValue) 
+            VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$ExerciseTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->recid.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
+            mysql_query($SQL);
+            $this->Message = 'Successfully Saved!';
 		}
+        }
+        return $this->Message;
 	}
 	
 	function getAttributes()
@@ -45,6 +49,7 @@ class CustomModel extends Model
     
     function getActivityFields()
     {
+        $this->Message = '';
         $Activities = array();
         foreach($_REQUEST AS $key=>$val)
         {
@@ -53,23 +58,32 @@ class CustomModel extends Model
             $ExplodedKey = explode('___', $key);
             if(sizeof($ExplodedKey) > 1)
             {
-                $ExerciseId = $ExplodedKey[0];
-                $Attribute = $ExplodedKey[1];
-                $Query='SELECT recid, (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, "'.$val.'" AS AttributeValue 
+				$RoundNo = $ExplodedKey[0];
+                $ExerciseId = $ExplodedKey[1];
+                $Attribute = $ExplodedKey[2];
+                if($val == ''){
+                    $this->Message .= ''.$Attribute.' has no value!<br/>';
+                }else{
+                $Query='SELECT recid, (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, "'.$val.'" AS AttributeValue, "'.$RoundNo.'" AS RoundNo 
                 FROM Exercises
                 WHERE recid = "'.$ExerciseId.'"';
                 $Result = mysql_query($Query); 
                 $Row = mysql_fetch_assoc($Result);
                 array_push($Activities, new CustomObject($Row));
+                }
             }
             else{
+                if($val == ''){
+                    $this->Message .= ''.$key.' has no value!<br/>';
+                }else{
                 $SQL = 'SELECT recid FROM Attributes WHERE Attribute = "'.$key.'"';
                 $Result = mysql_query($SQL);
                 $numrows = mysql_num_rows($Result);
                 if($numrows == 1){
                     $Row = mysql_fetch_assoc($Result);
                     $Attribute = $Row['recid'];
-                    array_push($Activities, new CustomObject(array('recid'=>'0','Attribute'=>''.$Attribute.'','AttributeValue'=>''.$val.'')));
+                    array_push($Activities, new CustomObject(array('recid'=>'0','Attribute'=>''.$Attribute.'','AttributeValue'=>''.$val.'','RoundNo'=>''.$RoundNo.'')));
+                }
                 }
             }
         }
@@ -311,7 +325,7 @@ class CustomModel extends Model
 		}
 		//$SQL = 'SELECT WorkoutName, '.$DescriptionField.' AS WorkoutDescription, '.$InputFields.' AS InputFields, VideoId FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
 		
-		$SQL = 'SELECT E.Exercise AS ActivityName, E.recid, A.Attribute, BD.'.$AttributeValue.' AS AttributeValue, RoundNo
+		$SQL = 'SELECT E.Exercise AS ActivityName, E.recid, BD.BenchmarkId, A.Attribute, BD.'.$AttributeValue.' AS AttributeValue, RoundNo
 			FROM BenchmarkDetails BD
 			LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
 			LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
@@ -331,6 +345,7 @@ class CustomModel extends Model
 class CustomObject
 {
 	var $recid;
+    var $BenchmarkId;
 	var $ActivityName;
 	var $ActivityType;
 	var $Attribute;
@@ -340,11 +355,12 @@ class CustomObject
 	function __construct($Row)
 	{
 		$this->recid = isset($Row['recid']) ? $Row['recid'] : "";
+        $this->BenchmarkId = isset($Row['BenchmarkId']) ? $Row['BenchmarkId'] : "";
 		$this->ActivityName = isset($Row['ActivityName']) ? $Row['ActivityName'] : "";
 		$this->ActivityType = isset($Row['ActivityType']) ? $Row['ActivityType'] : "";
 		$this->Attribute = isset($Row['Attribute']) ? $Row['Attribute'] : "";
-		$this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : "";
-		$this->RoundNo = isset($Row['RoundNo']) ? $Row['RoundNo'] : "";
+		$this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : $Row['Attribute'];
+		$this->RoundNo = isset($Row['RoundNo']) ? $Row['RoundNo'] : "1";
 	}
 }
 ?>

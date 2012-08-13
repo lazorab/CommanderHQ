@@ -110,8 +110,8 @@ if(isset($_REQUEST['id']))
 					$Bhtml = '';
 				}
 				
-				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>
-				<div class="ui-block-a" style="font-size:small">'.$Benchmark->Exercise.'</div>';
+				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
+				$html.='<div class="ui-block-a" style="font-size:small">'.$Benchmark->Exercise.'</div>';
 				}
 			}	
 

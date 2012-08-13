@@ -1,7 +1,9 @@
 <?php
 class CustomController extends Controller
 {
-	var $Origin;
+    var $Origin;
+    var $SaveMessage;
+    
 	function __construct()
 	{
 		parent::__construct();
@@ -10,16 +12,19 @@ class CustomController extends Controller
             header('location: index.php?module=login');	
         }
 		$this->Origin = $_REQUEST['origin'];
-		
+		$this->SaveMessage = '';
         if($_REQUEST['action'] == 'save'){
-            $this->SaveWorkout();
+            if($_REQUEST['rowcount'] > 0)
+                $this->SaveWorkout();
+            else 
+                $this->SaveMessage = 'No activities!';
         }
 	}
     
     function SaveWorkout()
 	{
 		$Model = new CustomModel;
-		$Save = $Model->Log();
+		$this->SaveMessage = $Model->Log();
 	}
     
     function MainOutput()
@@ -39,7 +44,7 @@ class CustomController extends Controller
 					<input type="hidden" name="rowcount" id="rowcounter" value="0"/>';
 					
 				$Html .= '<select class="select" name="exercise" id="exercise" onchange="addNewExercise(this.value);">
-					<option value="">+ Activity</option>';
+					<option value="none">+ Activity</option>';
 									foreach($Exercises AS $Exercise){
 					$Html .= '<option id="'.$Exercise->recid.'" value="'.$Exercise->ActivityName.'">'.$Exercise->ActivityName.'</option>';
 				}
@@ -50,7 +55,7 @@ class CustomController extends Controller
 		<div id="clock_input"></div>
 		</div><br/>';	
 					
-				$Html .= '<button type="submit" data-theme="b" name="submit">Done</button>
+				$Html .= '<input type="button" name="btnsubmit" value="Save" onclick="this.form.submit();"/>
 					</form><br/>';       
 		
 		return $Html;
@@ -178,7 +183,7 @@ class CustomController extends Controller
         //$Html.='<img alt="Stop" '.$Stop.' src="'.ImagePath.'stop.png" onclick="stop()"/><br/><br/>';
         //$Html.='<img alt="Reset" '.$Reset.' src="'.ImagePath.'reset.png" onclick="reset()"/>&nbsp;&nbsp;';
         //$Html.='<img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="savecustom();"/>';
-		$Html.='</div><br/><br/>';
+		//$Html.='</div>';
         
         return $Html;
     }
