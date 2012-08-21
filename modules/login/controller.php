@@ -46,7 +46,7 @@ class LoginController extends Controller
 				$this->Message = 'You must enter your Username';
 			if($_REQUEST['email'] == '')
 				$this->Message = 'You must enter your Email Address';
-			if($Message == '')
+			if($this->Message == '')
 			{
 				$Successful = $Model->RetrievePassword($_REQUEST['username'], $_REQUEST['email']);
 				if(!$Successful)

@@ -128,29 +128,29 @@ var javascript_countdown = function () {
 
 function startstop()
 {
-	if(flagclock == 1)
-		stop();
-	else
-		start();
+    if(flagclock == 1)
+	stop();
+    else
+	start();
 }
 
 function start()
 {
-var startdate = new Date();
-var starttime = startdate.getTime();
+    var startdate = new Date();
+    var starttime = startdate.getTime();
 
-flagclock = 1;
-counter(starttime);
+    flagclock = 1;
+    counter(starttime);
 }
 
 function stop()
 {
-var startdate = new Date();
-var starttime = startdate.getTime();
+    var startdate = new Date();
+    var starttime = startdate.getTime();
 
-flagclock = 0;
-flagstop = 1;
-splitdate = "";
+    flagclock = 0;
+    flagstop = 1;
+    splitdate = "";
 }
 
 function counter(starttime)
@@ -214,19 +214,16 @@ return min + ":" + sec + ":" + ds;
 
 function reset()
 {
-flagstop = 0;
-stoptime = 0;
-splitdate = "";
-window.clearTimeout(refresh);
-splitcounter = 0;
-if(flagclock == 1)
-{
-var resetdate = new Date();
-var resettime = resetdate.getTime();
-counter(resettime);
-}
-else
-{
-clock.value = "00:00:0";
-}
+   // flagstop = 0;
+   // stoptime = 0;
+   // splitdate = "";
+    //window.clearTimeout(refresh);
+   // splitcounter = 0;
+   // if(flagclock == 1)
+   // {
+   //     var resetdate = new Date();
+   //     var resettime = resetdate.getTime();
+   //     counter(resettime);
+   // }
+    clock.value = "00:00:0";
 }

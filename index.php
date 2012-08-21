@@ -7,7 +7,33 @@
 	$Request = new BRequest();
 		
 	//global $RENDER;
-	$RENDER = new Image();	
+	$RENDER = new Image();
+        
+        
+            $Device = new DeviceManager;
+            $SupportOnlineVideo = $Device->SupportOnlineVideo();
+            if($Device->IsTabletPC()){
+                $Environment = 'tablet'; //tablet
+            }
+            else if($Device->GetScreenWidth() < 500){
+                if($Device->IsSmartPhone()){
+                    $Environment = 'mobile';
+		}elseif(!$Device->IsSmartPhone()){
+                    $Environment = 'legacy';				
+		}
+            }
+            else{
+                $Environment = 'pc';
+            }
+
+
+        if($Environment != 'mobile'){
+            define("FORCEMOBILE", true);
+            $Environment = 'mobile';
+           // header("Location: iframe.php");
+        }       
+        
+
 
 	if( !isset( $_REQUEST['module'] ) )
 		$Module = 'login';
@@ -25,8 +51,8 @@
 	}		
 
 	$Display = new $ControllerClass;
-	//$Environment = $Display->getEnvironment();
-	$Environment = 'mobile';
+
+            
 ?>
 <!DOCTYPE html> 
 <html manifest="manifest.php" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -36,6 +62,7 @@
 			include("includes/header/$Environment.php");
 
 echo $HtmlOutput->GetOpenBodyTag();
+
   
     $Banner = 'header';//default
     if(isset($_REQUEST['banner']))

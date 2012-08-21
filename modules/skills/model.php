@@ -206,11 +206,14 @@ class SkillsModel extends Model
 	function getExercises()
 	{
 		$Exercises=array();
-		$Sql = 'SELECT recid, Exercise FROM Exercises ORDER BY Exercise';
+		$Sql = 'SELECT DISTINCT S.ExerciseId AS recid, E.Exercise 
+                    FROM SkillsLevel S
+                    LEFT JOIN Exercises E ON E.recid = S.ExerciseId
+                    ORDER BY Exercise';
 		$Result = mysql_query($Sql);
 		while($Row = mysql_fetch_assoc($Result))
 		{
-			array_push($Exercises, new ExercisesObject($Row));
+                    array_push($Exercises, new ExercisesObject($Row));
 		}
 		return $Exercises;
 	}
@@ -296,34 +299,91 @@ class SkillsModel extends Model
 		
 		return $Html;
 	}
+        
+        function Gender()
+        {
+            $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
+            $Result = mysql_query($SQL);	
+            $Row = mysql_fetch_assoc($Result);
+            return $Row['Gender'];
+        }
 	
 	function getExercise()
 	{
-		$Sql = 'SELECT E.recid, E.Exercise, max( L.LevelAchieved ) AS SkillsLevel
-        FROM Exercises E
-        LEFT JOIN ExerciseLog L ON E.recid = L.ExerciseId
-		WHERE L.MemberId = '.$_SESSION['UID'].' AND E.recid = '.$_REQUEST['exercise'].'';
-		$Result = mysql_query($Sql);
-		$Row = mysql_fetch_assoc($Result);
-		$Data = new ExercisesObject($Row);
-		
-		return $Data;	
+            $Sql = 'SELECT S.ExerciseId, 
+E.Exercise, 
+SkillsLevel,
+A.Attribute,
+AttributeValue,
+"0" AS CurrentSkillsLevel
+FROM SkillsLevels S
+LEFT JOIN Attributes A ON A.recid = S.AttributeId
+LEFT JOIN Exercises E ON E.recid = S.ExerciseId
+WHERE S.ExerciseId = '.$_REQUEST['exercise'].'
+AND (
+S.Gender = "'.$this->Gender().'"
+OR S.Gender = "U"
+)
+ORDER BY Attribute, SkillsLevel';
+            $Result = mysql_query($Sql);
+            $Data = array();
+            $NewArray = array();
+            $i = 0;
+            while($Row = mysql_fetch_assoc($Result))
+            {
+                if($i == 0){
+                   $NewArray = $Row;
+                }
+                
+                if($Row['Attribute'] != $Attribute && $i > 0){
+                    array_push($Data, new ExercisesObject($NewArray));
+                    $NewArray = $Row;                   
+                }
+                
+                if($Row['SkillsLevel'] == 1){
+                    $NewArray['LevelOneValue'] = $Row['AttributeValue'];
+                }else if($Row['SkillsLevel'] == 2){
+                    $NewArray['LevelTwoValue'] = $Row['AttributeValue'];
+                }else if($Row['SkillsLevel'] == 3){
+                    $NewArray['LevelThreeValue'] = $Row['AttributeValue'];
+                }else if($Row['SkillsLevel'] == 4){
+                    $NewArray['LevelFourValue'] = $Row['AttributeValue'];
+                }                 
+                
+                $i++;
+
+                $Attribute = $Row['Attribute'];
+            }
+		array_push($Data, new ExercisesObject($NewArray));
+            return $Data;	
 	}    
 	
 }
 
 class ExercisesObject
 {
-	var $Id;
-	var $Exercise;
-    var $SkillsLevel;
+    var $Id;
+    var $Exercise;
+    var $Description;
+    var $Attribute;
+    var $CurrentSkillsLevel;
+    var $LevelOneValue;
+    var $LevelTwoValue;
+    var $LevelThreeValue;
+    var $LevelFourValue;
 
-	function __construct($Row)
-	{
-		$this->Id = $Row['recid'];
-		$this->Exercise = $Row['Exercise'];
-        $this->SkillsLevel = $Row['SkillsLevel'];
-	}
+    function __construct($Row)
+    {
+        $this->Id = $Row['recid'];
+	$this->Exercise = $Row['Exercise'];
+        $this->Description = $Row['Description'];
+        $this->Attribute = $Row['Attribute'];
+        $this->CurrentSkillsLevel = $Row['CurrentSkillsLevel'];
+        $this->LevelOneValue = $Row['LevelOneValue'];
+        $this->LevelTwoValue = $Row['LevelTwoValue'];
+        $this->LevelThreeValue = $Row['LevelThreeValue'];
+        $this->LevelFourValue = $Row['LevelFourValue'];
+    }
 }	
 
 class AttributesObject

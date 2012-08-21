@@ -11,12 +11,12 @@ class CustomModel extends Model
     
     function Log()
 	{
-		$ActivityFields = $this->getActivityFields();
-		//var_dump($ActivityFields);
-        if($this->Message == ''){
-        $ExerciseTypeId = $this->getExerciseTypeId();
-        //$Attributes=$this->getAttributes();
-        //var_dump($ActivityFields);
+            $ActivityFields = $this->getActivityFields();
+            //var_dump($ActivityFields);
+            if($this->Message == ''){
+                $ExerciseTypeId = $this->getExerciseTypeId();
+                //$Attributes=$this->getAttributes();
+                //var_dump($ActivityFields);
         foreach($ActivityFields AS $ActivityField)
         {
             if($_REQUEST['origin'] == 'baseline'){
@@ -28,7 +28,7 @@ class CustomModel extends Model
             $SQL = 'INSERT INTO WODLog(MemberId, ExerciseId, WodTypeId, RoundNo, ActivityId, AttributeId, AttributeValue) 
             VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$ExerciseTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->recid.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
             mysql_query($SQL);
-            $this->Message = 'Successfully Saved!';
+            $this->Message = '<span style="color:green">Successfully Saved!</span>';
 		}
         }
         return $this->Message;
@@ -58,11 +58,11 @@ class CustomModel extends Model
             $ExplodedKey = explode('___', $key);
             if(sizeof($ExplodedKey) > 1)
             {
-				$RoundNo = $ExplodedKey[0];
+                $RoundNo = $ExplodedKey[0];
                 $ExerciseId = $ExplodedKey[1];
                 $Attribute = $ExplodedKey[2];
-                if($val == ''){
-                    $this->Message .= ''.$Attribute.' has no value!<br/>';
+                if($val == '00:00:0' || $val == '' || $val == '0' || $val == $Attribute){
+                    $this->Message .= '<span style="color:red">Invalid value for '.$Attribute.'!</span><br/>';
                 }else{
                 $Query='SELECT recid, (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, "'.$val.'" AS AttributeValue, "'.$RoundNo.'" AS RoundNo 
                 FROM Exercises
@@ -73,8 +73,8 @@ class CustomModel extends Model
                 }
             }
             else{
-                if($val == ''){
-                    $this->Message .= ''.$key.' has no value!<br/>';
+                if($val == '00:00:0' || $val == '' || $val == $key){
+                    $this->Message .= '<span style="color:red">Invalid value for '.$key.'!</span><br/>';
                 }else{
                 $SQL = 'SELECT recid FROM Attributes WHERE Attribute = "'.$key.'"';
                 $Result = mysql_query($SQL);
@@ -296,6 +296,7 @@ class CustomModel extends Model
 	function getExerciseAttributes($Exercise)
 	{
         $Attributes = array();
+
         $SQL = 'SELECT BenchmarkId
 		FROM Exercises
 		WHERE Exercise = "'.$Exercise.'"';
@@ -303,16 +304,25 @@ class CustomModel extends Model
 		$Row = mysql_fetch_assoc($Result);
 		$BenchmarkId = $Row['BenchmarkId'];
 		if($BenchmarkId == 0){
-			$SQL = 'SELECT E.recid, 
+			$SQL = 'SELECT DISTINCT E.recid, 
 			E.Exercise AS ActivityName,
 			A.Attribute
-			FROM Attributes A
-			JOIN ExerciseAttributes EA ON EA.AttributeId = A.recid
-			JOIN Exercises E ON EA.ExerciseId = E.recid
+			FROM ExerciseAttributes EA
+			LEFT JOIN Attributes A ON EA.AttributeId = A.recid
+			LEFT JOIN Exercises E ON EA.ExerciseId = E.recid
 			WHERE E.Exercise = "'.$Exercise.'"
 			ORDER BY ActivityName, Attribute';
 		}
 		else{
+                            if($Exercise == 'Baseline'){
+
+        $SQL = 'SELECT MB.ExerciseId AS recid, E.Exercise AS ActivityName, A.Attribute, MB.AttributeValue 
+        FROM MemberBaseline MB
+        JOIN Exercises E ON E.recid = MB.ExerciseId
+        JOIN Attributes A ON A.recid = MB.AttributeId
+        WHERE MB.MemberId = "'.$_SESSION['UID'].'"';
+
+        }else{
         $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
  		$Result = mysql_query($SQL);	
 		$Row = mysql_fetch_assoc($Result);
@@ -333,10 +343,16 @@ class CustomModel extends Model
 			WHERE BD.BenchmarkId = '.$BenchmarkId.'
 			ORDER BY RoundNo, ActivityName, Attribute';
 		}
+                }
         $Result = mysql_query($SQL);
         while($Row = mysql_fetch_assoc($Result))
         {
             array_push($Attributes, new CustomObject($Row));  
+        }
+        if($Exercise == 'Baseline')
+        {
+            $Array = array('recid'=>'63', 'ActivityName'=>'Timed', 'Attribute'=>'TimeToComplete', 'AttributeValue'=>'00:00:0', 'RoundNo'=>'0');
+            array_push($Attributes, new CustomObject($Array));  
         }
         return $Attributes;	
 	}	

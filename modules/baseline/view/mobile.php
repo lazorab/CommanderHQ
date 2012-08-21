@@ -22,11 +22,13 @@ function getCustomExercise(id)
 
 function display(data)
 {
-	$('#AjaxOutput').html(data);
-	$('#listview').listview();
-	$('#listview').listview('refresh');
-	$("input").checkboxradio ();
-	$("input").closest ("div:jqmData(role=controlgroup)").controlgroup ();
+    $('#AjaxOutput').html(data);
+    $('#listview').listview();
+    $('#listview').listview('refresh');
+    $("input").checkboxradio ();
+    $("input").closest ("div:jqmData(role=controlgroup)").controlgroup ();
+    $('.buttongroup').button();
+    $('.buttongroup').button('refresh');
     $('.textinput').textinput();
 }
 
@@ -47,7 +49,13 @@ $(function() {
                      }
                      return false;
                      });
-  });
+});
+
+function baselinesubmit()
+{
+    $.getJSON('ajax.php?module=baseline', $("#baselineform").serialize(),display);
+    window.location.hash = '#message';
+}
 
 </script>
 <br/>
@@ -63,6 +71,6 @@ $(function() {
 </ul>
 </div>
 
-<div id="AjaxOutput">       
+<div id="AjaxOutput">  
     <?php echo $Display->Output();?>
 </div>

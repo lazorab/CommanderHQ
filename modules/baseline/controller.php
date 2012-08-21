@@ -1,51 +1,43 @@
 <?php
 class BaselineController extends Controller
 {
-	var $Baseline;
+    var $Baseline;
     var $SelectedBaseline;
+    var $SaveMessage;
 	
 	function __construct()
 	{
-		parent::__construct();
-		session_start();
-        if(!isset($_SESSION['UID'])){
-            header('location: index.php?module=login');	
-        }
-        if($_REQUEST['action'] == 'save'){
-            $this->SaveWorkout();
-        }
-        if(isset($_REQUEST['baseline']))
-            $this->SelectedBaseline = $_REQUEST['baseline'];
-        else if($_REQUEST['save'] == 'newbaseline'){
-            $this->SaveNewBaseline();
-        }
+            parent::__construct();
+            session_start();
+            if(!isset($_SESSION['UID'])){
+                header('location: index.php?module=login');	
+            }
+
 	}
     
     function SaveWorkout()
 	{
 		$Model = new BaselineModel;
-		$Save = $Model->Log();
-	}
-    
-    function SaveNewBaseline()
-	{
-		$Model = new BaselineModel;
-		$this->SelectedBaseline = $Model->SaveNewBaseline();
+		return $Model->Log();
 	}
     
     function Output()
     {
-		$Html = '';
-		$RENDER = new Image(SITE_ID);
-		$Model = new BaselineModel;
+        $Html = '';
+        if($_REQUEST['action'] == 'save'){
+            $Html .= '<div id="message">'.$this->SaveWorkout().'</div>';
+        }
+
+      	$RENDER = new Image(SITE_ID);
+	$Model = new BaselineModel;
         if($_REQUEST['action'] == 'savecustom'){
             //validate
             $exerciseId = $Model->SaveCustom();
 			$Html .= $this->CustomDetails($exerciseId);
         }
-		else if($_REQUEST['baseline'] == 'Custom'){//custom
+	else if($_REQUEST['baseline'] == 'Custom'){//custom
 	
-		}
+	}
 		else if($_REQUEST['baseline'] == 'Baseline'){//Baseline
             $Html.= $this->getStopWatch('0'); 
 		}
@@ -156,25 +148,27 @@ class BaselineController extends Controller
        // $Stop = $RENDER->NewImage('stop.png', $this->Device->GetScreenWidth());
         //$Reset = $RENDER->NewImage('report.png', $this->Device->GetScreenWidth());
         //$Save = $RENDER->NewImage('save.png', $this->Device->GetScreenWidth());
-        $Html='<form name="clockform" action="index.php">
-        <input type="hidden" name="module" value="baseline"/>
+        $Html='<form name="clockform" id="baselineform" action="index.php">
         <input type="hidden" name="baseline" value="'.$_REQUEST['baseline'].'"/>
         <input type="hidden" name="exercise" value="'.$exerciseId.'"/>
         <input type="hidden" name="action" value="save"/>';
         if($_REQUEST['baseline'] == 'Baseline'){
             $Html.=$this->getMemberBaselineActivities();
         }
-        $Html.='<input type="text" id="clock" name="TimeToComplete" value="00:00:0"/>';
-		$Html.='<input class="buttongroup" type="button" onclick="startstop()" value="Start/Stop"/>';
-        $Html.='<input class="buttongroup" type="button" onclick="reset()" value="Reset"/>';
-		$Html.='<input class="buttongroup" type="button" onclick="document.clockform.submit();" value="Save"/>';
+        $TimeToComplete = '00:00:0';
+        if(isset($_REQUEST['TimeToComplete']))
+            $TimeToComplete = $_REQUEST['TimeToComplete'];
+        $Html.='<input type="text" id="clock" name="TimeToComplete" value="'.$TimeToComplete.'"/>';
+		$Html.='<input class="buttongroup" type="button" onclick="startstop();" value="Start/Stop"/>';
+        $Html.='<input class="buttongroup" type="button" onclick="reset();" value="Reset"/>';
+		$Html.='<input class="buttongroup" type="button" onclick="baselinesubmit();" value="Save"/>';
         $Html.='</form><br/><br/>';
 		/*
         $Html.='<div style="margin:0 30% 0 30%; width:50%">
-        <img alt="Start" '.$Start.' src="'.ImagePath.'start.png" onclick="start()"/>&nbsp;&nbsp;
-        <img alt="Stop" '.$Stop.' src="'.ImagePath.'stop.png" onclick="stop()"/><br/><br/>
-        <img alt="Reset" '.$Reset.' src="'.ImagePath.'reset.png" onclick="reset()"/>&nbsp;&nbsp;
-        <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="document.clockform.submit();"/>
+        <img alt="Start" '.$Start.' src="'.ImagePath.'start.png" onclick="start();"/>&nbsp;&nbsp;
+        <img alt="Stop" '.$Stop.' src="'.ImagePath.'stop.png" onclick="stop();"/><br/><br/>
+        <img alt="Reset" '.$Reset.' src="'.ImagePath.'reset.png" onclick="reset();"/>&nbsp;&nbsp;
+        <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="baselinesubmit();"/>
         </div><br/><br/>';
         */
         return $Html;

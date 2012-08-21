@@ -15,6 +15,12 @@
 	
 	$Ajax = new $ControllerClass;
 	
-
-	echo json_encode($Ajax->Output());
+        if(isset($_REQUEST['topselection'])){
+            echo json_encode($Ajax->TopSelection());
+        }else if(isset($_REQUEST['video'])){
+            echo json_encode($Ajax->Video());
+        }else{
+            echo json_encode($Ajax->Output());
+        }
+	
 ?>

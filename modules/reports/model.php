@@ -176,11 +176,12 @@ A.Attribute AS Attribute, L.AttributeValue AS AttributeValue, L.TimeCreated
         LEFT JOIN Exercises E ON E.recid = L.ExerciseId
         LEFT JOIN Attributes A ON A.recid = L.AttributeId
 		WHERE L.MemberId = '.$_SESSION['UID'].'
-		GROUP BY Exercise,TimeCreated';// AND L.ExerciseId = '.$_REQUEST['BaselineId'].'';
+		GROUP BY Exercise,TimeCreated
+                ORDER BY TimeCreated';// AND L.ExerciseId = '.$_REQUEST['BaselineId'].'';
 		$Result = mysql_query($Sql);	
 		while($Row = mysql_fetch_assoc($Result))
 		{
-			array_push($Data,new ReportObject($Row));
+                    array_push($Data,new ReportObject($Row));
 		}	
 		return $Data;       
     }

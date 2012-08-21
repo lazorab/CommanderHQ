@@ -2,6 +2,8 @@
 
 define("QA", true);
 
+
+
 define('ERROR_REPORT_SITE_NAME', 'Cross Fit Live');
 define('ERROR_REPORT_EMAIL_ADDRESS', 'support@be-mobile.co.za');
 

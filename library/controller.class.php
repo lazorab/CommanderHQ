@@ -11,7 +11,6 @@ class Controller
 	{
 	/*
 		$this->Device = new DeviceManager;
-        define('SCREENWIDTH',$this->Device->GetScreenWidth());
 		$this->SupportOnlineVideo = $this->Device->SupportOnlineVideo();
 		if($this->Device->IsTabletPC()){
 				$this->Environment = 'mobile'; //tablet

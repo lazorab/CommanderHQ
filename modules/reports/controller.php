@@ -18,29 +18,17 @@ class ReportsController extends Controller
 	
 	function WODOutput()
 	{
-		$Html = '<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-		<li>WOD</li>
-		</ul><br/>';
-		$Html.= $this->WODHistory();
-		return $Html;
+            return $this->WODHistory();
 	}
 	
 	function BaselineOutput()
 	{
-		$Html = '<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-		<li>Baseline</li>
-		</ul><br/>';
-		$Html.=  $this->BaselineHistory();
-		return $Html;
+            return $this->BaselineHistory();
 	}
 	
 	function SkillsOutput()
 	{
-			$Html = '<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-		<li>Skills</li>
-		</ul><br/>';
-		$Html.= $this->MemberDetails->SkillLevel;
-		return $Html;
+            return $this->MemberDetails->SkillLevel;
 	}
     
     function Output()
@@ -174,12 +162,25 @@ class ReportsController extends Controller
     {
         $Model=new ReportsModel();
         $BaselineData = $Model->getBaselineHistory();
-        $Html='';
+        $NumLogs = 1;
+        $ChartData = "<chart showLabels='0' showYAxisValues='0' animation='0' lineColor='00008B' xAxisNamePadding='0' caption='Baseline' xAxisName='Time' yAxisName='Output' showValues= '0'>";
         foreach($BaselineData as $Data)
         {
-           $Html.=''.$Data->TimeCreated.' - '.$Data->Attribute.':'.$Data->AttributeValue.'<br/>';
+            if($Data->Attribute == 'TimeToComplete'){
+                $ExplodedTime = explode(':', $Data->AttributeValue);
+                $Seconds = ($ExplodedTime[0] * 60) + $ExplodedTime[1];
+                $ChartData .= "<set label='".$Data->TimeCreated."' value='".$Seconds."'/>";
+                $TotalSeconds = $TotalSeconds + $Seconds;
+                $NumLogs++;
+            }   
         }
-        return $Html;
+        $Average = floor($TotalSeconds / $NumLogs);
+        $ChartData .= "<trendLines>";
+        $ChartData .= "<line startValue='".$Average."' color='009933' lineThickness='3' displayvalue='Average' />";
+        $ChartData .= "</trendLines>";
+
+        $ChartData .= "</chart>";       
+        return $ChartData;
     }    
 	
 	function PerformanceHistory($Id)

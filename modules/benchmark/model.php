@@ -1,30 +1,31 @@
 <?php
 class BenchmarkModel extends Model
 {
-	function __construct()
-	{
-		mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
-		@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");	
-	}
+    var $Message;
+    function __construct()
+    {
+	mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
+	@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");	
+    }
 	
-	function InsertBMW($_DETAILS)
+    function InsertBMW($_DETAILS)
+    {
+	$FIELDS = '';
+	$VALUES = '';
+	$i = 0;
+	foreach($_DETAILS AS $key=>$val) 
 	{
-		$FIELDS = '';
-		$VALUES = '';
-		$i = 0;
-		foreach($_DETAILS AS $key=>$val) 
-		{
-			if($i > 0)
-			{
-				$FIELDS .= ',';
-				$VALUES .= ',';
-			}
-				$FIELDS .= $key;
-				$VALUES .= '"'.$val.'"';
-			$i++;
-		}
-		$SQL = 'INSERT INTO BenchmarkWorkouts('.$FIELDS.') VALUES('.$VALUES.')';
-		mysql_query($SQL);	
+            if($i > 0)
+            {
+		$FIELDS .= ',';
+		$VALUES .= ',';
+            }
+		$FIELDS .= $key;
+		$VALUES .= '"'.$val.'"';
+		$i++;
+            }
+            $SQL = 'INSERT INTO BenchmarkWorkouts('.$FIELDS.') VALUES('.$VALUES.')';
+            mysql_query($SQL);	
 	}
 	
 	function getCategories()
@@ -94,7 +95,7 @@ class BenchmarkModel extends Model
 			LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
 			LEFT JOIN Attributes A ON A.recid = BD.AttributeId
 			WHERE BD.BenchmarkId = '.$Id.'
-			ORDER BY RoundNo, Exercise, Attribute';
+			ORDER BY RoundNo, OrderBy, Attribute';
 		$Result = mysql_query($SQL);	
         while($Row = mysql_fetch_assoc($Result))
         {
@@ -134,25 +135,27 @@ class BenchmarkModel extends Model
 	
     function Log()
 	{
-		$ActivityFields = $this->getActivityFields();
-		//var_dump($ActivityFields);
-	
-        $ExerciseTypeId = $this->getExerciseTypeId();
-        //$Attributes=$this->getAttributes();
-        //var_dump($ActivityFields);
-        foreach($ActivityFields AS $ActivityField)
-        {
-
-				if($_REQUEST['origin'] == 'baseline'){
-					$SQL = 'INSERT INTO BaselineLog(MemberId, ExerciseTypeId, ExerciseId, RoundNo, ActivityId, AttributeId, AttributeValue) 
-					VALUES("'.$_SESSION['UID'].'", "'.$ExerciseTypeId.'", "'.$_REQUEST['benchmarkId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->Id.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
-					mysql_query($SQL);		
-				}
-				// ExerciseId only applies for benchmarks so we need it here!
-				$SQL = 'INSERT INTO WODLog(MemberId, ExerciseId, WodTypeId, RoundNo, ActivityId, AttributeId, AttributeValue) 
-					VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$ExerciseTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->Id.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
-				mysql_query($SQL);
+            $ActivityFields = $this->getActivityFields();
+            //var_dump($ActivityFields);
+            if($this->Message == ''){
+                $ExerciseTypeId = $this->getExerciseTypeId();
+                //$Attributes=$this->getAttributes();
+                //var_dump($ActivityFields);
+                foreach($ActivityFields AS $ActivityField)
+                {
+                    if($_REQUEST['origin'] == 'baseline'){
+                        $SQL = 'INSERT INTO BaselineLog(MemberId, ExerciseTypeId, ExerciseId, RoundNo, ActivityId, AttributeId, AttributeValue) 
+				VALUES("'.$_SESSION['UID'].'", "'.$ExerciseTypeId.'", "'.$_REQUEST['benchmarkId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->Id.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
+			mysql_query($SQL);		
+                    }
+                    // ExerciseId only applies for benchmarks so we need it here!
+                    $SQL = 'INSERT INTO WODLog(MemberId, ExerciseId, WodTypeId, RoundNo, ActivityId, AttributeId, AttributeValue) 
+			VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$ExerciseTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->Id.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
+                    mysql_query($SQL);
+                    $this->Message = '<span style="color:green">Successfully Saved!</span>';
 		}
+            }
+            return $this->Message;
 	}
 	
 	function getAttributes()
@@ -178,17 +181,24 @@ class BenchmarkModel extends Model
             $ExplodedKey = explode('___', $key);
             if(sizeof($ExplodedKey) > 1)
             {
-				$RoundNo = $ExplodedKey[0];
+                $RoundNo = $ExplodedKey[0];
                 $ExerciseId = $ExplodedKey[1];
                 $Attribute = $ExplodedKey[2];
+                if($val == '00:00:0' || $val == '' || $val == '0' || $val == $Attribute){
+                    $this->Message .= '<span style="color:red">Invalid value for '.$Attribute.'!</span><br/>';
+                }else{
                 $Query='SELECT recid, (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, "'.$val.'" AS AttributeValue, "'.$RoundNo.'" AS RoundNo 
                 FROM Exercises
                 WHERE recid = "'.$ExerciseId.'"';
                 $Result = mysql_query($Query); 
                 $Row = mysql_fetch_assoc($Result);
                 array_push($Activities, new BenchmarkObject($Row));
+                }
             }
             else{
+                 if($val == $key){
+                   $this->Message .= '<span style="color:red">Invalid value for '.$key.'!</span><br/>';
+                }else{
                 $SQL = 'SELECT recid FROM Attributes WHERE Attribute = "'.$key.'"';
                 $Result = mysql_query($SQL);
                 $numrows = mysql_num_rows($Result);
@@ -196,6 +206,7 @@ class BenchmarkModel extends Model
                     $Row = mysql_fetch_assoc($Result);
                     $Attribute = $Row['recid'];
                     array_push($Activities, new BenchmarkObject(array('recid'=>'0','Attribute'=>''.$Attribute.'','AttributeValue'=>''.$val.'','RoundNo'=>''.$RoundNo.'')));
+                }
                 }
             }
         }
@@ -363,12 +374,14 @@ class BenchmarkModel extends Model
 	
 	function getHistory()
 	{
-		$Data = array();
-		$Sql = 'SELECT B.recid, B.WorkoutName, A.Attribute, L.AttributeValue, L.TimeCreated 
+            $Data = array();
+            $Sql = 'SELECT B.recid, B.WorkoutName, A.Attribute, L.AttributeValue, L.TimeCreated 
 		FROM WODLog L 
-        LEFT JOIN BenchmarkWorkouts B ON B.recid = L.ExerciseId 
-        LEFT JOIN Attributes A ON A.recid = L.AttributeId
-		WHERE L.MemberId = '.$_SESSION['UID'].' AND L.WODTypeId = 3';
+                LEFT JOIN BenchmarkWorkouts B ON B.recid = L.ExerciseId 
+                LEFT JOIN Attributes A ON A.recid = L.AttributeId
+		WHERE L.MemberId = '.$_SESSION['UID'].' AND L.WODTypeId = 8
+                AND A.Attribute = "TimeToComplete"
+                ORDER BY TimeCreated';
 		$Result = mysql_query($Sql);	
 		while($Row = mysql_fetch_assoc($Result))
 		{
@@ -388,10 +401,10 @@ class BenchmarkObject
 	var $Description;
 	var $InputFields;
 	var $Video;
-	var $SmartVideoLink;
-	var $LegacyVideoLink;
+	//var $SmartVideoLink;
+	//var $LegacyVideoLink;
 	var $Attribute;
-    var $AttributeValue;
+        var $AttributeValue;
 	var $RoundNo;
 	var $TimeCreated;
 
@@ -405,8 +418,8 @@ class BenchmarkObject
 		$this->Description = $Row['WorkoutDescription'];
 		$this->InputFields = $Row['InputFields'];
 		$this->Video = $Row['VideoId'];
-		$this->SmartVideoLink = 'http://www.youtube.com/embed/'.$Row['VideoId'].'';
-		$this->LegacyVideoLink = 'http://m.youtube.com/details?v='.$Row['VideoId'].'';
+		//$this->SmartVideoLink = 'http://www.youtube.com/embed/'.$Row['VideoId'].'';
+		//$this->LegacyVideoLink = 'http://m.youtube.com/details?v='.$Row['VideoId'].'';
 		$this->Attribute = isset($Row['Attribute']) ? $Row['Attribute'] : "";
         $this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : "";
 		$this->RoundNo = isset($Row['RoundNo']) ? $Row['RoundNo'] : "";

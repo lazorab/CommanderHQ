@@ -12,16 +12,18 @@ function getCustomExercise(id)
 
 function display(data)
 {
-	$('#AjaxOutput').html(data);
-	$('#listview').listview();
-	$('#listview').listview('refresh');
-	$('#customtype').selectmenu();
-	$('#customtype').selectmenu('refresh');
+    $('#AjaxOutput').html(data);
+    $('#listview').listview();
+    $('#listview').listview('refresh');
+    $('#exercise').selectmenu();
+    $('#exercise').selectmenu('refresh');
+    $('.buttongroup').button();
+    $('.buttongroup').button('refresh');
+    $('.textinput').textinput();
 }
 
 function addNewExercise(exercise)
 {
-
  $.getJSON("ajax.php?module=custom",{chosenexercise:exercise},function(json) {
     var new_exercise = $('#new_exercise');
     var i = document.getElementById('rowcounter').value;
@@ -31,6 +33,9 @@ function addNewExercise(exercise)
     var Chtml = '';
     ThisRound = '';
     ThisExercise = '';
+    if(i < 1){
+        $('#btnsubmit').html('<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>');
+    }
     $.each(json, function() {
         if(this.BenchmarkId > 0 && j == 0){
            html +='<input type="hidden" name="benchmarkId" value="' + this.BenchmarkId + '"/>';
@@ -68,7 +73,7 @@ function addNewExercise(exercise)
              
                 html +='<div class="ui-block-a" style="font-size:small">';
 
-                html += '<input onclick="removeRow(' + i + ')" type="radio" name="exercise_' + i + '" checked="checked" value="';
+                html += '<input onclick="removeRow(' + i + ')" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
                 if(j == 0){
                     html +='' + exercise + '';
                 }
@@ -104,7 +109,7 @@ function addNewExercise(exercise)
            
                 html +='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
                 html +='<div class="ui-block-a" style="font-size:small">';
-                html += '<input onclick="removeRow(' + i + ')" type="radio" name="exercise_' + i + '" checked="checked" value="';
+                html += '<input onclick="removeRow(' + i + ')" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
                 if(j == 0){
                     html +='' + exercise + '';
                 }
@@ -133,7 +138,6 @@ function addNewExercise(exercise)
            
                 Bhtml +='<div class="ui-block-b">';
                 Bhtml +='<input class="textinput" size="6" type="number" data-inline="true" name="' + this.RoundNo + '___' + this.recid + '___' + this.Attribute + '"';
-                Bhtml +='<option value="">' + this.AttributeValue + '</option>';
                 Bhtml +=' value="' + this.AttributeValue + '"/>';
                 Bhtml +='</div>';		
                 if(Chtml != ''){
@@ -160,7 +164,7 @@ function addNewExercise(exercise)
            ThisRound = this.RoundNo;
            ThisExercise = this.ActivityName;           
         }); 
-          this
+     
         if(Chtml != '' && Bhtml == ''){
            html+='<div class="ui-block-b"></div>' + Chtml + '';
            Chtml = '';
@@ -174,13 +178,12 @@ function addNewExercise(exercise)
         html +='</div>';
 
         $(html).appendTo(new_exercise);
-        document.getElementById('rowcounter').value = i;
-
+        document.getElementById('rowcounter').value = i; 
         $('.buttongroup').button();
         $('.buttongroup').button('refresh');
-
     });
-        $("#exercise option[value='']").attr("selected","selected");
+
+        $("#exercise option[value='none']").attr("selected","selected");
     return false;	
 }
 
@@ -191,21 +194,19 @@ function removeRow(id)
 		$('#clock_input').html('');
 	}
 	document.getElementById('rowcounter').value--;
+        if(document.getElementById('rowcounter').value == 0){
+            $('#btnsubmit').html('');
+        }
 }
 
-function validate()
+function customsubmit()
 {
-    if(document.form.field.value == ''){
-        alert('Check blank input!');
-        return false;
-    }else{
-        FormName.submit();
-    }
+    $.getJSON('ajax.php?module=custom', $("#customform").serialize(),display);
+    window.location.hash = '#message';
 }
 </script>
 <br/>
 
 <div id="AjaxOutput">       
-    <?php echo $Display->SaveMessage;?>
     <?php echo $Display->MainOutput();?>
 </div>

@@ -13,18 +13,13 @@ class CustomController extends Controller
         }
 		$this->Origin = $_REQUEST['origin'];
 		$this->SaveMessage = '';
-        if($_REQUEST['action'] == 'save'){
-            if($_REQUEST['rowcount'] > 0)
-                $this->SaveWorkout();
-            else 
-                $this->SaveMessage = 'No activities!';
-        }
+
 	}
     
     function SaveWorkout()
 	{
 		$Model = new CustomModel;
-		$this->SaveMessage = $Model->Log();
+		return $Model->Log();
 	}
     
     function MainOutput()
@@ -33,11 +28,10 @@ class CustomController extends Controller
 		$Model = new CustomModel;
 
 				$Exercises = $Model->getExercises();
-                $Html = '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
+                $Html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
                 $Html .= '<li>Custom Exercise</li>';
 				$Html .= '</ul><br/>';		
-				$Html .= '<form action="index.php" id="test" name="form">
-					<input type="hidden" name="module" value="custom"/>
+				$Html .= '<form action="index.php" id="customform" name="form">
 					<input type="hidden" name="action" value="save"/>
 					<input type="hidden" name="customexercise" value="new"/>
 					<input type="hidden" name="origin" value="'.$this->Origin.'"/>
@@ -51,20 +45,26 @@ class CustomController extends Controller
 				$Html .= '</select><br/>';
 					
 				$Html.='<div class="ui-grid-b">
-		<div id="new_exercise"></div>
-		<div id="clock_input"></div>
-		</div><br/>';	
-					
-				$Html .= '<input type="button" name="btnsubmit" value="Save" onclick="this.form.submit();"/>
-					</form><br/>';       
+                                            <div id="new_exercise"></div>
+                                        </div>
+                                        <div id="clock_input"></div>
+                                        <div id="btnsubmit"></div>                                      
+                                        </form><br/>';	      
 		
 		return $Html;
     }
 	
 	function Output()
 	{
+            if($_REQUEST['action'] == 'save'){
+                $html= '<div id="message">'.$this->SaveWorkout().'</div>';
+                $html.= $this->MainOutput();
+                return $html;
+            }
+            else{
 		$Model = new CustomModel;
 		return $Model->getExerciseAttributes($_REQUEST['chosenexercise']);
+            }
 	}
     
     function getCustomActivities()

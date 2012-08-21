@@ -26,6 +26,7 @@ class SkillsController extends Controller
 		if(isset($_REQUEST['exercise']))
 		{	
             $Exercise = $Model->getExercise();
+
             $Html .= 'Current Skills Level: '.$Exercise->SkillsLevel.'<'.$this->Wall.'br/><'.$this->Wall.'br/>';
             $Html .= 'Record new?<'.$this->Wall.'br/><'.$this->Wall.'br/>';
 			$Html .= 'Time to Complete<'.$this->Wall.'br/>';

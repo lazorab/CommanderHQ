@@ -1,20 +1,23 @@
 <?php
 class BaselineModel extends Model
 {
-	function __construct()
-	{
-		mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
-		@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");	
-	}
+    var $Message;
+    function __construct()
+    {
+        mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
+        @mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");	
+    }
     
     function Log()
-	{
+    {
         if($_REQUEST['newcount'] > 0){
             $this->SaveNewActivities();
         }
-        $ExerciseTypeId = $this->getExerciseTypeId();
+        
         $ActivityFields=$this->getActivityFields();
+        if($this->Message == ''){
         //var_dump($ActivityFields);
+            $ExerciseTypeId = $this->getExerciseTypeId();
         foreach($ActivityFields AS $Activity)
         {
             //First Store the values incase they changed
@@ -28,10 +31,13 @@ class BaselineModel extends Model
             VALUES("'.$_SESSION['UID'].'", "'.$ExerciseTypeId.'", "'.$Activity->recid.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
             mysql_query($SQL);
 			
-			$SQL = 'INSERT INTO WODLog(MemberId, WODTypeId, ExerciseId, AttributeId, AttributeValue) 
+            $SQL = 'INSERT INTO WODLog(MemberId, WODTypeId, ExerciseId, AttributeId, AttributeValue) 
             VALUES("'.$_SESSION['UID'].'", "'.$ExerciseTypeId.'", "'.$Activity->recid.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
             mysql_query($SQL);
+            $this->Message = '<span style="color:green">Successfully Saved!</span>';
+		}
         }
+        return $this->Message;
         /*
         $SQL = 'SELECT recid, Attribute FROM Attributes';
         $Result = mysql_query($SQL);	
@@ -59,14 +65,21 @@ class BaselineModel extends Model
             {
                 $ExerciseId = $ExplodedKey[0];
                 $Attribute = $ExplodedKey[1];
+                if($val == '00:00:0' || $val == '' || $val == '0' || $val == $Attribute){
+                    $this->Message .= '<span style="color:red">Invalid value for '.$Attribute.'!</span><br/>';
+                }else{
                 $Query='SELECT recid, (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, "'.$val.'" AS AttributeValue 
                 FROM Exercises
                 WHERE recid = "'.$ExerciseId.'"';
                 $Result = mysql_query($Query); 
                 $Row = mysql_fetch_assoc($Result);
                 array_push($Activities, new BaselineObject($Row));
+                }
             }
             else{
+                   if($val == '00:00:0' || $val == $key){
+                        $this->Message .= '<span style="color:red">Invalid value for '.$key.'!</span><br/>';
+                }else{
                 $SQL = 'SELECT recid FROM Attributes WHERE Attribute = "'.$key.'"';
                 $Result = mysql_query($SQL);
                 $numrows = mysql_num_rows($Result);
@@ -74,6 +87,7 @@ class BaselineModel extends Model
                     $Row = mysql_fetch_assoc($Result);
                     $Attribute = $Row['recid'];
                     array_push($Activities, new BaselineObject(array('recid'=>'0','Attribute'=>''.$Attribute.'','AttributeValue'=>''.$val.'')));
+                }
                 }
             }
         }

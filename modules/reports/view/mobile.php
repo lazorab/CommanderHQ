@@ -63,22 +63,35 @@ var i = 1;//prevent double rendering problem
                                             <div id="slides">
                                                 <div class="slides_container">
                                                     <div class="slide">
- <div id="chartContainer">FusionCharts will load here!</div>   
+ <div id="FirstChartContainer">FusionCharts will load here!</div>   
  <script type="text/javascript">
 if(i == 1){
 i++;
   	var myChart = new FusionCharts( "includes/FusionCharts/Line.swf", 
-                    "myChartId", "250", "280", "0", "1" );
+                    "FirstChartId", "250", "280", "0", "1" );
 
       myChart.setXMLData('<?php echo $ChartData;?>');
 
-      myChart.render("chartContainer");
+      myChart.render("FirstChartContainer");
 	  }
 	  
 </script>                                                        
                                                     </div>
-                                                    <div class="slide">
-                                                        <?php echo $Display->BaselineOutput();?>
+                                                    <div class="slide">                                                     
+ <div id="SecondChartContainer">FusionCharts will load here!</div>   
+ <script type="text/javascript">
+if(i == 2){
+i++;
+  	var myChart = new FusionCharts( "includes/FusionCharts/Line.swf", 
+                    "SecondChartId", "250", "280", "0", "1" );
+
+      myChart.setXMLData('<?php echo $Display->BaselineOutput();?>');
+
+      myChart.render("SecondChartContainer");
+	  }
+	  
+</script>
+                                                        
                                                     </div>
                                                     <div class="slide">
                                                         <?php echo $Display->SkillsOutput();?>
