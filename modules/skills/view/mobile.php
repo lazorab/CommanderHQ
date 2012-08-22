@@ -1,13 +1,20 @@
 <script type="text/javascript">	
 
-function getExercise(exerciseid)
+function getExercise(exercise)
 {
-    $.getJSON("ajax.php?module=skills",{exercise:exerciseid},display);
+    $.getJSON("ajax.php?module=skills",{exercise:exercise},display);
 }
 
 function display(data)
 {
 	document.getElementById("Skills").innerHTML = data;
+    $('#listview').listview();
+    $('#listview').listview('refresh');
+    $('#exercise').selectmenu();
+    $('#exercise').selectmenu('refresh');
+    $('.buttongroup').button();
+    $('.buttongroup').button('refresh');
+    $('.textinput').textinput();	
 }
 
 </script>
@@ -24,7 +31,7 @@ $Exercises = $Display->getExercises();
 foreach($Exercises as $Exercise){
     if($_REQUEST['exercise'] == $Exercise->Id)
         $Selected =' selected="selected"'; ?>
-    <option value="<?php echo $Exercise->Id;?>"<?php echo $Selected;?>><?php echo $Exercise->Exercise; ?></option>
+    <option value="<?php echo $Exercise->Exercise;?>"<?php echo $Selected;?>><?php echo $Exercise->Exercise; ?></option>
 <?php } ?>
 </select><br/>
 </form>

@@ -22,67 +22,58 @@ class SkillsController extends Controller
 	{
 		$Model = new SkillsModel;
 
-        $Html.='';
+        $html='';
 		if(isset($_REQUEST['exercise']))
 		{	
-            $Exercise = $Model->getExercise();
+            $ChosenExercise = $Model->getExercise();
+			//var_dump($ChosenExercise);
+            $html .= 'Current Skills Level: '.$ChosenExercise[0]->CurrentSkillsLevel.'<'.$this->Wall.'br/>';
 
-            $Html .= 'Current Skills Level: '.$Exercise->SkillsLevel.'<'.$this->Wall.'br/><'.$this->Wall.'br/>';
-            $Html .= 'Record new?<'.$this->Wall.'br/><'.$this->Wall.'br/>';
-			$Html .= 'Time to Complete<'.$this->Wall.'br/>';
-			$Html .= $Model->TimeInput('Time');
-			$Html .= '<'.$this->Wall.'br/>';
-			$Html .= 'Update Weight?<'.$this->Wall.'br/>';
-			$Html .= $Model->BodyWeight();
-			$Html .= '<'.$this->Wall.'br/>';			
-            $Attributes = $Model->getAttributes($_REQUEST['exercise']);
-            foreach($Attributes AS $Attribute)
-            {	
-                if($Attribute->Attribute == 'Duration'){
-                    $Html .= 'Duration<'.$this->Wall.'br/>';
-                    $Html .= $Model->TimeInput('Duration');
-                    $Html .= '<'.$this->Wall.'br/>';
-                }	
-                if($Attribute->Attribute == 'Reps'){
-                    $Html .= 'Rounds/Reps<'.$this->Wall.'br/>
-                    <'.$this->Wall.'input type="text" name="reps" value="'.$_REQUEST['reps'].'"/>
-                    <'.$this->Wall.'br/>';
-                }	
-                if($Attribute->Attribute == 'Body Weight'){
-                    //not sure about this one
-                }
-                if($Attribute->Attribute == 'Weight'){
-                    $Html .= 'Weight Used<'.$this->Wall.'br/>
-                    <'.$this->Wall.'input type="text" name="weight" value="'.$_REQUEST['weight'].'"/><'.$this->Wall.'br/>
-                    <'.$this->Wall.'br/>';
-                }	
-                if($Attribute->Attribute == 'Height'){
-                    $Html .= 'Height Used/Reached<'.$this->Wall.'br/>
-                    <'.$this->Wall.'input type="text" name="height" value="'.$_REQUEST['height'].'"/><'.$this->Wall.'br/>
-                    <'.$this->Wall.'br/>';	
-                }
-            }
-			
-			if($_REQUEST['submit'] == 'Save'){
-				$this->Message = $Model->Validate($_REQUEST['exercise']);
-				if($this->Message == ''){		
-					$Success = $Model->Log();
-					if($Success)
-						$this->Message = '<'.$this->Wall.'br/>Log Successful';
-					else
-						$this->Message = '<'.$this->Wall.'br/>Error: Unsuccessful Log';		
+            //$ExerciseAttributes = $Model->getExerciseAttributes($_REQUEST['exercise']);
+
+	$clock = '';
+		$LevelOneHtml = '<'.$this->Wall.'br/>Level 1:<'.$this->Wall.'br/>';
+		$LevelTwoHtml = '<'.$this->Wall.'br/>Level 2:<'.$this->Wall.'br/>';
+        $LevelThreeHtml = '<'.$this->Wall.'br/>Level 3:<'.$this->Wall.'br/>';
+		$LevelFourHtml = '<'.$this->Wall.'br/>Level 4:<'.$this->Wall.'br/>';
+	foreach($ChosenExercise as $Exercise){
+
+				if($Exercise->LevelOneValue != null){
+					$LevelOneHtml .= ''.$Exercise->Attribute.': '.$Exercise->LevelOneValue.'<'.$this->Wall.'br/>';
 				}
-			}
-			else{
-				$this->Message = '';
-			}	
-			$Html.='
-				<'.$this->Wall.'br/>
-				<'.$this->Wall.'input type="submit" name="submit" value="Save"/><'.$this->Wall.'br/><'.$this->Wall.'br/>';
+				if($Exercise->LevelTwoValue != null){
+					$LevelTwoHtml .= ''.$Exercise->Attribute.': '.$Exercise->LevelTwoValue.'<'.$this->Wall.'br/>';
+				}
+				if($Exercise->LevelThreeValue != null){
+					$LevelThreeHtml .= ''.$Exercise->Attribute.': '.$Exercise->LevelThreeValue.'<'.$this->Wall.'br/>';	
+				}
+				if($Exercise->LevelFourValue != null){
+					$LevelFourHtml .= ''.$Exercise->Attribute.': '.$Exercise->LevelFourValue.'<'.$this->Wall.'br/>';
+				}	
 		}
-
-        return $Html;
+		$html .= ''.$LevelOneHtml.''.$LevelTwoHtml.''.$LevelThreeHtml.''.$LevelFourHtml.'';
+}
+        return $html;
 	}
+	
+	function getStopWatch()
+    {
+		$Html.='<input type="text" id="clock" name="TimeToComplete" value="00:00:0"/>';
+		$Html.='<input class="buttongroup" type="button" onclick="startstop();" value="Start/Stop"/>';
+		$Html.='<input class="buttongroup" type="button" onclick="reset();" value="Reset"/>';
+		$Html.='<input class="buttongroup" type="button" onclick="skillssubmit();" value="Save"/>';
+        
+        return $Html;
+    }	
+	
+    function getCountDown()
+    {
+        $Html='<input type="text" id="clock" name="CountDown" value=""/>';
+		$Html.='<input class="buttongroup" type="button" onclick="startstop()" value="Start/Stop"/>';
+		$Html.='<input class="buttongroup" type="button" onclick="reset()" value="Reset"/>';
+		
+        return $Html;
+    }	
 	
 	function Message()
 	{

@@ -207,7 +207,7 @@ class SkillsModel extends Model
 	{
 		$Exercises=array();
 		$Sql = 'SELECT DISTINCT S.ExerciseId AS recid, E.Exercise 
-                    FROM SkillsLevel S
+                    FROM SkillsLevels S
                     LEFT JOIN Exercises E ON E.recid = S.ExerciseId
                     ORDER BY Exercise';
 		$Result = mysql_query($Sql);
@@ -310,7 +310,7 @@ class SkillsModel extends Model
 	
 	function getExercise()
 	{
-            $Sql = 'SELECT S.ExerciseId, 
+            $Sql = 'SELECT DISTINCT S.ExerciseId, 
 E.Exercise, 
 SkillsLevel,
 A.Attribute,
@@ -319,7 +319,7 @@ AttributeValue,
 FROM SkillsLevels S
 LEFT JOIN Attributes A ON A.recid = S.AttributeId
 LEFT JOIN Exercises E ON E.recid = S.ExerciseId
-WHERE S.ExerciseId = '.$_REQUEST['exercise'].'
+WHERE E.Exercise = "'.$_REQUEST['exercise'].'"
 AND (
 S.Gender = "'.$this->Gender().'"
 OR S.Gender = "U"
@@ -358,6 +358,70 @@ ORDER BY Attribute, SkillsLevel';
             return $Data;	
 	}    
 	
+	function getExerciseAttributes($Exercise)
+	{
+        $Attributes = array();
+
+        $SQL = 'SELECT BenchmarkId
+		FROM Exercises
+		WHERE Exercise = "'.$Exercise.'"';
+        $Result = mysql_query($SQL);
+		$Row = mysql_fetch_assoc($Result);
+		$BenchmarkId = $Row['BenchmarkId'];
+		if($BenchmarkId == 0){
+			$SQL = 'SELECT DISTINCT E.recid, 
+			E.Exercise AS ActivityName,
+			A.Attribute
+			FROM ExerciseAttributes EA
+			LEFT JOIN Attributes A ON EA.AttributeId = A.recid
+			LEFT JOIN Exercises E ON EA.ExerciseId = E.recid
+			WHERE E.Exercise = "'.$Exercise.'"
+			ORDER BY ActivityName, Attribute';
+		}
+		else{
+                            if($Exercise == 'Baseline'){
+
+        $SQL = 'SELECT MB.ExerciseId AS recid, E.Exercise AS ActivityName, A.Attribute, MB.AttributeValue 
+        FROM MemberBaseline MB
+        JOIN Exercises E ON E.recid = MB.ExerciseId
+        JOIN Attributes A ON A.recid = MB.AttributeId
+        WHERE MB.MemberId = "'.$_SESSION['UID'].'"';
+
+        }else{
+        $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
+ 		$Result = mysql_query($SQL);	
+		$Row = mysql_fetch_assoc($Result);
+        if($Row['Gender'] == 'M'){
+            $AttributeValue = 'AttributeValueMale';
+			$InputFields = 'MaleInput';
+        } else {
+            $AttributeValue = 'AttributeValueFemale';
+			$InputFields = 'FemaleInput';
+		}
+		//$SQL = 'SELECT WorkoutName, '.$DescriptionField.' AS WorkoutDescription, '.$InputFields.' AS InputFields, VideoId FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
+		
+		$SQL = 'SELECT E.Exercise AS ActivityName, E.recid, BD.BenchmarkId, A.Attribute, BD.'.$AttributeValue.' AS AttributeValue, RoundNo
+			FROM BenchmarkDetails BD
+			LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
+			LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
+			LEFT JOIN Attributes A ON A.recid = BD.AttributeId
+			WHERE BD.BenchmarkId = '.$BenchmarkId.'
+			ORDER BY RoundNo, ActivityName, Attribute';
+		}
+                }
+        $Result = mysql_query($SQL);
+        while($Row = mysql_fetch_assoc($Result))
+        {
+            array_push($Attributes, new AttributesObject($Row));  
+        }
+        if($Exercise == 'Baseline')
+        {
+            $Array = array('recid'=>'63', 'ActivityName'=>'Timed', 'Attribute'=>'TimeToComplete', 'AttributeValue'=>'00:00:0', 'RoundNo'=>'0');
+            array_push($Attributes, new AttributesObject($Array));  
+        }
+        return $Attributes;	
+	}	
+	
 }
 
 class ExercisesObject
@@ -388,11 +452,23 @@ class ExercisesObject
 
 class AttributesObject
 {
+	var $recid;
+    var $BenchmarkId;
+	var $ActivityName;
+	var $ActivityType;
 	var $Attribute;
+	var $AttributeValue;
+	var $RoundNo;
 
 	function __construct($Row)
 	{
-		$this->Attribute = $Row['Attribute'];
+		$this->recid = isset($Row['recid']) ? $Row['recid'] : "";
+        $this->BenchmarkId = isset($Row['BenchmarkId']) ? $Row['BenchmarkId'] : "";
+		$this->ActivityName = isset($Row['ActivityName']) ? $Row['ActivityName'] : "";
+		$this->ActivityType = isset($Row['ActivityType']) ? $Row['ActivityType'] : "";
+		$this->Attribute = isset($Row['Attribute']) ? $Row['Attribute'] : "";
+		$this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : $Row['Attribute'];
+		$this->RoundNo = isset($Row['RoundNo']) ? $Row['RoundNo'] : "1";
 	}
 }
 ?>
