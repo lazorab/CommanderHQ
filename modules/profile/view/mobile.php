@@ -2,22 +2,54 @@
 
 function getSystem(val)
 {
+    var thisheight = document.getElementById("height").value;
+    var thisweight = document.getElementById("weight").value;
+    
     if(val == 'Metric'){
+        var newheight = thisheight * 2.54;
+        var newweight = thisweight * 0.45;
         document.getElementById("heightlabel").innerHTML = 'Height(cm)';
-        document.getElementById("height").value = '<?php echo $Display->Height();?>';
+        document.getElementById("height").value = newheight.toFixed(2);
         document.getElementById("weightlabel").innerHTML = 'Weight(kg)';
-        document.getElementById("weight").value = '<?php echo $Display->Weight();?>';
+        document.getElementById("weight").value = newweight.toFixed(2);
     }
     else if(val == 'Imperial'){
+        var newheight = thisheight * 0.39;
+        var newweight = thisweight * 2.20;
         document.getElementById("heightlabel").innerHTML = 'Height(inches)';
-        document.getElementById("height").value = Math.ceil(<?php echo $Display->Height();?> * 0.39);
+        document.getElementById("height").value = newheight.toFixed(2);
         document.getElementById("weightlabel").innerHTML = 'Weight(lbs)';
-        document.getElementById("weight").value = Math.ceil(<?php echo $Display->Weight();?> * 2.22);     
+        document.getElementById("weight").value = newweight.toFixed(2);     
+    }
+}
+
+function profilesubmit()
+{
+    $.getJSON('ajax.php?module=profile', $("#profileform").serialize(),display);
+}
+
+function display(data)
+{
+    if(data == 'Success')
+        window.location = 'index.php?module=memberhome';
+    else{
+    $('#AjaxOutput').html(data);
+    window.location.hash = '#message';
+    $('#listview').listview();
+    $('#listview').listview('refresh');
+    $('.controlbutton').button();
+    $('.controlbutton').button('refresh');
+    $('.buttongroup').button();
+    $('.buttongroup').button('refresh'); 
+    $('input').checkboxradio();
+    $('input').checkboxradio('refresh');
+    $('#AjaxLoading').html('');
     }
 }
 </script>
 
-<?php echo $Display->Message;?>
 <br/>
 
-<?php echo $Display->Output();?>
+<div id="AjaxOutput">
+    <?php echo $Display->Output();?>
+</div>

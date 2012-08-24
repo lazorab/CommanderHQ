@@ -148,12 +148,16 @@ if(isset($_REQUEST['benchmarkId']))
 				}
 			}
             else if($Benchmark->Attribute == 'Calories' || $Benchmark->Attribute == 'Reps' || $Benchmark->Attribute == 'Rounds'){
+                                $Placeholder = '';
+                                if($Benchmark->Attribute == 'Calories'){
+                                    $Placeholder = 'placeholder="Calories"';
+                                }
                                 $InputAttributes = 'class="textinput" type="number" size="6"';
                                 if($Benchmark->Attribute == 'Rounds'){
                                     $InputAttributes .= ' id="addround"';
                                 }
 				$Chtml.='<div class="ui-block-c">';
-				$Chtml.='<input '.$InputAttributes.' name="'.$Benchmark->RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" value="'.$Benchmark->AttributeValue.'"/>';
+				$Chtml.='<input '.$InputAttributes.' name="'.$Benchmark->RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" '.$Placeholder.' value="'.$Benchmark->AttributeValue.'"/>';
 				$Chtml.='</div>';
 				if($Bhtml != ''){
 					$html.=''.$Bhtml.''.$Chtml.'';

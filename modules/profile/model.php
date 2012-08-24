@@ -60,7 +60,7 @@ class ProfileModel extends Model
 			if($_REQUEST['system'] == 'Imperial'){
                 //convert to metric for storage in db. Displaying of values will be converted back.
 				$Weight = round($_REQUEST['Weight'] * 0.45, 2);
-				$Height = floor($_REQUEST['Height'] * 2.54);
+				$Height = round($_REQUEST['Height'] * 2.54, 2);
 			}
 			else{
 				$Weight = $_REQUEST['Weight'];

@@ -12,51 +12,64 @@ class ProfileController extends Controller
 	{
 		parent::__construct();
 		session_start();
-
-        $Model = new ProfileModel;
-		$Validate = new ValidationUtils;		
-		$this->Message = '';
-		
-		if($_REQUEST['formsubmitted'] == 'yes')
-		{
-
+        }
+        
+        function Validate()
+        {
+            $Model = new ProfileModel;
+            $Validate = new ValidationUtils;		
+            $Message = 'Success';
             if($_REQUEST['FirstName'] == '')
-                $this->Message = 'Firstname Required';
+                $Message = 'Firstname Required';
             elseif($_REQUEST['LastName'] == '')
-                $this->Message = 'Lastname Required';
+                $Message = 'Lastname Required';
             elseif($_REQUEST['Cell'] == '' && $_REQUEST['Email'] == '')
-                $this->Message = 'Either a Cell or Email Required';
+                $Message = 'Either a Cell or Email Required';
             elseif($_REQUEST['Cell'] != '' && !$Validate->CheckMobileNumber($_REQUEST['Cell']))
-                $this->Message = 'Cell number invalid!';
+                $Message = 'Cell number invalid!';
             elseif($_REQUEST['Email'] != '' && !$Validate->CheckEmailAddress($_REQUEST['Email']))
-                $this->Message = 'Email Address invalid!';
+                $Message = 'Email Address invalid!';
             elseif($_REQUEST['DOB'] == '')
-                $this->Message = 'Invalid Date of Birth';				
+                $Message = 'Invalid Date of Birth';				
             elseif($_REQUEST['Weight'] == '')
-                $this->Message = 'Weight Required';
+                $Message = 'Weight Required';
             elseif($_REQUEST['Height'] == '')
-                $this->Message = 'Height Required';
+                $Message = 'Height Required';
             elseif($_REQUEST['Gender'] == '')		
-                $this->Message = 'Select Gender';
+                $Message = 'Select Gender';
 		
-            if($this->Message == '')
-            {
-                if(isset($_SESSION['UID'])){
-                    $Model->Update($_SESSION['UID']);
-                }else if(isset($_SESSION['NEW'])){
-                    $Model->Update($_SESSION['NEW']);
-                }else{
-                    $Model->Register();
-                }
-            
-                header('location: index.php?module=memberhome');
-            }
-        }	
+            return $Message;	
 	}
     
-    function Output()
+    function Save()
     {
         $Model = new ProfileModel;
+        $Message = $this->Validate();
+        if($Message == 'Success')
+        {
+            if(isset($_SESSION['UID'])){
+                $Model->Update($_SESSION['UID']);
+            }else if(isset($_SESSION['NEW'])){
+                $Model->Update($_SESSION['NEW']);
+            }else{
+                $Model->Register();
+            }
+        }
+        return $Message;
+    }
+        
+    function Output()
+    {
+        $Message = '';
+        $Model = new ProfileModel;
+        $Html = '';
+        if($_REQUEST['action'] == 'save'){
+            $Message = $this->Save();
+        }
+        if($Message != 'Success'){
+
+        $Html .= '<div id="message">'.$Message.'</div>';
+        
         $Id=0;
         if(isset($_SESSION['UID'])){
             $Id = $_SESSION['UID'];
@@ -82,11 +95,11 @@ class ProfileController extends Controller
             $WeightUnit = 'lbs';
             $HeightUnit = 'inches';
         }
-        $Html='
-        <form action="index.php" method="post">
+        $Html.='
+        <form action="index.php" method="post" id="profileform" name="profileform">
         <div data-role="fieldcontain">
         <input type="hidden" name="module" value="profile"/>
-        <input type="hidden" name="formsubmitted" value="yes"/>
+        <input type="hidden" name="action" value="save"/>
         <input type="hidden" name="UserId" value="'.$MemberDetails->UserId.'"/>
 <input id="systemofmeasure" type="hidden" name="SystemOfMeasure" value="'.$MemberDetails->SystemOfMeasure.'"/>
 <label for="firstname">First Name</label>
@@ -98,39 +111,46 @@ class ProfileController extends Controller
 <label for="email">Email</label>
 <input style="width:75%;" type="email" id="email" name="Email" value="'.$MemberDetails->Email.'"/>
 <label for="DOB">Date of Birth</label>
-<input style="width:75%;" type="date" name="DOB" id="DOB" value="'.$DOB.'"/>	
-Male
-<input id="male" type="radio" name="Gender" value="M" data-role="none"';
+<input style="width:75%;" type="date" name="DOB" id="DOB" value="'.$DOB.'"/>
+<br/><br/>
+<fieldset data-role="controlgroup" data-type="horizontal">
+<label for="male">Male</label>
+<input id="male" type="radio" name="Gender" value="M"';
 if($MemberDetails->Gender == 'M') 
     $Html.='checked="checked"';
 $Html.='/>
-<br/>
-Female
-<input id="female" type="radio" name="Gender" value="F" data-role="none"';
+<label for="female">Female</label>
+<input id="female" type="radio" name="Gender" value="F"';
 if($MemberDetails->Gender == 'F')
     $Html.='checked="checked"';
-$Html.='/><br/><br/>
+$Html.='/>
+</fieldset>
+<br/><br/>
 <div id="weightlabel">Height('.$HeightUnit.')</div>
 <input style="width:75%;" id="weight" type="text" name="Weight" value="'.$MemberDetails->Weight.'"/>
 <div id="heightlabel">Weight('.$WeightUnit.')</div>
 <input style="width:75%;" id="height" type="text" name="Height" value="'.$MemberDetails->Height.'"/>
+<br/><br/>	
+<fieldset data-role="controlgroup" data-type="horizontal">
+    <input type="radio" name="system" id="radio-choice-1" value="Metric" onclick="getSystem(\'Metric\');"';
+    if($MemberDetails->SystemOfMeasure == 'Metric')
+        $Html.=' checked="checked""';
+    $Html.='/>
+     	<label for="radio-choice-1">Metric</label>
+
+     	<input type="radio" name="system" id="radio-choice-2" value="Imperial" onclick="getSystem(\'Imperial\');"';
+    if($MemberDetails->SystemOfMeasure == 'Imperial')
+        $Html.=' checked="checked""';
+     $Html.='/>
+     	<label for="radio-choice-2">Imperial</label>
+</fieldset>
+
 <br/>
-<label for="system">Preferred Sytem of Measurement</label>
-<select id="system" name="system" class="select" onchange="getSystem(this.value);">
-<option value="Metric"';
-if($MemberDetails->SystemOfMeasure == 'Metric')
-    $Html.=' selected="selected"';
-$Html.='>Metric</option>
-<option value="Imperial"';
-if($MemberDetails->SystemOfMeasure == 'Imperial')
-    $Html.=' selected="selected"';
-$Html.='>Imperial</option>
-</select>
-<br/><br/>
-<input type="submit" name="submit" value="Save" data-role="none"/><br/><br/>
+<input class="buttongroup" type="button" onclick="profilesubmit();" value="Save"/><br/><br/>
 </div>
 </form>';
-return $Html;
+        }
+        return $Html;
     }
 
     function Height()

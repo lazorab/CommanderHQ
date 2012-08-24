@@ -7,7 +7,7 @@ function getExercise(exercise)
 
 function display(data)
 {
-	document.getElementById("Skills").innerHTML = data;
+    $('#AjaxOutput').html(data);
     $('#listview').listview();
     $('#listview').listview('refresh');
     $('#exercise').selectmenu();
@@ -36,7 +36,7 @@ foreach($Exercises as $Exercise){
 </select><br/>
 </form>
 <br/>
-<div id="Skills">
+<div id="AjaxOutput">
 <?php echo $Display->Output();?>
 </div>
 </div>

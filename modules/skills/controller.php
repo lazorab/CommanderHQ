@@ -22,7 +22,7 @@ class SkillsController extends Controller
 	{
 		$Model = new SkillsModel;
 
-        $html='';
+            $html='';
 		if(isset($_REQUEST['exercise']))
 		{	
             $ChosenExercise = $Model->getExercise();
@@ -31,27 +31,63 @@ class SkillsController extends Controller
 
             //$ExerciseAttributes = $Model->getExerciseAttributes($_REQUEST['exercise']);
 
-	$clock = '';
-		$LevelOneHtml = '<'.$this->Wall.'br/>Level 1:<'.$this->Wall.'br/>';
-		$LevelTwoHtml = '<'.$this->Wall.'br/>Level 2:<'.$this->Wall.'br/>';
-        $LevelThreeHtml = '<'.$this->Wall.'br/>Level 3:<'.$this->Wall.'br/>';
-		$LevelFourHtml = '<'.$this->Wall.'br/>Level 4:<'.$this->Wall.'br/>';
-	foreach($ChosenExercise as $Exercise){
-
-				if($Exercise->LevelOneValue != null){
-					$LevelOneHtml .= ''.$Exercise->Attribute.': '.$Exercise->LevelOneValue.'<'.$this->Wall.'br/>';
+            $clock = '';
+            $LevelOneHtml = '<div class="ui-block-a">Level 1:</div><div class="ui-block-b">';
+            $LevelTwoHtml = '<div class="ui-block-a">Level 2:</div><div class="ui-block-b">';
+            $LevelThreeHtml = '<div class="ui-block-a">Level 3:</div><div class="ui-block-b">';
+            $LevelFourHtml = '<div class="ui-block-a">Level 4:</div><div class="ui-block-b">';
+            foreach($ChosenExercise as $Exercise){
+                
+                if($Exercise->Attribute == 'TimeToComplete'){
+                    $Attribute = 'Time';
+                }else{
+                    $Attribute = $Exercise->Attribute;
+                }
+                if($Exercise->Attribute == 'Weight'){
+                    if($Exercise->LevelOneValue == '0.00'){
+                        $LevelOneValue = 'Body';
+                    }else{
+                        $LevelOneValue = $Exercise->LevelOneValue;
+                    }
+                    if($Exercise->LevelTwoValue == '0.00'){
+                        $LevelTwoValue = 'Body';
+                    }else{
+                        $LevelTwoValue = $Exercise->LevelTwoValue;
+                    }
+                    if($Exercise->LevelThreeValue == '0.00'){
+                        $LevelThreeValue = 'Body';
+                    }else{
+                        $LevelThreeValue = $Exercise->LevelThreeValue;
+                    }
+                    if($Exercise->LevelFourValue == '0.00'){
+                        $LevelFourValue = 'Body';
+                    }else{
+                        $LevelFourValue = $Exercise->LevelFourValue;
+                    }
+                }else{
+                    $LevelOneValue = $Exercise->LevelOneValue;
+                    $LevelTwoValue = $Exercise->LevelTwoValue;
+                    $LevelThreeValue = $Exercise->LevelThreeValue;
+                    $LevelFourValue = $Exercise->LevelFourValue;
+                }
+                
+				if($LevelOneValue != null){
+					$LevelOneHtml .= ''.$Attribute.':</div><div class="ui-block-c">'.$LevelOneValue.'</div><div class="ui-block-a"></div><div class="ui-block-b">';
 				}
-				if($Exercise->LevelTwoValue != null){
-					$LevelTwoHtml .= ''.$Exercise->Attribute.': '.$Exercise->LevelTwoValue.'<'.$this->Wall.'br/>';
+				if($LevelTwoValue != null){
+					$LevelTwoHtml .= ''.$Attribute.':</div><div class="ui-block-c">'.$LevelTwoValue.'</div><div class="ui-block-a"></div><div class="ui-block-b">';
 				}
-				if($Exercise->LevelThreeValue != null){
-					$LevelThreeHtml .= ''.$Exercise->Attribute.': '.$Exercise->LevelThreeValue.'<'.$this->Wall.'br/>';	
+				if($LevelThreeValue != null){
+					$LevelThreeHtml .= ''.$Attribute.':</div><div class="ui-block-c">'.$LevelThreeValue.'</div><div class="ui-block-a"></div><div class="ui-block-b">';	
 				}
-				if($Exercise->LevelFourValue != null){
-					$LevelFourHtml .= ''.$Exercise->Attribute.': '.$Exercise->LevelFourValue.'<'.$this->Wall.'br/>';
+				if($LevelFourValue != null){
+					$LevelFourHtml .= ''.$Attribute.':</div><div class="ui-block-c">'.$LevelFourValue.'</div><div class="ui-block-a"></div><div class="ui-block-b">';
 				}	
 		}
-		$html .= ''.$LevelOneHtml.''.$LevelTwoHtml.''.$LevelThreeHtml.''.$LevelFourHtml.'';
+		$html .= '<div class="ui-grid-b">'.$LevelOneHtml.'</div>'.$LevelTwoHtml.'</div>'.$LevelThreeHtml.'</div>'.$LevelFourHtml.'</div></div>';
+}
+else{
+    $html = 'Select an exercise to view the breakdown of suggested skills levels';
 }
         return $html;
 	}
