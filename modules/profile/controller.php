@@ -101,44 +101,44 @@ class ProfileController extends Controller
         <input type="hidden" name="module" value="profile"/>
         <input type="hidden" name="action" value="save"/>
         <input type="hidden" name="UserId" value="'.$MemberDetails->UserId.'"/>
-<input id="systemofmeasure" type="hidden" name="SystemOfMeasure" value="'.$MemberDetails->SystemOfMeasure.'"/>
+        <input id="systemofmeasure" type="hidden" name="SystemOfMeasure" value="'.$MemberDetails->SystemOfMeasure.'"/>
 <label for="firstname">First Name</label>
-<input style="width:75%;" type="text" id="firstname" name="FirstName" value="'.$MemberDetails->FirstName.'"/>
+<input style="width:75%;" class="textinput" type="text" id="firstname" name="FirstName" value="'.$MemberDetails->FirstName.'"/>
 <label for="lastname">Last Name</label>
-<input style="width:75%;" type="text" id="lastname" name="LastName" value="'.$MemberDetails->LastName.'"/>
+<input style="width:75%;" class="textinput" type="text" id="lastname" name="LastName" value="'.$MemberDetails->LastName.'"/>
 <label for="cell">Cell</label>
-<input style="width:75%;" type="tel" id="cell" name="Cell" value="'.$MemberDetails->Cell.'" placeholder="+2778000000"/>
+<input style="width:75%;" class="textinput" type="tel" id="cell" name="Cell" value="'.$MemberDetails->Cell.'" placeholder="+2778000000"/>
 <label for="email">Email</label>
-<input style="width:75%;" type="email" id="email" name="Email" value="'.$MemberDetails->Email.'"/>
+<input style="width:75%;" class="textinput" type="email" id="email" name="Email" value="'.$MemberDetails->Email.'"/>
 <label for="DOB">Date of Birth</label>
-<input style="width:75%;" type="date" name="DOB" id="DOB" value="'.$DOB.'"/>
+<input style="width:75%;" class="textinput" type="date" name="DOB" id="DOB" value="'.$DOB.'"/>
 <br/><br/>
-<fieldset data-role="controlgroup" data-type="horizontal">
+<fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
 <label for="male">Male</label>
-<input id="male" type="radio" name="Gender" value="M"';
+<input class="radioinput" id="male" type="radio" name="Gender" value="M"';
 if($MemberDetails->Gender == 'M') 
     $Html.='checked="checked"';
 $Html.='/>
 <label for="female">Female</label>
-<input id="female" type="radio" name="Gender" value="F"';
+<input class="radioinput" id="female" type="radio" name="Gender" value="F"';
 if($MemberDetails->Gender == 'F')
     $Html.='checked="checked"';
 $Html.='/>
 </fieldset>
 <br/><br/>
 <div id="weightlabel">Height('.$HeightUnit.')</div>
-<input style="width:75%;" id="weight" type="text" name="Weight" value="'.$MemberDetails->Weight.'"/>
+<input style="width:75%;" id="weight" class="textinput" type="text" name="Weight" value="'.$MemberDetails->Weight.'"/>
 <div id="heightlabel">Weight('.$WeightUnit.')</div>
-<input style="width:75%;" id="height" type="text" name="Height" value="'.$MemberDetails->Height.'"/>
+<input style="width:75%;" id="height" class="textinput" type="text" name="Height" value="'.$MemberDetails->Height.'"/>
 <br/><br/>	
-<fieldset data-role="controlgroup" data-type="horizontal">
-    <input type="radio" name="system" id="radio-choice-1" value="Metric" onclick="getSystem(\'Metric\');"';
+<fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
+    <input class="radioinput" type="radio" name="system" id="radio-choice-1" value="Metric" onclick="getSystem(\'Metric\');"';
     if($MemberDetails->SystemOfMeasure == 'Metric')
         $Html.=' checked="checked""';
     $Html.='/>
      	<label for="radio-choice-1">Metric</label>
 
-     	<input type="radio" name="system" id="radio-choice-2" value="Imperial" onclick="getSystem(\'Imperial\');"';
+     	<input class="radioinput" type="radio" name="system" id="radio-choice-2" value="Imperial" onclick="getSystem(\'Imperial\');"';
     if($MemberDetails->SystemOfMeasure == 'Imperial')
         $Html.=' checked="checked""';
      $Html.='/>

@@ -41,8 +41,9 @@ function display(data)
     $('.controlbutton').button('refresh');
     $('.buttongroup').button();
     $('.buttongroup').button('refresh'); 
-    $('input').checkboxradio();
-    $('input').checkboxradio('refresh');
+    $('.radioinput').checkboxradio();
+    $('.radioinput').checkboxradio('refresh');
+    $('.textinput').textinput();
     $('#AjaxLoading').html('');
     }
 }
