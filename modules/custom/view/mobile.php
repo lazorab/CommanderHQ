@@ -24,24 +24,29 @@ function display(data)
 
 function addNewExercise(exercise)
 {
- $.getJSON("ajax.php?module=custom",{chosenexercise:exercise},function(json) {
+	$.getJSON("ajax.php?module=custom",{chosenexercise:exercise},function(json) {
+	var attributecount = 0;
+	$.each(json, function() {attributecount++;});
     var new_exercise = $('#new_exercise');
     var i = document.getElementById('rowcounter').value;
     var j = 0;
     var html = '';
     var Bhtml = '';
     var Chtml = '';
-    ThisRound = '';
-    ThisExercise = '';
+    var ThisRound = '';
+    var ThisExercise = '';
+	var ThisClass = '';
     if(i < 1){
         $('#btnsubmit').html('<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>');
     }
     $.each(json, function() {
         if(this.BenchmarkId > 0 && j == 0){
-           html +='<input type="hidden" name="benchmarkId" value="' + this.BenchmarkId + '"/>';
+           html +='<input class="benchmark_' + this.BenchmarkId + '" type="hidden" name="benchmarkId" value="' + this.BenchmarkId + '"/>';
+		   html += '<div class="benchmark_' + this.BenchmarkId + '"><input onclick="RemoveFromList(' + attributecount + ',' + this.BenchmarkId + ')" type="checkbox" name="exercise_' + i + '" checked="checked" value="' + exercise + '"/>';
+		   html +='' + exercise + '</div>';
         }
         if(this.Attribute == 'TimeToComplete'){
-        $('#clock_input').html('<input type="text" id="clock" name="0___' + this.recid + '___' + this.Attribute + '" value="00:00:0"/><?php echo $Display->getStopWatch();?>');
+			$('#clock_input').html('<input type="text" id="clock" name="0___' + this.recid + '___' + this.Attribute + '" value="00:00:0"/><?php echo $Display->getStopWatch();?>');
         }
         else if(this.Attribute == 'CountDown'){
            $('#clock_input').html('<input type="time" id="input_' + i + '" size="10" name="0___' + this.recid + '___' + this.Attribute + '" value="" placeholder="mm:ss"/>');
@@ -63,17 +68,17 @@ function addNewExercise(exercise)
             
                 i++;
                 if(j == 0){
-                    html +='<div id="row_' + i + '">';
+                    html +='<div id="row_' + i + '" class="benchmark_' + this.BenchmarkId + '">';
                 }
                 else{
-                    html +='</div><div id="row_' + i + '">';
+                    html +='</div><div id="row_' + i + '" class="benchmark_' + this.BenchmarkId + '">';
                 }           
            
                 html +='<div class="ui-block-a"></div><div class="ui-block-b">Round ' + this.RoundNo + '</div><div class="ui-block-c"></div>';
              
                 html +='<div class="ui-block-a" style="font-size:small">';
 
-                html += '<input onclick="removeRow(' + i + ')" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
+                html += '<input onclick="RemoveFromList(' + i + ',0)" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
                 if(j == 0){
                     html +='' + exercise + '';
                 }
@@ -101,15 +106,15 @@ function addNewExercise(exercise)
            
                 i++;
                 if(j == 0){
-                    html +='<div id="row_' + i + '">';
+                    html +='<div id="row_' + i + '" class="benchmark_' + this.BenchmarkId + '">';
                 }
                 else{
-                    html +='</div><div id="row_' + i + '">';
+                    html +='</div><div id="row_' + i + '" class="benchmark_' + this.BenchmarkId + '">';
                 }
            
                 html +='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
                 html +='<div class="ui-block-a" style="font-size:small">';
-                html += '<input onclick="removeRow(' + i + ')" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
+                html += '<input onclick="RemoveFromList(' + i + ',0)" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
                 if(j == 0){
                     html +='' + exercise + '';
                 }
@@ -187,16 +192,24 @@ function addNewExercise(exercise)
     return false;	
 }
 
-function removeRow(id)
+function RemoveFromList(RowId,BenchMarkId)
 {
-	$('#row_' + id + '').remove();
+	if(BenchMarkId > 0){
+		$('.benchmark_' + BenchMarkId + '').remove();
+		document.getElementById('rowcounter').value = document.getElementById('rowcounter').value - (RowId - 1);
+	}
+	else if(RowId > 0){
+		$('#row_' + RowId + '').remove();
+		document.getElementById('rowcounter').value--;
+	}
+		
 	if(document.getElementById('clock_input').html != ''){
 		$('#clock_input').html('');
 	}
-	document.getElementById('rowcounter').value--;
-        if(document.getElementById('rowcounter').value == 0){
-            $('#btnsubmit').html('');
-        }
+	
+    if(document.getElementById('rowcounter').value == 0){
+        $('#btnsubmit').html('');
+    }
 }
 
 function customsubmit()

@@ -284,7 +284,10 @@ class CustomModel extends Model
 	function getExercises()
 	{
         $Exercises = array();
-        $SQL = 'SELECT recid, Exercise AS ActivityName FROM Exercises ORDER BY Exercise';
+        $SQL = 'SELECT recid, Exercise AS ActivityName 
+		FROM Exercises 
+		WHERE CustomOption > 0
+		ORDER BY Exercise';
         $Result = mysql_query($SQL);
         while($Row = mysql_fetch_assoc($Result))
         {
@@ -335,7 +338,7 @@ class CustomModel extends Model
 		}
 		//$SQL = 'SELECT WorkoutName, '.$DescriptionField.' AS WorkoutDescription, '.$InputFields.' AS InputFields, VideoId FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
 		
-		$SQL = 'SELECT E.Exercise AS ActivityName, E.recid, BD.BenchmarkId, A.Attribute, BD.'.$AttributeValue.' AS AttributeValue, RoundNo
+		$SQL = 'SELECT E.recid, E.Exercise AS ActivityName, BD.BenchmarkId, A.Attribute, BD.'.$AttributeValue.' AS AttributeValue, RoundNo
 			FROM BenchmarkDetails BD
 			LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
 			LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
