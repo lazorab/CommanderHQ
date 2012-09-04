@@ -43,46 +43,30 @@ class SkillsController extends Controller
                 }else{
                     $Attribute = $Exercise->Attribute;
                 }
-                if($Exercise->Attribute == 'Weight'){
-                    if($Exercise->LevelOneValue == '0.00'){
-                        $LevelOneValue = 'Body';
-                    }else{
-                        $LevelOneValue = $Exercise->LevelOneValue;
-                    }
-                    if($Exercise->LevelTwoValue == '0.00'){
-                        $LevelTwoValue = 'Body';
-                    }else{
-                        $LevelTwoValue = $Exercise->LevelTwoValue;
-                    }
-                    if($Exercise->LevelThreeValue == '0.00'){
-                        $LevelThreeValue = 'Body';
-                    }else{
-                        $LevelThreeValue = $Exercise->LevelThreeValue;
-                    }
-                    if($Exercise->LevelFourValue == '0.00'){
-                        $LevelFourValue = 'Body';
-                    }else{
-                        $LevelFourValue = $Exercise->LevelFourValue;
-                    }
+                if($Exercise->Attribute == 'Weight' && $Exercise->LevelOneValue == '0.00'){
+                    $html .= 'Body Weight';
+                }else if($Exercise->Attribute == 'Weight' && $Exercise->LevelTwoValue == '0.00'){
+                    $html .= 'Body Weight';
+                }else if($Exercise->Attribute == 'Weight' && $Exercise->LevelThreeValue == '0.00'){
+                    $html .= 'Body Weight';
+                }else if($Exercise->Attribute == 'Weight' && $Exercise->LevelFourValue == '0.00'){
+                    $html .= 'Body Weight';
                 }else{
-                    $LevelOneValue = $Exercise->LevelOneValue;
-                    $LevelTwoValue = $Exercise->LevelTwoValue;
-                    $LevelThreeValue = $Exercise->LevelThreeValue;
-                    $LevelFourValue = $Exercise->LevelFourValue;
+                    if($Exercise->LevelOneValue != null){
+                        $LevelOneHtml .= ''.$Attribute.':</div><div class="ui-block-c">'.$Exercise->LevelOneValue.'</div><div class="ui-block-a"></div><div class="ui-block-b">';
+                    }
+                    if($Exercise->LevelTwoValue != null){
+                        $LevelTwoHtml .= ''.$Attribute.':</div><div class="ui-block-c">'.$Exercise->LevelTwoValue.'</div><div class="ui-block-a"></div><div class="ui-block-b">';
+                    }
+                    if($Exercise->LevelThreeValue != null){
+                        $LevelThreeHtml .= ''.$Attribute.':</div><div class="ui-block-c">'.$Exercise->LevelThreeValue.'</div><div class="ui-block-a"></div><div class="ui-block-b">';	
+                    }
+                    if($Exercise->LevelFourValue != null){
+                        $LevelFourHtml .= ''.$Attribute.':</div><div class="ui-block-c">'.$Exercise->LevelFourValue.'</div><div class="ui-block-a"></div><div class="ui-block-b">';
+                    }
                 }
                 
-				if($LevelOneValue != null){
-					$LevelOneHtml .= ''.$Attribute.':</div><div class="ui-block-c">'.$LevelOneValue.'</div><div class="ui-block-a"></div><div class="ui-block-b">';
-				}
-				if($LevelTwoValue != null){
-					$LevelTwoHtml .= ''.$Attribute.':</div><div class="ui-block-c">'.$LevelTwoValue.'</div><div class="ui-block-a"></div><div class="ui-block-b">';
-				}
-				if($LevelThreeValue != null){
-					$LevelThreeHtml .= ''.$Attribute.':</div><div class="ui-block-c">'.$LevelThreeValue.'</div><div class="ui-block-a"></div><div class="ui-block-b">';	
-				}
-				if($LevelFourValue != null){
-					$LevelFourHtml .= ''.$Attribute.':</div><div class="ui-block-c">'.$LevelFourValue.'</div><div class="ui-block-a"></div><div class="ui-block-b">';
-				}	
+			
 		}
 		$html .= '<div class="ui-grid-b">'.$LevelOneHtml.'</div>'.$LevelTwoHtml.'</div>'.$LevelThreeHtml.'</div>'.$LevelFourHtml.'</div></div>';
 }

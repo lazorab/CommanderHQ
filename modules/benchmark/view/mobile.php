@@ -29,9 +29,9 @@ function getBenchmarks(catid)
     $.getJSON("ajax.php?module=benchmark",{catid:catid},display);
 }
 
-function getDetails(id)
+function getDetails(id,origin)
 {
-    $.getJSON("ajax.php?module=benchmark",{benchmarkId:id},display);
+    $.getJSON("ajax.php?module=benchmark",{benchmarkId:id, origin:origin},display);
     $.getJSON("ajax.php?module=benchmark",{video:id, benchmarkId:id},videodisplay);
     $.getJSON("ajax.php?module=benchmark",{topselection:id, benchmarkId:id},topselectiondisplay);
     $('#menuvideo').html('<img id="videoselect" alt="Video" <?php echo $RENDER->NewImage('video_specific.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>video_specific.png"/>');
@@ -78,10 +78,10 @@ function addRound()
 <?php }else if($_REQUEST['catid'] == '4'){ ?>
 	<li>Historic</li>		
 <?php } else { ?>
-    <li><a href="#" onclick="OpenThisPage('?module=benchmark&catid=1')">The Girls</a></li>
-    <li><a href="#" onclick="OpenThisPage('?module=benchmark&catid=2')">The Heros</a></li>
-    <li><a href="#" onclick="OpenThisPage('?module=benchmark&catid=3')">Travel</a></li>
-    <li><a href="#" onclick="OpenThisPage('?module=benchmark&catid=4')">Historic</a></li>
+    <li><a href="#" onclick="OpenThisPage('?module=benchmark&catid=1&origin=<?php echo $_REQUEST['origin'];?>')">The Girls</a></li>
+    <li><a href="#" onclick="OpenThisPage('?module=benchmark&catid=2&origin=<?php echo $_REQUEST['origin'];?>')">The Heros</a></li>
+    <li><a href="#" onclick="OpenThisPage('?module=benchmark&catid=3&origin=<?php echo $_REQUEST['origin'];?>')">Travel</a></li>
+    <li><a href="#" onclick="OpenThisPage('?module=benchmark&catid=4&origin=<?php echo $_REQUEST['origin'];?>')">Historic</a></li>
 <?php } ?>
 </ul>
 </div> 

@@ -1,6 +1,7 @@
 <?php
 class BenchmarkController extends Controller
 {
+        var $Origin;
 	var $Workout;
 	var $BMWS;
 	var $Categories;
@@ -16,6 +17,8 @@ class BenchmarkController extends Controller
             if(!isset($_SESSION['UID'])){
                 header('location: index.php?module=login');
             }
+            if(isset($_REQUEST['origin']))
+                $this->Origin = $_REQUEST['origin'];
 		$this->Height = floor(SCREENWIDTH * 0.717); 
 		$Model = new BenchmarkModel;
 		if(isset($_REQUEST['benchmarkId'])){
@@ -60,9 +63,10 @@ if(isset($_REQUEST['benchmarkId']))
 	//$html.= str_replace('{br}','<br/>',$this->Workout->Description);
 	//$html.='</div>';
 	$html.='<form name="form" id="benchmarkform" action="index.php">
-        <input type="hidden" name="benchmarkId" value="'.$_REQUEST['benchmarkId'].'"/>
-		<input type="hidden" name="wodtype" value="3"/>
-		<input type="hidden" name="action" value="save"/>';
+            <input type="hidden" name="origin" value="'.$this->Origin.'"/>
+            <input type="hidden" name="benchmarkId" value="'.$_REQUEST['benchmarkId'].'"/>
+            <input type="hidden" name="wodtype" value="3"/>
+            <input type="hidden" name="action" value="save"/>';
 	$clock = '';
 		$Bhtml = '';
 		$Chtml = '';
@@ -200,7 +204,7 @@ else if(isset($_REQUEST['catid']))
                 foreach($this->BMWS AS $Exercise){
 					$Description = str_replace('{br}',' | ',$Exercise->Description);
 					$html .= '<li>
-                        <a href="" onclick="getDetails('.$Exercise->Id.');">'.$Exercise->Name.':<br/><span style="font-size:small">'.$Description.'</span></a>
+                        <a href="" onclick="getDetails('.$Exercise->Id.', \''.$this->Origin.'\');">'.$Exercise->Name.':<br/><span style="font-size:small">'.$Description.'</span></a>
                     </li>';
                 }	
 				$html .= '</ul><br/>';

@@ -158,7 +158,7 @@ class BaselineController extends Controller
         $TimeToComplete = '00:00:0';
         if(isset($_REQUEST['TimeToComplete']))
             $TimeToComplete = $_REQUEST['TimeToComplete'];
-        $Html.='<input type="text" id="clock" name="TimeToComplete" value="'.$TimeToComplete.'"/>';
+        $Html.='<input type="text" id="clock" name="63___TimeToComplete" value="'.$TimeToComplete.'"/>';
 		$Html.='<input class="buttongroup" type="button" onclick="startstop();" value="Start/Stop"/>';
         $Html.='<input class="buttongroup" type="button" onclick="reset();" value="Reset"/>';
 		$Html.='<input class="buttongroup" type="button" onclick="baselinesubmit();" value="Save"/>';

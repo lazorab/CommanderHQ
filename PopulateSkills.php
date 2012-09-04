@@ -5,8 +5,10 @@ mysql_connect('localhost','bemobile','peTerpanHouse!2012');
 
 $Query = 'SELECT * FROM SkillsLevel ORDER BY ExerciseId DESC';
 $Result = mysql_query($Query);
+$i=0;
 while($Row = mysql_fetch_assoc($Result))
 {
+    $i++;
     if($Row['LevelOneId'] > 0){
     $NewQuery = 'SELECT * FROM SkillsLevel1 WHERE recid = "'.$Row['LevelOneId'].'"';
     $NewResult = mysql_query($NewQuery);
@@ -21,14 +23,16 @@ while($Row = mysql_fetch_assoc($Result))
         mysql_query($YetAnotherQuery);
     }
     if($NewRow['Distance'] != null || $NewRow['Distance'] != ''){
-        $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$Row['ExerciseTypeId'].',  11, "'.$NewRow['Distance'].'", "'.$Row['Gender'].'", 1)';
+        $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,LinkingId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$i.','.$Row['ExerciseTypeId'].',  11, "'.$NewRow['Distance'].'", "'.$Row['Gender'].'", 1)';
+        mysql_query($YetAnotherQuery);
+        $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,LinkingId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$i.','.$Row['ExerciseTypeId'].',  7, "'.$NewRow['TimeToComplete'].'", "'.$Row['Gender'].'", 1)';
         mysql_query($YetAnotherQuery);
     }
     if($NewRow['Reps'] != null || $NewRow['Reps'] != ''){
         $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$Row['ExerciseTypeId'].',  3, "'.$NewRow['Reps'].'", "'.$Row['Gender'].'", 1)';
         mysql_query($YetAnotherQuery);
     }
-    if($NewRow['TimeToComplete'] != null || $NewRow['TimeToComplete'] != ''){
+    if(($NewRow['TimeToComplete'] != null || $NewRow['TimeToComplete'] != '') && ($NewRow['Distance'] == '' || $NewRow['Distance'] == null)){
         $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$Row['ExerciseTypeId'].',  7, "'.$NewRow['TimeToComplete'].'", "'.$Row['Gender'].'", 1)';
         mysql_query($YetAnotherQuery);
     }
@@ -53,14 +57,16 @@ while($Row = mysql_fetch_assoc($Result))
         mysql_query($YetAnotherQuery);
     }
     if($NewRow['Distance'] != null || $NewRow['Distance'] != ''){
-        $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$Row['ExerciseTypeId'].',  11, "'.$NewRow['Distance'].'", "'.$Row['Gender'].'", 2)';
+        $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,LinkingId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$i.','.$Row['ExerciseTypeId'].',  11, "'.$NewRow['Distance'].'", "'.$Row['Gender'].'", 2)';
+        mysql_query($YetAnotherQuery);
+        $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,LinkingId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$i.','.$Row['ExerciseTypeId'].',  7, "'.$NewRow['TimeToComplete'].'", "'.$Row['Gender'].'", 2)';
         mysql_query($YetAnotherQuery);
     }
     if($NewRow['Reps'] != null || $NewRow['Reps'] != ''){
         $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$Row['ExerciseTypeId'].',  3, "'.$NewRow['Reps'].'", "'.$Row['Gender'].'", 2)';
         mysql_query($YetAnotherQuery);
     }
-    if($NewRow['TimeToComplete'] != null || $NewRow['TimeToComplete'] != ''){
+    if(($NewRow['TimeToComplete'] != null || $NewRow['TimeToComplete'] != '') && ($NewRow['Distance'] == '' || $NewRow['Distance'] == null)){
         $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$Row['ExerciseTypeId'].',  7, "'.$NewRow['TimeToComplete'].'", "'.$Row['Gender'].'", 2)';
         mysql_query($YetAnotherQuery);
     }
@@ -85,14 +91,16 @@ while($Row = mysql_fetch_assoc($Result))
         mysql_query($YetAnotherQuery);
     }
     if($NewRow['Distance'] != null || $NewRow['Distance'] != ''){
-        $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$Row['ExerciseTypeId'].',  11, "'.$NewRow['Distance'].'", "'.$Row['Gender'].'", 3)';
+        $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,LinkingId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$i.','.$Row['ExerciseTypeId'].',  11, "'.$NewRow['Distance'].'", "'.$Row['Gender'].'", 3)';
+        mysql_query($YetAnotherQuery);
+        $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,LinkingId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$i.','.$Row['ExerciseTypeId'].',  7, "'.$NewRow['TimeToComplete'].'", "'.$Row['Gender'].'", 3)';
         mysql_query($YetAnotherQuery);
     }
     if($NewRow['Reps'] != null || $NewRow['Reps'] != ''){
         $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$Row['ExerciseTypeId'].',  3, "'.$NewRow['Reps'].'", "'.$Row['Gender'].'", 3)';
         mysql_query($YetAnotherQuery);
     }
-    if($NewRow['TimeToComplete'] != null || $NewRow['TimeToComplete'] != ''){
+    if(($NewRow['TimeToComplete'] != null || $NewRow['TimeToComplete'] != '') && ($NewRow['Distance'] == '' || $NewRow['Distance'] == null)){
         $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$Row['ExerciseTypeId'].',  7, "'.$NewRow['TimeToComplete'].'", "'.$Row['Gender'].'", 3)';
         mysql_query($YetAnotherQuery);
     }
@@ -117,14 +125,16 @@ while($Row = mysql_fetch_assoc($Result))
         mysql_query($YetAnotherQuery);
     }
     if($NewRow['Distance'] != null || $NewRow['Distance'] != ''){
-        $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$Row['ExerciseTypeId'].',  11, "'.$NewRow['Distance'].'", "'.$Row['Gender'].'", 4)';
+        $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,LinkingId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$i.','.$Row['ExerciseTypeId'].',  11, "'.$NewRow['Distance'].'", "'.$Row['Gender'].'", 4)';
+        mysql_query($YetAnotherQuery);
+        $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,LinkingId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$i.','.$Row['ExerciseTypeId'].',  7, "'.$NewRow['TimeToComplete'].'", "'.$Row['Gender'].'", 4)';
         mysql_query($YetAnotherQuery);
     }
     if($NewRow['Reps'] != null || $NewRow['Reps'] != ''){
         $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$Row['ExerciseTypeId'].',  3, "'.$NewRow['Reps'].'", "'.$Row['Gender'].'", 4)';
         mysql_query($YetAnotherQuery);
     }
-    if($NewRow['TimeToComplete'] != null || $NewRow['TimeToComplete'] != ''){
+    if(($NewRow['TimeToComplete'] != null || $NewRow['TimeToComplete'] != '') && ($NewRow['Distance'] == '' || $NewRow['Distance'] == null)){
         $YetAnotherQuery = 'INSERT INTO SkillsLevels(ExerciseId,ExerciseTypeId,AttributeId,AttributeValue,Gender,SkillsLevel) VALUES('.$Row['ExerciseId'].','.$Row['ExerciseTypeId'].',  7, "'.$NewRow['TimeToComplete'].'", "'.$Row['Gender'].'", 4)';
         mysql_query($YetAnotherQuery);
     }

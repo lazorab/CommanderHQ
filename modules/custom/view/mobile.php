@@ -77,15 +77,11 @@ function addNewExercise(exercise)
                 html +='<div class="ui-block-a"></div><div class="ui-block-b">Round ' + this.RoundNo + '</div><div class="ui-block-c"></div>';
              
                 html +='<div class="ui-block-a" style="font-size:small">';
-
-                html += '<input onclick="RemoveFromList(' + i + ',0)" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
-                if(j == 0){
-                    html +='' + exercise + '';
-                }
-                else{
+                if(this.BenchmarkId == 0){
+                    html += '<input onclick="RemoveFromList(' + i + ',0)" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
                     html +='' + this.ActivityName + '';
+                    html +='"/>';
                 }
-                html +='"/>';
                 html +='' + this.ActivityName + '';
                 html += '<div class="clear"></div>';
                 html +='</div>';
@@ -114,14 +110,11 @@ function addNewExercise(exercise)
            
                 html +='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
                 html +='<div class="ui-block-a" style="font-size:small">';
-                html += '<input onclick="RemoveFromList(' + i + ',0)" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
-                if(j == 0){
-                    html +='' + exercise + '';
-                }
-                else{
+                if(this.BenchmarkId == 0){
+                    html += '<input onclick="RemoveFromList(' + i + ',0)" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
                     html +='' + this.ActivityName + '';
+                    html +='"/>';
                 }
-                html +='"/>';
                 html +='' + this.ActivityName + '';
                 html += '<div class="clear"></div>';
                 html +='</div>';

@@ -310,21 +310,22 @@ class SkillsModel extends Model
 	
 	function getExercise()
 	{
-            $Sql = 'SELECT DISTINCT S.ExerciseId, 
-E.Exercise, 
-SkillsLevel,
-A.Attribute,
-AttributeValue,
-"0" AS CurrentSkillsLevel
-FROM SkillsLevels S
-LEFT JOIN Attributes A ON A.recid = S.AttributeId
-LEFT JOIN Exercises E ON E.recid = S.ExerciseId
-WHERE E.Exercise = "'.$_REQUEST['exercise'].'"
-AND (
-S.Gender = "'.$this->Gender().'"
-OR S.Gender = "U"
-)
-ORDER BY Attribute, SkillsLevel';
+            $Sql = 'SELECT DISTINCT S.LinkingId,
+                S.ExerciseId, 
+                E.Exercise, 
+                S.SkillsLevel,
+                A.Attribute,
+                S.AttributeValue,
+                "0" AS CurrentSkillsLevel
+                FROM SkillsLevels S
+                LEFT JOIN Attributes A ON A.recid = S.AttributeId
+                LEFT JOIN Exercises E ON E.recid = S.ExerciseId
+                WHERE E.Exercise = "'.$_REQUEST['exercise'].'"
+                AND (
+                S.Gender = "'.$this->Gender().'"
+                OR S.Gender = "U"
+                )
+                ORDER BY S.LinkingId, Attribute, SkillsLevel';
             $Result = mysql_query($Sql);
             $Data = array();
             $NewArray = array();

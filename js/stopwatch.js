@@ -5,7 +5,10 @@ var stoptime = 0;
 var splitcounter = 0;
 var currenttime;
 var splitdate = "";
-var clock;
+var clock = document.getElementById("clock");
+var min = 0;
+var sec = 0;
+var ds = 0;
 
 function save()
 {
@@ -140,14 +143,12 @@ function start()
     var starttime = startdate.getTime();
 
     flagclock = 1;
+    flagstop = 0;
     counter(starttime);
 }
 
 function stop()
 {
-    var startdate = new Date();
-    var starttime = startdate.getTime();
-
     flagclock = 0;
     flagstop = 1;
     splitdate = "";
@@ -155,37 +156,37 @@ function stop()
 
 function counter(starttime)
 {
-clock = document.getElementById("clock");
-currenttime = new Date();
-var timediff = currenttime.getTime() - starttime;
-if(flagstop == 1)
-{
-timediff = timediff + stoptime
-}
-if(flagclock == 1)
-{
-clock.value = formattime(timediff,"");
-refresh = setTimeout("counter(" + starttime + ");",10);
-}
-else
-{
-window.clearTimeout(refresh);
-stoptime = timediff;
-}
+    clock = document.getElementById("clock");
+    currenttime = new Date();
+    var timediff = currenttime.getTime() - starttime;
+    if(flagstop == 1)
+    {
+        timediff = timediff + stoptime;
+    }
+    if(flagclock == 1)
+    {
+        clock.value = formattime(timediff,"");
+        refresh = setTimeout("counter(" + starttime + ");",10);
+    }
+    else
+    {
+        window.clearTimeout(refresh);
+        stoptime = timediff;
+    }
 }
 
 function formattime(rawtime,roundtype)
 {
 if(roundtype == "round")
 {
-var ds = Math.round(rawtime/100) + "";
+    ds = Math.round(rawtime/100) + "";
 }
 else
 {
-var ds = Math.floor(rawtime/100) + "";
+    ds = Math.floor(rawtime/100) + "";
 }
-var sec = Math.floor(rawtime/1000);
-var min = Math.floor(rawtime/60000);
+sec = Math.floor(rawtime/1000);
+min = Math.floor(rawtime/60000);
 ds = ds.charAt(ds.length - 1);
 if(min >= 60)
 {
@@ -214,16 +215,19 @@ return min + ":" + sec + ":" + ds;
 
 function reset()
 {
-   // flagstop = 0;
-   // stoptime = 0;
-   // splitdate = "";
-    //window.clearTimeout(refresh);
-   // splitcounter = 0;
-   // if(flagclock == 1)
-   // {
-   //     var resetdate = new Date();
-   //     var resettime = resetdate.getTime();
-   //     counter(resettime);
-   // }
-    clock.value = "00:00:0";
+    flagstop = 0;
+    stoptime = 0;
+    splitdate = "";
+    window.clearTimeout(refresh);
+    splitcounter = 0;
+    if(flagclock == 1)
+    {
+        var resetdate = new Date();
+        var resettime = resetdate.getTime();
+        counter(resettime);
+    }
+    else
+    {
+        clock.value = "00:00:0";
+    }
 }
