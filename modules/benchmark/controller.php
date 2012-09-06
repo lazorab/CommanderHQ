@@ -43,13 +43,13 @@ class BenchmarkController extends Controller
 	
 	function Output()
 	{
-            $html = '';
+            $html = '<div id="message">';
+            $Model = new BenchmarkModel;
             if($_REQUEST['action'] == 'save'){
-                $Model = new BenchmarkModel;
-		$html .= '<div id="message">'.$Model->Log().'</div>';
-                }
-	//$RENDER = new Image(SITE_ID);
-		$html .= '<br/>';
+		$html .= $Model->Log();
+            }
+            //$RENDER = new Image(SITE_ID);
+            $html .= '</div><br/>';
 
 if(isset($_REQUEST['benchmarkId']))
 {
@@ -121,29 +121,39 @@ if(isset($_REQUEST['benchmarkId']))
 				}
 			}	
 
-			
+		
             if($Benchmark->Attribute == 'Height' || $Benchmark->Attribute == 'Distance' || $Benchmark->Attribute == 'Weight'){
+                            $AttributeValue = '';	
 				if($Benchmark->Attribute == 'Distance'){
-					if($_SESSION['measurement'] == 'imperial')
-						$Unit = 'yards';
-					else
-						$Unit = 'metres';
+					if($Model->SystemOfMeasure() != 'Metric'){
+						$Unit = 'm';
+                                                $AttributeValue = round($Benchmark->AttributeValue * 0.62, 2);
+                                        }else{
+						$Unit = 'km';
+                                                $AttributeValue = $Benchmark->AttributeValue;
+                                        }
 				}		
 				else if($Benchmark->Attribute == 'Weight'){
-					if($_SESSION['measurement'] == 'imperial')
+					if($Model->SystemOfMeasure() != 'Metric'){
+                                            $AttributeValue = round($Benchmark->AttributeValue * 2.20, 2);
 						$Unit = 'lbs';
-					else
+                                        }else{
 						$Unit = 'kg';
+                                                $AttributeValue = $Benchmark->AttributeValue;
+                                        }
 				}
 				else if($Benchmark->Attribute == 'Height'){
-					if($_SESSION['measurement'] == 'imperial')
+					if($Model->SystemOfMeasure() != 'Metric'){
+                                            $AttributeValue = round($Benchmark->AttributeValue * 0.39, 2);
 						$Unit = 'inches';
-					else
+                                        }else{
 						$Unit = 'cm';
+                                                $AttributeValue = $Benchmark->AttributeValue;
+                                        }
 				}
-                                
+
 				$Bhtml.='<div class="ui-block-b">';
-				$Bhtml.='<input class="textinput" size="6" type="number" data-inline="true" name="'.$Benchmark->RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" value="'.$Benchmark->AttributeValue.'"/> '.$Unit.'';
+				$Bhtml.='<input class="textinput" size="6" type="number" data-inline="true" name="'.$Benchmark->RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" value="'.$AttributeValue.'"/> '.$Unit.'';
 				$Bhtml.='</div>';		
 				if($Chtml != ''){
 					$html.=''.$Bhtml.''.$Chtml.'';
@@ -151,6 +161,7 @@ if(isset($_REQUEST['benchmarkId']))
 					$Bhtml = '';
 				}
 			}
+                        
             else if($Benchmark->Attribute == 'Calories' || $Benchmark->Attribute == 'Reps' || $Benchmark->Attribute == 'Rounds'){
                                 $Placeholder = '';
                                 if($Benchmark->Attribute == 'Calories'){
@@ -278,12 +289,18 @@ return $html;
     {
 	$RoundNo = 0;
         $TimeToComplete = '00:00:0';
-        if(isset($_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete']))
+        $StartStopButton = 'Start';
+        if(isset($_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'])){
             $TimeToComplete = $_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'];
-	$Html.='<input type="text" id="clock" name="'.$RoundNo.'___'.$ExerciseId.'___TimeToComplete" value="'.$TimeToComplete.'"/>';
-	$Html.='<input class="buttongroup" type="button" onclick="startstop();" value="Start/Stop"/>';
-	$Html.='<input class="buttongroup" type="button" onclick="reset();" value="Reset"/>';
+            if($TimeToComplete != '00:00:0')
+                $StartStopButton = 'Stop';
+        }
+	$Html.='<input type="text" id="clock" name="'.$RoundNo.'___'.$ExerciseId.'___TimeToComplete" value="'.$TimeToComplete.'" readonly/>';
+	$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="'.$StartStopButton.'"/>';
+        //$Html.='<input id="splitbutton" class="buttongroup" type="button" value="Split time" onClick="splittime();"/>';
+	$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
 	$Html.='<input class="buttongroup" type="button" onclick="benchmarksubmit();" value="Save"/>';
+        //$Html.='<textarea id="output"></textarea>';
         
         return $Html;
     }

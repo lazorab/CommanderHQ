@@ -156,12 +156,16 @@ class BaselineController extends Controller
             $Html.=$this->getMemberBaselineActivities();
         }
         $TimeToComplete = '00:00:0';
-        if(isset($_REQUEST['TimeToComplete']))
+        $StartStopButton = 'Start';
+        if(isset($_REQUEST['TimeToComplete'])){
             $TimeToComplete = $_REQUEST['TimeToComplete'];
+            if($TimeToComplete != '00:00:0')
+                $StartStopButton = 'Stop';            
+        }
         $Html.='<input type="text" id="clock" name="63___TimeToComplete" value="'.$TimeToComplete.'"/>';
-		$Html.='<input class="buttongroup" type="button" onclick="startstop();" value="Start/Stop"/>';
-        $Html.='<input class="buttongroup" type="button" onclick="reset();" value="Reset"/>';
-		$Html.='<input class="buttongroup" type="button" onclick="baselinesubmit();" value="Save"/>';
+	$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="'.$StartStopButton.'"/>';
+	$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
+	$Html.='<input class="buttongroup" type="button" onclick="baselinesubmit();" value="Save"/>';
         $Html.='</form><br/><br/>';
 		/*
         $Html.='<div style="margin:0 30% 0 30%; width:50%">

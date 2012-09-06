@@ -167,23 +167,8 @@ class CustomController extends Controller
     
     function getStopWatch()
     {
-        //$RENDER = new Image();
-        //$Start = $RENDER->NewImage('start.png', $this->Device->GetScreenWidth());
-        //$Stop = $RENDER->NewImage('stop.png', $this->Device->GetScreenWidth());
-        //$Reset = $RENDER->NewImage('report.png', $this->Device->GetScreenWidth());
-        //$Save = $RENDER->NewImage('save.png', $this->Device->GetScreenWidth());
-       // $Html.='<input type="text" id="clock" name="TimeToComplete" value="00:00:0"/>';
-
-        $Html.='<input class="buttongroup" type="button" onclick="startstop()" value="Start/Stop"/>';
-
-        $Html.='<input class="buttongroup" type="button" onclick="reset()" value="Reset"/>';
-
-       // $Html.='<div style="margin:0 30% 0 30%; width:50%">';
-        //$Html.='<img alt="Start" '.$Start.' src="'.ImagePath.'start.png" onclick="startstop();"/>&nbsp;&nbsp;';
-        //$Html.='<img alt="Stop" '.$Stop.' src="'.ImagePath.'stop.png" onclick="stop()"/><br/><br/>';
-        //$Html.='<img alt="Reset" '.$Reset.' src="'.ImagePath.'reset.png" onclick="reset()"/>&nbsp;&nbsp;';
-        //$Html.='<img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="savecustom();"/>';
-		//$Html.='</div>';
+	$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="Start"/>';
+	$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
         
         return $Html;
     }

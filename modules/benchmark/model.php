@@ -35,6 +35,14 @@ class BenchmarkModel extends Model
             $Row = mysql_fetch_assoc($Result);
             return $Row['Gender'];
         }
+        
+        function SystemOfMeasure()
+        {
+            $SQL = 'SELECT SystemOfMeasure FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
+            $Result = mysql_query($SQL);	
+            $Row = mysql_fetch_assoc($Result);
+            return $Row['SystemOfMeasure'];
+        }
 	
 	function getCategories()
 	{
@@ -151,15 +159,38 @@ class BenchmarkModel extends Model
                 //var_dump($ActivityFields);
                 foreach($ActivityFields AS $ActivityField)
                 {
+                    $AttributeValue = '';
+                    //check to see if we must convert back to metric first for data storage
+                         if($ActivityField->Attribute == 'Height' || $ActivityField->Attribute == 'Distance' || $ActivityField->Attribute == 'Weight'){
+                            
+				if($ActivityField->Attribute == 'Distance'){
+					if($this->SystemOfMeasure() != 'Metric'){
+                                            $AttributeValue = round($ActivityField->AttributeValue * 1.61, 2);
+                                        }
+				}		
+				else if($ActivityField->Attribute == 'Weight'){
+					if($this->SystemOfMeasure() != 'Metric'){
+                                            $AttributeValue = round($ActivityField->AttributeValue * 0.45, 2);
+                                        }
+				}
+				else if($ActivityField->Attribute == 'Height'){
+					if($this->SystemOfMeasure() != 'Metric'){
+                                            $AttributeValue = round($ActivityField->AttributeValue * 2.54, 2);
+                                        }
+                                }
+			}   
+                    if($AttributeValue == ''){
+                        $AttributeValue = $ActivityField->AttributeValue;
+                    }
                     if($_REQUEST['origin'] == 'baseline'){
                         $SQL = 'INSERT INTO BaselineLog(MemberId, ExerciseTypeId, ExerciseId, RoundNo, ActivityId, AttributeId, AttributeValue) 
-				VALUES("'.$_SESSION['UID'].'", "'.$ExerciseTypeId.'", "'.$_REQUEST['benchmarkId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->Id.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
+				VALUES("'.$_SESSION['UID'].'", "'.$ExerciseTypeId.'", "'.$_REQUEST['benchmarkId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->Id.'", "'.$ActivityField->Attribute.'", "'.$AttributeValue.'")';
 			mysql_query($SQL);
                         //$this->Message = $SQL;
                     }
                     // ExerciseId only applies for benchmarks so we need it here!
                     $SQL = 'INSERT INTO WODLog(MemberId, ExerciseId, WodTypeId, RoundNo, ActivityId, AttributeId, AttributeValue, LevelAchieved) 
-			VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$ExerciseTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->Id.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'", "'.$this->LevelAchieved($ActivityField).'")';
+			VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$ExerciseTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->Id.'", "'.$ActivityField->Attribute.'", "'.$AttributeValue.'", "'.$this->LevelAchieved($ActivityField).'")';
                     mysql_query($SQL);
                     $this->Message = '<span style="color:green">Successfully Saved!</span>';
 		}
