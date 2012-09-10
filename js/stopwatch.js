@@ -25,24 +25,47 @@ function countclicks()
 	$('.ui-li-count').html(rounds + 1);
 }
 
+	function startstopcountdown()
+		{
+                    var startstop = document.getElementById('startstopbutton');
+                
+		if(flagclock==0)
+			{
+			startstop.value = 'Stop';
+			flagclock = 1;
+			startcountdown();
+			}
+		else
+			{
+			startstop.value = 'Start';
+			flagclock = 0;
+			flagstop = 1;
+			stopcountdown();
+			}
+                    $('.buttongroup').button();
+                    $('.buttongroup').button('refresh');
+		}
+
 function stopcountdown()
 {
-	javascript_countdown.stop();
+    javascript_countdown.stop();
 }
 
-function resetcountdown(val)
+function resetcountdown()
 {
-	document.getElementById("clock").value = val;
+    var val = document.getElementById("CountDown").value;
+    document.getElementById("clock").value = val;
 }
 
-function startcountdown(val)
+function startcountdown()
 {
-	var time = val.split(":");
-	var minutes=parseInt(time[0]);
-	var seconds=parseInt(time[1]);
-	var splitseconds=parseInt(time[2]);
-	var totalsplitseconds = (minutes*600) + (seconds*10) + splitseconds;
-	javascript_countdown.init(totalsplitseconds, 'javascript_countdown_time');
+    var val = document.getElementById("clock").value;
+    var time = val.split(":");
+    var minutes=parseInt(time[0]);
+    var seconds=parseInt(time[1]);
+    var splitseconds=parseInt(time[2]);
+    var totalsplitseconds = (minutes*600) + (seconds*10) + splitseconds;
+    javascript_countdown.init(totalsplitseconds, 'javascript_countdown_time');
 }
 
 var javascript_countdown = function () {
@@ -90,7 +113,7 @@ var javascript_countdown = function () {
  
 	function no_time_left() {
 		document.getElementById("clock").value = no_time_left_message;
-		document.clockform.submit();
+		//document.clockform.submit();
 	}
  
 	return {
@@ -147,8 +170,8 @@ var javascript_countdown = function () {
 			flagstop = 1;
 			splitdate = '';
 			}
-                            $('.buttongroup').button();
-    $('.buttongroup').button('refresh');
+                    $('.buttongroup').button();
+                    $('.buttongroup').button('refresh');
 		}
 		
 	function counter(starttime)

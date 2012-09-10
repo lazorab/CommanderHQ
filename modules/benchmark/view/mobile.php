@@ -62,7 +62,8 @@ function display(data)
 
 function addRound()
 {
-    document.getElementById('addround').value++; 
+    //var rounds = document.getElementById('addround').value; 
+    $.getJSON('ajax.php?module=benchmark', $("#benchmarkform").serialize(),display);
 }
 </script>
 <br/>

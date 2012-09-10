@@ -53,15 +53,7 @@ class BenchmarkController extends Controller
 
 if(isset($_REQUEST['benchmarkId']))
 {
-	//var_dump($this->Workout);
-    //$Start = $RENDER->NewImage('start.png', $this->Device->GetScreenWidth());
-    //$Stop = $RENDER->NewImage('stop.png', $this->Device->GetScreenWidth());
-    //$Reset = $RENDER->NewImage('report.png', $this->Device->GetScreenWidth());
-    //$Save = $RENDER->NewImage('save.png', $this->Device->GetScreenWidth());
-      
-	//$html.='<div id="bmdescription">';
-	//$html.= str_replace('{br}','<br/>',$this->Workout->Description);
-	//$html.='</div>';
+
 	$html.='<form name="form" id="benchmarkform" action="index.php">
             <input type="hidden" name="origin" value="'.$this->Origin.'"/>
             <input type="hidden" name="benchmarkId" value="'.$_REQUEST['benchmarkId'].'"/>
@@ -78,7 +70,7 @@ if(isset($_REQUEST['benchmarkId']))
 			$clock = $this->getStopWatch($Benchmark->ExerciseId);
 		}
 		else if($Benchmark->Attribute == 'CountDown'){
-			$clock = $this->getCountDown($Benchmark->AttributeValue);
+			$clock = $this->getCountDown($Benchmark->ExerciseId,$Benchmark->AttributeValue);
 		}
 		else{
 			
@@ -100,6 +92,11 @@ if(isset($_REQUEST['benchmarkId']))
 				$html.='<div class="ui-block-a" style="font-size:small">'.$Benchmark->Exercise.'</div>';
 			}
 			else if($ThisExercise != $Benchmark->Exercise){
+                            
+                                if(isset($_REQUEST['Rounds']))
+                                    $RoundNo = $_REQUEST['Rounds'];
+                                else
+                                    $RoundNo = $Benchmark->RoundNo;
 
 				if($Chtml != '' && $Bhtml == ''){
 					$html.='<div class="ui-block-b"></div>'.$Chtml.'';
@@ -153,7 +150,7 @@ if(isset($_REQUEST['benchmarkId']))
 				}
 
 				$Bhtml.='<div class="ui-block-b">';
-				$Bhtml.='<input class="textinput" size="6" type="number" data-inline="true" name="'.$Benchmark->RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" value="'.$AttributeValue.'"/> '.$Unit.'';
+				$Bhtml.='<input class="textinput" size="6" type="number" data-inline="true" name="'.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" value="'.$AttributeValue.'"/> '.$Unit.'';
 				$Bhtml.='</div>';		
 				if($Chtml != ''){
 					$html.=''.$Bhtml.''.$Chtml.'';
@@ -168,11 +165,15 @@ if(isset($_REQUEST['benchmarkId']))
                                     $Placeholder = 'placeholder="Calories"';
                                 }
                                 $InputAttributes = 'class="textinput" type="number" size="6"';
+                                $InputName = ''.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'';
+                                $Value = $Benchmark->AttributeValue;
                                 if($Benchmark->Attribute == 'Rounds'){
                                     $InputAttributes .= ' id="addround"';
+                                    $InputName = 'Rounds';
+                                    $Value = $_REQUEST['Rounds'] + 1;
                                 }
 				$Chtml.='<div class="ui-block-c">';
-				$Chtml.='<input '.$InputAttributes.' name="'.$Benchmark->RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" '.$Placeholder.' value="'.$Benchmark->AttributeValue.'"/>';
+				$Chtml.='<input '.$InputAttributes.' name="'.$InputName.'" '.$Placeholder.' value="'.$Value.'"/>';
 				$Chtml.='</div>';
 				if($Bhtml != ''){
 					$html.=''.$Bhtml.''.$Chtml.'';
@@ -196,14 +197,7 @@ if(isset($_REQUEST['benchmarkId']))
 					$Bhtml = '';
 				}	
     $html.='</div>'.$clock.'</form><br/><br/>';		
-/*	
-    $html.='<div style="margin:0 30% 0 30%; width:50%">
-        <img alt="Start" '.$Start.' src="'.ImagePath.'start.png" onclick="start()"/>&nbsp;&nbsp;
-        <img alt="Stop" '.$Stop.' src="'.ImagePath.'stop.png" onclick="stop()"/><br/><br/>
-        <img alt="Reset" '.$Reset.' src="'.ImagePath.'reset.png" onclick="reset()"/>&nbsp;&nbsp;
-        <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="save()"/>
-        </div>';
-*/
+
 }
 else if(isset($_REQUEST['catid']))
 {
@@ -220,48 +214,9 @@ else if(isset($_REQUEST['catid']))
                 }	
 				$html .= '</ul><br/>';
 	}
-/*
-	$ImageSize = $RENDER->NewImage('BM_Select.png', $this->Device->GetScreenWidth());
-    $explode = explode('"',$ImageSize);
-    $height = $explode[1];
-	foreach($this->BMWS AS $BMW){ 
 
-		$html.='<div class="benchmark" style="height:'.$height.'px;">
-		<div style="width:70%;margin:4% 0 0 4%;float:left;font-size:large;background-color:#fff;">';
-		//<a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'"">
-		$html.=''.$BMW->Name.'';
-		//</a>
-		$html.='</div>
-		<div style="width:15%;margin:0 0.5% 1% 0;background-color:#fff;float:right">';
-		//<a href="index.php?module=benchmark&id='.$BMW->Id.'&video='.$BMW->Video.'&banner='.$BMW->Banner.'"">
-		$html.='<img onclick="getDetails(\''.$BMW->Id.'\');" '.$ImageSize.' alt="'.$BMW->Name.'" src="'.ImagePath.'BM_Select.png"/>';
-		//</a>
-		$html.='</div>
-		</div>
-		<div class="clear"></div>';
-		
-		//$html.='<h3><a href="index.php?module=benchmark&id='.$BMW->Id.'&banner='.$BMW->Name.'">'.$BMW->Name.'</a></h3>';
-	}
-	$html.='<br/>';
-*/
 }
-/*
-else
-{
 
-	$html.=$this->BenchmarkSelection();
-
-	foreach($this->Categories AS $Category){ 
-		$ImageSize = $RENDER->NewImage(''.$Category->Image.'.png', $this->Device->GetScreenWidth());
-		$html.='<div>';
-		//$test='<a href="index.php?module=benchmark&catid='.$Category->Id.'&banner='.$Category->Banner.'">';
-		$html.='<img onclick="getBenchmarks(\''.$Category->Id.'\');" '.$ImageSize.' style="margin:2% 5% 3% 5%" alt="'.$Category->Name.'" src="'.ImagePath.''.$Category->Image.'.png"/>';
-		//$test='</a>';
-		$html.='</div>';	
-		//$html.='<h3><a href="index.php?module=benchmark&catid='.$Category->Id.'&banner='.$Category->Name.'">'.$Category->Name.'</a></h3>';
-	}
-}	
-*/
 return $html;
 	}
 	
@@ -295,7 +250,7 @@ return $html;
             if($TimeToComplete != '00:00:0')
                 $StartStopButton = 'Stop';
         }
-	$Html.='<input type="text" id="clock" name="'.$RoundNo.'___'.$ExerciseId.'___TimeToComplete" value="'.$TimeToComplete.'" readonly/>';
+	$Html ='<input type="text" id="clock" name="'.$RoundNo.'___'.$ExerciseId.'___TimeToComplete" value="'.$TimeToComplete.'" readonly/>';
 	$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="'.$StartStopButton.'"/>';
         //$Html.='<input id="splitbutton" class="buttongroup" type="button" value="Split time" onClick="splittime();"/>';
 	$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
@@ -305,11 +260,21 @@ return $html;
         return $Html;
     }
 	
-    function getCountDown($Time)
+    function getCountDown($ExerciseId,$Time)
     {
-        $Html='<input type="hidden" name="CountDown" value="'.$Time.'"/>';
-		$Html.='<input class="buttongroup" type="button" onclick="startstop()" value="Start/Stop"/>';
-		$Html.='<input class="buttongroup" type="button" onclick="reset()" value="Reset"/>';
+	$RoundNo = 0;
+        $TimeToComplete = $Time;
+        $StartStopButton = 'Start';
+        if(isset($_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'])){
+            $TimeToComplete = $_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'];
+            if($TimeToComplete != $Time)
+                $StartStopButton = 'Stop';
+        }
+	$Html ='<input type="hidden" name="'.$RoundNo.'___'.$ExerciseId.'___CountDown" id="CountDown" value="'.$Time.'"/>';
+        $Html.='<input id="clock" name="timer" value="'.$TimeToComplete.'"/>';
+        $Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstopcountdown();" value="'.$StartStopButton.'"/>';
+        $Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetcountdown();" value="Reset"/>';
+        $Html.='<input class="buttongroup" type="button" onClick="benchmarksubmit();" value="Save"/>';
 		
         return $Html;
     }	

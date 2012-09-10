@@ -221,7 +221,10 @@ class BenchmarkModel extends Model
             $ExplodedKey = explode('___', $key);
             if(sizeof($ExplodedKey) > 1)
             {
-                $RoundNo = $ExplodedKey[0];
+                if(isset($_REQUEST['Rounds']))
+                    $RoundNo = $_REQUEST['Rounds'];
+                else
+                    $RoundNo = $ExplodedKey[0];
                 $ExerciseId = $ExplodedKey[1];
                 $Attribute = $ExplodedKey[2];
                 if($val == '00:00:0' || $val == '' || $val == '0' || $val == $Attribute){
