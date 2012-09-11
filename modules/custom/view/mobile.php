@@ -45,13 +45,13 @@ function addNewExercise(exercise)
 		   html += '<div class="benchmark_' + this.BenchmarkId + '"><input onclick="RemoveFromList(' + attributecount + ',' + this.BenchmarkId + ')" type="checkbox" name="exercise_' + i + '" checked="checked" value="' + exercise + '"/>';
 		   html +='' + exercise + '</div>';
         }
-        if(this.Attribute == 'TimeToComplete'){
-			$('#clock_input').html('<input type="text" id="clock" name="0___' + this.recid + '___' + this.Attribute + '" value="00:00:0"/><?php echo $Display->getStopWatch();?>');
-        }
-        else if(this.Attribute == 'CountDown'){
-           $('#clock_input').html('<input type="time" id="input_' + i + '" size="10" name="0___' + this.recid + '___' + this.Attribute + '" value="" placeholder="mm:ss"/>');
-        }
-        else{
+        //if(this.Attribute == 'TimeToComplete'){
+	//		$('#clock_input').html('<input type="text" id="clock" name="0___' + this.recid + '___' + this.Attribute + '" value="00:00:0"/><?php echo $Display->getStopWatch();?>');
+        //}
+       // else if(this.Attribute == 'CountDown'){
+        //   $('#clock_input').html('<input type="time" id="input_' + i + '" size="10" name="0___' + this.recid + '___' + this.Attribute + '" value="" placeholder="mm:ss"/>');
+        //}
+        //else{
            
            if(ThisRound != this.RoundNo){
            
@@ -155,7 +155,7 @@ function addNewExercise(exercise)
                     Chtml = '';
                 }
            }
-           }
+           //}
 
            j++;
           
@@ -209,6 +209,12 @@ function customsubmit()
 {
     $.getJSON('ajax.php?module=custom', $("#customform").serialize(),display);
     window.location.hash = '#message';
+}
+
+function addRound()
+{
+    document.getElementById('addround').value++; 
+    //$.getJSON('ajax.php?module=benchmark', $("#benchmarkform").serialize(),display);
 }
 </script>
 <br/>

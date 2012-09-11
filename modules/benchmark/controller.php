@@ -170,7 +170,7 @@ if(isset($_REQUEST['benchmarkId']))
                                 if($Benchmark->Attribute == 'Rounds'){
                                     $InputAttributes .= ' id="addround"';
                                     $InputName = 'Rounds';
-                                    $Value = $_REQUEST['Rounds'] + 1;
+                                    $Value = $_REQUEST['Rounds'] + 1 ;
                                 }
 				$Chtml.='<div class="ui-block-c">';
 				$Chtml.='<input '.$InputAttributes.' name="'.$InputName.'" '.$Placeholder.' value="'.$Value.'"/>';

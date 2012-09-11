@@ -4,8 +4,7 @@
         $('#slides').slides({
             preload: true,
             preloadImage: 'images/ajax-loader.gif',
-            pagination: false,
-            generatePagination: false,
+            generatePagination: true,
             slideSpeed: 500,
             effect: 'slide'
         });
@@ -35,7 +34,7 @@ function getWODReport(id)
       strXML += '</chart>';
       
         var chartObj = new FusionCharts( "includes/FusionCharts/Line.swf", 
-                    "ExerciseChartId", "250", "200", "0", "1" );
+                    "ExerciseChartId", "300", "200", "0", "1" );
 
         chartObj.setXMLData(strXML);
 
@@ -65,7 +64,7 @@ function getBenchmarkReport(id)
       strXML += '</chart>';
       
         var chartObj = new FusionCharts( "includes/FusionCharts/Line.swf", 
-                    "BenchmarkChartId", "250", "200", "0", "1" );
+                    "BenchmarkChartId", "300", "200", "0", "1" );
 
         chartObj.setXMLData(strXML);
 
@@ -100,7 +99,7 @@ var i = 1;//prevent double rendering problem
     if(i == 1){
         i++;
   	var myChart = new FusionCharts( "includes/FusionCharts/Line.swf", 
-                    "FirstChartId", "250", "280", "0", "1" );
+                    "FirstChartId", "300", "250", "0", "1" );
 
         myChart.setXMLData('<?php echo $Display->BaselineOutput();?>');
 
@@ -117,7 +116,7 @@ var i = 1;//prevent double rendering problem
                 <div id="BenchmarkDetails">FusionCharts will load here!</div>
             </div>
         </div>
-        <a href="#" class="prev"><img src="images/arrow-next.png" width="24" height="43" alt="Arrow Prev"></a>
-        <a href="#" class="next"><img src="images/arrow-prev.png" width="24" height="43" alt="Arrow Next"></a>
+        <a href="#" class="prev"><img src="images/arrow-next.png" width="26" height="16" alt="Arrow Prev"></a>
+        <a href="#" class="next"><img src="images/arrow-prev.png" width="26" height="16" alt="Arrow Next"></a>
     </div>
 </div>

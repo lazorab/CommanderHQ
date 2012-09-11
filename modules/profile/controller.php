@@ -67,9 +67,8 @@ class ProfileController extends Controller
             $Message = $this->Save();
         }
         if($Message != 'Success'){
+            $Html .= '<div id="message">' . $Message . '</div>';
 
-        $Html .= '<div id="message">'.$Message.'</div>';
-        
         $Id=0;
         if(isset($_SESSION['UID'])){
             $Id = $_SESSION['UID'];
@@ -83,10 +82,6 @@ class ProfileController extends Controller
             $MemberDetails = $Model->getMemberDetails($Id);
         $this->Height = $MemberDetails->Height;
         $this->Weight = $MemberDetails->Weight;
-        if($MemberDetails->DOB == '')
-           $DOB = '';
-        else
-            $DOB = date('j M Y',strtotime($MemberDetails->DOB));
 
         $WeightUnit = 'kg';
         $HeightUnit = 'cm';
@@ -106,12 +101,16 @@ class ProfileController extends Controller
 <input style="width:75%;" class="textinput" type="text" id="firstname" name="FirstName" value="'.$MemberDetails->FirstName.'"/>
 <label for="lastname">Last Name</label>
 <input style="width:75%;" class="textinput" type="text" id="lastname" name="LastName" value="'.$MemberDetails->LastName.'"/>
+<label for="username">User Name</label>
+<input style="width:75%;" class="textinput" type="text" id="username" name="UserName" value="'.$MemberDetails->UserName.'" readonly="readonly"/>
+<label for="password">Password</label>
+<input style="width:75%;" class="textinput" type="password" id="password" name="PassWord" value="'.$MemberDetails->PassWord.'"/>
 <label for="cell">Cell</label>
 <input style="width:75%;" class="textinput" type="tel" id="cell" name="Cell" value="'.$MemberDetails->Cell.'" placeholder="+2778000000"/>
 <label for="email">Email</label>
 <input style="width:75%;" class="textinput" type="email" id="email" name="Email" value="'.$MemberDetails->Email.'"/>
 <label for="DOB">Date of Birth</label>
-<input style="width:75%;" class="textinput" type="date" name="DOB" id="DOB" value="'.$DOB.'"/>
+<input style="width:75%;" class="textinput" type="date" name="DOB" id="DOB" value="'.$MemberDetails->DOB.'"/>
 <br/><br/>
 <fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
 <label for="male">Male</label>
@@ -149,6 +148,9 @@ $Html.='/>
 <input class="buttongroup" type="button" onclick="profilesubmit();" value="Save"/><br/><br/>
 </div>
 </form>';
+        }
+        else{
+            $Html = $Message;
         }
         return $Html;
     }

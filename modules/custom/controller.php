@@ -24,34 +24,67 @@ class CustomController extends Controller
     
     function MainOutput()
     {
-		$Html = '';
-		$Model = new CustomModel;
+	$Html = '';
+	$Model = new CustomModel;
 
-				$Exercises = $Model->getExercises();
-                $Html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
-                $Html .= '<li>Custom Exercise</li>';
-				$Html .= '</ul><br/>';		
-				$Html .= '<form action="index.php" id="customform" name="form">
-					<input type="hidden" name="action" value="save"/>
-					<input type="hidden" name="customexercise" value="new"/>
-					<input type="hidden" name="origin" value="'.$this->Origin.'"/>
-					<input type="hidden" name="rowcount" id="rowcounter" value="0"/>';
-					
-				$Html .= '<select class="select" name="exercise" id="exercise" onchange="addNewExercise(this.value);">
-					<option value="none">+ Activity</option>';
-									foreach($Exercises AS $Exercise){
-					$Html .= '<option id="'.$Exercise->recid.'" value="'.$Exercise->ActivityName.'">'.$Exercise->ActivityName.'</option>';
-				}
-				$Html .= '</select><br/>';
-					
-				$Html.='<div class="ui-grid-b">
-                                            <div id="new_exercise"></div>
-                                        </div>
-                                        <div id="clock_input"></div>
-                                        <div id="btnsubmit"></div>                                      
-                                        </form><br/>';	      
+        $WODTypes = $Model->getCustomTypes();
+	$Exercises = $Model->getExercises();
+        $Html .= '<form action="index.php" id="customform" name="form">';
+        $Html .= '<input type="hidden" name="module" value="custom"/>';
+        $Html .= '<select class="select" name="wodtype" id="wodtype" onchange="this.form.submit();">
+            <option value="none">Custom Type</option>';
+	foreach($WODTypes AS $WODType){
+            $Html .= '<option id="'.$WODType->recid.'" value="'.$WODType->ActivityType.'"';
+            if($WODType->ActivityType == $_REQUEST['wodtype'])
+                $Html .='selected="selected"';
+            $Html .= '>'.$WODType->ActivityType.'</option>';
+        }
+	$Html .= '</select></form><br/>';
+        if(isset($_REQUEST['wodtype'])){
+        $Html .= '<form action="index.php" id="customform" name="form">
+		<input type="hidden" name="action" value="save"/>
+		<input type="hidden" name="wodtype" value="new'.$_REQUEST['wodtype'].'"/>
+		<input type="hidden" name="origin" value="'.$this->Origin.'"/>
+		<input type="hidden" name="rowcount" id="rowcounter" value="0"/>';					
+	$Html .= '<select class="select" name="exercise" id="exercise" onchange="addNewExercise(this.value);">
+            <option value="none">+ Activity</option>';
+	foreach($Exercises AS $Exercise){
+            $Html .= '<option id="'.$Exercise->recid.'" value="'.$Exercise->ActivityName.'">'.$Exercise->ActivityName.'</option>';
+	}
+	$Html .= '</select><br/>';
+		$Html.='<div class="ui-grid-b">
+               <div id="new_exercise"></div>
+               </div>
+               <div id="clock_input"></div>';
+                
+  	if($_REQUEST['wodtype'] == 'Timed'){
+            $Html.= $this->getStopWatch();
+		$SubmitOption = false;	
+        }
+        else if($_REQUEST['wodtype'] == 'AMRAP'){
+            $Html.= $this->getCountDown($Detail);
+		$SubmitOption = false;
+        }
+        else if($_REQUEST['wodtype'] == 'EMOM'){
+            $Html.= $this->getCountDown('01:00:0');
+		$SubmitOption = false;
+        }  
+        else if($_REQUEST['wodtype'] == 'Total Reps'){
+            $Html .='<input type="number" name="Reps" value="" placeholder="Total Reps"/>';
+        }
+        else if($_REQUEST['wodtype'] == 'Total Rounds'){
+            $Html.='<div class="ui-grid-a">';
+            $Html .='<div class="ui-block-a"><input class="buttongroup" data-inline="true" type="button" onclick="addRound();" value="+ Round"/></div>';
+            $Html .='<div class="ui-block-b"><input id="addround" data-inline="true" type="number" name="Rounds" value="0"/></div>';
+            $Html.='</div>';
+        }
+        $Html.='<div id="btnsubmit"></div>
+
+                                                     
+               </form><br/>';
+        }
 		
-		return $Html;
+	return $Html;
     }
 	
 	function Output()
@@ -133,13 +166,18 @@ class CustomController extends Controller
 		<input type="hidden" name="origin" value="'.$this->Origin.'"/>';
 
 		foreach($Details AS $Detail){
- 		if($Detail->ActivityType == 'Timed'){
+ 		if($_REQUEST['wodtype'] == 'Timed'){
             $AddLast = $this->getStopWatch();
-			$SubmitOption = true;	
+		$SubmitOption = true;	
         }
-        if($Detail->ActivityType == 'AMRAP'){
+        if($_REQUEST['wodtype'] == 'AMRAP'){
             $AddLast = $this->getCountDown($Detail);
-			$SubmitOption = true;
+		$SubmitOption = true;
+        }
+        
+        if($_REQUEST['wodtype'] == 'EMOM'){
+            $AddLast = $this->getCountDown('01:00:0');
+		$SubmitOption = true;
         }
 		
         if($Detail->ActivityType == 'Weight'){
@@ -160,15 +198,27 @@ class CustomController extends Controller
 		}
 			$Html.= $AddLast;
 		if(!$SubmitOption)
-			$Html.='<input type="button" onclick="savecustom();" value="Save"/>';
+			$Html.='<input class="buttongroup" type="button" onclick="savecustom();" value="Save"/>';
 		$Html.='</form>';
         return $Html;
     }
     
-    function getStopWatch()
+	function getStopWatch()
     {
-	$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="Start"/>';
+	$RoundNo = 0;
+        $ExerciseId = 63;
+        $TimeToComplete = '00:00:0';
+        $StartStopButton = 'Start';
+        if(isset($_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'])){
+            $TimeToComplete = $_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'];
+            if($TimeToComplete != '00:00:0')
+                $StartStopButton = 'Stop';
+        }
+	$Html ='<input type="text" id="clock" name="'.$RoundNo.'___'.$ExerciseId.'___TimeToComplete" value="'.$TimeToComplete.'" readonly/>';
+	$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="'.$StartStopButton.'"/>';
+        //$Html.='<input id="splitbutton" class="buttongroup" type="button" value="Split time" onClick="splittime();"/>';
 	$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
+        
         
         return $Html;
     }
@@ -198,7 +248,7 @@ class CustomController extends Controller
         <input type="hidden" name="baseline" value="'.$_REQUEST['baseline'].'"/>
         <input type="hidden" name="exercise" value="'.$exerciseId.'"/>
         <input type="hidden" name="action" value="save"/>
-		<input type="number" name="Reps" value="" placeholder="Reps"/><br/><br/>
+		<input type="number" name="Reps" value="" placeholder="Total Reps"/><br/><br/>
         <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="document.form.submit();"/>
         </form>';
         
@@ -212,22 +262,21 @@ class CustomController extends Controller
         return $Html;       
     }
     
-    function getCountDown($Details)
+    function getCountDown($Time)
     {
-        $RENDER = new Image();
-        $Start = $RENDER->NewImage('start.png', SCREENWIDTH);
-        $Stop = $RENDER->NewImage('stop.png', SCREENWIDTH);
-        $Reset = $RENDER->NewImage('report.png', SCREENWIDTH);
-        $Save = $RENDER->NewImage('save.png', SCREENWIDTH);
-        $Html='
-		<input type="hidden" name="CountDown" value="'.$Details->AttributeValue.'"/>
-        <input id="clock" name="timer" value="'.$Details->AttributeValue.'"/>
-        <div style="margin:0 30% 0 30%; width:50%">
-        <img alt="Start" '.$Start.' src="'.ImagePath.'start.png" onclick="startcountdown(document.customform.timer.value)"/>&nbsp;&nbsp;
-        <img alt="Stop" '.$Stop.' src="'.ImagePath.'stop.png" onclick="stopcountdown()"/><br/><br/>
-        <img alt="Reset" '.$Reset.' src="'.ImagePath.'reset.png" onclick="resetcountdown(\''.$Details->AttributeValue.'\')"/>&nbsp;&nbsp;
-        <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="savecustom()"/>
-		</div><br/><br/>';
+	$RoundNo = 0;
+        $ExerciseId = 63;
+        $TimeToComplete = $Time;
+        $StartStopButton = 'Start';
+        if(isset($_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'])){
+            $TimeToComplete = $_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'];
+            if($TimeToComplete != $Time)
+                $StartStopButton = 'Stop';
+        }
+	$Html ='<input type="hidden" name="'.$RoundNo.'___'.$ExerciseId.'___CountDown" id="CountDown" value="'.$Time.'"/>';
+        $Html.='<input id="clock" name="timer" value="'.$TimeToComplete.'"/>';
+        $Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstopcountdown();" value="'.$StartStopButton.'"/>';
+        $Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetcountdown();" value="Reset"/>';
 		
         return $Html;
     }

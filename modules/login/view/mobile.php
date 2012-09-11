@@ -13,6 +13,7 @@
 <input type="hidden" name="action" value="Login"/>
 <input style="margin:0 5% 2% 5%;width:50%;" type="text" name="username" placeholder="Username" data-mini="true"/>
 <input style="margin:0 5% 10% 5%;width:50%;" type="password" name="password" placeholder="Password" data-mini="true"/>
+<a href="?module=forgot">forgot password?</a>
 <br/>
 
 Remember me

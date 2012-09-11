@@ -81,6 +81,7 @@ class BenchmarkModel extends Model
 		else{
 			$SQL .= 'WorkoutName LIKE "'.$Filter.'%"';
 		}
+                $SQL .= ' ORDER BY WorkoutName';
 		$Workouts = array();
 		$Result = mysql_query($SQL);	
 		while($Row = mysql_fetch_assoc($Result))

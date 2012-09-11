@@ -30,9 +30,9 @@ function profilesubmit()
 
 function display(data)
 {
-    if(data == 'Success')
+    if(data == 'Success'){}
         window.location = 'index.php?module=memberhome';
-    else{
+}else{
     $('#AjaxOutput').html(data);
     window.location.hash = '#message';
     $('#listview').listview();

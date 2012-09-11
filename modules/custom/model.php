@@ -132,7 +132,9 @@ class CustomModel extends Model
     function getCustomTypes()
     {
 		$CustomTypes = array();
-		$SQL = 'SELECT recid, CustomType as ActivityType FROM CustomTypes';
+		$SQL = 'SELECT recid, CustomType as ActivityType 
+                    FROM ActivityTypes 
+                    ORDER BY ActivityType';
 		$Result = mysql_query($SQL);	
 		while($Row = mysql_fetch_assoc($Result))
 		{
@@ -284,9 +286,11 @@ class CustomModel extends Model
 	function getExercises()
 	{
         $Exercises = array();
-        $SQL = 'SELECT recid, Exercise AS ActivityName 
-		FROM Exercises 
-		WHERE CustomOption > 0
+        $SQL = 'SELECT E.recid, E.Exercise AS ActivityName 
+		FROM Exercises E
+                LEFT JOIN ExerciseAttributes EA ON EA.ExerciseId = E.recid
+		WHERE E.CustomOption > 0
+                AND EA.Attribute = "'.$_REQUEST['wodtype'].'"
 		ORDER BY Exercise';
         $Result = mysql_query($SQL);
         while($Row = mysql_fetch_assoc($Result))
