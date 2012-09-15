@@ -5,7 +5,7 @@ $NavIconSize = floor(72*$ratio);
 
 <div id="nav" style="height:<?php echo floor(100*$ratio);?>px;">
 
-<?php if(isset($_REQUEST['wodtype']) || isset($_REQUEST['catid']) || isset($_REQUEST['baseline']) || isset($_REQUEST['report']) || isset($_REQUEST['customexercise'])){
+<?php if(isset($_REQUEST['wodtype']) || isset($_REQUEST['benchmarkId']) || isset($_REQUEST['baseline']) || isset($_REQUEST['report']) || isset($_REQUEST['customexercise'])){
 	if(isset($_REQUEST['customexercise']))
 		$BackModule = $_REQUEST['module']."&origin=".$_REQUEST['origin'];
 	else

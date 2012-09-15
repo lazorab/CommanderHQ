@@ -27,63 +27,36 @@ class CustomController extends Controller
 	$Html = '';
 	$Model = new CustomModel;
 
-        $WODTypes = $Model->getCustomTypes();
+        $WorkoutTypes = $Model->getWorkoutTypes();
 	$Exercises = $Model->getExercises();
-        $Html .= '<form action="index.php" id="customform" name="form">';
-        $Html .= '<input type="hidden" name="module" value="custom"/>';
-        $Html .= '<select class="select" name="wodtype" id="wodtype" onchange="this.form.submit();">
-            <option value="none">Custom Type</option>';
-	foreach($WODTypes AS $WODType){
-            $Html .= '<option id="'.$WODType->recid.'" value="'.$WODType->ActivityType.'"';
-            if($WODType->ActivityType == $_REQUEST['wodtype'])
-                $Html .='selected="selected"';
-            $Html .= '>'.$WODType->ActivityType.'</option>';
-        }
-	$Html .= '</select></form><br/>';
-        if(isset($_REQUEST['wodtype'])){
+
         $Html .= '<form action="index.php" id="customform" name="form">
-		<input type="hidden" name="action" value="save"/>
-		<input type="hidden" name="wodtype" value="new'.$_REQUEST['wodtype'].'"/>
-		<input type="hidden" name="origin" value="'.$this->Origin.'"/>
-		<input type="hidden" name="rowcount" id="rowcounter" value="0"/>';					
+                    <input type="hidden" name="action" value="save"/>
+                    <input type="hidden" name="origin" value="'.$this->Origin.'"/>
+                    <input type="hidden" name="rowcount" id="rowcounter" value="0"/>
+                    <input class="textinput" type="text" name="WorkoutName" value="" placeholder="Enter Workout Name"/>';
+        $Html .= '<select class="select" name="workouttype" id="workouttype" onchange="addTypeParams(this.value);">
+                    <option value="none">Workout Type</option>';
+        foreach($WorkoutTypes AS $WorkoutType){
+            $Html .= '<option id="'.$WorkoutType->recid.'" value="'.$WorkoutType->ActivityType.'"';
+            if($WorkoutType->ActivityType == $_REQUEST['workouttype'])
+                $Html .='selected="selected"';
+            $Html .= '>'.$WorkoutType->ActivityType.'</option>';
+        }
+	$Html .= '</select>';
 	$Html .= '<select class="select" name="exercise" id="exercise" onchange="addNewExercise(this.value);">
-            <option value="none">+ Activity</option>';
+                    <option value="none">+ Activity</option>';
 	foreach($Exercises AS $Exercise){
             $Html .= '<option id="'.$Exercise->recid.'" value="'.$Exercise->ActivityName.'">'.$Exercise->ActivityName.'</option>';
 	}
-	$Html .= '</select><br/>';
-		$Html.='<div class="ui-grid-b">
-               <div id="new_exercise"></div>
-               </div>
-               <div id="clock_input"></div>';
-                
-  	if($_REQUEST['wodtype'] == 'Timed'){
-            $Html.= $this->getStopWatch();
-		$SubmitOption = false;	
-        }
-        else if($_REQUEST['wodtype'] == 'AMRAP'){
-            $Html.= $this->getCountDown($Detail);
-		$SubmitOption = false;
-        }
-        else if($_REQUEST['wodtype'] == 'EMOM'){
-            $Html.= $this->getCountDown('01:00:0');
-		$SubmitOption = false;
-        }  
-        else if($_REQUEST['wodtype'] == 'Total Reps'){
-            $Html .='<input type="number" name="Reps" value="" placeholder="Total Reps"/>';
-        }
-        else if($_REQUEST['wodtype'] == 'Total Rounds'){
-            $Html.='<div class="ui-grid-a">';
-            $Html .='<div class="ui-block-a"><input class="buttongroup" data-inline="true" type="button" onclick="addRound();" value="+ Round"/></div>';
-            $Html .='<div class="ui-block-b"><input id="addround" data-inline="true" type="number" name="Rounds" value="0"/></div>';
-            $Html.='</div>';
-        }
-        $Html.='<div id="btnsubmit"></div>
-
-                                                     
-               </form><br/>';
-        }
-		
+	$Html .= '</select><br/>
+                  <div class="ui-grid-b">
+                  <div id="new_exercise"></div>
+                  </div>
+                  <div id="clock_input"></div>
+                  <div id="btnsubmit"></div>                         
+                  </form><br/>';
+     	
 	return $Html;
     }
 	
@@ -279,6 +252,12 @@ class CustomController extends Controller
         $Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetcountdown();" value="Reset"/>';
 		
         return $Html;
+    }
+    
+    function SystemOfMeasure()
+    {
+        $Model = new CustomModel;
+        return $Model->SystemOfMeasure();
     }
 }
 ?>

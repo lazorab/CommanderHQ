@@ -14,11 +14,19 @@ class CustomModel extends Model
             $ActivityFields = $this->getActivityFields();
             //var_dump($ActivityFields);
             if($this->Message == ''){
-                $ExerciseTypeId = $this->getExerciseTypeId();
+                $ExerciseTypeId = $this->getCustomTypeId();
                 //$Attributes=$this->getAttributes();
                 //var_dump($ActivityFields);
+            $SQL = 'INSERT INTO CustomWorkouts(MemberId, WorkoutName, WorkoutTypeId) 
+                VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['WorkoutName'].'", "'.$this->getWorkoutTypeId($_REQUEST['workouttype']).'")';
+            mysql_query($SQL);
+            $CustomId = mysql_insert_id();
+            
         foreach($ActivityFields AS $ActivityField)
         {
+            $SQL = 'INSERT INTO CustomDetails(CustomId, ExerciseId, AttributeId, AttributeValue, RoundNo) 
+            VALUES("'.$CustomId.'", "'.$ActivityField->recid.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->RoundNo.'")';
+            mysql_query($SQL);
             if($_REQUEST['origin'] == 'baseline'){
                 $SQL = 'INSERT INTO BaselineLog(MemberId, ExerciseTypeId, ExerciseId, RoundNo, ActivityId, AttributeId, AttributeValue) 
                 VALUES("'.$_SESSION['UID'].'", "'.$ExerciseTypeId.'", "'.$_REQUEST['benchmarkId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->recid.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
@@ -76,6 +84,7 @@ class CustomModel extends Model
                 if($val == '00:00:0' || $val == '' || $val == $key){
                     $this->Message .= '<span style="color:red">Invalid value for '.$key.'!</span><br/>';
                 }else{
+
                 $SQL = 'SELECT recid FROM Attributes WHERE Attribute = "'.$key.'"';
                 $Result = mysql_query($SQL);
                 $numrows = mysql_num_rows($Result);
@@ -83,7 +92,8 @@ class CustomModel extends Model
                     $Row = mysql_fetch_assoc($Result);
                     $Attribute = $Row['recid'];
                     array_push($Activities, new CustomObject(array('recid'=>'0','Attribute'=>''.$Attribute.'','AttributeValue'=>''.$val.'','RoundNo'=>''.$RoundNo.'')));
-                }
+                
+                    }
                 }
             }
         }
@@ -101,7 +111,7 @@ class CustomModel extends Model
             return false;
     }
     
-    function getExerciseTypeId()
+    function getCustomTypeId()
     {
         $SQL = 'SELECT recid FROM ExerciseTypes WHERE ExerciseType = "Custom"';
         $Result = mysql_query($SQL);        
@@ -129,11 +139,11 @@ class CustomModel extends Model
         }
 	}  
     
-    function getCustomTypes()
+    function getWorkoutTypes()
     {
 		$CustomTypes = array();
-		$SQL = 'SELECT recid, CustomType as ActivityType 
-                    FROM ActivityTypes 
+		$SQL = 'SELECT recid, WorkoutType as ActivityType 
+                    FROM WorkoutTypes 
                     ORDER BY ActivityType';
 		$Result = mysql_query($SQL);	
 		while($Row = mysql_fetch_assoc($Result))
@@ -223,9 +233,9 @@ class CustomModel extends Model
 		return $CustomId;
     }
 	
-	function getCustomTypeId($type)
+	function getWorkoutTypeId($type)
 	{
-		$Query = 'SELECT recid FROM CustomTypes WHERE CustomType = "'.$type.'"';
+		$Query = 'SELECT recid FROM WorkoutTypes WHERE WorkoutType = "'.$type.'"';
 		$Result = mysql_query($Query);
 		$Row = mysql_fetch_assoc($Result);
 		return $Row['recid'];
@@ -247,6 +257,14 @@ class CustomModel extends Model
         
 		return $Row['Gender'];
 	}
+        
+        function SystemOfMeasure()
+        {
+            $SQL = 'SELECT SystemOfMeasure FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
+            $Result = mysql_query($SQL);	
+            $Row = mysql_fetch_assoc($Result);
+            return $Row['SystemOfMeasure'];
+        }
     
     function getAttributeOptions()
     {
@@ -286,11 +304,10 @@ class CustomModel extends Model
 	function getExercises()
 	{
         $Exercises = array();
-        $SQL = 'SELECT E.recid, E.Exercise AS ActivityName 
+        $SQL = 'SELECT DISTINCT E.recid, E.Exercise AS ActivityName 
 		FROM Exercises E
                 LEFT JOIN ExerciseAttributes EA ON EA.ExerciseId = E.recid
 		WHERE E.CustomOption > 0
-                AND EA.Attribute = "'.$_REQUEST['wodtype'].'"
 		ORDER BY Exercise';
         $Result = mysql_query($SQL);
         while($Row = mysql_fetch_assoc($Result))
@@ -330,10 +347,8 @@ class CustomModel extends Model
         WHERE MB.MemberId = "'.$_SESSION['UID'].'"';
 
         }else{
-        $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
- 		$Result = mysql_query($SQL);	
-		$Row = mysql_fetch_assoc($Result);
-        if($Row['Gender'] == 'M'){
+
+        if($this->Gender() == 'M'){
             $AttributeValue = 'AttributeValueMale';
 			$InputFields = 'MaleInput';
         } else {
@@ -382,7 +397,7 @@ class CustomObject
 		$this->ActivityName = isset($Row['ActivityName']) ? $Row['ActivityName'] : "";
 		$this->ActivityType = isset($Row['ActivityType']) ? $Row['ActivityType'] : "";
 		$this->Attribute = isset($Row['Attribute']) ? $Row['Attribute'] : "";
-		$this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : $Row['Attribute'];
+		$this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : "";
 		$this->RoundNo = isset($Row['RoundNo']) ? $Row['RoundNo'] : "1";
 	}
 }

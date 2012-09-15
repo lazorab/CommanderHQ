@@ -24,7 +24,11 @@ class BenchmarkController extends Controller
 		if(isset($_REQUEST['benchmarkId'])){
                     $this->Workout = $Model->getWorkoutDetails($_REQUEST['benchmarkId']);
                     $this->Video = $this->Workout[0]->Video;
-                    $this->Exercise = $this->Workout[0]->Name;
+                    $this->Exercise = $this->Workout[0];
+                }
+                else if(isset($_REQUEST['customId'])){
+                    $this->Workout = $Model->getCustomDetails($_REQUEST['customId']);
+                    $this->Exercise = $this->Workout[0];
                 }
 		$this->Categories = $Model->getCategories();
 		if(isset($_REQUEST['catid'])){
@@ -51,12 +55,13 @@ class BenchmarkController extends Controller
             //$RENDER = new Image(SITE_ID);
             $html .= '</div><br/>';
 
-if(isset($_REQUEST['benchmarkId']))
+if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
 {
 
 	$html.='<form name="form" id="benchmarkform" action="index.php">
             <input type="hidden" name="origin" value="'.$this->Origin.'"/>
             <input type="hidden" name="benchmarkId" value="'.$_REQUEST['benchmarkId'].'"/>
+            <input type="hidden" name="customId" value="'.$_REQUEST['customId'].'"/>
             <input type="hidden" name="wodtype" value="3"/>
             <input type="hidden" name="action" value="save"/>';
 	$clock = '';
@@ -122,6 +127,7 @@ if(isset($_REQUEST['benchmarkId']))
             if($Benchmark->Attribute == 'Height' || $Benchmark->Attribute == 'Distance' || $Benchmark->Attribute == 'Weight'){
                             $AttributeValue = '';	
 				if($Benchmark->Attribute == 'Distance'){
+                                    $Style='style="color:white;font-weight:bold;background-color:green"';
 					if($Model->SystemOfMeasure() != 'Metric'){
 						$Unit = 'm';
                                                 $AttributeValue = round($Benchmark->AttributeValue * 0.62, 2);
@@ -131,6 +137,7 @@ if(isset($_REQUEST['benchmarkId']))
                                         }
 				}		
 				else if($Benchmark->Attribute == 'Weight'){
+                                    $Style='style="color:white;font-weight:bold;background-color:red"';
 					if($Model->SystemOfMeasure() != 'Metric'){
                                             $AttributeValue = round($Benchmark->AttributeValue * 2.20, 2);
 						$Unit = 'lbs';
@@ -140,6 +147,7 @@ if(isset($_REQUEST['benchmarkId']))
                                         }
 				}
 				else if($Benchmark->Attribute == 'Height'){
+                                    $Style='style="color:white;font-weight:bold;background-color:blue"';
 					if($Model->SystemOfMeasure() != 'Metric'){
                                             $AttributeValue = round($Benchmark->AttributeValue * 0.39, 2);
 						$Unit = 'inches';
@@ -150,7 +158,7 @@ if(isset($_REQUEST['benchmarkId']))
 				}
 
 				$Bhtml.='<div class="ui-block-b">';
-				$Bhtml.='<input class="textinput" size="6" type="number" data-inline="true" name="'.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" value="'.$AttributeValue.'"/> '.$Unit.'';
+				$Bhtml.='<input class="textinput" size="6" '.$Style.' type="number" data-inline="true" name="'.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" value="'.$AttributeValue.'"/> '.$Unit.'';
 				$Bhtml.='</div>';		
 				if($Chtml != ''){
 					$html.=''.$Bhtml.''.$Chtml.'';
@@ -162,18 +170,23 @@ if(isset($_REQUEST['benchmarkId']))
             else if($Benchmark->Attribute == 'Calories' || $Benchmark->Attribute == 'Reps' || $Benchmark->Attribute == 'Rounds'){
                                 $Placeholder = '';
                                 if($Benchmark->Attribute == 'Calories'){
+                                    $Style='';
                                     $Placeholder = 'placeholder="Calories"';
                                 }
                                 $InputAttributes = 'class="textinput" type="number" size="6"';
                                 $InputName = ''.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'';
                                 $Value = $Benchmark->AttributeValue;
                                 if($Benchmark->Attribute == 'Rounds'){
+                                    $Style='';
                                     $InputAttributes .= ' id="addround"';
                                     $InputName = 'Rounds';
                                     $Value = $_REQUEST['Rounds'] + 1 ;
                                 }
+                                if($Benchmark->Attribute == 'Reps'){
+                                    $Style='style="color:black;font-weight:bold;background-color:yellow"';
+                                }
 				$Chtml.='<div class="ui-block-c">';
-				$Chtml.='<input '.$InputAttributes.' name="'.$InputName.'" '.$Placeholder.' value="'.$Value.'"/>';
+				$Chtml.='<input '.$InputAttributes.' '.$Style.' name="'.$InputName.'" '.$Placeholder.' value="'.$Value.'"/>';
 				$Chtml.='</div>';
 				if($Bhtml != ''){
 					$html.=''.$Bhtml.''.$Chtml.'';
@@ -199,26 +212,77 @@ if(isset($_REQUEST['benchmarkId']))
     $html.='</div>'.$clock.'</form><br/><br/>';		
 
 }
-else if(isset($_REQUEST['catid']))
+else
 {
-	if($this->Category == 'Historic'){
-		$html.= $this->getHistory();
-	}
-	else{
-               $html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
-                foreach($this->BMWS AS $Exercise){
-					$Description = str_replace('{br}',' | ',$Exercise->Description);
-					$html .= '<li>
-                        <a href="" onclick="getDetails('.$Exercise->Id.', \''.$this->Origin.'\');">'.$Exercise->Name.':<br/><span style="font-size:small">'.$Description.'</span></a>
-                    </li>';
-                }	
-				$html .= '</ul><br/>';
-	}
+    $Girls = $Model->getBMWS('1');
+    $Heros = $Model->getBMWS('2');
+    $Travel = $Model->getBMWS('3');
+    $Custom = $Model->getCustomWorkouts();
+    
+    $html.='    <div id="slides">
+        <div class="slides_container">
+            <div class="slide">
+            <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+                <li>The Girls</li>
+            </ul>
+            '.$this->getWorkoutList($Girls).'
+            </div>
+            <div class="slide">
+            <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+                <li>The Heros</li>
+            </ul>
+                '.$this->getWorkoutList($Heros).'
+            </div>
+            <div class="slide">
+            <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+                <li>Travel Workouts</li>
+            </ul>
+                '.$this->getWorkoutList($Travel).'
+            </div>';
+     if(sizeof($Custom) > 0){
+     $html .='       <div class="slide">
+            <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+                <li>Custom</li>
+            </ul>
+                '.$this->getCustomWorkouts($Custom).'
+            </div>';
+     }
+     $html.='           
+        </div>
+        <a href="#" class="prev"><img src="images/arrow-next.png" width="26" height="16" alt="Arrow Prev"></a>
+        <a href="#" class="next"><img src="images/arrow-prev.png" width="26" height="16" alt="Arrow Next"></a>
+    </div>';
+	
 
 }
 
 return $html;
 	}
+        
+        function getWorkoutList($Category)
+        {
+            $html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
+            foreach($Category AS $Exercise){
+                $Description = str_replace('{br}',' | ',$Exercise->Description);
+                $html .= '<li>';
+                $html .= '<a href="" onclick="getDetails('.$Exercise->Id.', \''.$this->Origin.'\');">'.$Exercise->Name.':<br/><span style="font-size:small">'.$Description.'</span></a>';
+                $html .= '</li>';
+            }	
+            $html .= '</ul><br/>';
+            return $html;
+        }
+        
+        function getCustomWorkouts($Workouts)
+        {
+            $html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
+            foreach($Workouts AS $Exercise){
+                $html .= '<li>';
+                $html .= '<a href="" onclick="getCustomDetails('.$Exercise->Id.', \''.$this->Origin.'\');">'.$Exercise->Name.':<br/><span style="font-size:small">'.$Exercise->Description.'</span></a>';
+                $html .= '</li>';
+            }	
+            $html .= '</ul><br/>';
+            return $html;
+        }
 	
 	function getHistory()
 	{
@@ -236,7 +300,10 @@ return $html;
 	
 	function TopSelection()
 	{
-            $Html.='<li>'.$this->Exercise.'</li>';
+            $Description = str_replace('{br}',' | ',$this->Exercise->Description);
+            $Html .= '<li>';
+            $Html .= ''.$this->Exercise->Name.':<br/><span style="font-size:small">'.$Description.'</span>';
+            $Html .= '</li>';
             return $Html;	
 	}
 	

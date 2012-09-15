@@ -63,13 +63,75 @@ class BenchmarkModel extends Model
 		$Row = mysql_fetch_assoc($Result);
 		return $Row['Category'];
 	}	
+        
+        function getCustomWorkouts()
+        {
+            $Workouts = array();
+            $SQL = 'SELECT recid, WorkoutName
+                FROM CustomWorkouts
+                WHERE MemberId = "'.$_SESSION['UID'].'"';
+            $Result = mysql_query($SQL);	
+            while($Row = mysql_fetch_assoc($Result))
+            {
+                $Row['WorkoutDescription'] = $this->getCustomDescription($Row['recid']);
+                array_push($Workouts, new BenchmarkObject($Row));
+            }
+            return $Workouts;
+        }
 	
-	function GetBMWS($Filter)
+        function getCustomDescription($Id)
+        {
+            $Description = '';
+            $SQL = 'SELECT E.Exercise, A.Attribute, CD.AttributeValue
+                FROM CustomDetails CD
+                LEFT JOIN Exercises E ON E.recid = CD.ExerciseId
+                LEFT JOIN Attributes A ON A.recid = CD.AttributeId
+                LEFT JOIN CustomWorkouts CW ON CW.recid = CD.CustomId
+                WHERE CD.CustomId = "'.$Id.'"
+                ORDER BY Exercise';
+            $Result = mysql_query($SQL);
+            $Exercise = '';
+            while($Row = mysql_fetch_assoc($Result))
+            {
+                if($Exercise != $Row['Exercise']){
+                    if($Description != '')
+                        $Description .= ' | ';
+                    $Description .= $Row['Exercise'];
+                    $Exercise = $Row['Exercise'];
+                }
+                if($Row['Attribute'] == 'Reps'){
+                    $Description .= ' ';
+                    $Description .= $Row['AttributeValue'];
+                    $Description .= ' ';
+                    $Description .= $Row['Attribute'];
+                }else if($Row['Attribute'] == 'Weight'){
+                    $Description .= ' ';
+                    $Description .= $Row['AttributeValue'];
+                    if($this->SystemOfMeasure() == 'Metric')
+                        $Description .= 'kg';
+                    else if($this->SystemOfMeasure() == 'Imperial')
+                        $Description .= 'lbs';
+                }else if($Row['Attribute'] == 'Height'){
+                    
+                }else if($Row['Attribute'] == 'Distance'){
+                    
+                }else if($Row['Attribute'] == 'TimeToComplete'){
+                    
+                }else if($Row['Attribute'] == 'CountDown'){
+                    
+                }else if($Row['Attribute'] == 'Rounds'){
+                    
+                }else if($Row['Attribute'] == 'Calories'){
+                    
+                }
+            }
+            return $Description;           
+        }
+        
+	function getBMWS($Filter)
 	{
-        $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
- 		$Result = mysql_query($SQL);	
-		$Row = mysql_fetch_assoc($Result);
-        if($Row['Gender'] == 'M')
+
+        if($this->Gender() == 'M')
             $DescriptionField = 'MaleWorkoutDescription';
         else
             $DescriptionField = 'FemaleWorkoutDescription';
@@ -91,22 +153,29 @@ class BenchmarkModel extends Model
 		return $Workouts;
 	}	
 	
-	function GetWorkoutDetails($Id)
+	function getWorkoutDetails($Id)
 	{   
-		$WorkoutDetails = array();
-        $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
- 		$Result = mysql_query($SQL);	
-		$Row = mysql_fetch_assoc($Result);
-        if($Row['Gender'] == 'M'){
+            $WorkoutDetails = array();
+
+        if($this->Gender() == 'M'){
+            $DescriptionField = 'MaleWorkoutDescription';
             $AttributeValue = 'AttributeValueMale';
-			$InputFields = 'MaleInput';
+            $InputFields = 'MaleInput';
         } else {
+            $DescriptionField = 'FemaleWorkoutDescription';
             $AttributeValue = 'AttributeValueFemale';
-			$InputFields = 'FemaleInput';
+            $InputFields = 'FemaleInput';
 		}
 		//$SQL = 'SELECT WorkoutName, '.$DescriptionField.' AS WorkoutDescription, '.$InputFields.' AS InputFields, VideoId FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
 		
-		$SQL = 'SELECT BW.WorkoutName, E.Exercise, E.recid AS ExerciseId, A.Attribute, BD.'.$AttributeValue.' AS AttributeValue, VideoId, RoundNo
+		$SQL = 'SELECT BW.WorkoutName, 
+                        E.Exercise, 
+                        BW.'.$DescriptionField.' AS WorkoutDescription,
+                        E.recid AS ExerciseId, 
+                        A.Attribute, 
+                        BD.'.$AttributeValue.' AS AttributeValue, 
+                        VideoId, 
+                        RoundNo
 			FROM BenchmarkDetails BD
 			LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
 			LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
@@ -122,6 +191,33 @@ class BenchmarkModel extends Model
 		}
 		return $WorkoutDetails;
 	}	
+        
+        function getCustomDetails($Id)
+	{   
+            $CustomDetails = array();
+
+		$SQL = 'SELECT CW.WorkoutName, 
+                        E.Exercise, 
+                        "'.$this->getCustomDescription($Id).'" AS WorkoutDescription,
+                        E.recid AS ExerciseId, 
+                        A.Attribute, 
+                        CD.AttributeValue,  
+                        RoundNo
+			FROM CustomDetails CD
+			LEFT JOIN CustomWorkouts CW ON CW.recid = CD.CustomId
+			LEFT JOIN Exercises E ON E.recid = CD.ExerciseId
+			LEFT JOIN Attributes A ON A.recid = CD.AttributeId
+			WHERE CD.CustomId = '.$Id.'
+			ORDER BY RoundNo, Attribute';
+		$Result = mysql_query($SQL);	
+        while($Row = mysql_fetch_assoc($Result))
+        {
+		//$FormattedInputFields = $this->getFormattedInputFields($Row['InputFields']);
+		//$Row['InputFields'] = $FormattedInputFields;
+		array_push($CustomDetails, new BenchmarkObject($Row));  
+		}
+		return $CustomDetails;
+	}
 
 	function getFormattedInputFields($InputFields)
 	{
@@ -155,7 +251,14 @@ class BenchmarkModel extends Model
             $ActivityFields = $this->getActivityFields();
             //var_dump($ActivityFields);
             if($this->Message == ''){
-                $ExerciseTypeId = $this->getExerciseTypeId();
+                if($_REQUEST['benchmarkId'] != ''){
+                    $ThisId = $_REQUEST['benchmarkId'];
+                    $ExerciseTypeId = $this->getExerciseTypeId('Benchmark');
+                }else if($_REQUEST['customId'] != ''){
+                    $ThisId = $_REQUEST['customId'];
+                    $ExerciseTypeId = $this->getExerciseTypeId('Custom');
+                }
+                
                 //$Attributes=$this->getAttributes();
                 //var_dump($ActivityFields);
                 foreach($ActivityFields AS $ActivityField)
@@ -185,13 +288,13 @@ class BenchmarkModel extends Model
                     }
                     if($_REQUEST['origin'] == 'baseline'){
                         $SQL = 'INSERT INTO BaselineLog(MemberId, ExerciseTypeId, ExerciseId, RoundNo, ActivityId, AttributeId, AttributeValue) 
-				VALUES("'.$_SESSION['UID'].'", "'.$ExerciseTypeId.'", "'.$_REQUEST['benchmarkId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->Id.'", "'.$ActivityField->Attribute.'", "'.$AttributeValue.'")';
+				VALUES("'.$_SESSION['UID'].'", "'.$ExerciseTypeId.'", "'.$ThisId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->Id.'", "'.$ActivityField->Attribute.'", "'.$AttributeValue.'")';
 			mysql_query($SQL);
                         //$this->Message = $SQL;
                     }
                     // ExerciseId only applies for benchmarks so we need it here!
                     $SQL = 'INSERT INTO WODLog(MemberId, ExerciseId, WodTypeId, RoundNo, ActivityId, AttributeId, AttributeValue, LevelAchieved) 
-			VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$ExerciseTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->Id.'", "'.$ActivityField->Attribute.'", "'.$AttributeValue.'", "'.$this->LevelAchieved($ActivityField).'")';
+			VALUES("'.$_SESSION['UID'].'", "'.$ThisId.'", "'.$ExerciseTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->Id.'", "'.$ActivityField->Attribute.'", "'.$AttributeValue.'", "'.$this->LevelAchieved($ActivityField).'")';
                     mysql_query($SQL);
                     $this->Message = '<span style="color:green">Successfully Saved!</span>';
 		}
@@ -287,9 +390,9 @@ class BenchmarkModel extends Model
             }
         }
 
-    function getExerciseTypeId()
+    function getExerciseTypeId($Type)
     {
-        $SQL = 'SELECT recid FROM ExerciseTypes WHERE ExerciseType = "Benchmark"';
+        $SQL = 'SELECT recid FROM ExerciseTypes WHERE ExerciseType = "'.$Type.'"';
         $Result = mysql_query($SQL);        
         $Row = mysql_fetch_assoc($Result);
         return $Row['recid'];

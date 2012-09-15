@@ -8,16 +8,16 @@ class ConverterModel extends Model
         if(!is_numeric($ImperialValue)){
             return 'Must be a number!';
         }else{
-        if($_REQUEST['category'] == 1){
+        if($_REQUEST['category'] == 'weight'){
             $MetricValue = round($ImperialValue * 0.45, 2);
             $MetricValue .= 'kg';
-        }else if($_REQUEST['category'] == 2){
+        }else if($_REQUEST['category'] == 'height'){
             $MetricValue = round($ImperialValue * 2.54, 2);
             $MetricValue .= 'cm';
-        }else if($_REQUEST['category'] == 3){
+        }else if($_REQUEST['category'] == 'distance'){
             $MetricValue = round($ImperialValue * 1.61, 2);
             $MetricValue .= 'km';
-        }else if($_REQUEST['category'] == 4){
+        }else if($_REQUEST['category'] == 'volume'){
             $MetricValue = round($ImperialValue * 0.03, 2);
             $MetricValue .= 'litres';
         }

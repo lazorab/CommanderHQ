@@ -15,11 +15,40 @@ function display(data)
     $('#AjaxOutput').html(data);
     $('#listview').listview();
     $('#listview').listview('refresh');
-    $('#exercise').selectmenu();
-    $('#exercise').selectmenu('refresh');
+    $('.select').selectmenu();
+    $('.select').selectmenu('refresh');
     $('.buttongroup').button();
     $('.buttongroup').button('refresh');
     $('.textinput').textinput();
+}
+
+function addTypeParams(CustomType)
+{
+    var Html='';
+      	if(CustomType == 'Timed'){
+            Html+= '<?php echo $Display->getStopWatch();?>';
+        }
+        else if(CustomType == 'AMRAP'){
+            Html+= '<?php echo $Display->getCountDown('');?>';
+        }
+        else if(CustomType == 'EMOM'){
+            Html+= '<?php echo $Display->getCountDown('01:00:0');?>';
+        }  
+        else if(CustomType == 'Total Reps'){
+            Html +='<input type="number" name="Reps" value="" placeholder="Total Reps"/>';
+            Html+= '<?php echo $Display->getStopWatch();?>';
+        }
+        else if(CustomType == 'Total Rounds'){
+            Html+='<div class="ui-grid-a">';
+            Html+='<div class="ui-block-a"><input class="buttongroup" data-inline="true" type="button" onclick="addRound();" value="+ Round"/></div>';
+            Html+='<div class="ui-block-b"><input size="6" id="addround" data-inline="true" type="number" name="Rounds" value="0"/></div>';
+            Html+='</div>';
+            Html+= '<?php echo $Display->getStopWatch();?>';
+        }   
+    $('#clock_input').html(Html);
+    $('.buttongroup').button();
+    $('.buttongroup').button('refresh');
+    $('#addround').textinput();
 }
 
 function addNewExercise(exercise)
@@ -35,6 +64,7 @@ function addNewExercise(exercise)
     var Chtml = '';
     var ThisRound = '';
     var ThisExercise = '';
+    var Unit = '';
 	var ThisClass = '';
     if(i < 1){
         $('#btnsubmit').html('<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>');
@@ -52,8 +82,9 @@ function addNewExercise(exercise)
         //   $('#clock_input').html('<input type="time" id="input_' + i + '" size="10" name="0___' + this.recid + '___' + this.Attribute + '" value="" placeholder="mm:ss"/>');
         //}
         //else{
+           //not sure about this...so 1==2 disables it
            
-           if(ThisRound != this.RoundNo){
+           if(1==2 && ThisRound != this.RoundNo){
            
                 if(Chtml != '' && Bhtml == ''){
                     html +='<div class="ui-block-b"></div>' + Chtml + '';
@@ -122,13 +153,13 @@ function addNewExercise(exercise)
            	
            if(this.Attribute == 'Distance' || this.Attribute == 'Weight'){
                 if(this.Attribute == 'Distance'){
-                    if('<?php echo $_SESSION['measurement'];?>' == 'imperial')
+                    if('<?php echo $Display->SystemOfMeasure();?>' == 'imperial')
                         Unit = 'yards';
                     else
                         Unit = 'metres';
                 }		
                 else if(this.Attribute == 'Weight'){
-                    if('<?php echo $_SESSION['measurement'];?>' == 'imperial')
+                    if('<?php $Display->SystemOfMeasure();?>' == 'imperial')
                         Unit = 'lbs';
                     else
                         Unit = 'kg';
@@ -136,7 +167,8 @@ function addNewExercise(exercise)
            
                 Bhtml +='<div class="ui-block-b">';
                 Bhtml +='<input class="textinput" size="6" type="number" data-inline="true" name="' + this.RoundNo + '___' + this.recid + '___' + this.Attribute + '"';
-                Bhtml +=' value="' + this.AttributeValue + '"/>';
+                Bhtml +=' value="' + this.AttributeValue + '"';
+                Bhtml +=' placeholder="' + this.Attribute + '"/>'+Unit+'';
                 Bhtml +='</div>';		
                 if(Chtml != ''){
                     html +='' + Bhtml + '' + Chtml + '';
@@ -147,7 +179,8 @@ function addNewExercise(exercise)
            else if(this.Attribute == 'Reps'){
                 Chtml +='<div class="ui-block-c">';
                 Chtml +='<input class="textinput" size="6" type="number" data-inline="true" name="' + this.RoundNo + '___' + this.recid + '___' + this.Attribute + '"';
-                Chtml +=' value="' + this.AttributeValue + '"/>';
+                Chtml +=' value="' + this.AttributeValue + '"';
+                Chtml +=' placeholder="' + this.Attribute + '"/>';
                 Chtml +='</div>';
                 if(Bhtml != ''){
                     html +='' + Bhtml + '' + Chtml + '';

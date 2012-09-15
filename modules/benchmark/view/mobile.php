@@ -5,19 +5,35 @@ $(document).ready(function() {
 		//Set vars
 		var $VideoTrigger = $('#menuvideo');
 		var $Video = $('#video');
+                var codes = '<input type="text" size="8" style="margin:4px;color:white;font-weight:bold;background-color:red" value="Weight" readonly="readonly"/>';
+    codes += '<input type="text" size="8" style="margin:4px;color:white;font-weight:bold;background-color:blue" value="Height" readonly="readonly"/>';
+    codes += '<input type="text" size="8" style="margin:4px;color:white;font-weight:bold;background-color:green" value="Distance" readonly="readonly"/>';
+    codes += '<input type="text" size="8" style="margin:4px;color:black;font-weight:bold;background-color:yellow" value="Reps" readonly="readonly"/>';
 
 		//If visible hide else show
 		if($Video.hasClass('active')) {
+                    
+                $('#colorcodes').html(codes);
+                
 	    	$VideoTrigger.html('<img id="videoselect" alt="Video" <?php echo $RENDER->NewImage('video_specific.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>video_specific.png"/>');
 			
 	    	$Video.removeClass('active');
 		} else {
+                $('#colorcodes').html('');
 	    	$VideoTrigger.html('<img id="videoselect" alt="Video" <?php echo $RENDER->NewImage('video_specific_active.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>video_specific_active.png"/>');
 	    	$Video.addClass('active');
 	    }
 	});      
 });	
-
+    $(function(){
+        $('#slides').slides({
+            preload: true,
+            preloadImage: 'images/ajax-loader.gif',
+            generatePagination: true,
+            slideSpeed: 500,
+            effect: 'slide'
+        });
+    });
 function benchmarksubmit()
 {
     $.getJSON('ajax.php?module=benchmark', $("#benchmarkform").serialize(),display);
@@ -37,10 +53,21 @@ function getDetails(id,origin)
     $('#menuvideo').html('<img id="videoselect" alt="Video" <?php echo $RENDER->NewImage('video_specific.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>video_specific.png"/>');
 }
 
+function getCustomDetails(id,origin)
+{
+    $.getJSON("ajax.php?module=benchmark",{customId:id, origin:origin},display);
+    $.getJSON("ajax.php?module=benchmark",{topselection:id, customId:id},topselectiondisplay);
+}
+
 function topselectiondisplay(data)
 {
+    var codes = '<input type="text" size="8" style="margin:4px;color:white;font-weight:bold;background-color:red" value="Weight" readonly="readonly"/>';
+    codes += '<input type="text" size="8" style="margin:4px;color:white;font-weight:bold;background-color:blue" value="Height" readonly="readonly"/>';
+    codes += '<input type="text" size="8" style="margin:4px;color:white;font-weight:bold;background-color:green" value="Distance" readonly="readonly"/>';
+    codes += '<input type="text" size="8" style="margin:4px;color:black;font-weight:bold;background-color:yellow" value="Reps" readonly="readonly"/>';
     $('#toplist').html(data);
-    $('#toplist').listview('refresh');   
+    $('#toplist').listview('refresh'); 
+    $('#colorcodes').html(codes);
 }
 
 function videodisplay(data)
@@ -69,25 +96,9 @@ function addRound()
 <br/>
 
 <div id="topselection">
-<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-<?php if($_REQUEST['catid'] == '1'){ ?>
-	<li>The Girls</li>			
-<?php }else if($_REQUEST['catid'] == '2'){ ?>
-	<li>The Heros</li>
-<?php }else if($_REQUEST['catid'] == '3'){ ?>
-        <li>Travel</li>
-<?php }else if($_REQUEST['catid'] == '4'){ ?>
-	<li>Historic</li>		
-<?php } else { ?>
-    <li><a href="#" onclick="OpenThisPage('?module=benchmark&catid=1&origin=<?php echo $_REQUEST['origin'];?>')">The Girls</a></li>
-    <li><a href="#" onclick="OpenThisPage('?module=benchmark&catid=2&origin=<?php echo $_REQUEST['origin'];?>')">The Heros</a></li>
-    <li><a href="#" onclick="OpenThisPage('?module=benchmark&catid=3&origin=<?php echo $_REQUEST['origin'];?>')">Travel</a></li>
-    <li><a href="#" onclick="OpenThisPage('?module=benchmark&catid=4&origin=<?php echo $_REQUEST['origin'];?>')">Historic</a></li>
-<?php } ?>
-</ul>
+    <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d"></ul>
+    <div id="colorcodes"></div>
 </div> 
-
-<br/>
 
 <div id="video"></div>
 
