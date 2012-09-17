@@ -35,32 +35,11 @@ class BaselineController extends Controller
             $exerciseId = $Model->SaveCustom();
 			$Html .= $this->CustomDetails($exerciseId);
         }
-	else if($_REQUEST['baseline'] == 'Custom'){//custom
-	
-	}
+
 		else if($_REQUEST['baseline'] == 'Baseline'){//Baseline
             $Html.= $this->getStopWatch('0'); 
 		}
-		else if($_REQUEST['baseline'] == 'Benchmark'){//Benchmarks
-			$Benchmarks = $Model->getBenchmarks();	
-            
-            $Html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
-            foreach($Benchmarks AS $Exercise){
-                $Description = str_replace('{br}',' | ',$Exercise->Description);
-                $Html .= '<li>
-                <a href="" onclick="getBenchmark('.$Exercise->recid.');">'.$Exercise->ActivityName.':<br/><span style="font-size:small">'.$Description.'</span></a>
-                </li>';
-            }	
-            $Html .= '</ul><br/>';
-            
-		}
-		else if(isset($_REQUEST['benchmark'])){
-			$Benchmark = $Model->getBenchmark($_REQUEST['benchmark']);
-            $Html.='<div id="bmdescription">';
-            $Html.= str_replace('{br}','<br/>',$Benchmark->Description);
-            $Html.='</div>';
-            $Html.= $this->getStopWatch($_REQUEST['benchmark']);        
-		}		
+		
 		return $Html;
     }
     
@@ -143,11 +122,6 @@ class BaselineController extends Controller
     
     function getStopWatch($exerciseId)
     {
-        //$RENDER = new Image(SITE_ID);
-        //$Start = $RENDER->NewImage('start.png', $this->Device->GetScreenWidth());
-       // $Stop = $RENDER->NewImage('stop.png', $this->Device->GetScreenWidth());
-        //$Reset = $RENDER->NewImage('report.png', $this->Device->GetScreenWidth());
-        //$Save = $RENDER->NewImage('save.png', $this->Device->GetScreenWidth());
         $Html='<form name="clockform" id="baselineform" action="index.php">
         <input type="hidden" name="baseline" value="'.$_REQUEST['baseline'].'"/>
         <input type="hidden" name="exercise" value="'.$exerciseId.'"/>
@@ -167,14 +141,7 @@ class BaselineController extends Controller
 	$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
 	$Html.='<input class="buttongroup" type="button" onclick="baselinesubmit();" value="Save"/>';
         $Html.='</form><br/><br/>';
-		/*
-        $Html.='<div style="margin:0 30% 0 30%; width:50%">
-        <img alt="Start" '.$Start.' src="'.ImagePath.'start.png" onclick="start();"/>&nbsp;&nbsp;
-        <img alt="Stop" '.$Stop.' src="'.ImagePath.'stop.png" onclick="stop();"/><br/><br/>
-        <img alt="Reset" '.$Reset.' src="'.ImagePath.'reset.png" onclick="reset();"/>&nbsp;&nbsp;
-        <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="baselinesubmit();"/>
-        </div><br/><br/>';
-        */
+
         return $Html;
     }
     

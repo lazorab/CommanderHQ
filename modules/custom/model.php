@@ -11,6 +11,7 @@ class CustomModel extends Model
     
     function Log()
 	{
+            if($this->UserIsSubscribed()){
             $ActivityFields = $this->getActivityFields();
             //var_dump($ActivityFields);
             if($this->Message == ''){
@@ -39,6 +40,9 @@ class CustomModel extends Model
             $this->Message = '<span style="color:green">Successfully Saved!</span>';
 		}
         }
+            }else{
+                $this->Message = 'You are not subscribed!';
+            }
         return $this->Message;
 	}
 	
@@ -248,23 +252,7 @@ class CustomModel extends Model
 		$Row = mysql_fetch_assoc($Result);
 		return $Row['recid'];	
 	}
-	
-	function getGender()
-	{
-        $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
- 		$Result = mysql_query($SQL);	
-		$Row = mysql_fetch_assoc($Result);
-        
-		return $Row['Gender'];
-	}
-        
-        function SystemOfMeasure()
-        {
-            $SQL = 'SELECT SystemOfMeasure FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
-            $Result = mysql_query($SQL);	
-            $Row = mysql_fetch_assoc($Result);
-            return $Row['SystemOfMeasure'];
-        }
+
     
     function getAttributeOptions()
     {
@@ -348,7 +336,7 @@ class CustomModel extends Model
 
         }else{
 
-        if($this->Gender() == 'M'){
+        if($this->getGender() == 'M'){
             $AttributeValue = 'AttributeValueMale';
 			$InputFields = 'MaleInput';
         } else {

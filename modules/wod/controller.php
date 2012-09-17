@@ -52,46 +52,8 @@ class WodController extends Controller
 		$WODdata = '';
 		$RENDER = new Image(SITE_ID);
 		$Model = new WodModel;
-        if($_REQUEST['action'] == 'savecustom'){
-		//validate
-            $exerciseId = $Model->SaveCustom();
-			$WODdata .= $this->CustomDetails($exerciseId);
-        }
-		else if($_REQUEST['wodtype'] == '1'){//custom
-            $MemberCustomExercises = $Model->getMemberCustomExercises();
-            if(isset($_REQUEST['customexercise']) && $_REQUEST['customexercise'] != 'new'){
-                $WODdata .= $this->CustomDetails($_REQUEST['customexercise']);               
-            }
-            else if(count($MemberCustomExercises) > 0 && $_REQUEST['customexercise'] != 'new'){
-               $WODdata .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-					<li><a href="" onclick="getCustomExercise(\'new\');">Create New Exercise</a></li>';
-	
-                foreach($MemberCustomExercises AS $Exercise){
-					$WODdata .= '<li><a href="" onclick="getCustomExercise('.$Exercise->recid.');">'.$Exercise->ActivityName.':<br/>'.$Exercise->Description.'</a></li>';
-                }	
-				
-				$WODdata .= '</ul>';
 
-            }
-            if(count($MemberCustomExercises) == 0 || $_REQUEST['customexercise'] == 'new'){
-                $CustomTypes = $Model->getCustomTypes();
-				$WODdata .= '<form action="index.php" id="test" name="form">
-                <input type="hidden" name="module" value="wod"/>
-                <input type="hidden" name="wodtype" value="1"/>
-				<input type="hidden" name="action" value="savecustom"/>
-				<input type="text" name="newcustom" placeholder="Exercise Name"/><br/><br/>
-					<div data-role="controlgroup">';
-                foreach($CustomTypes AS $Type){
-					$WODdata .= '<input type="radio" name="customtype" id="radio-choice-'.$Type->recid.'" value="'.$Type->recid.'" />
-								<label for="radio-choice-'.$Type->recid.'">'.$Type->ActivityType.'</label>';
-                }	
-				$WODdata .= '</div>
-				<button type="submit" data-theme="b" name="submit" value="submit-value">Next</button>
-				</form><br/>';
-				
-            }
-		}
-		else if($_REQUEST['wodtype'] == '2'){//my gym
+		if($_REQUEST['wodtype'] == '2'){//my gym
 			//check for registered gym
 			$Gym = $this->MemberGym();
 			if(!$Gym){//must register gym
@@ -109,27 +71,6 @@ class WodController extends Controller
 					$WODdata .= 'Email: '.$Gym->Email.'<br/>';
 				$WODdata .= 'URL: '.$Gym->URL.'<br/>';
 			}	
-		}
-		else if($_REQUEST['wodtype'] == '3'){//benchmarks
-		
-			$Benchmarks = $Model->getBenchmarks();	
-
-               $WODdata .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
-                foreach($Benchmarks AS $Exercise){
-					$Description = str_replace('{br}',' | ',$Exercise->Description);
-					$WODdata .= '<li>
-                        <a href="" onclick="getBenchmark('.$Exercise->recid.');">'.$Exercise->ActivityName.':<br/><span style="font-size:small">'.$Description.'</span></a>
-                    </li>';
-                }	
-				$WODdata .= '</ul><br/>';
-
-		}
-		else if(isset($_REQUEST['benchmark'])){
-			$Benchmark = $Model->getBenchmark($_REQUEST['benchmark']);
-            $WODdata .='<div id="bmdescription">';
-            $WODdata .= str_replace('{br}','<br/>',$Benchmark->Description);
-            $WODdata .='</div>';
-            $WODdata .= $this->getStopWatch($_REQUEST['benchmark']);        
 		}		
 		return $WODdata;
 	}
@@ -140,33 +81,6 @@ class WodController extends Controller
         $MemberGym = $Model->getMemberGym();	
 		return $MemberGym;
 	}
-	
-    function CustomDetails($Id)
-    {
-        $Model = new WodModel;
-        $Details = $Model->getCustomDetails($Id);
-        $WODdata = '<div style="text-align:center"><h3>'.$Details->ActivityName.'</h3></div>';
-        if($Details->ActivityType == 'Timed'){
-            $WODdata.= $this->getStopWatch($Details->recid); 
-        }
-        else if($Details->ActivityType == 'AMRAP'){
-			
-            $WODdata .= $this->getCountDown($Details);
-        }
-        else if($Details->ActivityType == 'Weight'){
-            $WODdata .= $this->getWeight($Details->recid);
-        }
-        else if($Details->ActivityType == 'Reps'){
-            $WODdata .= $this->getReps($Details->recid);
-        }
-        else if($Details->ActivityType == 'Tabata'){
-            $WODdata .= $this->getTabata($Details);
-        }
-        else if($Details->ActivityType == 'Other'){
-            $WODdata .= '?';
-        }
-        return $WODdata;
-    }
 
 	function getStopWatch($ExerciseId)
     {

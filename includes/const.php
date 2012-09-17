@@ -2,9 +2,9 @@
 
 define("QA", true);
 
+define("SUBSCRIPTION", false);
 
-
-define('ERROR_REPORT_SITE_NAME', 'Cross Fit Live');
+define('ERROR_REPORT_SITE_NAME', 'Commander HQ');
 define('ERROR_REPORT_EMAIL_ADDRESS', 'support@be-mobile.co.za');
 
 if (QA) {

@@ -217,7 +217,6 @@ else
     $Girls = $Model->getBMWS('1');
     $Heros = $Model->getBMWS('2');
     $Travel = $Model->getBMWS('3');
-    $Custom = $Model->getCustomWorkouts();
     
     $html.='    <div id="slides">
         <div class="slides_container">
@@ -239,14 +238,21 @@ else
             </ul>
                 '.$this->getWorkoutList($Travel).'
             </div>';
-     if(sizeof($Custom) > 0){
-     $html .='       <div class="slide">
+
+     $html .='<div class="slide">
             <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-                <li>Custom</li>
+                <li>My Custom Workouts</li>
             </ul>
-                '.$this->getCustomWorkouts($Custom).'
+                '.$this->getCustomMemberWorkouts().'
             </div>';
-     }
+     
+     $html .='<div class="slide">
+            <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+                <li>Custom Workouts from Others</li>
+            </ul>
+                '.$this->getCustomPublicWorkouts().'
+            </div>';
+     
      $html.='           
         </div>
         <a href="#" class="prev"><img src="images/arrow-next.png" width="26" height="16" alt="Arrow Prev"></a>
@@ -261,7 +267,7 @@ return $html;
         
         function getWorkoutList($Category)
         {
-            $html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
+            $html = '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
             foreach($Category AS $Exercise){
                 $Description = str_replace('{br}',' | ',$Exercise->Description);
                 $html .= '<li>';
@@ -272,15 +278,41 @@ return $html;
             return $html;
         }
         
-        function getCustomWorkouts($Workouts)
+        function getCustomMemberWorkouts()
         {
+            $html = '';
+            $Model = new BenchmarkModel;
+            $CustomMemberWorkouts = $Model->getCustomMemberWorkouts();
+            if(empty($CustomMemberWorkouts)){
+                $html .= '<br/>Oops! You have not recorded any Custom Workouts yet.';
+            }else{
             $html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
-            foreach($Workouts AS $Exercise){
+            foreach($CustomMemberWorkouts AS $Exercise){
                 $html .= '<li>';
                 $html .= '<a href="" onclick="getCustomDetails('.$Exercise->Id.', \''.$this->Origin.'\');">'.$Exercise->Name.':<br/><span style="font-size:small">'.$Exercise->Description.'</span></a>';
                 $html .= '</li>';
             }	
             $html .= '</ul><br/>';
+            }
+            return $html;
+        }
+        
+        function getCustomPublicWorkouts()
+        {
+            $html = '';
+            $Model = new BenchmarkModel;
+            $CustomPublicWorkouts = $Model->getCustomPublicWorkouts();
+            if(empty($CustomPublicWorkouts)){
+                $html .= '<br/>Looks like there are none yet!';
+            }else{
+            $html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
+            foreach($CustomPublicWorkouts AS $Exercise){
+                $html .= '<li>';
+                $html .= '<a href="" onclick="getCustomDetails('.$Exercise->Id.', \''.$this->Origin.'\');">'.$Exercise->Name.':<br/><span style="font-size:small">'.$Exercise->Description.'</span></a>';
+                $html .= '</li>';
+            }	
+            $html .= '</ul><br/>';
+            }
             return $html;
         }
 	
@@ -307,7 +339,7 @@ return $html;
             return $Html;	
 	}
 	
-	function getStopWatch($ExerciseId)
+    function getStopWatch($ExerciseId)
     {
 	$RoundNo = 0;
         $TimeToComplete = '00:00:0';

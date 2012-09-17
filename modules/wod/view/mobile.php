@@ -3,26 +3,8 @@
 function getWOD(wodtype)
 {    
 	$('#AjaxLoading').html('<center><img alt="loading" src="/css/images/ajax-loader.gif" /><br />Loading...</center>');
-	//$.getJSON("ajax.php?module=wod",{wodtype:wodtype},display);	
+	$.getJSON("ajax.php?module=wod",{wodtype:wodtype},display);	
 	$.getJSON("ajax.php?module=wod",{selection:wodtype},topdisplay);	
-}
-
-function getBenchmark(id)
-{
-	$('#AjaxLoading').html('<center><img alt="loading" src="/css/images/ajax-loader.gif" /><br />Loading...</center>');
-    $.getJSON("ajax.php?module=wod",{benchmark:id},display);
-}
-
-function getCustomContent(customid)
-{
-	$('#AjaxLoading').html('<center><img alt="loading" src="/css/images/ajax-loader.gif" /><br />Loading...</center>');
-    $.getJSON("ajax.php?module=wod",{customid:customid},display);
-}
-
-function getCustomExercise(id)
-{
-	$('#AjaxLoading').html('<center><img alt="loading" src="/css/images/ajax-loader.gif" /><br />Loading...</center>');
-    $.getJSON("ajax.php?module=wod",{customexercise:id, wodtype:1},display); 	
 }
 
 function topdisplay(data)

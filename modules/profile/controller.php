@@ -37,6 +37,8 @@ class ProfileController extends Controller
                 $Message = 'Height Required';
             elseif($_REQUEST['Gender'] == '')		
                 $Message = 'Select Gender';
+            elseif($_REQUEST['CustomWorkouts'] == '')		
+                $Message = 'Select access to your Custom Workouts';
 		
             return $Message;	
 	}
@@ -80,6 +82,8 @@ class ProfileController extends Controller
             $MemberDetails = $Model->getPostedDetails();
         else
             $MemberDetails = $Model->getMemberDetails($Id);
+        
+        //var_dump($MemberDetails);
         $this->Height = $MemberDetails->Height;
         $this->Weight = $MemberDetails->Weight;
 
@@ -129,21 +133,34 @@ $Html.='/>
 <input style="width:75%;" id="weight" class="textinput" type="text" name="Weight" value="'.$MemberDetails->Weight.'"/>
 <div id="heightlabel">Weight('.$WeightUnit.')</div>
 <input style="width:75%;" id="height" class="textinput" type="text" name="Height" value="'.$MemberDetails->Height.'"/>
-<br/><br/>	
+<br/><br/>
 <fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
-    <input class="radioinput" type="radio" name="system" id="radio-choice-1" value="Metric" onclick="getSystem(\'Metric\');"';
+    <input class="radioinput" type="radio" name="SystemOfMeasure" id="radio-choice-1" value="Metric" onclick="getSystem(\'Metric\');"';
     if($MemberDetails->SystemOfMeasure == 'Metric')
-        $Html.=' checked="checked""';
+        $Html.=' checked="checked"';
     $Html.='/>
      	<label for="radio-choice-1">Metric</label>
 
-     	<input class="radioinput" type="radio" name="system" id="radio-choice-2" value="Imperial" onclick="getSystem(\'Imperial\');"';
+     	<input class="radioinput" type="radio" name="SystemOfMeasure" id="radio-choice-2" value="Imperial" onclick="getSystem(\'Imperial\');"';
     if($MemberDetails->SystemOfMeasure == 'Imperial')
-        $Html.=' checked="checked""';
+        $Html.=' checked="checked"';
      $Html.='/>
      	<label for="radio-choice-2">Imperial</label>
 </fieldset>
-
+<br/><br/>
+Custom Workouts Visibility
+<fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
+<label for="private">Private</label>
+<input class="radioinput" id="private" type="radio" name="CustomWorkouts" value="Private"';
+if($MemberDetails->CustomWorkouts == 'Private') 
+    $Html.='checked="checked"';
+$Html.='/>
+<label for="public">Public</label>
+<input class="radioinput" id="public" type="radio" name="CustomWorkouts" value="Public"';
+if($MemberDetails->CustomWorkouts == 'Public')
+    $Html.='checked="checked"';
+$Html.='/>
+</fieldset>
 <br/>
 <input class="buttongroup" type="button" onclick="profilesubmit();" value="Save"/><br/><br/>
 </div>

@@ -40,6 +40,24 @@ class Controller
 	{
 		$Model= new Model;
 		return $Model->getRandomMessage();
-	}	
+	}
+        
+        function Gender()
+        {
+            $Model= new Model;
+            return $Model->getGender();
+        }
+        
+        function SystemOfMeasure()
+        {
+            $Model= new Model;
+            return $Model->getSystemOfMeasure();
+        }
+        
+        function UserIsSubscribed()
+        {
+            $Model= new Model;
+            return $Model->UserIsSubscribed();           
+        }
 }
 ?>

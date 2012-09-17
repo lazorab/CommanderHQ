@@ -57,7 +57,7 @@ class ProfileModel extends Model
             
 			$NewId = mysql_insert_id();
 			
-			if($_REQUEST['system'] == 'Imperial'){
+			if($_REQUEST['SystemOfMeasure'] == 'Imperial'){
                 //convert to metric for storage in db. Displaying of values will be converted back.
 				$Weight = round($_REQUEST['Weight'] * 0.45, 2);
 				$Height = round($_REQUEST['Height'] * 2.54, 2);
@@ -76,13 +76,15 @@ class ProfileModel extends Model
             Height,
             Gender,
             SystemOfMeasure,
+            CustomWorkouts,
             BMI) 
             VALUES('".$NewId."',
                    '".$DOB."',
                    '".$Weight."',
                    '".$Height."',
                    '".$_REQUEST['Gender']."',
-                   '".$_REQUEST['system']."',
+                   '".$_REQUEST['SystemOfMeasure']."',
+                   '".$_REQUEST['CustomWorkouts']."',
                    '".$BMI."')";
             
 			mysql_query($sql);
@@ -127,7 +129,8 @@ class ProfileModel extends Model
 				DOB = '".$DOB."',
 				Weight = '".$Weight."',
 				Height = '".$Height."',
-				SystemOfMeasure = '".$_REQUEST['system']."',
+				SystemOfMeasure = '".$_REQUEST['SystemOfMeasure']."',
+                                CustomWorkouts = '".$_REQUEST['CustomWorkouts']."',
 				Gender = '".$_REQUEST['Gender']."',
 				BMI = '".$BMI."'		
 				WHERE MemberId = '".$Id."'";
@@ -158,6 +161,7 @@ class MemberObject
 	var $Weight;
 	var $Height;
 	var $SystemOfMeasure;
+        var $CustomWorkouts;
 	var $BMI;
 	var $RestHR;
 	var $RecHR;
@@ -174,24 +178,16 @@ class MemberObject
 		$this->SkillLevel = $Row['SkillLevel'];
 		$this->Gender = $Row['Gender'];
 		$this->DOB = $Row['DOB'];
-		$this->SystemOfMeasure = $Row['SystemOfMeasure'];
-        /*
-		if(isset($Row['system']) && $Row['system'] != $Row['SystemOfMeasure']){	
-			if($Row['system'] == 'Imperial'){
-				//convert to metric for storage in db. Displaying of values will be converted back.
-				$this->Weight = ceil($Row['Weight'] * 2.22);
-				$this->Height = ceil($Row['Height'] * 0.39);
-			}else{
-				$this->Weight = round($Row['Weight'] * 0.45, 2);
-				$this->Height = floor($Row['Height'] * 2.54);
-			}
+                $this->SystemOfMeasure = $Row['SystemOfMeasure'];
+		$this->CustomWorkouts = $Row['CustomWorkouts'];
+		if($Row['SystemOfMeasure'] == 'Imperial'){
+                    //convert to metric for storage in db. Displaying of values will be converted back.
+                    $this->Weight = ceil($Row['Weight'] * 2.22);
+                    $this->Height = ceil($Row['Height'] * 0.39);
 		}else{
-			$this->Weight = $Row['Weight'];
-			$this->Height = $Row['Height'];		
+                    $this->Weight = $Row['Weight'];
+                    $this->Height = $Row['Height'];		
 		}
-         */
-        $this->Weight = $Row['Weight'];
-        $this->Height = $Row['Height'];       
 		$this->BMI = $Row['BMI'];
 		$this->RestHR = $Row['RestHR'];
 		$this->RecHR = $Row['RecHR'];	

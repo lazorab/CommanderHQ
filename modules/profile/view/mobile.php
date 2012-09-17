@@ -30,21 +30,21 @@ function profilesubmit()
 
 function display(data)
 {
-    if(data == 'Success'){}
+    if(data == 'Success'){
         window.location = 'index.php?module=memberhome';
-}else{
-    $('#AjaxOutput').html(data);
-    window.location.hash = '#message';
-    $('#listview').listview();
-    $('#listview').listview('refresh');
-    $('.controlbutton').button();
-    $('.controlbutton').button('refresh');
-    $('.buttongroup').button();
-    $('.buttongroup').button('refresh'); 
-    $('.radioinput').checkboxradio();
-    $('.radioinput').checkboxradio('refresh');
-    $('.textinput').textinput();
-    $('#AjaxLoading').html('');
+    }else{
+        $('#AjaxOutput').html(data);
+        window.location.hash = '#message';
+        $('#listview').listview();
+        $('#listview').listview('refresh');
+        $('.controlbutton').button();
+        $('.controlbutton').button('refresh');
+        $('.buttongroup').button();
+        $('.buttongroup').button('refresh'); 
+        $('.radioinput').checkboxradio();
+        $('.radioinput').checkboxradio('refresh');
+        $('.textinput').textinput();
+        $('#AjaxLoading').html('');
     }
 }
 </script>

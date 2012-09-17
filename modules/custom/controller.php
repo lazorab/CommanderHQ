@@ -237,9 +237,15 @@ class CustomController extends Controller
     
     function getCountDown($Time)
     {
+        $Placeholder = '';
 	$RoundNo = 0;
         $ExerciseId = 63;
-        $TimeToComplete = $Time;
+        if($Time == '00:00:0'){
+           $Placeholder = 'placeholder="'.$Time.'"';  
+        }
+        else{
+            $TimeToComplete = $Time;
+        }
         $StartStopButton = 'Start';
         if(isset($_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'])){
             $TimeToComplete = $_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'];
@@ -247,17 +253,27 @@ class CustomController extends Controller
                 $StartStopButton = 'Stop';
         }
 	$Html ='<input type="hidden" name="'.$RoundNo.'___'.$ExerciseId.'___CountDown" id="CountDown" value="'.$Time.'"/>';
-        $Html.='<input id="clock" name="timer" value="'.$TimeToComplete.'"/>';
+        $Html.='<input id="clock" type="text" name="timer" value="'.$TimeToComplete.'" '.$Placeholder.'/>';
         $Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstopcountdown();" value="'.$StartStopButton.'"/>';
         $Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetcountdown();" value="Reset"/>';
 		
         return $Html;
     }
     
-    function SystemOfMeasure()
+    function getAmrapClock()
     {
-        $Model = new CustomModel;
-        return $Model->SystemOfMeasure();
+        $RoundNo = 0;
+        $ExerciseId = 63;
+        $Html='<select class="select" id="clock" name="timer">';
+        $Html.='<option value="">00:00:0</option>';
+        for($i=0;$i<60;$i++){
+           $Html.='<option value="'.$i.':00:0">'.$i.':00:0</option>'; 
+        }
+        $Html.='</select>';
+        $Html .='<input type="hidden" name="'.$RoundNo.'___'.$ExerciseId.'___CountDown" id="CountDown" value="00:00:0"/>';
+        $Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstopcountdown();" value="Start"/>';
+        $Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetcountdown();" value="Reset"/>';
+        return $Html;
     }
 }
 ?>

@@ -10,8 +10,8 @@ function getConversionValues(cat)
     if(cat == 'weight'){  
         var imperialweight = document.getElementById("metric_weight_input").value * 2.20;
         var metricweight = document.getElementById("imperial_weight_input").value * 0.45; 
-        $('#metric_weight').val(metricweight.toFixed(2)); 
-        $('#imperial_weight').val(imperialweight.toFixed(2));
+        $('#metric_weight').val(metricweight.toFixed(2) + 'kg'); 
+        $('#imperial_weight').val(imperialweight.toFixed(2) + 'lbs');
     }else if(cat == 'height'){
         var metricheight = document.getElementById("imperial_height_input").value * 2.54;
         var imperialheight = document.getElementById("metric_height_input").value * 0.39;
@@ -75,12 +75,22 @@ function display(data)
             <div class="slide">
                 <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                     <li>Weight</li>
-                </ul>            
-                <input type="number" size="6" id="metric_weight_input" name="metric_weight" value="" placeholder="Metric Weight"/>kg =
-                <input type="number" size="6" id="imperial_weight" name="metric_weight" value="" placeholder="Imperial Weight" disabled="disabled"/>lbs
-                <input type="number" size="6" id="imperial_weight_input" name="imperial_weight" value="" placeholder="Imperial Weight"/>lbs =
-                <input type="number" size="6" id="metric_weight" name="metric_weight" value="" placeholder="Metric Weight" disabled="disabled"/>kg
-                <input type="button" name="btnsubmit" value="Convert" onclick="getConversionValues('weight');"/>
+                </ul> 
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                    <input type="number" id="metric_weight_input" name="metric_weight" value="" placeholder="Weight in kg"/>
+                    </div>
+                    <div class="ui-block-b">
+                <input type="number" id="imperial_weight" name="metric_weight" value="" placeholder="lbs equivalent" disabled="disabled"/>
+                    </div>
+                    <div class="ui-block-a">
+                <input type="number" id="imperial_weight_input" name="imperial_weight" value="" placeholder="Weight in lbs"/>
+               </div>
+                    <div class="ui-block-b">
+                <input type="number" id="metric_weight" name="metric_weight" value="" placeholder="kg equivalent" disabled="disabled"/>
+                    </div>
+                </div>
+                <input type="button" name="btnsubmit" value="Convert" onclick="getConversionValues('weight');"/> 
             </div>
             <div class="slide">
 <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">

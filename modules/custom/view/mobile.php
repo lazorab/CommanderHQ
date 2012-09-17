@@ -26,17 +26,17 @@ function addTypeParams(CustomType)
 {
     var Html='';
       	if(CustomType == 'Timed'){
-            Html+= '<?php echo $Display->getStopWatch();?>';
+            Html+= '<?php echo $Display->getStopWatch('Timed');?>';
         }
         else if(CustomType == 'AMRAP'){
-            Html+= '<?php echo $Display->getCountDown('');?>';
+            Html+= '<?php echo $Display->getAmrapClock();?>';
         }
         else if(CustomType == 'EMOM'){
             Html+= '<?php echo $Display->getCountDown('01:00:0');?>';
         }  
         else if(CustomType == 'Total Reps'){
             Html +='<input type="number" name="Reps" value="" placeholder="Total Reps"/>';
-            Html+= '<?php echo $Display->getStopWatch();?>';
+            Html+= '<?php echo $Display->getStopWatch('Total Reps');?>';
         }
         else if(CustomType == 'Total Rounds'){
             Html+='<div class="ui-grid-a">';

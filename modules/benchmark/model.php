@@ -27,49 +27,52 @@ class BenchmarkModel extends Model
             $SQL = 'INSERT INTO BenchmarkWorkouts('.$FIELDS.') VALUES('.$VALUES.')';
             mysql_query($SQL);	
 	}
-        
-        function Gender()
-        {
-            $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
-            $Result = mysql_query($SQL);	
-            $Row = mysql_fetch_assoc($Result);
-            return $Row['Gender'];
-        }
-        
-        function SystemOfMeasure()
-        {
-            $SQL = 'SELECT SystemOfMeasure FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
-            $Result = mysql_query($SQL);	
-            $Row = mysql_fetch_assoc($Result);
-            return $Row['SystemOfMeasure'];
-        }
 	
 	function getCategories()
 	{
-		$Categories=array();
-		$SQL = 'SELECT recid, Category, Image, Banner FROM BenchmarkCategories';
-		$Result = mysql_query($SQL);	
-		while($Row = mysql_fetch_assoc($Result))
-		{
-			array_push($Categories, new CategoryObject($Row));
-		}
-		return $Categories;
+            $Categories=array();
+            $SQL = 'SELECT recid, Category, Image, Banner FROM BenchmarkCategories';
+            $Result = mysql_query($SQL);	
+            while($Row = mysql_fetch_assoc($Result))
+            {
+                array_push($Categories, new CategoryObject($Row));
+            }
+            return $Categories;
 	}
 	
 	function getCategory($Id)
 	{
-		$SQL = 'SELECT Category FROM BenchmarkCategories WHERE recid = '.$Id.'';
-		$Result = mysql_query($SQL);	
-		$Row = mysql_fetch_assoc($Result);
-		return $Row['Category'];
+            $SQL = 'SELECT Category FROM BenchmarkCategories WHERE recid = '.$Id.'';
+            $Result = mysql_query($SQL);	
+            $Row = mysql_fetch_assoc($Result);
+            return $Row['Category'];
 	}	
         
-        function getCustomWorkouts()
+        function getCustomMemberWorkouts()
         {
             $Workouts = array();
             $SQL = 'SELECT recid, WorkoutName
                 FROM CustomWorkouts
-                WHERE MemberId = "'.$_SESSION['UID'].'"';
+                WHERE MemberId = "'.$_SESSION['UID'].'"
+                ORDER BY WorkoutName';
+            $Result = mysql_query($SQL);	
+            while($Row = mysql_fetch_assoc($Result))
+            {
+                $Row['WorkoutDescription'] = $this->getCustomDescription($Row['recid']);
+                array_push($Workouts, new BenchmarkObject($Row));
+            }
+            return $Workouts;
+        }
+        
+        function getCustomPublicWorkouts()
+        {
+            $Workouts = array();
+            $SQL = 'SELECT CW.recid, CW.WorkoutName
+                FROM CustomWorkouts CW
+                LEFT JOIN MemberDetails MD ON MD.MemberId = CW.MemberId
+                WHERE MD.CustomWorkouts = "Public"
+                AND CW.MemberId <> "'.$_SESSION['UID'].'"
+                ORDER BY WorkoutName';
             $Result = mysql_query($SQL);	
             while($Row = mysql_fetch_assoc($Result))
             {
@@ -107,9 +110,9 @@ class BenchmarkModel extends Model
                 }else if($Row['Attribute'] == 'Weight'){
                     $Description .= ' ';
                     $Description .= $Row['AttributeValue'];
-                    if($this->SystemOfMeasure() == 'Metric')
+                    if($this->getSystemOfMeasure() == 'Metric')
                         $Description .= 'kg';
-                    else if($this->SystemOfMeasure() == 'Imperial')
+                    else if($this->getSystemOfMeasure() == 'Imperial')
                         $Description .= 'lbs';
                 }else if($Row['Attribute'] == 'Height'){
                     
@@ -131,7 +134,7 @@ class BenchmarkModel extends Model
 	function getBMWS($Filter)
 	{
 
-        if($this->Gender() == 'M')
+        if($this->getGender() == 'M')
             $DescriptionField = 'MaleWorkoutDescription';
         else
             $DescriptionField = 'FemaleWorkoutDescription';
@@ -157,7 +160,7 @@ class BenchmarkModel extends Model
 	{   
             $WorkoutDetails = array();
 
-        if($this->Gender() == 'M'){
+        if($this->getGender() == 'M'){
             $DescriptionField = 'MaleWorkoutDescription';
             $AttributeValue = 'AttributeValueMale';
             $InputFields = 'MaleInput';
@@ -248,6 +251,7 @@ class BenchmarkModel extends Model
 	
     function Log()
 	{
+            if($this->UserIsSubscribed()){
             $ActivityFields = $this->getActivityFields();
             //var_dump($ActivityFields);
             if($this->Message == ''){
@@ -268,17 +272,17 @@ class BenchmarkModel extends Model
                          if($ActivityField->Attribute == 'Height' || $ActivityField->Attribute == 'Distance' || $ActivityField->Attribute == 'Weight'){
                             
 				if($ActivityField->Attribute == 'Distance'){
-					if($this->SystemOfMeasure() != 'Metric'){
+					if($this->getSystemOfMeasure() != 'Metric'){
                                             $AttributeValue = round($ActivityField->AttributeValue * 1.61, 2);
                                         }
 				}		
 				else if($ActivityField->Attribute == 'Weight'){
-					if($this->SystemOfMeasure() != 'Metric'){
+					if($this->getSystemOfMeasure() != 'Metric'){
                                             $AttributeValue = round($ActivityField->AttributeValue * 0.45, 2);
                                         }
 				}
 				else if($ActivityField->Attribute == 'Height'){
-					if($this->SystemOfMeasure() != 'Metric'){
+					if($this->getSystemOfMeasure() != 'Metric'){
                                             $AttributeValue = round($ActivityField->AttributeValue * 2.54, 2);
                                         }
                                 }
@@ -298,6 +302,9 @@ class BenchmarkModel extends Model
                     mysql_query($SQL);
                     $this->Message = '<span style="color:green">Successfully Saved!</span>';
 		}
+            }
+            }else{
+                $this->Message = 'You are not subscribed!';
             }
             return $this->Message;
 	}

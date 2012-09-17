@@ -10,6 +10,7 @@ class BaselineModel extends Model
     
     function Log()
     {
+        if($this->UserIsSubscribed()){
         if($_REQUEST['newcount'] > 0){
             $this->SaveNewActivities();
         }
@@ -35,8 +36,11 @@ class BaselineModel extends Model
             VALUES("'.$_SESSION['UID'].'", "'.$ExerciseTypeId.'", "'.$Activity->recid.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
             mysql_query($SQL);
             $this->Message = '<span style="color:green">Successfully Saved!</span>';
-		}
         }
+        }
+            }else{
+                $this->Message = 'You are not subscribed!';
+            }
         return $this->Message;
         /*
         $SQL = 'SELECT recid, Attribute FROM Attributes';
@@ -154,98 +158,8 @@ class BaselineModel extends Model
             $SQL = 'INSERT INTO MemberBaseline(MemberId, ExerciseId) VALUES("'.$_SESSION['UID'].'", '.$ExerciseId.')';
             mysql_query($SQL);
         }
-	}  
-    
-    function getCustomTypes()
-    {
-		$CustomTypes = array();
-		$SQL = 'SELECT recid, CustomType as Description FROM CustomTypes';
-		$Result = mysql_query($SQL);	
-		while($Row = mysql_fetch_assoc($Result))
-		{
-			array_push($CustomTypes, new BaselineObject($Row));
-		}
-		
-		return $CustomTypes;        
-    }
-    
-    function getMemberCustomExercises()
-    {
-		$Exercises = array();
-		$SQL = 'SELECT recid, ExerciseName AS ActivityName, ExerciseDescription AS Description FROM CustomExercises WHERE MemberId = "'.$_SESSION['UID'].'"';
-		$Result = mysql_query($SQL);	
-		while($Row = mysql_fetch_assoc($Result))
-		{
-			array_push($Exercises, new BaselineObject($Row));
-		}
-		
-		return $Exercises;        
-    }
-    
-    function getCustomDetails($Id)
-    {
-		$SQL = 'SELECT CE.recid, CE.ActivityName AS ActivityName, ExerciseDescription AS Description, CT.CustomType AS ActivityType, A.Attribute, CMAV.AttributeValue
-        FROM CustomExercises CE
-        LEFT JOIN CustomTypes CT ON CT.recid = CE.CustomTypeId
-        LEFT JOIN CustomTypeAttributes CTA ON CTA.CustomTypeId = CT.recid
-        LEFT JOIN Attributes A ON A.recid = CTA.AttributeId
-        LEFT JOIN CustomMemberAttributeValues CMAV ON CMAV.AttributeId = CTA.AttributeId
-        WHERE CE.recid = '.$Id.'';
-		$Result = mysql_query($SQL);	
-		$Row = mysql_fetch_assoc($Result);
-		$Details = new BaselineObject($Row);
-		
-		return $Details;       
-    }
-    
-    function SaveCustom()
-    {
-        $SQL = 'INSERT INTO CustomExercises(MemberId, ActivityName, ExerciseDescription, CustomTypeId) 
-        VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['newcustom'].'", "'.$_REQUEST['customdescription'].'", "'.$_REQUEST['customtype'].'")';
-		$Result = mysql_query($SQL);
-        
-		return mysql_insert_id();
-    }
-	
-	function getGender()
-	{
-        $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
- 		$Result = mysql_query($SQL);	
-		$Row = mysql_fetch_assoc($Result);
-        
-		return $Row['Gender'];
-	}
-    
-	function getBenchmark($Id)
-	{   
-        if($this->getGender() == 'M')
-            $DescriptionField = 'MaleWorkoutDescription';
-        else
-            $DescriptionField = 'FemaleWorkoutDescription';
-		$SQL = 'SELECT WorkoutName as ActivityName, '.$DescriptionField.' as Description FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
-		$Result = mysql_query($SQL);	
-		$Row = mysql_fetch_assoc($Result);
-		$Workout = new BaselineObject($Row);
-		
-		return $Workout;
-	}	
-	
-	function getBenchmarks()
-	{
-		$Benchmarks = array();
-        if($this->getGender() == 'M')
-            $DescriptionField = 'MaleWorkoutDescription';
-        else
-            $DescriptionField = 'FemaleWorkoutDescription';		
-		$SQL = 'SELECT recid, WorkoutName as ActivityName, '.$DescriptionField.' as Description FROM BenchmarkWorkouts';
-		$Result = mysql_query($SQL);	
-		while($Row = mysql_fetch_assoc($Result))
-		{
-			array_push($Benchmarks, new BaselineObject($Row));
-		}
-		
-		return $Benchmarks;
-	}
+    }  
+   
     
     function getAttributeOptions()
     {
