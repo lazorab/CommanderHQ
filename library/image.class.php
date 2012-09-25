@@ -13,16 +13,16 @@ Last Modified Date: 23 January 2012
 
 class Image
 {
-	var $Image;
-	var $FilePath;
-	var $RenderPath;
+    var $Image;
+    var $FilePath;
+    var $RenderPath;
     var $Width;
     var $Height;
 	
-	function __construct()
-	{
-		$this->FilePath='/home/bemobile/public_html/crossfit/images';
-		$this->RenderPath = 'images/';
+    function __construct()
+    {
+        $this->FilePath=''.THIS_ROOT.'/images';
+	$this->RenderPath = 'images/';
     }
 	
 	function Image($image, $ScreenWidth)

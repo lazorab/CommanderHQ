@@ -3,84 +3,72 @@ class WodController extends Controller
 {
 	function __construct()
 	{
-		parent::__construct();
-		session_start();
-        if(!isset($_SESSION['UID'])){
-            header('location: index.php?module=login');
-        }
-        if($_REQUEST['action'] == 'save'){
-				$this->Save();
-        }
-
-		return $this->TopSelection();
-		
-		if(isset($_REQUEST['wodtype'])){
-			return $this->Output();
-		}
+            parent::__construct();
+            session_start();
+            if(!isset($_SESSION['UID'])){
+                header('location: index.php?module=login');
+            }
 	}
 	
 	function TopSelection()
 	{
-		$Html='<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
-		if($_REQUEST['wodtype'] == '2'){
-			$Html.='<li>My Gym</li>';
-		}else{
-			$Html.='<li><a href="#" onclick="OpenThisPage(\'?module=baseline&origin=wod&baseline=Baseline\')">Baseline</a></li>
-				<li><a href="#" onclick="OpenThisPage(\'?module=benchmark&origin=wod\')">Benchmarks</a></li>
-				<li><a href="#" onclick="OpenThisPage(\'?module=custom&origin=wod\')">Custom</a></li>
-				<li><a href="#" onclick="OpenThisPage(\'?module=wod&wodtype=2\')">My Gym</a></li>';
-		}
-		$Html.='</ul>';
-		return $Html;
+            $Html='';
+            if($_REQUEST['topselection'] == 'mygym'){
+                $Gym = $this->MemberGym();
+                $Html.='<li>My Gym: '.$Gym->GymName.'</li>';
+            }
+            return $Html;
 	}
 	
 	function WodDetails()
 	{
-		$Model = new WodModel;
-		$WOD = $Model->getWOD();
-		return $WOD;
+            $Model = new WodModel;
+            $WOD = $Model->getWOD();
+            return $WOD;
 	}
 	
 	function Save()
 	{
-		$Model = new WodModel;
-		$WOD = $Model->Log();
+            $Model = new WodModel;
+            $WOD = $Model->Log();
 	}
 	
 	function Output()
 	{
-		$WODdata = '';
-		$RENDER = new Image(SITE_ID);
-		$Model = new WodModel;
+            $WODdata = '';
+            $Model = new WodModel;
 
-		if($_REQUEST['wodtype'] == '2'){//my gym
-			//check for registered gym
-			$Gym = $this->MemberGym();
-			if(!$Gym){//must register gym
-				header('location: index.php?module=registergym');	
-			}
-			else{//show details:
-				$WODdata .= 'Gym Name: '.$Gym->GymName.'<br/>';
-				if($Gym->Country != '')
-					$WODdata .= 'Country: '.$Gym->Country.'<br/>';
-				if($Gym->Region != '')
-					$WODdata .= 'Region: '.$Gym->Region.'<br/>';
-				if($Gym->TelNo != '')
-					$WODdata .= 'TelNo: '.$Gym->TelNo.'<br/>';
-				if($Gym->Email != '')
-					$WODdata .= 'Email: '.$Gym->Email.'<br/>';
-				$WODdata .= 'URL: '.$Gym->URL.'<br/>';
-			}	
-		}		
-		return $WODdata;
+            if($_REQUEST['wod'] == 'display'){//my gym
+                //check for registered gym
+                $Gym = $this->MemberGym();
+                if(!$Gym){//must register gym
+                    header('location: index.php?module=registergym');	
+		}
+		else{//show details:
+                    $WODdata .='<h2>Workout for '.date('d M Y').'</h2>';
+                    $WODdata .= $this->getMyGymWOD();
+		}	
+            }		
+            return $WODdata;
 	}
     
 	function MemberGym()
 	{
-        $Model = new WodModel;
-        $MemberGym = $Model->getMemberGym();	
-		return $MemberGym;
+            $Model = new WodModel;
+            $MemberGym = $Model->getMemberGym();	
+            return $MemberGym;
 	}
+        
+        function getMyGymWOD()
+        {
+            $Html='';
+            $Model = new WodModel;
+            $DataObject = $Model->getMyGymWOD();
+            foreach($DataObject as $Data){
+                $Html .= '';
+            }
+            return $Html;
+        }
 
 	function getStopWatch($ExerciseId)
     {

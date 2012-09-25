@@ -1,1 +1,0 @@
-<?php echo $Display->Detail();?>

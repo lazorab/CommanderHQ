@@ -3,13 +3,14 @@ $(document).ready(function() {
 	//Trigger video
 	$("#menuvideo").bind('click', function(){
 		//Set vars
-		var $VideoTrigger = $('#menuvideo');
-		var $Video = $('#video');
-                var codes = '<input type="text" size="8" style="margin:4px;color:white;font-weight:bold;background-color:red" value="Weight" readonly="readonly"/>';
-    codes += '<input type="text" size="8" style="margin:4px;color:white;font-weight:bold;background-color:blue" value="Height" readonly="readonly"/>';
-    codes += '<input type="text" size="8" style="margin:4px;color:white;font-weight:bold;background-color:green" value="Distance" readonly="readonly"/>';
-    codes += '<input type="text" size="8" style="margin:4px;color:black;font-weight:bold;background-color:yellow" value="Reps" readonly="readonly"/>';
-
+            var $VideoTrigger = $('#menuvideo');
+            var $Video = $('#video');
+            var codes = '<div class="ui-grid-c">';
+            codes += '<div class="ui-block-a"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#3f2b44" value="Weight" readonly="readonly"/></div>';
+            codes += '<div class="ui-block-b"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#66486e" value="Height" readonly="readonly"/></div>';
+            codes += '<div class="ui-block-c"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#6f747a" value="Distance" readonly="readonly"/></div>';
+            codes += '<div class="ui-block-d"><input type="text" data-role="none" style="width:80%;color:black;font-weight:bold;background-color:#ccff66" value="Reps" readonly="readonly"/></div>';
+            codes += '</div>';
 		//If visible hide else show
 		if($Video.hasClass('active')) {
                     
@@ -47,6 +48,7 @@ function getBenchmarks(catid)
 
 function getDetails(id,origin)
 {
+    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=benchmark\');" <?php echo $RENDER->NewImage('back.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>back.png"/>');
     $.getJSON("ajax.php?module=benchmark",{benchmarkId:id, origin:origin},display);
     $.getJSON("ajax.php?module=benchmark",{video:id, benchmarkId:id},videodisplay);
     $.getJSON("ajax.php?module=benchmark",{topselection:id, benchmarkId:id},topselectiondisplay);
@@ -61,10 +63,12 @@ function getCustomDetails(id,origin)
 
 function topselectiondisplay(data)
 {
-    var codes = '<input type="text" size="8" style="margin:4px;color:white;font-weight:bold;background-color:red" value="Weight" readonly="readonly"/>';
-    codes += '<input type="text" size="8" style="margin:4px;color:white;font-weight:bold;background-color:blue" value="Height" readonly="readonly"/>';
-    codes += '<input type="text" size="8" style="margin:4px;color:white;font-weight:bold;background-color:green" value="Distance" readonly="readonly"/>';
-    codes += '<input type="text" size="8" style="margin:4px;color:black;font-weight:bold;background-color:yellow" value="Reps" readonly="readonly"/>';
+    var codes = '<div class="ui-grid-c">';
+    codes += '<div class="ui-block-a"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#3f2b44" value="Weight" readonly="readonly"/></div>';
+    codes += '<div class="ui-block-b"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#66486e" value="Height" readonly="readonly"/></div>';
+    codes += '<div class="ui-block-c"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#6f747a" value="Distance" readonly="readonly"/></div>';
+    codes += '<div class="ui-block-d"><input type="text" data-role="none" style="width:80%;color:black;font-weight:bold;background-color:#ccff66" value="Reps" readonly="readonly"/></div>';
+    codes += '</div>';
     $('#toplist').html(data);
     $('#toplist').listview('refresh'); 
     $('#colorcodes').html(codes);
@@ -84,6 +88,7 @@ function display(data)
     $('.controlbutton').button('refresh');
     $('.buttongroup').button();
     $('.buttongroup').button('refresh');
+    $('.textinput').textinput();
     $('#AjaxLoading').html('');	
 }
 

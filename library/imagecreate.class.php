@@ -31,7 +31,7 @@ class ImageCreate
 		imagettftext($image, 24, 0, $offset, 160, $yellow, $font, $string);
         
 		// flush image
-		imagepng($image, '/home/bemobile/public_html/content/images/53/'.$string.'_header.png');
+		imagepng($image, ''.FRAMEWORK_ROOT.'/content/images/53/'.$string.'_header.png');
 		imagedestroy($image);
 	}
 }

@@ -38,7 +38,7 @@ class RegistergymModel extends Model
 			}
 			else{
 				$GymId = mysql_insert_id();
-				$message = "Gym has been registered and added to your profile";
+				$message = "Success";
 			}
 			
 			$sql='Update MemberDetails

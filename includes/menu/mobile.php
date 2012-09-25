@@ -1,23 +1,22 @@
 <?php
 $ratio = SCREENWIDTH / 640;
 $NavIconSize = floor(72*$ratio);
+$BackButton = '';
+$BackbuttonImage = $RENDER->NewImage('back.png', SCREENWIDTH);;
 ?>
 
 <div id="nav" style="height:<?php echo floor(100*$ratio);?>px;">
 
-<?php if(isset($_REQUEST['wodtype']) || isset($_REQUEST['benchmarkId']) || isset($_REQUEST['baseline']) || isset($_REQUEST['report']) || isset($_REQUEST['customexercise'])){
-	if(isset($_REQUEST['customexercise']))
-		$BackModule = $_REQUEST['module']."&origin=".$_REQUEST['origin'];
-	else
-		$BackModule = $_REQUEST['module'];
-?>
+<?php 
+$BackButton = '';
+if(isset($_REQUEST['wodtype']) || (isset($_REQUEST['origin'])) || isset($_REQUEST['report']) || isset($_REQUEST['customexercise'])){
+    if(isset($_REQUEST['origin']))
+        $BackModule = $_REQUEST['origin'];
+    else
+        $BackModule = $_REQUEST['module'];
+    $BackButton = '<img alt="Back" onclick="OpenThisPage(\'?module='.$BackModule.'\');" '.$BackbuttonImage.' src="'.ImagePath.'back.png"/>';     
+} ?>
 		
-<div id="back" class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 0 4%;">
-	<img alt="Back" onclick="OpenThisPage('?module=<?php echo $BackModule;?>');" <?php echo $RENDER->NewImage('back.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>back.png"/>
-</div>
-		
-<?php } ?>
-
 <div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 0 4%;">
 	<img id="menuselect" alt="Menu" <?php echo $RENDER->NewImage('menu.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>menu.png"/>
 </div>
@@ -28,7 +27,11 @@ $NavIconSize = floor(72*$ratio);
 </div>	
 <?php } ?>
 
-<div id="menuvideo" class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 2% 4%;"></div>	
+<div id="menuvideo" class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 0 4%;"></div>	
+
+<div id="back" class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 0 4%;">
+<?php echo $BackButton;?>	
+</div>
 
 <div id="AjaxLoading" class="grid" style="float:right;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 4% 2% 0;"></div>
 </div>
@@ -70,7 +73,7 @@ $NavIconSize = floor(72*$ratio);
     <img alt="Workouts" <?php echo $RENDER->NewImage('menu_workouts.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>menu_workouts.png"/>
 
 <a href="#" onclick="OpenThisPage('?module=wod');" data-transition="slidefade" data-prefetch>
-    <img alt="WOD" <?php echo $RENDER->NewImage('menu_wodlog.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>menu_wodlog.png"/>
+    <img alt="WOD" <?php echo $RENDER->NewImage('menu_wod.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>menu_wod.png"/>
 </a>
 
 <a href="" onclick="OpenThisPage('?module=benchmark');" data-transition="slidefade" data-prefetch>
@@ -99,6 +102,14 @@ $NavIconSize = floor(72*$ratio);
 
 <a href="#" onclick="OpenThisPage('?module=skills');" data-transition="slidefade" data-prefetch>
     <img alt="Skills" <?php echo $RENDER->NewImage('menu_skills.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>menu_skills.png"/>
+</a>
+    
+<a href="#" onclick="OpenThisPage('?module=locator');" data-transition="slidefade" data-prefetch>
+    <img alt="Affiliates" <?php echo $RENDER->NewImage('menu_affiliates.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>menu_affiliates.png"/>
+</a>
+    
+<a href="#" onclick="OpenThisPage('?module=aboutcrossfit');" data-transition="slidefade" data-prefetch>
+    <img alt="About" <?php echo $RENDER->NewImage('menu_crossfit.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>menu_crossfit.png"/>
 </a>
 
 <img alt="Down" <?php echo $RENDER->NewImage('menu_down.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>menu_down.png"/>

@@ -1,8 +1,12 @@
 <script type="text/javascript">	
 
-function getBaseline(catid)
+function getBaseline()
 {
-    $.getJSON("ajax.php?module=baseline",{catid:catid},display);
+    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=baseline\');" <?php echo $RENDER->NewImage('back.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>back.png"/>');
+    $('#toplist').html('<li>Baseline</li>');
+    $.getJSON("ajax.php?module=baseline",{baseline:'Baseline'},display);
+    $('#toplist').listview();
+    $('#toplist').listview('refresh');
 }
 
 function getBenchmark(id)
@@ -59,17 +63,6 @@ function baselinesubmit()
 
 </script>
 <br/>
-<div id="topselection">
-<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-<?php if(!isset($_REQUEST['baseline'])){ ?>
-<li><a href="#" onclick="OpenThisPage('?module=baseline&baseline=Baseline');">Baseline</a></li>
-<li><a href="#" onclick="OpenThisPage('?module=benchmark&origin=baseline');">Benchmarks</a></li>
-<li><a href="#" onclick="OpenThisPage('?module=custom&origin=baseline');">Custom</a></li>
-<?php } else if($_REQUEST['baseline'] == 'Baseline'){ ?>	
-<li>Baseline</li>
-<?php } ?>
-</ul>
-</div>
 
 <div id="AjaxOutput">  
     <?php echo $Display->Output();?>

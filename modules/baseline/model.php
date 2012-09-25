@@ -18,22 +18,47 @@ class BaselineModel extends Model
         $ActivityFields=$this->getActivityFields();
         if($this->Message == ''){
         //var_dump($ActivityFields);
-            $ExerciseTypeId = $this->getExerciseTypeId();
+        $WorkoutTypeId = $this->WorkoutTypeId($_REQUEST['baseline']);
         foreach($ActivityFields AS $Activity)
         {
+            $AttributeValue = '';
+            //check to see if we must convert back to metric first for data storage
+            if($ActivityField->Attribute == 'Height' || $ActivityField->Attribute == 'Distance' || $ActivityField->Attribute == 'Weight'){
+                            
+            if($ActivityField->Attribute == 'Distance'){
+                if($this->getSystemOfMeasure() != 'Metric'){
+                    $AttributeValue = round($ActivityField->AttributeValue * 1.61, 2);
+                }
+            }		
+            else if($ActivityField->Attribute == 'Weight'){
+                if($this->getSystemOfMeasure() != 'Metric'){
+                    $AttributeValue = round($ActivityField->AttributeValue * 0.45, 2);
+                }
+            }
+            else if($ActivityField->Attribute == 'Height'){
+                if($this->getSystemOfMeasure() != 'Metric'){
+                    $AttributeValue = round($ActivityField->AttributeValue * 2.54, 2);
+                }
+            }
+            }   
+            if($AttributeValue == ''){
+                $AttributeValue = $ActivityField->AttributeValue;
+            }
+            
             //First Store the values incase they changed
             $SQL = 'UPDATE MemberBaseline 
             SET AttributeValue = "'.$Activity->AttributeValue.'" 
             WHERE MemberId = "'.$_SESSION['UID'].'" 
-            AND ExerciseId = "'.$Activity->recid.'"
+            AND ExerciseId = "'.$Activity->ExerciseId.'"
             AND AttributeId = "'.$Activity->Attribute.'"';
             mysql_query($SQL);
-            $SQL = 'INSERT INTO BaselineLog(MemberId, ExerciseTypeId, ExerciseId, AttributeId, AttributeValue) 
-            VALUES("'.$_SESSION['UID'].'", "'.$ExerciseTypeId.'", "'.$Activity->recid.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
+            
+            $SQL = 'INSERT INTO BaselineLog(MemberId, BaselineTypeId, WorkoutId, ExerciseId, AttributeId, AttributeValue) 
+            VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$Activity->WorkoutId.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
             mysql_query($SQL);
 			
-            $SQL = 'INSERT INTO WODLog(MemberId, WODTypeId, ExerciseId, AttributeId, AttributeValue) 
-            VALUES("'.$_SESSION['UID'].'", "'.$ExerciseTypeId.'", "'.$Activity->recid.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
+            $SQL = 'INSERT INTO WODLog(MemberId, WODTypeId, WorkoutId, ExerciseId, AttributeId, AttributeValue) 
+            VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$Activity->WorkoutId.'", "'.$Activity->ExerciseId.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
             mysql_query($SQL);
             $this->Message = '<span style="color:green">Successfully Saved!</span>';
         }
@@ -67,12 +92,16 @@ class BaselineModel extends Model
             $ExplodedKey = explode('___', $key);
             if(sizeof($ExplodedKey) > 1)
             {
-                $ExerciseId = $ExplodedKey[0];
-                $Attribute = $ExplodedKey[1];
+                if(isset($_REQUEST['Rounds']))
+                    $RoundNo = $_REQUEST['Rounds'];
+                else
+                    $RoundNo = $ExplodedKey[0];
+                $ExerciseId = $ExplodedKey[1];
+                $Attribute = $ExplodedKey[2];
                 if($val == '00:00:0' || $val == '' || $val == '0' || $val == $Attribute){
                     $this->Message .= '<span style="color:red">Invalid value for '.$Attribute.'!</span><br/>';
                 }else{
-                $Query='SELECT recid, (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, "'.$val.'" AS AttributeValue 
+                $Query='SELECT recid, (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, "'.$val.'" AS AttributeValue, "'.$RoundNo.'" AS RoundNo
                 FROM Exercises
                 WHERE recid = "'.$ExerciseId.'"';
                 $Result = mysql_query($Query); 
@@ -90,7 +119,7 @@ class BaselineModel extends Model
                 if($numrows == 1){
                     $Row = mysql_fetch_assoc($Result);
                     $Attribute = $Row['recid'];
-                    array_push($Activities, new BaselineObject(array('recid'=>'0','Attribute'=>''.$Attribute.'','AttributeValue'=>''.$val.'')));
+                    array_push($Activities, new BaselineObject(array('recid'=>'0','Attribute'=>''.$Attribute.'','AttributeValue'=>''.$val.'','RoundNo'=>''.$RoundNo.'')));
                 }
                 }
             }
@@ -107,14 +136,6 @@ class BaselineModel extends Model
             return true;
         else
             return false;
-    }
-    
-    function getExerciseTypeId()
-    {
-        $SQL = 'SELECT recid FROM ExerciseTypes WHERE ExerciseType = "'.$_REQUEST['baseline'].'"';
-        $Result = mysql_query($SQL);        
-        $Row = mysql_fetch_assoc($Result);
-        return $Row['recid'];
     }
     
     function SaveNewBaseline()
@@ -180,28 +201,28 @@ class BaselineModel extends Model
 	
 	function getMemberBaselines()
 	{
-        $Baselines=array();
-		$SQL = 'SELECT mb.recid, 
-        mb.ExerciseId,
-        et.ExerciseType
-        FROM MemberBaseline mb
-        JOIN ExerciseTypes et ON et.recid = mb.ExerciseTypeId
-        WHERE mb.MemberId = "'.$_SESSION['UID'].'"';
+            $Baselines=array();
+            $SQL = 'SELECT MB.recid, 
+                MB.WorkoutId,
+                BT.BaselineType
+                FROM MemberBaseline MB
+                JOIN WorkoutTypes BT ON BT.recid = MB.BaselineTypeId
+                WHERE MB.MemberId = "'.$_SESSION['UID'].'"';
 		$Result = mysql_query($SQL);	
         
 		while($Row = mysql_fetch_assoc($Result))
         {
-            if($Row['ExerciseType'] == 'Benchmark'){
+            if($Row['BaselineType'] == 'Benchmark'){
                 $NewQuery = 'SELECT MB.recid, BW.WorkoutName AS ActivityName
                     FROM MemberBaseline MB 
                     JOIN BenchmarkWorkouts BW ON MB.ExerciseId = BW.recid
-                    WHERE BW.recid = '.$Row['ExerciseId'].'';
+                    WHERE BW.recid = '.$Row['WorkoutId'].'';
             }
-            else if($Row['ExerciseType'] == 'Custom'){
+            else if($Row['BaselineType'] == 'Custom'){
                 $NewQuery = 'SELECT MB.recid, CE.ActivityName AS ActivityName
                 FROM MemberBaseline MB
                 JOIN CustomExercises CE ON CE.recid = MB.ExerciseId
-                WHERE CE.recid = '.$Row['ExerciseId'].'';               
+                WHERE CE.recid = '.$Row['WorkoutId'].'';               
             }
 
             $NewResult = mysql_query($NewQuery);
@@ -216,58 +237,124 @@ class BaselineModel extends Model
     {
         if(isset($_REQUEST['benchmark']))
         {
-            $Id = $_REQUEST['benchmark'];
-            $type='8';
+            $WorkoutId = $_REQUEST['benchmark'];
+            $BaselineTypeId=$this->getWorkoutTypeId('Benchmark');
         }
-        $SQL='INSERT INTO MemberBaseline(MemberId, ExerciseId, ExerciseTypeId) VALUES("'.$_SESSION['UID'].'", "'.$Id.'", "'.$type.'")';
+        else if(isset($_REQUEST['custom']))
+        {
+            $WorkoutId = $_REQUEST['custom'];
+            $BaselineTypeId=$this->getWorkoutTypeId('Custom');
+        }
+        $SQL='INSERT INTO MemberBaseline(MemberId, WorkoutId, BaselineTypeId) VALUES("'.$_SESSION['UID'].'", "'.$WorkoutId.'", "'.$BaselineTypeId.'")';
         $Result = mysql_query($SQL);
         $InsertId = mysql_insert_id();
         return $InsertId;
     }
-                       
-    function getBaselineDetails($Id)
+    
+    function getWorkoutTypeId($BaselineType)
     {
-        $SQL = 'SELECT ET.ExerciseType
-        FROM MemberBaseline MB JOIN ExerciseTypes ET ON ET.recid = MB.ExerciseTypeId
-        WHERE MB.recid = '.$Id.''; 
+        $SQL='SELECT recid FROM WorkoutTypes WHERE WorkoutType = "'.$BaselineType.'"';
+        $Result = mysql_query($SQL); 
+        $Row = mysql_fetch_assoc($Result);
+        return $Row['recid'];
+    }
+                       
+    function getBaselineDetails()
+    {
+        $SQL = 'SELECT DISTINCT MB.WorkoutId, BT.WorkoutType AS BaselineType
+        FROM MemberBaseline MB 
+        LEFT JOIN WorkoutTypes BT ON BT.recid = MB.BaselineTypeId
+        WHERE MB.MemberId = "'.$_SESSION['UID'].'"'; 
 
         $Result = mysql_query($SQL);
         $Row = mysql_fetch_assoc($Result);
-        if($Row['ExerciseType'] == 'Custom'){
-            $SQL = 'SELECT MB.recid, A.Attribute, CE.ActivityName AS ActivityName, ExerciseDescription AS Description
-            FROM CustomExercises CE
-            JOIN MemberBaseline MB ON MB.ExerciseId = CE.recid
-            JOIN CustomTypeAttributes CA ON CA.CustomTypeId = CE.CustomTypeId
-            JOIN Attributes A ON CA.AttributeId = A.recid 
-            WHERE MB.recid = '.$Id.'';
-
+        if($Row['BaselineType'] == 'Custom'){
+            $BaselineObject = $this->getCustomBaseline($Row['WorkoutId']);
         }
-        else if($Row['ExerciseType'] == 'Benchmark'){
-            $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
-            $Result = mysql_query($SQL);	
-            $Row = mysql_fetch_assoc($Result);
-            if($Row['Gender'] == 'M')
-                $DescriptionField = 'MaleWorkoutDescription';
-            else
-                $DescriptionField = 'FemaleWorkoutDescription';
-            $SQL = 'SELECT MB.recid, "TimeToComplete" AS Attribute, BW.WorkoutName AS ActivityName, BW.'.$DescriptionField.' AS Description
-            FROM BenchmarkWorkouts BW
-            JOIN MemberBaseline MB ON MB.ExerciseId = BW.recid
-            WHERE MB.recid = '.$Id.'';
-        }          
-        $Result = mysql_query($SQL);	
-        $Row = mysql_fetch_assoc($Result);               
-        $BaselineDetail = new BaselineObject($Row);
-                                  
-        return $BaselineDetail;
-    }   
+        else if($Row['BaselineType'] == 'Benchmark'){
+            $BaselineObject = $this->getBenchmarkBaseline($Row['WorkoutId']);
+        }     
+        else{
+            $BaselineObject = $this->getDefaultBaseline($Row['WorkoutId']);          
+        }                    
+        return $BaselineObject;
+    } 
     
-    function getMemberBaselineActivities()
+    function getBenchmarkBaseline($Id)
+    {
+            $WorkoutDetails = array();
+
+        if($this->getGender() == 'M'){
+            $DescriptionField = 'MaleWorkoutDescription';
+            $AttributeValue = 'AttributeValueMale';
+            $InputFields = 'MaleInput';
+        } else {
+            $DescriptionField = 'FemaleWorkoutDescription';
+            $AttributeValue = 'AttributeValueFemale';
+            $InputFields = 'FemaleInput';
+		}
+		//$SQL = 'SELECT WorkoutName, '.$DescriptionField.' AS WorkoutDescription, '.$InputFields.' AS InputFields, VideoId FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
+		
+		$SQL = 'SELECT BW.WorkoutName, 
+                        E.Exercise, 
+                        BW.'.$DescriptionField.' AS WorkoutDescription,
+                        E.recid AS ExerciseId, 
+                        A.Attribute, 
+                        BD.'.$AttributeValue.' AS AttributeValue,  
+                        RoundNo,
+                        (SELECT MAX(RoundNo) FROM BenchmarkDetails WHERE BenchmarkId = "'.$Id.'") AS TotalRounds
+			FROM BenchmarkDetails BD
+			LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
+			LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
+			LEFT JOIN Attributes A ON A.recid = BD.AttributeId
+			WHERE BD.BenchmarkId = '.$Id.'
+			ORDER BY RoundNo, OrderBy, Attribute';
+		$Result = mysql_query($SQL);	
+            while($Row = mysql_fetch_assoc($Result))
+            {
+		array_push($WorkoutDetails, new BaselineObject($Row));  
+            }
+            return $WorkoutDetails;       
+    }
+    
+    function getCustomBaseline($Id)
+    {
+            $CustomDetails = array();
+
+		$SQL = 'SELECT CW.WorkoutName, 
+                        E.Exercise, 
+                        "'.$this->getCustomDescription($Id).'" AS WorkoutDescription,
+                        E.recid AS ExerciseId, 
+                        A.Attribute, 
+                        CD.AttributeValue,  
+                        RoundNo,
+                        (SELECT MAX(RoundNo) FROM CustomDetails WHERE CustomId = "'.$Id.'") AS TotalRounds
+			FROM CustomDetails CD
+			LEFT JOIN CustomWorkouts CW ON CW.recid = CD.CustomId
+			LEFT JOIN Exercises E ON E.recid = CD.ExerciseId
+			LEFT JOIN Attributes A ON A.recid = CD.AttributeId
+			WHERE CD.CustomId = '.$Id.'
+			ORDER BY RoundNo, Attribute';
+		$Result = mysql_query($SQL);	
+            while($Row = mysql_fetch_assoc($Result))
+            {
+                array_push($CustomDetails, new BaselineObject($Row));  
+            }
+            return $CustomDetails;       
+    }
+    
+    function getDefaultBaseline()
     {
         $MemberActivities = array();
         if(!$this->MemberBaselineExists())
             $this->SaveNewBaseline();
-        $SQL = 'SELECT MB.ExerciseId AS recid, E.Exercise AS ActivityName, A.Attribute, MB.AttributeValue 
+        $SQL = 'SELECT "0" AS WorkoutId, 
+            "Default" AS WorkoutName, 
+            "Baseline" AS BaselineType, 
+            MB.ExerciseId AS ExerciseId, 
+            E.Exercise AS Exercise, 
+            A.Attribute, MB.AttributeValue,
+            "1" AS TotalRounds,
         FROM MemberBaseline MB
         JOIN Exercises E ON E.recid = MB.ExerciseId
         JOIN Attributes A ON A.recid = MB.AttributeId
@@ -278,27 +365,88 @@ class BaselineModel extends Model
             array_push($MemberActivities, new BaselineObject($Row));  
         }
         return $MemberActivities;
-    }
-                       
+    } 
+    
+            function getCustomDescription($Id)
+        {
+            $Description = '';
+            $SQL = 'SELECT E.Exercise, A.Attribute, CD.AttributeValue, WT.WorkoutType 
+                FROM CustomDetails CD
+                LEFT JOIN Exercises E ON E.recid = CD.ExerciseId
+                LEFT JOIN Attributes A ON A.recid = CD.AttributeId
+                LEFT JOIN CustomWorkouts CW ON CW.recid = CD.CustomId
+                LEFT JOIN WorkoutTypes WT ON WT.recid = CW.WorkoutTypeId
+                WHERE CD.CustomId = "'.$Id.'"
+                ORDER BY Exercise';
+            $Result = mysql_query($SQL);
+            $Exercise = '';
+            while($Row = mysql_fetch_assoc($Result))
+            {
+                if($Exercise != $Row['Exercise']){
+                    if($Description == '')
+                        $WorkoutType = $Row['WorkoutType'];
+                    else
+                        $Description .= ' | ';
+                    if($Row['Exercise'] != 'Timed')
+                        $Description .= $Row['Exercise'];
+                    $Exercise = $Row['Exercise'];
+                }
+                if($Row['Attribute'] == 'Reps'){
+                    $Description .= ' ';
+                    $Description .= $Row['AttributeValue'];
+                    $Description .= ' ';
+                    $Description .= $Row['Attribute'];
+                }else if($Row['Attribute'] == 'Weight'){
+                    $Description .= ' ';
+                    $Description .= $Row['AttributeValue'];
+                    if($this->getSystemOfMeasure() == 'Metric')
+                        $Description .= 'kg';
+                    else if($this->getSystemOfMeasure() == 'Imperial')
+                        $Description .= 'lbs';
+                }else if($Row['Attribute'] == 'Height'){
+                    
+                }else if($Row['Attribute'] == 'Distance'){
+                    
+                }else if($Row['Attribute'] == 'TimeToComplete'){
+                    
+                }else if($Row['Attribute'] == 'CountDown'){
+                    
+                }else if($Row['Attribute'] == 'Rounds'){
+                    
+                }else if($Row['Attribute'] == 'Calories'){
+                    
+                }
+            }
+            $Description .= $WorkoutType;
+            return $Description;           
+        }
 }
 
 class BaselineObject
 {
-	var $recid;
-	var $ActivityName;
-	var $ActivityType;
-	var $Description;
+	var $ExerciseId;
+        var $WorkoutId;
+	var $WorkoutName;
+	var $BaselineType;
+        var $Exercise;
+	var $WorkoutDescription;
 	var $Attribute;
 	var $AttributeValue;
+        var $RoundNo;
+        var $TotalRounds;
 
 	function __construct($Row)
 	{
-		$this->recid = isset($Row['recid']) ? $Row['recid'] : "";
-		$this->ActivityName = isset($Row['ActivityName']) ? $Row['ActivityName'] : "";
-		$this->ActivityType = isset($Row['ActivityType']) ? $Row['ActivityType'] : "";
-		$this->Description = isset($Row['Description']) ? $Row['Description'] : "";
+		$this->ExerciseId = isset($Row['ExerciseId']) ? $Row['ExerciseId'] : "";
+                $this->WorkoutId = isset($Row['WorkoutId']) ? $Row['WorkoutId'] : "";
+		$this->WorkoutName = isset($Row['WorkoutName']) ? $Row['WorkoutName'] : "";
+		$this->BaselineType = isset($Row['BaselineType']) ? $Row['BaselineType'] : "";
+                $this->Exercise = isset($Row['Exercise']) ? $Row['Exercise'] : "";
+		$this->WorkoutDescription = isset($Row['WorkoutDescription']) ? $Row['WorkoutDescription'] : "";
 		$this->Attribute = isset($Row['Attribute']) ? $Row['Attribute'] : "";
 		$this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : "";
+                $this->RoundNo = isset($Row['RoundNo']) ? $Row['RoundNo'] : "";
+                $this->TotalRounds = isset($Row['TotalRounds']) ? $Row['TotalRounds'] : "";
 	}
 }
 ?>

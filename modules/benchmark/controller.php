@@ -47,39 +47,40 @@ class BenchmarkController extends Controller
 	
 	function Output()
 	{
-            $html = '<div id="message">';
+            $html = '';
             $Model = new BenchmarkModel;
             if($_REQUEST['action'] == 'save'){
+                $html = '<div id="message">';
 		$html .= $Model->Log();
+                $html .= '</div>';
             }
-            //$RENDER = new Image(SITE_ID);
-            $html .= '</div><br/>';
 
 if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
 {
-
+	$Clock = '';
+	$Bhtml = '';
+	$Chtml = '';
 	$html.='<form name="form" id="benchmarkform" action="index.php">
             <input type="hidden" name="origin" value="'.$this->Origin.'"/>
             <input type="hidden" name="benchmarkId" value="'.$_REQUEST['benchmarkId'].'"/>
             <input type="hidden" name="customId" value="'.$_REQUEST['customId'].'"/>
             <input type="hidden" name="wodtype" value="3"/>
-            <input type="hidden" name="action" value="save"/>';
-	$clock = '';
-		$Bhtml = '';
-		$Chtml = '';
+            <input type="hidden" name="action" value="save"/>';       
+        $html.='<input type="checkbox" name="baseline" value="yes" data-role="none"/>';
+        $html.='Make this my baseline<br/><br/>';
         $html.='<div class="ui-grid-b">';
         $ThisRound = '';
 		$ThisExercise = '';
 	foreach($this->Workout as $Benchmark){
 		if($Benchmark->Attribute == 'TimeToComplete'){
-			$clock = $this->getStopWatch($Benchmark->ExerciseId);
+			$Clock = $this->getStopWatch($Benchmark->ExerciseId);
 		}
 		else if($Benchmark->Attribute == 'CountDown'){
-			$clock = $this->getCountDown($Benchmark->ExerciseId,$Benchmark->AttributeValue);
+			$Clock = $this->getCountDown($Benchmark->ExerciseId,$Benchmark->AttributeValue);
 		}
 		else{
 			
-			if($ThisRound != $Benchmark->RoundNo && $Benchmark->RoundNo > 0){
+			if($Benchmark->TotalRounds > 1 && $Benchmark->RoundNo > 0 && $ThisRound != $Benchmark->RoundNo){
 			
 				if($Chtml != '' && $Bhtml == ''){
 					$html.='<div class="ui-block-b"></div>'.$Chtml.'';
@@ -91,10 +92,9 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
 					$Chtml = '';
 					$Bhtml = '';
 				}
-				
-                                $html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
-				$html.='<div class="ui-block-a"></div><div class="ui-block-b">Round '.$Benchmark->RoundNo.'</div><div class="ui-block-c"></div>';
-				$html.='<div class="ui-block-a" style="font-size:small">'.$Benchmark->Exercise.'</div>';
+				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
+				$html.='<div class="ui-block-a" style="padding:2px 0 2px 0">Round '.$Benchmark->RoundNo.'</div><div class="ui-block-b" style="padding:2px 0 2px 0"></div><div class="ui-block-c" style="padding:2px 0 2px 0"></div>';
+				$html.='<div class="ui-block-a"><input data-role="none" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Benchmark->Exercise.'"/></div>';
 			}
 			else if($ThisExercise != $Benchmark->Exercise){
                             
@@ -116,10 +116,10 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
                                 if($Benchmark->Exercise == 'Total Rounds'){
                                     $Exercise = '<input class="buttongroup" data-inline="true" type="button" onclick="addRound();" value="+ Round"/>';
                                 }else{
-                                    $Exercise = $Benchmark->Exercise;
+                                    $Exercise = '<input data-role="none" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Benchmark->Exercise.'"/>';
                                 }
 				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
-				$html.='<div class="ui-block-a" style="font-size:small">'.$Exercise.'</div>';
+				$html.='<div class="ui-block-a">'.$Exercise.'</div>';
 				}
 			}	
 
@@ -127,8 +127,8 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
             if($Benchmark->Attribute == 'Height' || $Benchmark->Attribute == 'Distance' || $Benchmark->Attribute == 'Weight'){
                             $AttributeValue = '';	
 				if($Benchmark->Attribute == 'Distance'){
-                                    $Style='style="color:white;font-weight:bold;background-color:green"';
-					if($Model->SystemOfMeasure() != 'Metric'){
+                                    $Style='style="width:75%;color:white;font-weight:bold;background-color:#6f747a"';
+					if($this->SystemOfMeasure() != 'Metric'){
 						$Unit = 'm';
                                                 $AttributeValue = round($Benchmark->AttributeValue * 0.62, 2);
                                         }else{
@@ -137,8 +137,8 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
                                         }
 				}		
 				else if($Benchmark->Attribute == 'Weight'){
-                                    $Style='style="color:white;font-weight:bold;background-color:red"';
-					if($Model->SystemOfMeasure() != 'Metric'){
+                                    $Style='style="width:75%;color:white;font-weight:bold;background-color:#3f2b44"';
+					if($this->SystemOfMeasure() != 'Metric'){
                                             $AttributeValue = round($Benchmark->AttributeValue * 2.20, 2);
 						$Unit = 'lbs';
                                         }else{
@@ -147,8 +147,8 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
                                         }
 				}
 				else if($Benchmark->Attribute == 'Height'){
-                                    $Style='style="color:white;font-weight:bold;background-color:blue"';
-					if($Model->SystemOfMeasure() != 'Metric'){
+                                    $Style='style="width:75%;color:white;font-weight:bold;background-color:#66486e"';
+					if($this->SystemOfMeasure() != 'Metric'){
                                             $AttributeValue = round($Benchmark->AttributeValue * 0.39, 2);
 						$Unit = 'inches';
                                         }else{
@@ -158,7 +158,7 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
 				}
 
 				$Bhtml.='<div class="ui-block-b">';
-				$Bhtml.='<input class="textinput" size="6" '.$Style.' type="number" data-inline="true" name="'.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" value="'.$AttributeValue.'"/> '.$Unit.'';
+				$Bhtml.='<input data-role="none" '.$Style.' type="number" data-inline="true" name="'.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" value="'.$AttributeValue.'"/>';
 				$Bhtml.='</div>';		
 				if($Chtml != ''){
 					$html.=''.$Bhtml.''.$Chtml.'';
@@ -170,23 +170,23 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
             else if($Benchmark->Attribute == 'Calories' || $Benchmark->Attribute == 'Reps' || $Benchmark->Attribute == 'Rounds'){
                                 $Placeholder = '';
                                 if($Benchmark->Attribute == 'Calories'){
-                                    $Style='';
+                                    $Style='style="width:75%"';
                                     $Placeholder = 'placeholder="Calories"';
                                 }
-                                $InputAttributes = 'class="textinput" type="number" size="6"';
+                                $InputAttributes = 'type="number"';
                                 $InputName = ''.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'';
                                 $Value = $Benchmark->AttributeValue;
                                 if($Benchmark->Attribute == 'Rounds'){
-                                    $Style='';
+                                    $Style='style="width:75%"';
                                     $InputAttributes .= ' id="addround"';
                                     $InputName = 'Rounds';
                                     $Value = $_REQUEST['Rounds'] + 1 ;
                                 }
                                 if($Benchmark->Attribute == 'Reps'){
-                                    $Style='style="color:black;font-weight:bold;background-color:yellow"';
+                                    $Style='style="width:75%;color:black;font-weight:bold;background-color:#ccff66"';
                                 }
 				$Chtml.='<div class="ui-block-c">';
-				$Chtml.='<input '.$InputAttributes.' '.$Style.' name="'.$InputName.'" '.$Placeholder.' value="'.$Value.'"/>';
+				$Chtml.='<input data-role="none" '.$InputAttributes.' '.$Style.' name="'.$InputName.'" '.$Placeholder.' value="'.$Value.'"/>';
 				$Chtml.='</div>';
 				if($Bhtml != ''){
 					$html.=''.$Bhtml.''.$Chtml.'';
@@ -209,7 +209,9 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
 					$Chtml = '';
 					$Bhtml = '';
 				}	
-    $html.='</div>'.$clock.'</form><br/><br/>';		
+    $html.='</div>';
+    $html.=$Clock;
+    $html.='</form><br/><br/>';		
 
 }
 else

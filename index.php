@@ -35,7 +35,7 @@ $Environment = 'mobile';
 if (file_exists("includes/header/$Environment.php"))
 include("includes/header/$Environment.php");
 
-echo $HtmlOutput->GetOpenBodyTag();
+//echo $HtmlOutput->GetOpenBodyTag();
   
     $Banner = 'header';//default
     if(isset($_REQUEST['banner']))
@@ -45,7 +45,7 @@ echo $HtmlOutput->GetOpenBodyTag();
         $Banner = ''.$_REQUEST['module'].'_header';
     }
 ?>
-
+    <body>
 <div data-role="page">
 
 <div id="header">
@@ -72,5 +72,6 @@ include("modules/$Module/view/$Environment.php");
 include("includes/footer/$Environment.php");
 ?>
 </div><!-- /page -->
-<?php echo $HtmlOutput->GetCloseBodyTag();?>
+<?php //echo $HtmlOutput->GetCloseBodyTag();?>
+    </body>
 </html>

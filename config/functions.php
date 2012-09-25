@@ -4,11 +4,11 @@ require 'dbconfig.php';
 
 class User {
     
-	function __construct()
-	{
-		mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
-		@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");
-	}
+    function __construct()
+    {
+        mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
+        @mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");
+    }
     
     function checkUser($user, $oauth_provider) 
 	{
@@ -22,7 +22,6 @@ class User {
         $result = mysql_fetch_array($query);
         if (!empty($result)) {
             $_SESSION['UID'] = $result['UserId'];
-            $_SESSION['FirstName'] = $result['FirstName'];
         } else {
             $Gender = '';
             #user not present. Insert a new Record
@@ -53,8 +52,7 @@ class User {
             $query = mysql_query($Sql);
             $result = mysql_fetch_array($query);
 
-            $_SESSION['NEW'] = $result['UserId'];
-            $_SESSION['FirstName'] = $result['FirstName'];
+            $_SESSION['NEW_USER'] = $result['UserId'];
             return $result;
         }
         return $result;

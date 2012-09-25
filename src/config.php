@@ -1,4 +1,5 @@
 <?php
+define("THIS_DOMAIN", "crossfit.be-mobile.co.za");
 /*
  * Copyright 2010 Google Inc.
  *
@@ -27,7 +28,7 @@ $apiConfig = array(
     // OAuth2 Settings, you can get these keys at https://code.google.com/apis/console
     'oauth2_client_id' => '1031760335827.apps.googleusercontent.com',
     'oauth2_client_secret' => 'zThRCXeJeGKzDfcQwyOrdjv6',
-    'oauth2_redirect_uri' => 'http://www.crossfit.be-mobile.co.za/gplus_login.php',
+    'oauth2_redirect_uri' => 'http://'.THIS_DOMAIN.'/gplus_login.php',
 
     // The developer key, you get this at https://code.google.com/apis/console
     'developer_key' => 'AIzaSyAE4MIyaNDRq3Sm57alBvJKSLYQPbaUD_I',

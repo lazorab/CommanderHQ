@@ -1,26 +1,27 @@
-<script type="application/javascript" src="/js/add2home.js"></script>
-
 <?php 
 $ratio = SCREENWIDTH / 640;
 $margin = floor(((640*$ratio) - (435*$ratio)) / 4);
 $GridIconSize = floor(145*$ratio);
+
+echo $Display->FirstTimeMessage();
+
 ?>
 
 <div id="random"><?php echo $Display->RandomMessage();?></div>
 
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
 <a href="#" onclick="OpenThisPage('index.php?module=wod');">
-<img alt="WOD" <?php echo $RENDER->NewImage('wodlog.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>wodlog.png"/>
+<img alt="WOD" <?php echo $RENDER->NewImage('wod.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>wod.png"/>
 </a>
 </div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
-<a href="#" onclick="OpenThisPage('?module=benchmark');">
-<img alt="Benchmark" <?php echo $RENDER->NewImage('benchmarks.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>benchmarks.png"/>
+<a href="#" onclick="OpenThisPage('?module=locator');">
+<img alt="Affiliates" <?php echo $RENDER->NewImage('affiliates.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>affiliates.png"/>
 </a>
 </div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
-<a href="#" onclick="OpenThisPage('?module=baseline');">
-<img alt="Baseline" <?php echo $RENDER->NewImage('baseline.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>baseline.png"/>
+<a href="#" onclick="OpenThisPage('?module=aboutcrossfit');">
+<img alt="About" <?php echo $RENDER->NewImage('crossfit.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>crossfit.png"/>
 </a>
 </div>
 <div class="clear"></div>

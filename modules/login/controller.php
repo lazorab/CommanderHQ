@@ -19,8 +19,8 @@ class LoginController extends Controller
 			}
 			else{
 				if($_REQUEST['remember'] == 'yes'){
-					setcookie("CommanderUsername", $_REQUEST['username'], time() + (20 * 365 * 24 * 60 * 60), '/', 'crossfit.be-mobile.co.za', false, false);
-					setcookie("CommanderPassword", $_REQUEST['password'], time() + (20 * 365 * 24 * 60 * 60), '/', 'crossfit.be-mobile.co.za', false, false);
+					setcookie("CommanderUsername", $_REQUEST['username'], time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
+					setcookie("CommanderPassword", $_REQUEST['password'], time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
 				}			
 				$_SESSION['UID'] = $UserId;
 

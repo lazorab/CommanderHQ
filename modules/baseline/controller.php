@@ -27,20 +27,8 @@ class BaselineController extends Controller
         if($_REQUEST['action'] == 'save'){
             $Html .= '<div id="message">'.$this->SaveWorkout().'</div>';
         }
-
-      	$RENDER = new Image(SITE_ID);
-	$Model = new BaselineModel;
-        if($_REQUEST['action'] == 'savecustom'){
-            //validate
-            $exerciseId = $Model->SaveCustom();
-			$Html .= $this->CustomDetails($exerciseId);
-        }
-
-		else if($_REQUEST['baseline'] == 'Baseline'){//Baseline
-            $Html.= $this->getStopWatch('0'); 
-		}
-		
-		return $Html;
+        $Html.= $this->getBaselineDetails(); 
+	return $Html;
     }
     
     function getCustomBaselineActivities()
@@ -58,77 +46,178 @@ class BaselineController extends Controller
         }   
     }
     
-    function getMemberBaselineActivities()
+    function getBaselineDetails()
     {
         $Model = new BaselineModel;
-        $Activities = $Model->getMemberBaselineActivities();
-        $Html.='<div class="ui-grid-b">
-        <div class="ui-block-a">
-        Activity
-        </div>
-        <div class="ui-block-b">
-        Distance
-        </div>
-        <div class="ui-block-c">
-        Reps
-        </div>';
-        
+        $BaselineDetails = $Model->getBaselineDetails();
+        $html.='<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
+        $html.='<li>Baseline : '.$BaselineDetails[0]->WorkoutName.'</li>';
+        $html.='</ul>';
+        $html.='<div class="ui-grid-c">';
+        $html.='<div class="ui-block-a"><input data-role="none" type="text" style="width:75%;color:white;font-weight:bold;background-color:#3f2b44" value="Weight" readonly="readonly"/></div>';
+        $html.='<div class="ui-block-b"><input data-role="none" type="text" style="width:75%;color:white;font-weight:bold;background-color:#66486e" value="Height" readonly="readonly"/></div>';
+        $html.='<div class="ui-block-c"><input data-role="none" type="text" style="width:75%;color:white;font-weight:bold;background-color:#6f747a" value="Distance" readonly="readonly"/></div>';
+        $html.='<div class="ui-block-d"><input data-role="none" type="text" style="width:75%;color:black;font-weight:bold;background-color:#ccff66" value="Reps" readonly="readonly"/></div>';
+        $html.='</div>';
+        $Clock = '';
+	$Bhtml = '';
+	$Chtml = '';
+        $ThisRound = '';
+        $ThisExercise = '';
+        $html.='<form name="baselineform" id="baselineform" action="index.php">
+        <input type="hidden" name="BaselineType" value="'.$BaselineDetails[0]->BaselineType.'"/>
+        <input type="hidden" name="WorkoutId" value="'.$BaselineDetails[0]->WorkoutId.'"/>
+        <input type="hidden" name="action" value="save"/>';
 
-        foreach($Activities AS $Activity){
-            $Html.='<div class="ui-block-a">
-            <input class="textinput" style="width:75%" readonly="readonly" type="text" data-inline="true" name="'.$Activity->recid.'" value="'.$Activity->ActivityName.'"/>
-            </div>';
-            $Html.='<div class="ui-block-b">';
-            if($Activity->Attribute == 'Distance')
-                $Html.='<input class="textinput" style="width:75%" type="text" data-inline="true" name="'.$Activity->recid.'___Distance" value="'.$Activity->AttributeValue.'"/>';
-            $Html.='</div>';
-            $Html.='<div class="ui-block-c">';
-            if($Activity->Attribute == 'Reps')
-                $Html.='<input class="textinput" style="width:75%" type="text" data-inline="true" name="'.$Activity->recid.'___Reps" value="'.$Activity->AttributeValue.'"/>';
-            $Html.='</div>';        
-        }        
-        
-        $Html.='</div>';
-        
-        return $Html;
-    }
-	
-    function CustomDetails($Id)
-    {
-        $Model = new BaselineModel;
-        $Details = $Model->getCustomDetails($Id);
-        $Html = '<div style="text-align:center"><h3>'.$Details->ActivityName.'</h3></div>';
-        if($Details->ActivityType == 'Timed'){
-            $Html.= $this->getStopWatch($Details->recid); 
-        }
-        else if($Details->ActivityType == 'AMRAP'){
+        $html.='<div class="ui-grid-b">';
+
+	foreach($BaselineDetails as $Baseline){
+		if($Baseline->Attribute == 'TimeToComplete'){
+			$Clock = $this->getStopWatch();
+		}
+		else if($Baseline->Attribute == 'CountDown'){
+			$Clock = $this->getCountDown($Baseline->AttributeValue);
+		}
+		else{
 			
-            $Html .= $this->getCountDown($Details);
-        }
-        else if($Details->ActivityType == 'Weight'){
-            $Html .= $this->getWeight($Details->recid);
-        }
-        else if($Details->ActivityType == 'Reps'){
-            $Html .= $this->getReps($Details->recid);
-        }
-        else if($Details->ActivityType == 'Tabata'){
-            $Html .= $this->getTabata($Details);
-        }
-        else if($Details->ActivityType == 'Other'){
-            $Html .= '?';
-        }
-        return $Html;
+			if($Baseline->TotalRounds > 1 && $ThisRound != $Baseline->RoundNo && $Baseline->RoundNo > 0){
+			
+				if($Chtml != '' && $Bhtml == ''){
+					$html.='<div class="ui-block-b"></div>'.$Chtml.'';
+					$Chtml = '';
+					$Bhtml = '';
+				}
+				if($Chtml == '' && $Bhtml != ''){
+					$html.=''.$Bhtml.'<div class="ui-block-c"></div>';
+					$Chtml = '';
+					$Bhtml = '';
+				}
+				
+                                $html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
+				$html.='<div class="ui-block-a"></div><div class="ui-block-b">Round '.$Baseline->RoundNo.'</div><div class="ui-block-c"></div>';
+				$html.='<div class="ui-block-a" style="font-size:small"><input class="textinput" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Baseline->Exercise.'"/></div>';
+			}
+			else if($ThisExercise != $Baseline->Exercise){
+                            
+                                if(isset($_REQUEST['Rounds']))
+                                    $RoundNo = $_REQUEST['Rounds'];
+                                else
+                                    $RoundNo = $Baseline->RoundNo;
+
+				if($Chtml != '' && $Bhtml == ''){
+					$html.='<div class="ui-block-b"></div>'.$Chtml.'';
+					$Chtml = '';
+					$Bhtml = '';
+				}
+				if($Chtml == '' && $Bhtml != ''){
+					$html.=''.$Bhtml.'<div class="ui-block-c"></div>';
+					$Chtml = '';
+					$Bhtml = '';
+				}
+                                if($Baseline->Exercise == 'Total Rounds'){
+                                    $Exercise = '<input class="buttongroup" data-inline="true" type="button" onclick="addRound();" value="+ Round"/>';
+                                }else{
+                                    $Exercise = '<input class="textinput" style="width:75%" readonly="readonly" type="text" data-inline="true" name="'.$Baseline->ExerciseId.'" value="'.$Baseline->Exercise.'"/>';
+                                }
+				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
+				$html.='<div class="ui-block-a" style="font-size:small">'.$Exercise.'</div>';
+				}
+			}	
+
+		
+            if($Baseline->Attribute == 'Height' || $Baseline->Attribute == 'Distance' || $Baseline->Attribute == 'Weight'){
+                            $AttributeValue = '';	
+				if($Baseline->Attribute == 'Distance'){
+                                    $Style='style="width:75%;color:white;font-weight:bold;background-color:#6f747a"';
+					if($this->SystemOfMeasure() != 'Metric'){
+						$Unit = 'm';
+                                                $AttributeValue = round($Baseline->AttributeValue * 0.62, 2);
+                                        }else{
+						$Unit = 'km';
+                                                $AttributeValue = $Baseline->AttributeValue;
+                                        }
+				}		
+				else if($Baseline->Attribute == 'Weight'){
+                                    $Style='style="width:75%;color:white;font-weight:bold;background-color:#3f2b44"';
+					if($this->SystemOfMeasure() != 'Metric'){
+                                            $AttributeValue = round($Baseline->AttributeValue * 2.20, 2);
+						$Unit = 'lbs';
+                                        }else{
+						$Unit = 'kg';
+                                                $AttributeValue = $Baseline->AttributeValue;
+                                        }
+				}
+				else if($Baseline->Attribute == 'Height'){
+                                    $Style='style="width:75%;color:white;font-weight:bold;background-color:#66486e"';
+					if($this->SystemOfMeasure() != 'Metric'){
+                                            $AttributeValue = round($Baseline->AttributeValue * 0.39, 2);
+						$Unit = 'inches';
+                                        }else{
+						$Unit = 'cm';
+                                                $AttributeValue = $Baseline->AttributeValue;
+                                        }
+				}
+
+				$Bhtml.='<div class="ui-block-b">';
+				$Bhtml.='<input class="textinput" '.$Style.' type="number" data-inline="true" name="'.$RoundNo.'___'.$Baseline->ExerciseId.'___'.$Baseline->Attribute.'" value="'.$AttributeValue.'"/> '.$Unit.'';
+				$Bhtml.='</div>';		
+				if($Chtml != ''){
+					$html.=''.$Bhtml.''.$Chtml.'';
+					$Chtml = '';
+					$Bhtml = '';
+				}
+			}
+                        
+            else if($Baseline->Attribute == 'Calories' || $Baseline->Attribute == 'Reps' || $Baseline->Attribute == 'Rounds'){
+                                $Placeholder = '';
+                                if($Baseline->Attribute == 'Calories'){
+                                    $Style='';
+                                    $Placeholder = 'placeholder="Calories"';
+                                }
+                                $InputAttributes = 'class="textinput" type="number"';
+                                $InputName = ''.$RoundNo.'___'.$Baseline->ExerciseId.'___'.$Baseline->Attribute.'';
+                                $Value = $Baseline->AttributeValue;
+                                if($Baseline->Attribute == 'Rounds'){
+                                    $Style='';
+                                    $InputAttributes .= ' id="addround"';
+                                    $InputName = 'Rounds';
+                                    $Value = $_REQUEST['Rounds'] + 1 ;
+                                }
+                                if($Baseline->Attribute == 'Reps'){
+                                    $Style='style="width:75%;color:black;font-weight:bold;background-color:#ccff66"';
+                                }
+				$Chtml.='<div class="ui-block-c">';
+				$Chtml.='<input '.$InputAttributes.' '.$Style.' name="'.$InputName.'" '.$Placeholder.' value="'.$Value.'"/>';
+				$Chtml.='</div>';
+				if($Bhtml != ''){
+					$html.=''.$Bhtml.''.$Chtml.'';
+					$Bhtml = '';
+					$Chtml = '';
+				}
+			}
+		
+		
+	$ThisRound = $Baseline->RoundNo;
+	$ThisExercise = $Baseline->Exercise;
+	}
+				if($Chtml != '' && $Bhtml == ''){
+					$html.='<div class="ui-block-b"></div>'.$Chtml.'';
+					$Chtml = '';
+					$Bhtml = '';
+				}
+				if($Chtml == '' && $Bhtml != ''){
+					$html.=''.$Bhtml.'<div class="ui-block-c"></div>';
+					$Chtml = '';
+					$Bhtml = '';
+				}	
+    $html.='</div>'.$Clock.'</form><br/><br/>';
+        
+        return $html;
     }
     
-    function getStopWatch($exerciseId)
+    function getStopWatch()
     {
-        $Html='<form name="clockform" id="baselineform" action="index.php">
-        <input type="hidden" name="baseline" value="'.$_REQUEST['baseline'].'"/>
-        <input type="hidden" name="exercise" value="'.$exerciseId.'"/>
-        <input type="hidden" name="action" value="save"/>';
-        if($_REQUEST['baseline'] == 'Baseline'){
-            $Html.=$this->getMemberBaselineActivities();
-        }
+        $Html='';
         $TimeToComplete = '00:00:0';
         $StartStopButton = 'Start';
         if(isset($_REQUEST['TimeToComplete'])){
@@ -136,12 +225,12 @@ class BaselineController extends Controller
             if($TimeToComplete != '00:00:0')
                 $StartStopButton = 'Stop';            
         }
-        $Html.='<input type="text" id="clock" name="63___TimeToComplete" value="'.$TimeToComplete.'"/>';
+        $Html.='<input type="text" id="clock" name="0___63___TimeToComplete" value="'.$TimeToComplete.'"/>';
 	$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="'.$StartStopButton.'"/>';
 	$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
 	$Html.='<input class="buttongroup" type="button" onclick="baselinesubmit();" value="Save"/>';
-        $Html.='</form><br/><br/>';
-
+        $Html.='</form><br/><br/>';     
+        
         return $Html;
     }
     
@@ -184,33 +273,22 @@ class BaselineController extends Controller
         return $Html;       
     }
     
-    function getCountDown($Details)
+    function getCountDown($Time)
     {
-        $RENDER = new Image();
-        $Start = $RENDER->NewImage('start.png', SCREENWIDTH);
-        $Stop = $RENDER->NewImage('stop.png', SCREENWIDTH);
-        $Reset = $RENDER->NewImage('report.png', SCREENWIDTH);
-        $Save = $RENDER->NewImage('save.png', SCREENWIDTH);
-        $Html='<form name="clockform" action="index.php">
-        <input type="hidden" name="module" value="baseline"/>
-        <input type="hidden" name="baseline" value="'.$_REQUEST['baseline'].'"/>
-        <input type="hidden" name="exercise" value="'.$Details->recid.'"/>
-        <input type="hidden" name="action" value="save"/>
-		<input type="hidden" name="CountDown" value="'.$Details->AttributeValue.'"/>
-		<input type="hidden" name="Rounds" id="rounds" value="0"/>
-        <input id="clock" name="timer" value="'.$Details->AttributeValue.'"/>
-        </form>	
-        <div style="margin:0 30% 0 30%; width:50%">
-        <img alt="Start" '.$Start.' src="'.ImagePath.'start.png" onclick="startcountdown(document.clockform.timer.value)"/>&nbsp;&nbsp;
-        <img alt="Stop" '.$Stop.' src="'.ImagePath.'stop.png" onclick="stopcountdown()"/><br/><br/>
-        <img alt="Reset" '.$Reset.' src="'.ImagePath.'reset.png" onclick="resetcountdown(\''.$Details->AttributeValue.'\')"/>&nbsp;&nbsp;
-        <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="save()"/>
-        </div><br/>
-		<ul data-role="listview" id="listview" data-inset="true">
-        <li><a href="" onclick="countclicks();">+ Rounds <span class="ui-li-count">0</span></a></li>
-		</ul>
-		<br/>';
-        
+	$RoundNo = 0;
+        $TimeToComplete = $Time;
+        $StartStopButton = 'Start';
+        if(isset($_REQUEST[''.$RoundNo.'___63___CountDown'])){
+            $TimeToComplete = $_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'];
+            if($TimeToComplete != $Time)
+                $StartStopButton = 'Stop';
+        }
+	$Html ='<input type="hidden" name="'.$RoundNo.'___'.$ExerciseId.'___CountDown" id="CountDown" value="'.$Time.'"/>';
+        $Html.='<input id="clock" name="timer" value="'.$TimeToComplete.'"/>';
+        $Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstopcountdown();" value="'.$StartStopButton.'"/>';
+        $Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetcountdown();" value="Reset"/>';
+        $Html.='<input class="buttongroup" type="button" onClick="benchmarksubmit();" value="Save"/>';
+		
         return $Html;
     }
 }

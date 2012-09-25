@@ -10,12 +10,21 @@ class Model
 	
 	function getRandomMessage()
 	{
-            $Member = new Member($_SESSION['UID']);
-            $MemberDetails = $Member->Details();
-            $SQL = 'SELECT Message FROM RandomMessage WHERE recid = 1';
-            $Result = mysql_query($SQL);	
-            $Row = mysql_fetch_assoc($Result);
-            $Message = str_replace('{NAME}',$MemberDetails->FirstName,$Row['Message']);
+            $Message = '';
+            if(isset($_SESSION['UID'])){
+                $SQL = 'SELECT FirstName FROM Members WHERE UserId = "'.$_SESSION['UID'].'"';
+                $Result = mysql_query($SQL);	
+                $Row = mysql_fetch_assoc($Result);
+                $FirstName = $Row['FirstName'];
+
+                $SQL = 'SELECT Message FROM RandomMessage WHERE recid = 1';
+                $Result = mysql_query($SQL);	
+                $Row = mysql_fetch_assoc($Result);
+                $Message = str_replace('{NAME}',$FirstName,$Row['Message']);
+            }
+            else{
+                $Message = 'Subscribe to get full use of Commander';
+            }
 		
             return $Message;	
 	}

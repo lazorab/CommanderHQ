@@ -1,50 +1,44 @@
-	var flagclock = 0;
-	var flagstop = 0;
-	var stoptime = 0;
-	var splitcounter = 0;
-	var currenttime;
-	var splitdate = '';
-	var output;
-	var clock;
-
+var flagclock = 0;
+var flagstop = 0;
+var stoptime = 0;
+var splitcounter = 0;
+var currenttime;
+var splitdate = '';
+var output;
+var clock;
 
 function save()
 {
-	document.clockform.submit();
-}
-
-function savecustom()
-{
-	document.customform.submit();
+    document.clockform.submit();
 }
 
 function countclicks()
 {
-	var rounds = parseInt(document.getElementById("rounds").value);
-	document.getElementById("rounds").value = rounds + 1;
-	$('.ui-li-count').html(rounds + 1);
+    var rounds = parseInt(document.getElementById("rounds").value);
+    document.getElementById("rounds").value = rounds + 1;
+    $('.ui-li-count').html(rounds + 1);
 }
 
-	function startstopcountdown()
-		{
-                    var startstop = document.getElementById('startstopbutton');
+function startstopcountdown()
+{
+    var startstop = document.getElementById('startstopbutton');
                 
-		if(flagclock==0)
-			{
-			startstop.value = 'Stop';
-			flagclock = 1;
-			startcountdown();
-			}
-		else
-			{
-			startstop.value = 'Start';
-			flagclock = 0;
-			flagstop = 1;
-			stopcountdown();
-			}
-                    $('.buttongroup').button();
-                    $('.buttongroup').button('refresh');
-		}
+    if(flagclock==0)
+    {
+        startstop.value = 'Stop';
+	flagclock = 1;
+	startcountdown();
+    }
+    else
+    {
+        startstop.value = 'Start';
+	flagclock = 0;
+	flagstop = 1;
+	stopcountdown();
+    }
+    $('.buttongroup').button();
+    $('.buttongroup').button('refresh');
+}
 
 function stopcountdown()
 {
@@ -107,13 +101,11 @@ var javascript_countdown = function () {
 	}
  
 	function show_time_left() {
-		document.getElementById("clock").value = format_output();//time_left;
-		//document.getElementById("clock").value = time_left;//time_left;
+            document.getElementById("clock").value = format_output();//time_left;
 	}
  
 	function no_time_left() {
-		document.getElementById("clock").value = no_time_left_message;
-		//document.clockform.submit();
+            document.getElementById("clock").value = no_time_left_message;
 	}
  
 	return {
