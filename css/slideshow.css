@@ -72,13 +72,13 @@
 */
 
 .pagination {
-	margin:2px auto 0;
-	width:100px;
+	margin:18px auto 0;
+	width:120px;
 }
 
 .pagination li {
 	float:left;
-	margin:0 1px;
+	margin:0 4px 0 0;
 	list-style:none;
 }
 

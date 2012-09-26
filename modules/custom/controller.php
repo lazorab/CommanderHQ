@@ -82,8 +82,16 @@ class CustomController extends Controller
 	foreach($Exercises AS $Exercise){
             $Html .= '<option id="'.$Exercise->recid.'" value="'.$Exercise->ActivityName.'">'.$Exercise->ActivityName.'</option>';
 	}
-	$Html .= '</select><br/>
-                  <div class="ui-grid-b">
+	$Html .= '</select>';
+	if($_REQUEST['action'] == 'save'){
+	$Html .= '<div class="ui-grid-c">';
+    $Html .= '<div class="ui-block-a"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#3f2b44" value="Weight" readonly="readonly"/></div>';
+    $Html .= '<div class="ui-block-b"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#66486e" value="Height" readonly="readonly"/></div>';
+    $Html .= '<div class="ui-block-c"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#6f747a" value="Distance" readonly="readonly"/></div>';
+    $Html .= '<div class="ui-block-d"><input type="text" data-role="none" style="width:80%;color:black;font-weight:bold;background-color:#ccff66" value="Reps" readonly="readonly"/></div>';
+    $Html .= '</div>';
+	}
+    $Html .= '<div class="ui-grid-b">
                   <div id="add_exercise">'.$this->AddExercise().'</div>
                   <div id="new_exercise">'.$this->ChosenExercises().'</div>
                   </div>

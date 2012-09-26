@@ -23,26 +23,26 @@ class BaselineModel extends Model
         {
             $AttributeValue = '';
             //check to see if we must convert back to metric first for data storage
-            if($ActivityField->Attribute == 'Height' || $ActivityField->Attribute == 'Distance' || $ActivityField->Attribute == 'Weight'){
+            if($Activity->Attribute == 'Height' || $Activity->Attribute == 'Distance' || $Activity->Attribute == 'Weight'){
                             
-            if($ActivityField->Attribute == 'Distance'){
+            if($Activity->Attribute == 'Distance'){
                 if($this->getSystemOfMeasure() != 'Metric'){
-                    $AttributeValue = round($ActivityField->AttributeValue * 1.61, 2);
+                    $AttributeValue = round($Activity->AttributeValue * 1.61, 2);
                 }
             }		
-            else if($ActivityField->Attribute == 'Weight'){
+            else if($Activity->Attribute == 'Weight'){
                 if($this->getSystemOfMeasure() != 'Metric'){
-                    $AttributeValue = round($ActivityField->AttributeValue * 0.45, 2);
+                    $AttributeValue = round($Activity->AttributeValue * 0.45, 2);
                 }
             }
-            else if($ActivityField->Attribute == 'Height'){
+            else if($Activity->Attribute == 'Height'){
                 if($this->getSystemOfMeasure() != 'Metric'){
-                    $AttributeValue = round($ActivityField->AttributeValue * 2.54, 2);
+                    $AttributeValue = round($Activity->AttributeValue * 2.54, 2);
                 }
             }
             }   
             if($AttributeValue == ''){
-                $AttributeValue = $ActivityField->AttributeValue;
+                $AttributeValue = $Activity->AttributeValue;
             }
             
             //First Store the values incase they changed
@@ -140,7 +140,7 @@ class BaselineModel extends Model
     
     function SaveNewBaseline()
 	{
-        $DefaultActivities=array('Row'=>'500','Squats'=>'40','Sit Ups'=>'30','Push Ups'=>'20','Pull Ups'=>'10');
+        $DefaultActivities=array('Row'=>'500','Squats'=>'40','Sit-Ups'=>'30','Push-Ups'=>'20','Pull-Ups'=>'10');
         
         foreach($DefaultActivities AS $key=>$val)
         {
@@ -153,10 +153,13 @@ class BaselineModel extends Model
                  OR A.Attribute = "Reps")'; 
             $Result = mysql_query($Query);        
             $Row = mysql_fetch_assoc($Result);
+            
+            $BaselineTypeId = '1';
+            $WorkoutId = '0';
             $ExerciseId = $Row['ExerciseId'];
             $AttributeId = $Row['AttributeId'];
             $AttributeValue = $Row['AttributeValue'];
-             $SQL = 'INSERT INTO MemberBaseline(MemberId, ExerciseId, AttributeId, AttributeValue) VALUES("'.$_SESSION['UID'].'", "'.$ExerciseId.'", "'.$AttributeId.'", "'.$AttributeValue.'")';
+             $SQL = 'INSERT INTO MemberBaseline(MemberId, BaselineTypeId, WorkoutId, ExerciseId, AttributeId, AttributeValue) VALUES("'.$_SESSION['UID'].'", "'.$BaselineTypeId.'", "'.$WorkoutId.'", "'.$ExerciseId.'", "'.$AttributeId.'", "'.$AttributeValue.'")';
              mysql_query($SQL);  
         }
     }
@@ -274,9 +277,13 @@ class BaselineModel extends Model
         else if($Row['BaselineType'] == 'Benchmark'){
             $BaselineObject = $this->getBenchmarkBaseline($Row['WorkoutId']);
         }     
+        else if($Row['BaselineType'] == 'Baseline'){
+            $BaselineObject = $this->getDefaultBaseline();          
+        }    
         else{
-            $BaselineObject = $this->getDefaultBaseline($Row['WorkoutId']);          
-        }                    
+            $this->SaveNewBaseline();
+            $BaselineObject = $this->getDefaultBaseline();      
+        }
         return $BaselineObject;
     } 
     
@@ -346,19 +353,19 @@ class BaselineModel extends Model
     function getDefaultBaseline()
     {
         $MemberActivities = array();
-        if(!$this->MemberBaselineExists())
-            $this->SaveNewBaseline();
+
         $SQL = 'SELECT "0" AS WorkoutId, 
             "Default" AS WorkoutName, 
             "Baseline" AS BaselineType, 
             MB.ExerciseId AS ExerciseId, 
             E.Exercise AS Exercise, 
             A.Attribute, MB.AttributeValue,
-            "1" AS TotalRounds,
+            "1" AS TotalRounds
         FROM MemberBaseline MB
         JOIN Exercises E ON E.recid = MB.ExerciseId
         JOIN Attributes A ON A.recid = MB.AttributeId
         WHERE MB.MemberId = "'.$_SESSION['UID'].'"';
+        //echo $SQL;
         $Result = mysql_query($SQL);
         while($Row = mysql_fetch_assoc($Result))
         {

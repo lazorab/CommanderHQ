@@ -161,18 +161,28 @@ function DisplayExercise(exercise)
            }
            	
            if(this.Attribute == 'Distance' || this.Attribute == 'Weight'){
+			var Style='';
                 if(this.Attribute == 'Distance'){
+					Style='style="width:75%;color:white;font-weight:bold;background-color:#6f747a"';
                     if('<?php echo $Display->SystemOfMeasure();?>' == 'imperial')
                         Unit = 'yards';
                     else
                         Unit = 'metres';
                 }		
                 else if(this.Attribute == 'Weight'){
+					Style='style="width:75%;color:white;font-weight:bold;background-color:#3f2b44"';
                     if('<?php $Display->SystemOfMeasure();?>' == 'imperial')
                         Unit = 'lbs';
                     else
                         Unit = 'kg';
                 }
+                else if(this.Attribute == 'Height'){
+					Style='style="width:75%;color:white;font-weight:bold;background-color:#66486e"';
+                    if('<?php $Display->SystemOfMeasure();?>' == 'imperial')
+                        Unit = 'inches';
+                    else
+                        Unit = 'cm';
+                }				
            
                 Bhtml +='<div class="ui-block-b">';
                 Bhtml +='<input class="textinput" size="6" type="number" data-inline="true" name="' + this.RoundNo + '___' + this.recid + '___' + this.Attribute + '"';
@@ -187,7 +197,7 @@ function DisplayExercise(exercise)
            }
            else if(this.Attribute == 'Reps'){
                 Chtml +='<div class="ui-block-c">';
-                Chtml +='<input class="textinput" size="6" type="number" data-inline="true" name="' + this.RoundNo + '___' + this.recid + '___' + this.Attribute + '"';
+                Chtml +='<input class="textinput" ' + Style + 'size="6" type="number" data-inline="true" name="' + this.RoundNo + '___' + this.recid + '___' + this.Attribute + '"';
                 Chtml +=' value="' + this.AttributeValue + '"';
                 Chtml +=' placeholder="' + this.Attribute + '"/>';
                 Chtml +='</div>';

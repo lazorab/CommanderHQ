@@ -78,46 +78,82 @@ function display(data)
                 </ul> 
                 <div class="ui-grid-a">
                     <div class="ui-block-a">
-                    <input type="number" id="metric_weight_input" name="metric_weight" value="" placeholder="Weight in kg"/>
+                    <input data-role="none" style="margin:10%;width:80%" type="number" id="metric_weight_input" name="metric_weight" value="" placeholder="Weight in kg"/>
                     </div>
                     <div class="ui-block-b">
-                <input type="number" id="imperial_weight" name="metric_weight" value="" placeholder="lbs equivalent" disabled="disabled"/>
+                <input data-role="none" style="margin:10%;width:80%" type="number" id="imperial_weight" name="metric_weight" value="" placeholder="lbs equivalent" disabled="disabled"/>
                     </div>
                     <div class="ui-block-a">
-                <input type="number" id="imperial_weight_input" name="imperial_weight" value="" placeholder="Weight in lbs"/>
+                <input data-role="none" style="margin:10%;width:80%" type="number" id="imperial_weight_input" name="imperial_weight" value="" placeholder="Weight in lbs"/>
                </div>
                     <div class="ui-block-b">
-                <input type="number" id="metric_weight" name="metric_weight" value="" placeholder="kg equivalent" disabled="disabled"/>
+                <input data-role="none" style="margin:10%;width:80%" type="number" id="metric_weight" name="metric_weight" value="" placeholder="kg equivalent" disabled="disabled"/>
                     </div>
                 </div>
                 <input type="button" name="btnsubmit" value="Convert" onclick="getConversionValues('weight');"/> 
             </div>
             <div class="slide">
-<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-    <li>Height</li>
-</ul>
-                <input type="number" size="10" id="metric_height_input" name="convert" value="" placeholder="Metric Height"/><div id="imperial_height"></div>
-                <input type="number" size="10" id="imperial_height_input" name="convert" value="" placeholder="Imperial Height"/><div id="metric_height"></div>
+				<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+					<li>Height</li>
+				</ul>
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                    <input data-role="none" style="margin:10%;width:80%" type="number" id="metric_height_input" name="metric_height" value="" placeholder="Height in cm"/>
+                    </div>
+                    <div class="ui-block-b">
+                <input data-role="none" style="margin:10%;width:80%" type="number" id="imperial_height" name="metric_height" value="" placeholder="inch equivalent" disabled="disabled"/>
+                    </div>
+                    <div class="ui-block-a">
+                <input data-role="none" style="margin:10%;width:80%" type="number" id="imperial_height_input" name="imperial_height" value="" placeholder="Height in inches"/>
+               </div>
+                    <div class="ui-block-b">
+                <input data-role="none" style="margin:10%;width:80%" type="number" id="metric_height" name="metric_height" value="" placeholder="cm equivalent" disabled="disabled"/>
+                    </div>
+                </div>				
                 <input type="button" name="btnsubmit" value="Convert" onclick="getConversionValues('height');"/>
             </div>
             <div class="slide">
-<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-    <li>Distance</li>
-</ul>
-                <input type="number" size="10" id="metric_distance_input" name="convert" value="" placeholder="Metric Distance"/><div id="imperial_distance"></div>
-                <input type="number" size="10" id="imperial_distance_input" name="convert" value="" placeholder="Imperial Distance"/><div id="metric_distance"></div>
+				<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+					<li>Distance</li>
+				</ul>
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                    <input data-role="none" style="margin:10%;width:80%" type="number" id="metric_distance_input" name="metric_distance" value="" placeholder="Distance in km"/>
+                    </div>
+                    <div class="ui-block-b">
+                <input data-role="none" style="margin:10%;width:80%" type="number" id="imperial_distance" name="metric_distance" value="" placeholder="mile equivalent" disabled="disabled"/>
+                    </div>
+                    <div class="ui-block-a">
+                <input data-role="none" style="margin:10%;width:80%" type="number" id="imperial_distance_input" name="imperial_distance" value="" placeholder="Distance in miles"/>
+               </div>
+                    <div class="ui-block-b">
+                <input data-role="none" style="margin:10%;width:80%" type="number" id="metric_distance" name="metric_distance" value="" placeholder="km equivalent" disabled="disabled"/>
+                    </div>
+                </div>				
                 <input type="button" name="btnsubmit" value="Convert" onclick="getConversionValues('distance');"/>
             </div>
             <div class="slide">
-<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-    <li>Volume</li>
-</ul>
-                <input type="number" size="10" id="metric_volume_input" name="convert" value="" placeholder="Metric Volume"/><div id="imperial_volume"></div>
-                <input type="number" size="10" id="imperial_volume_input" name="convert" value="" placeholder="Imperial Volume"/><div id="metric_volume"></div>
+				<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+					<li>Volume</li>
+				</ul>
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                    <input data-role="none" style="margin:10%;width:80%" type="number" id="metric_volume_input" name="metric_volume" value="" placeholder="Volume in Litres"/>
+                    </div>
+                    <div class="ui-block-b">
+                <input data-role="none" style="margin:10%;width:80%" type="number" id="imperial_volume" name="metric_volume" value="" placeholder="Oz equivalent" disabled="disabled"/>
+                    </div>
+                    <div class="ui-block-a">
+                <input data-role="none" style="margin:10%;width:80%" type="number" id="imperial_volume_input" name="imperial_volume" value="" placeholder="Volume in Oz"/>
+               </div>
+                    <div class="ui-block-b">
+                <input data-role="none" style="margin:10%;width:80%" type="number" id="metric_volume" name="metric_volume" value="" placeholder="Litre equivalent" disabled="disabled"/>
+                    </div>
+                </div>				
                 <input type="button" name="btnsubmit" value="Convert" onclick="getConversionValues('volume');"/>
             </div>
         </div>
-        <a href="#" class="prev"><img src="images/arrow-next.png" width="26" height="16" alt="Arrow Prev"></a>
-        <a href="#" class="next"><img src="images/arrow-prev.png" width="26" height="16" alt="Arrow Next"></a>
+        <a href="#" class="prev"><img src="images/arrow-next.png" width="36" height="36" alt="Arrow Prev"></a>
+        <a href="#" class="next"><img src="images/arrow-prev.png" width="36" height="36" alt="Arrow Next"></a>
     </div>
 </div>

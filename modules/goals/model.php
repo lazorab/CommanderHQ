@@ -10,7 +10,11 @@ class GoalsModel extends Model
     function getActiveGoals()
     {
         $Goals=array();
-		$SQL = 'SELECT recid, GoalTitle, GoalDescription FROM MemberGoals WHERE AchieveByDate > NOW() AND Achieved <> 1';
+		$SQL = 'SELECT recid, GoalTitle, GoalDescription 
+                    FROM MemberGoals 
+                    WHERE MemberId = '.$_SESSION['UID'].'
+                    AND AchieveByDate > NOW() 
+                    AND Achieved <> 1';
 		$Result = mysql_query($SQL);	
 		while($Row = mysql_fetch_assoc($Result))
         {
@@ -22,7 +26,10 @@ class GoalsModel extends Model
     function getAchievedGoals()
     {
         $Goals=array();
-		$SQL = 'SELECT recid, GoalTitle, GoalDescription FROM MemberGoals WHERE Achieved = 1';
+		$SQL = 'SELECT recid, GoalTitle, GoalDescription 
+                    FROM MemberGoals 
+                    WHERE MemberId = '.$_SESSION['UID'].'
+                    AND Achieved = 1';
 		$Result = mysql_query($SQL);	
 		while($Row = mysql_fetch_assoc($Result))
         {
@@ -34,7 +41,11 @@ class GoalsModel extends Model
     function getFailedGoals()
     {
         $Goals=array();
-		$SQL = 'SELECT recid, GoalTitle, GoalDescription FROM MemberGoals WHERE AchieveByDate < NOW() AND Achieved = 0';
+		$SQL = 'SELECT recid, GoalTitle, GoalDescription 
+                    FROM MemberGoals 
+                    WHERE MemberId = '.$_SESSION['UID'].'
+                    AND AchieveByDate < NOW() 
+                    AND Achieved = 0';
 		$Result = mysql_query($SQL);	
 		while($Row = mysql_fetch_assoc($Result))
         {
@@ -43,10 +54,34 @@ class GoalsModel extends Model
 		return $Goals;        
     }
     
+     function getGoalHistory()
+    {
+        $Goals=array();
+		$SQL = 'SELECT recid, GoalTitle, GoalDescription, AchieveByDate, AchievedDate,
+                    CASE WHEN Achieved = 0 AND AchieveByDate > NOW() 
+                    THEN "Not Yet"
+                    WHEN Achieved = 0 AND AchieveByDate < NOW() 
+                    THEN "No"
+                    WHEN Achieved = 1
+                    THEN "Yes"
+                    END
+                    AS Achieved
+                    FROM MemberGoals 
+                    WHERE MemberId = '.$_SESSION['UID'].'';
+		$Result = mysql_query($SQL);	
+		while($Row = mysql_fetch_assoc($Result))
+        {
+            array_push($Goals, new GoalObject($Row)); 
+        }
+		return $Goals;        
+    }   
+    
     function getGoal($Id)
     {
-		$SQL = 'SELECT recid, GoalTitle, GoalDescription, Achieved, SetDate,  AchievedDate,  AchieveByDate
-        FROM MemberGoals WHERE recid = '.$Id.'';
+	$SQL = 'SELECT recid, GoalTitle, GoalDescription, Achieved, SetDate,  AchievedDate,  AchieveByDate
+        FROM MemberGoals 
+        WHERE MemberId = '.$_SESSION['UID'].'
+        AND recid = '.$Id.'';
 		$Result = mysql_query($SQL);	
 		$Row = mysql_fetch_assoc($Result);
         $Goal = new GoalObject($Row); 
@@ -100,6 +135,5 @@ class GoalObject
             $this->AchieveByDate = isset($Row['AchieveByDate']) ? date('d/m/Y', strtotime($Row['AchieveByDate'])) : "";
             $this->AchievedDate = isset($Row['AchieveDate']) ? $Row['AchievedDate'] : "";            
         }
-        
     }
 ?>

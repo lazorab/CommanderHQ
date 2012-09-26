@@ -1,3 +1,4 @@
+<div id="bodytext">
 <p>
 CrossFit is a training method that is  currently one of the most efficient and effective exercise programs out there.
 </p><p>
@@ -14,3 +15,4 @@ We highly recommend you connect with your closest affiliate as it it critical to
 </p><p>
 Have fun, enjoy the journey...    
 </p>
+</div>

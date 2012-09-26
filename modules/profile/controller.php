@@ -14,6 +14,11 @@ class ProfileController extends Controller
             parent::__construct();
             $Model = new ProfileModel;
             session_start();
+            if(isset($_SESSION['NEW_USER'])){
+                $this->UserId = $_SESSION['NEW_USER'];
+            }else{
+                $this->UserId = $_SESSION['UID'];
+            }
         }
         
         function Validate()

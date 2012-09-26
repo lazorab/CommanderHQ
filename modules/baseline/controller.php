@@ -5,21 +5,20 @@ class BaselineController extends Controller
     var $SelectedBaseline;
     var $SaveMessage;
 	
-	function __construct()
-	{
-            parent::__construct();
-            session_start();
-            if(!isset($_SESSION['UID'])){
-                header('location: index.php?module=login');	
-            }
-
-	}
+    function __construct()
+    {
+        parent::__construct();
+        session_start();
+        if(!isset($_SESSION['UID'])){
+            header('location: index.php?module=login');	
+        }
+    }
     
     function SaveWorkout()
-	{
-		$Model = new BaselineModel;
-		return $Model->Log();
-	}
+    {
+	$Model = new BaselineModel;
+	return $Model->Log();
+    }
     
     function Output()
     {

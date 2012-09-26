@@ -23,6 +23,12 @@ body {
 	text-align:center;
 }
 
+p{
+ 	font-size: small;
+	color: #333333;
+	font-weight: normal;   
+}
+
 #menu
 { 
 	position:fixed;

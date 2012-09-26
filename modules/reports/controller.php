@@ -96,7 +96,7 @@ class ReportsController extends Controller
 	$Html='<'.$this->Wall.'select name="WODId" id="WODId" class="select" onchange="getWODReport(this.value);">';
         $Html.='<'.$this->Wall.'option value=" ">Select Exercise</'.$this->Wall.'option>';
 	foreach($ExerciseItems AS $Exercise) { 
-            $Html.='<'.$this->Wall.'option value="'.$Exercise->ActivityId.'">'.$Exercise->Exercise.'</'.$this->Wall.'option>';
+            $Html.='<'.$this->Wall.'option value="'.$Exercise->ExerciseId.'">'.$Exercise->Exercise.'</'.$this->Wall.'option>';
 	}
         $Html.='</'.$this->Wall.'select><br/><br/>';
 	return $Html;	

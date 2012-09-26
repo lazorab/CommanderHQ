@@ -10,7 +10,7 @@ class ReportsModel extends Model
 	
 	function getDetails()
 	{
-		$SQL = 'SELECT M.SystemOfMeasure, MD.SkillLevel, MG.GoalTitle, MG.GoalDescription 
+		$SQL = 'SELECT MD.SystemOfMeasure, MD.SkillLevel, MG.GoalTitle, MG.GoalDescription 
 		FROM MemberGoals MG 
 		JOIN Members M ON M.UserId = MG.MemberId
 		JOIN MemberDetails MD ON MD.MemberID = MG.MemberId
@@ -43,7 +43,7 @@ class ReportsModel extends Model
 		$Data = array();
 		$Sql = 'SELECT L.ExerciseId, 
                     E.Exercise, 
-                    T.ExerciseType, 
+                    WT.WorkoutType, 
                     A.Attribute, 
                     L.AttributeValue, 
                     L.LevelAchieved, 
@@ -51,7 +51,7 @@ class ReportsModel extends Model
                     FROM WODLog L 
                     LEFT JOIN Exercises E on E.recid = L.ActivityId 
                     LEFT JOIN Attributes A on A.recid = L.AttributeId 
-                    LEFT JOIN ExerciseTypes T ON T.recid = L.WODTypeId
+                    LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
                     WHERE L.MemberId = '.$_SESSION['UID'].' 
                     AND L.ActivityId = '.$ExerciseId.'';
 
@@ -65,52 +65,47 @@ class ReportsModel extends Model
     
     function getWODExercises()
     {
-		$Data = array();
-         /*
-		$Sql = 'SELECT recid as ExerciseId, WorkoutName	as Exercise	FROM WOD';
-		$Result = mysql_query($Sql);	
-		while($Row = mysql_fetch_assoc($Result))
-		{
-			array_push($Data,new ReportObject($Row));
-		}	
-		return $Data; 
-        */
-		$SQL = 'SELECT DISTINCT L.ActivityId, 
-        E.Exercise
-        FROM WODLog L
-        LEFT JOIN Exercises E ON E.recid = L.ActivityId
-        WHERE L.MemberId = "'.$_SESSION['UID'].'"';
-		$Result = mysql_query($SQL);	
-		while($Row = mysql_fetch_assoc($Result))
-		{
-			array_push($Data,new ReportObject($Row));
-		}	
-		return $Data;        
+	$Data = array();
+
+	$SQL = 'SELECT DISTINCT E.recid AS ExerciseId,
+                E.Exercise
+                FROM WODLog L
+                LEFT JOIN Exercises E ON E.recid = L.ExerciseId
+                WHERE L.MemberId = "'.$_SESSION['UID'].'"
+                ORDER BY Exercise';
+	$Result = mysql_query($SQL);	
+	while($Row = mysql_fetch_assoc($Result))
+	{
+		array_push($Data,new ReportObject($Row));
+	}	
+	return $Data;        
     }
     
-        function getBenchmarks()
+    function getBenchmarks()
     {
-            $Data = array();
-	$SQL = 'SELECT DISTINCT L.ExerciseId, 
+        $Data = array();
+	$SQL = 'SELECT DISTINCT B.recid AS ExerciseId, 
         B.WorkoutName
         FROM WODLog L
-        LEFT JOIN BenchmarkWorkouts B ON B.recid = L.ExerciseId
-        WHERE L.MemberId = "'.$_SESSION['UID'].'"';
-		$Result = mysql_query($SQL);	
-		while($Row = mysql_fetch_assoc($Result))
-		{
-			array_push($Data,new ReportObject($Row));
-		}	
-		return $Data;        
+        LEFT JOIN BenchmarkWorkouts B ON B.recid = L.WorkoutId
+        WHERE L.MemberId = '.$_SESSION['UID'].'
+        AND L.WODTypeId = 2
+        ORDER BY WorkoutName';
+	$Result = mysql_query($SQL);	
+	while($Row = mysql_fetch_assoc($Result))
+	{
+            array_push($Data,new ReportObject($Row));
+	}	
+	return $Data;        
     }
     
     function getWODHistory()
     {
 	$Data = array();
-	$Sql = 'SELECT ET.ExerciseType AS WODType,
-            CASE WHEN ExerciseType = "Custom" 
-            THEN (SELECT ExerciseName FROM CustomExercises WHERE recid = L.ExerciseId)
-            WHEN ExerciseType = "Benchmark"
+	$Sql = 'SELECT WT.WorkoutType,
+            CASE WHEN WorkoutType = "Custom" 
+            THEN (SELECT WorkoutName FROM CustomWorkouts WHERE recid = L.ExerciseId)
+            WHEN WorkoutType = "Benchmark"
             THEN (SELECT WorkoutName FROM BenchmarkWorkouts WHERE recid = L.ExerciseId)
             ELSE
             E.Exercise 
@@ -119,11 +114,11 @@ class ReportsModel extends Model
             E.Exercise, 
             A.Attribute AS Attribute, L.AttributeValue AS AttributeValue, L.TimeCreated 
             FROM WODLog L 
-            LEFT JOIN ExerciseTypes ET ON ET.recid = L.WODTypeId
-            LEFT JOIN Exercises E ON E.recid = L.ActivityId
+            LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
+            LEFT JOIN Exercises E ON E.recid = L.ExerciseId
             LEFT JOIN Attributes A ON A.recid = L.AttributeId
             WHERE L.MemberId = '.$_SESSION['UID'].'
-            AND L.ActivityId = '.$_REQUEST['WODId'].'
+            AND L.ExerciseId = '.$_REQUEST['WODId'].'
             ORDER BY TimeCreated';// AND L.ExerciseId = '.$_REQUEST['WODId'].'';
 	$Result = mysql_query($Sql);	
 	while($Row = mysql_fetch_assoc($Result))
@@ -136,18 +131,19 @@ class ReportsModel extends Model
         function getBenchmarkHistory()
     {
 	$Data = array();
-	$Sql = 'SELECT ET.ExerciseType AS WODType,
+	$Sql = 'SELECT WT.WorkoutType,
             B.WorkoutName AS WorkoutName,
             A.Attribute AS Attribute, L.AttributeValue AS AttributeValue, L.TimeCreated 
             FROM WODLog L 
-            LEFT JOIN ExerciseTypes ET ON ET.recid = L.WODTypeId
-            LEFT JOIN BenchmarkWorkouts B ON B.recid = L.ExerciseId
+            LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
+            LEFT JOIN BenchmarkWorkouts B ON B.recid = L.WorkoutId
             LEFT JOIN Attributes A ON A.recid = L.AttributeId
             WHERE L.MemberId = '.$_SESSION['UID'].'
-            AND ExerciseType = "Benchmark"
-            AND L.ExerciseId = '.$_REQUEST['BenchmarkId'].'
+            AND WorkoutType = "Benchmark"
+            AND L.WorkoutId = '.$_REQUEST['BenchmarkId'].'
             ORDER BY TimeCreated';// AND L.ExerciseId = '.$_REQUEST['WODId'].'';
 	$Result = mysql_query($Sql);	
+        //echo $Sql;
 	while($Row = mysql_fetch_assoc($Result))
 	{
             array_push($Data,new ReportObject($Row));
@@ -157,29 +153,29 @@ class ReportsModel extends Model
 	
     function getBaselineExercises()
     {
-		$Baselines = array();
-		$SQL = 'SELECT DISTINCT mb.recid, 
-        mb.ExerciseId,
-        et.ExerciseType
-        FROM MemberBaseline mb
-        JOIN ExerciseTypes et ON et.recid = mb.ExerciseTypeId
-        LEFT JOIN BaselineLog L ON L.ExerciseId = mb.recid
+	$Baselines = array();
+	$SQL = 'SELECT DISTINCT MB.recid, 
+        MB.ExerciseId,
+        WT.WorkoutType
+        FROM MemberBaseline MB
+        JOIN WorkoutTypes WT ON WT.recid = MB.ExerciseTypeId
+        LEFT JOIN BaselineLog L ON L.ExerciseId = MB.recid
         WHERE L.MemberId = "'.$_SESSION['UID'].'"';
 		$Result = mysql_query($SQL);	
         
 		while($Row = mysql_fetch_assoc($Result))
         {
-            if($Row['ExerciseType'] == 'Benchmark'){
+            if($Row['WorkoutType'] == 'Benchmark'){
                 $NewQuery = 'SELECT MB.recid as ExerciseId, BW.WorkoutName AS Exercise
                 FROM MemberBaseline MB 
                 JOIN BenchmarkWorkouts BW ON MB.ExerciseId = BW.recid
                 WHERE BW.recid = '.$Row['ExerciseId'].'';
             }
-            else if($Row['ExerciseType'] == 'Custom'){
+            else if($Row['WorkoutType'] == 'Custom'){
                 $NewQuery = 'SELECT MB.recid as ExerciseId, CE.ExerciseName AS Exercise
                 FROM MemberBaseline MB
-                JOIN CustomExercises CE ON CE.recid = MB.ExerciseId
-                WHERE CE.recid = '.$Row['ExerciseId'].'';               
+                JOIN CustomWorkouts CW ON CW.recid = MB.ExerciseId
+                WHERE CW.recid = '.$Row['ExerciseId'].'';               
             }
             
             $NewResult = mysql_query($NewQuery);
@@ -191,46 +187,46 @@ class ReportsModel extends Model
     
     function getBaselineHistory()
     {
-		$Data = array();
-		$Sql = 'SELECT ET.ExerciseType AS ExerciseType,
-CASE WHEN ExerciseType = "Custom" 
-THEN (SELECT ExerciseName FROM CustomExercises WHERE recid = L.ExerciseId)
-WHEN ExerciseType = "Benchmark"
-THEN (SELECT WorkoutName FROM BenchmarkWorkouts WHERE recid = L.ExerciseId)
-ELSE
-E.Exercise 
-END
-AS WorkoutName,
-E.Exercise, 
-A.Attribute AS Attribute, L.AttributeValue AS AttributeValue, L.TimeCreated 
-		FROM BaselineLog L 
+	$Data = array();
+	$Sql = 'SELECT WT.WorkoutType AS ExerciseType,
+        CASE WHEN WorkoutType = "Custom" 
+        THEN (SELECT WorkoutName FROM CustomWorkouts WHERE recid = L.ExerciseId)
+        WHEN WorkoutType = "Benchmark"
+        THEN (SELECT WorkoutName FROM BenchmarkWorkouts WHERE recid = L.ExerciseId)
+        ELSE
+        E.Exercise 
+        END
+        AS WorkoutName,
+        E.Exercise, 
+        A.Attribute AS Attribute, L.AttributeValue AS AttributeValue, L.TimeCreated 
+	FROM BaselineLog L 
         LEFT JOIN MemberBaseline B ON B.ExerciseId = L.ExerciseId 
-        LEFT JOIN ExerciseTypes ET ON ET.recid = L.ExerciseTypeId
+        LEFT JOIN WorkoutTypes WT ON WT.recid = L.BaselineTypeId
         LEFT JOIN Exercises E ON E.recid = L.ExerciseId
         LEFT JOIN Attributes A ON A.recid = L.AttributeId
-		WHERE L.MemberId = '.$_SESSION['UID'].'
-		GROUP BY Exercise,TimeCreated
-                ORDER BY TimeCreated';// AND L.ExerciseId = '.$_REQUEST['BaselineId'].'';
-		$Result = mysql_query($Sql);	
-		while($Row = mysql_fetch_assoc($Result))
-		{
-                    array_push($Data,new ReportObject($Row));
-		}	
-		return $Data;       
+	WHERE L.MemberId = '.$_SESSION['UID'].'
+	GROUP BY Exercise,TimeCreated
+        ORDER BY TimeCreated';// AND L.ExerciseId = '.$_REQUEST['BaselineId'].'';
+	$Result = mysql_query($Sql);	
+	while($Row = mysql_fetch_assoc($Result))
+	{
+            array_push($Data,new ReportObject($Row));
+	}	
+	return $Data;       
     }    
     
 	function getWeightHistory()
 	{
-		$Data = array();
-		$Sql = 'SELECT BodyWeight as Weight, TimeCreated 
+            $Data = array();
+            $Sql = 'SELECT BodyWeight as Weight, TimeCreated 
 		FROM ExerciseLog
 		WHERE MemberId = '.$_SESSION['UID'].' AND BodyWeight <> ""';
-		$Result = mysql_query($Sql);	
-		while($Row = mysql_fetch_assoc($Result))
-		{
-			array_push($Data,new WeightObject($Row));
-		}	
-		return $Data;	
+            $Result = mysql_query($Sql);	
+            while($Row = mysql_fetch_assoc($Result))
+            {
+		array_push($Data,new WeightObject($Row));
+            }	
+            return $Data;	
 	}
 	
 	function getPendingExercises()
@@ -280,7 +276,7 @@ class ReportObject
     var $ExerciseId;
     var $ActivityId;
     var $Exercise;
-    var $ExerciseType;
+    var $WorkoutType;
     var $WorkoutName;
     var $Attribute;
     var $AttributeValue;
@@ -292,7 +288,7 @@ class ReportObject
 	$this->ExerciseId = isset($Row['ExerciseId']) ? $Row['ExerciseId'] : "";
         $this->ActivityId = isset($Row['ActivityId']) ? $Row['ActivityId'] : "";
 	$this->Exercise = isset($Row['Exercise']) ? $Row['Exercise'] : "";
-	$this->ExerciseType = isset($Row['ExerciseType']) ? $Row['ExerciseType'] : "";
+	$this->WorkoutType = isset($Row['WorkoutType']) ? $Row['WorkoutType'] : "";
         $this->WorkoutName = isset($Row['WorkoutName']) ? $Row['WorkoutName'] : "";
         $this->Attribute = isset($Row['Attribute']) ? $Row['Attribute'] : "";
         $this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : "";

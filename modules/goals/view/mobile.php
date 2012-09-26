@@ -2,7 +2,23 @@
 
 function getContent(action)
 {
+    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=goals\');" <?php echo $RENDER->NewImage('back.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>back.png"/>');
     $.getJSON("ajax.php?module=goals",{action:action},display);
+    $.getJSON("ajax.php?module=goals",{topselection:action},topselectiondisplay);
+}
+
+function getActiveGoal(id)
+{
+    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=goals\');" <?php echo $RENDER->NewImage('back.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>back.png"/>');
+    $.getJSON("ajax.php?module=goals",{id:id},display);
+    $.getJSON("ajax.php?module=goals",{topselection:'active'},topselectiondisplay);
+}
+
+function getGoal(id)
+{
+    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=goals\');" <?php echo $RENDER->NewImage('back.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>back.png"/>');
+    $.getJSON("ajax.php?module=goals",{id:id},display);
+    $.getJSON("ajax.php?module=goals",{topselection:'history'},topselectiondisplay);
 }
 
 function getBenchmark(id)
@@ -10,30 +26,34 @@ function getBenchmark(id)
     $.getJSON("ajax.php?module=goals",{benchmark:id},display);
 }
 
+function topselectiondisplay(data)
+{
+    $('#toplist').html(data);
+    $('#toplist').listview('refresh'); 
+}
+
 function display(data)
 {
-	document.getElementById("goal").innerHTML = data;
+    $('#AjaxOutput').html(data);
+    $('#listview').listview();
+    $('#listview').listview('refresh');
+    $('.controlbutton').button();
+    $('.controlbutton').button('refresh');
+    $('.buttongroup').button();
+    $('.buttongroup').button('refresh'); 
+    $('.radioinput').checkboxradio();
+    $('.radioinput').checkboxradio('refresh');
+    $('.textinput').textinput();	
 }
 
 </script>
 <br/>
 <div id="topselection">
-<form id="goalform">
-<label for="action">Action</label><br/>
-<select id="action" name="action" class="select" onchange="getContent(this.value);">
-<option value="">Please Select</option>
-<option value="new" <?php if($_REQUEST['action'] == 'new'){echo 'selected="selected"';};?>>New Goal</option>
-<option value="active" <?php if($_REQUEST['action'] == 'active'){echo 'selected="selected"';};?>>Active</option>
-<option value="achieved" <?php if($_REQUEST['action'] == 'achieved'){echo 'selected="selected"';};?>>Achieved</option>
-<option value="failed" <?php if($_REQUEST['action'] == 'failed'){echo 'selected="selected"';};?>>Failed</option>
-</select><br/><br/>
-<!--
-<label for="datetime">Date</label>
-<input type="text" name="datetime" id="datetime" value="<?php echo date('d/m/Y');?>" onchange="getContent(action.value);"/>	
--->
-</form>
+<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+<?php echo $Display->TopSelection();?>
+</ul>
 </div>
 
-<div id="goal">
+<div id="AjaxOutput">
 <?php echo $Display->Output();?>
 </div>
