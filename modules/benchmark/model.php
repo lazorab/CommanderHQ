@@ -133,7 +133,10 @@ class BenchmarkModel extends Model
                         if($Row['TotalRounds'] > 1){
                             $TotalRounds = ''.$Row['TotalRounds'].' Rounds | ';
                         }
-                        $WorkoutType = $Row['WorkoutType'];
+                        if($Row['WorkoutType'] == 'Timed')
+                            $WorkoutType = 'For Time | ';  
+                        else
+                            $WorkoutType = ''.$Row['WorkoutType'].' | ';
                     }
                     if($Row['Exercise'] != 'Timed' && $Row['Attribute'] != 'Reps')
                         $Description .= ''.$Row['Exercise'].' | ';
@@ -143,7 +146,7 @@ class BenchmarkModel extends Model
                     //$Description .= ' ';
                     //$Description .= $Row['AttributeValue'];
                     //$Description .= ' ';
-                    $Description .= ''.$Row['Exercise'].' | ';
+                    $Description .= ''.$Row['AttributeValue'].' '.$Row['Exercise'].' | ';
                 }else if($Row['Attribute'] == 'Weight'){
                     //$Description .= ' ';
                    // $Description .= $Row['AttributeValue'];
@@ -165,8 +168,8 @@ class BenchmarkModel extends Model
                     
                 }
             }
-            $Description .= $TotalRounds.$WorkoutType;
-            return $Description;           
+            //$Description .= $TotalRounds.$WorkoutType;
+            return $TotalRounds.$WorkoutType.$Description;           
         }
         
 	function getBMWS($Filter)

@@ -1,17 +1,51 @@
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
 <script language="javascript">
-
+    var lat;
+    var lng;
 navigator.geolocation.getCurrentPosition(findLocation, noLocation);
 function findLocation(position)
 {
-    var lat = position.coords.latitude;
-    var lng = position.coords.longitude;
-    var url = 'http://<?php echo THIS_DOMAIN;?>/?module=locator&lat=' + lat + '&long=' + lng + '';
-    window.location=url;
+    lat = position.coords.latitude;
+    lng = position.coords.longitude;
+    $.getJSON("ajax.php?module=locator",{latitude:lat,longitude:lng},display);
 }
 
 function noLocation()
 {
 
 }
+
+function goBack()
+{
+    $.getJSON("ajax.php?module=locator",{latitude:lat,longitude:lng},display);
+}
+
+function getDetails(id)
+{
+    $('#back').html('<img alt="Back" onclick="goBack();" <?php echo $RENDER->NewImage('back.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>back.png"/>');
+    $.getJSON("ajax.php?module=locator",{Id:id,lat:lat,lng:lng},display);
+    $.getJSON("ajax.php?module=locator",{topselection:id},topselectiondisplay);
+}
+
+function topselectiondisplay(data)
+{
+    $('#toplist').html(data);
+    $('#toplist').listview('refresh'); 
+}
+
+function display(data)
+{
+    $('#AjaxOutput').html(data);
+    $('#listview').listview();
+    $('#listview').listview('refresh');
+}
 </script>
-<h2>Affiliates</h2>
+<div id="topselection">
+    <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+        <li>Affiliate Gyms Near you</li>
+    </ul>
+</div>
+
+<div id="AjaxOutput">       
+    <?php echo $Display->Output();?>
+</div>
