@@ -8,15 +8,17 @@ function findLocation(position)
     lat = position.coords.latitude;
     lng = position.coords.longitude;
     $.getJSON("ajax.php?module=locator",{latitude:lat,longitude:lng},display);
+    $('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif", SCREENWIDTH);?> src="/css/images/ajax-loader.gif" />');
 }
 
 function noLocation()
 {
-
+    $.getJSON("ajax.php?module=locator",{latitude:null,longitude:null},display);
 }
 
 function goBack()
 {
+    $("#map_canvas").removeClass("active");
     $.getJSON("ajax.php?module=locator",{latitude:lat,longitude:lng},display);
 }
 
@@ -38,6 +40,7 @@ function display(data)
     $('#AjaxOutput').html(data);
     $('#listview').listview();
     $('#listview').listview('refresh');
+    $('#AjaxLoading').html('');	
 }
 </script>
 <div id="topselection">
@@ -46,6 +49,9 @@ function display(data)
     </ul>
 </div>
 
+<div id="map_canvas">
+
+</div>
 <div id="AjaxOutput">       
     <?php echo $Display->Output();?>
 </div>

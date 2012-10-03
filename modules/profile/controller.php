@@ -26,7 +26,9 @@ class ProfileController extends Controller
             $Model = new ProfileModel;
             $Validate = new ValidationUtils;		
             $Message = 'Success';
-            if($_REQUEST['FirstName'] == '')
+            if(isset($_REQUEST['InvCode']) && !$Model->CheckInvitationCode($_REQUEST['InvCode']))
+                $Message = 'Invalid Invitation Code';
+            else if($_REQUEST['FirstName'] == '')
                 $Message = 'Firstname Required';
             else if($_REQUEST['LastName'] == '')
                 $Message = 'Lastname Required';
@@ -105,21 +107,31 @@ class ProfileController extends Controller
         <div data-role="fieldcontain">
         <input type="hidden" name="module" value="profile"/>
         <input type="hidden" name="action" value="save"/>
-        <input type="hidden" name="UserId" value="'.$MemberDetails->UserId.'"/>
-<label for="firstname">First Name</label>
+        <input type="hidden" name="UserId" value="'.$MemberDetails->UserId.'"/>';
+      if(!isset($_SESSION['UID'])){
+          $Html.='<label for="invcode">Invitation Code</label>
+            <input style="width:75%;" class="textinput" type="text" id="invcode" name="InvCode" value="'.$_REQUEST['InvCode'].'"/>';
+      }      
+$Html.='<label for="firstname">First Name</label>
 <input style="width:75%;" class="textinput" type="text" id="firstname" name="FirstName" value="'.$MemberDetails->FirstName.'"/>
 <label for="lastname">Last Name</label>
 <input style="width:75%;" class="textinput" type="text" id="lastname" name="LastName" value="'.$MemberDetails->LastName.'"/>
 <label for="username">User Name</label>
 <input style="width:75%;" class="textinput" type="text" id="username" name="UserName" value="'.$MemberDetails->UserName.'"'; 
-if(isset($_SESSION['UID']))   
+if(isset($_SESSION['UID']) || $MemberDetails->LoginType != '')   
     $Html.=' readonly="readonly"';
 $Html.='/>';
+if($MemberDetails->LoginType == ''){
 $Html.='<label for="password">Password</label>
 <input style="width:75%;" class="textinput" type="password" id="password" name="PassWord" value="'.$MemberDetails->PassWord.'"/>
 <label for="password">Confirm Password</label>
-<input style="width:75%;" class="textinput" type="password" id="confirmpassword" name="ConfirmPassWord" value="'.$MemberDetails->PassWord.'"/>
-<label for="cell">Cell</label>
+<input style="width:75%;" class="textinput" type="password" id="confirmpassword" name="ConfirmPassWord" value="'.$MemberDetails->PassWord.'"/>';
+}
+else{
+   $Html.='<label for="oauth_provider">Login Type</label>
+<input style="width:75%;" class="textinput" type="text" id="oauth_provider" name="oauth_provider" value="'.$MemberDetails->LoginType.'" readonly="readonly"/>'; 
+}
+$Html.='<label for="cell">Cell</label>
 <input style="width:75%;" class="textinput" type="tel" id="cell" name="Cell" value="'.$MemberDetails->Cell.'" placeholder="+2778000000"/>
 <label for="email">Email</label>
 <input style="width:75%;" class="textinput" type="email" id="email" name="Email" value="'.$MemberDetails->Email.'"/>

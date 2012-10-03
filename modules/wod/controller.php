@@ -15,7 +15,10 @@ class WodController extends Controller
             $Html='';
             if($_REQUEST['topselection'] == 'mygym'){
                 $Gym = $this->MemberGym();
-                $Html.='<li>My Gym: '.$Gym->GymName.'</li>';
+                $Html='<li>My Gym: '.$Gym->GymName.'</li>';
+            }
+            else{
+                $Html='<li>Workout Of the Day</li>';
             }
             return $Html;
 	}
@@ -45,10 +48,18 @@ class WodController extends Controller
                     header('location: index.php?module=registergym');	
 		}
 		else{//show details:
-                    $WODdata .='<h2>Workout for '.date('d M Y').'</h2>';
-                    $WODdata .= $this->getMyGymWOD();
+                    //$WODdata .='<h2>Workout for '.date('d M Y').'</h2>';
+                    $WODdata .= $this->MyGymFeed();
 		}	
-            }		
+            }else{
+        $WODdata='
+    <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+        <li><a style="font-size:large;margin-top:10px" href="#" onclick="OpenThisPage(\'?module=baseline&origin=wod&baseline=Baseline\')"><div style="height:26px;width:1px;float:left"></div>Baseline</a></li>
+        <li><a style="font-size:large;margin-top:10px" href="#" onclick="OpenThisPage(\'?module=benchmark&origin=wod\)"><div style="height:26px;width:1px;float:left"></div>Benchmarks</a></li>
+	<li><a style="font-size:large;margin-top:10px" href="#" onclick="OpenThisPage(\'?module=custom&origin=wod\')"><div style="height:26px;width:1px;float:left"></div>Custom</a></li>
+	<li><a style="font-size:large;margin-top:10px" href="#" onclick="getWOD();"><div style="height:26px;width:1px;float:left"></div>My Gym</a></li>                
+    </ul><br/>';              
+            }	
             return $WODdata;
 	}
     
@@ -58,6 +69,18 @@ class WodController extends Controller
             $MemberGym = $Model->getMemberGym();	
             return $MemberGym;
 	}
+        
+ 	function MyGymFeed()
+	{
+            $Html='';
+            $Model = new WodModel;
+            $GymFeed = $Model->getMyGymFeed();
+            foreach($GymFeed AS $Item)
+            {
+                $Html.=''.$Item->WodDate.'<br/>';
+            }
+            return $Html;
+	}       
         
         function getMyGymWOD()
         {

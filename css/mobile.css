@@ -110,7 +110,20 @@ p{
 
 #video.active
 {
-	display:block;
+    display:block;
+}
+
+#map_canvas
+{
+    width:90%;
+    height:320px;
+    margin:5%;
+    display:none;
+}
+
+#map_canvas.active
+{
+    display:block;
 }
 
 #random

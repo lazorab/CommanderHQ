@@ -68,47 +68,41 @@ $first=$gps_pos[0];
 $last=$gps_pos[$i-1];
 
 $html.='
-<div id="map_canvas" style="width:'.SCREENWIDTH.'px; height:'.SCREENWIDTH.'px">
-<br/><br/>
-<center>Retrieving map data...</center>
-</div>
-
 <script type="text/javascript">
-displaymap();
-function displaymap(){
+$("#map_canvas").addClass("active");
+$("#map_canvas").html("<br/><br/><center>Retrieving map data...</center>");
 var latlng1 = new google.maps.LatLng('.$first.');
 var latlng2 = new google.maps.LatLng('.$last.');
 var myOptions = {
-zoom: 13,
-center: latlng2,
-mapTypeId: google.maps.MapTypeId.ROADMAP
-};
+        zoom: 13,
+        center: latlng2,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
 var LatLong=new google.maps.LatLng();
 var map1 = new google.maps.Map(document.getElementById("map_canvas"),
 myOptions);
 var marker1 = new google.maps.Marker({
-position: latlng1,
-map: map1,
-title: "A"
-});
+        position: latlng1,
+        map: map1,
+        title: "A"
+    });
 var marker2 = new google.maps.Marker({
-position: latlng2,
-map: map1,
-title: "Z"
-});
+        position: latlng2,
+        map: map1,
+        title: "Z"
+    });
 var points = new Array();';
 foreach($gps_pos AS $key => $val){
  $html.='points.push(new google.maps.LatLng('.$val.'));';
 }
 $html.='
 var polyline = new google.maps.Polyline({
-path: points,
-map: map1,
-strokeColor: "#034693",
-strokeOpacity: 0.8,
-strokeWeight: 2
-});
-}
+        path: points,
+        map: map1,
+        strokeColor: "#034693",
+        strokeOpacity: 0.8,
+        strokeWeight: 2
+    });
 </script>';
 
 $html.= $str;
@@ -129,20 +123,19 @@ return $html;
                 $html.= $this->getMap();
             }
             else{
-
-
-            if(isset($_REQUEST['latitude']) && isset($_REQUEST['longitude'])){
-  
-            $html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';               
+                if(isset($_REQUEST['latitude']) && isset($_REQUEST['longitude'])){
+                    if($_REQUEST['latitude'] == null || $_REQUEST['longitude'] == null){
+                        $html = 'Cannot determine your present location';
+            }
+            else{
                 $Model = new LocatorModel;
                 $Affiliates=$Model->getAffiliates();
                 if(count($Affiliates) > 0){
+                    $html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';               
                     foreach($Affiliates AS $Affiliate){
                         $html .= '<li>';
                         $html .= '<a href="" onclick="getDetails('.$Affiliate->AffiliateId.');">'.$Affiliate->GymName.':<br/><span style="font-size:small">'.$Affiliate->Region.'</span></a>';
                         $html .= '</li>';
-                        //$_output = str_replace("\'", "'", $_output); // Fix JSON syntax error
-
                     }
                     $html .= '</ul><br/>';
                 }
@@ -151,6 +144,7 @@ return $html;
                 }
             }
             
+            }
             }
             return $html;
 	}

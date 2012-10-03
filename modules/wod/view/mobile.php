@@ -27,11 +27,8 @@ function display(data)
 <br/>
 <div id="topselection">
     <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-        <li><a style="font-size:large;margin-top:10px" href="#" onclick="OpenThisPage('?module=baseline&origin=wod&baseline=Baseline')"><div style="height:26px;width:1px;float:left"></div>Baseline</a></li>
-        <li><a style="font-size:large;margin-top:10px" href="#" onclick="OpenThisPage('?module=benchmark&origin=wod')"><div style="height:26px;width:1px;float:left"></div>Benchmarks</a></li>
-	<li><a style="font-size:large;margin-top:10px" href="#" onclick="OpenThisPage('?module=custom&origin=wod')"><div style="height:26px;width:1px;float:left"></div>Custom</a></li>
-	<li><a style="font-size:large;margin-top:10px" href="#" onclick="getWOD();"><div style="height:26px;width:1px;float:left"></div>My Gym</a></li>                
-    </ul>
+    <?php echo $Display->TopSelection();?>
+    </ul>    
 </div>
 <div id="AjaxOutput">
 	<?php echo $Display->Output();?>

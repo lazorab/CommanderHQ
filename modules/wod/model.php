@@ -41,6 +41,37 @@ class WodModel extends Model
             }
         }
 	}
+        
+        function getMyGymFeed()
+        {
+            $WODDetails = array();
+            $SQL = 'SELECT RG.GymName,
+                RG.URL
+                FROM Members M
+                LEFT JOIN MemberDetails MD ON MD.MemberId = M.UserId
+                LEFT JOIN RegisteredGyms RG ON RG.recid = MD.GymId
+		WHERE M.UserId = '.$_SESSION['UID'].'';
+            $Result = mysql_query($SQL);	
+            $Row = mysql_fetch_assoc($Result);          
+            $URL = $Row['URL'];
+		$ch = curl_init ();
+		curl_setopt ( $ch, CURLOPT_URL, $URL );
+		curl_setopt ( $ch, CURLOPT_TIMEOUT, 180 );
+		curl_setopt ( $ch, CURLOPT_FOLLOWLOCATION, 1 );
+		curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, 1 );
+		$XML = curl_exec ( $ch );
+		curl_close ( $ch );
+
+		$Doc = new DOMDocument;
+		$Doc->loadXML ( $XML );
+		$Doc->strictErrorChecking = FALSE;
+			$TitleList = $Doc->getElementsByTagName ( "title" );
+			foreach ( $TitleList as $CurrentNode ) {
+                            $Row['WodDate'] = $CurrentNode->nodeValue;
+                            array_push($WODDetails, new WODObject($Row));
+			}  
+                return $WODDetails;        
+        }
 	
         function getMyGymWOD()
 	{   

@@ -8,6 +8,19 @@ class ProfileModel extends Model
 	//mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
 	//@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");
     }
+    
+    function CheckInvitationCode($Code)
+    {
+         mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
+	@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");
+        $sql='SELECT InvitationCode FROM MemberInvites WHERE InvitationCode = "'.$Code.'"';
+        
+	$result = mysql_query($sql);
+	if(mysql_num_rows($result) > 0)
+            return true;
+        else 
+            return false;       
+    }
         
     function CheckUserNameExists($UserName)
     {
@@ -58,13 +71,7 @@ class ProfileModel extends Model
     {
         mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
 	@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");
-	$sql='SELECT UserId FROM Members WHERE UserName = "'.$_REQUEST['UserName'].'" AND PassWord = "'.$_REQUEST['PassWord'].'"';
-        
-	$result = mysql_query($sql);
-	if(mysql_num_rows($result) > 0){
-            return false;
-	}
-	else{
+
             $sql="INSERT INTO Members(FirstName,
                 LastName,
                 Cell,
@@ -113,10 +120,14 @@ class ProfileModel extends Model
                         '".$BMI."')";
             
                 mysql_query($sql);
-            
-                $_SESSION['UID'] = $NewId;
-                $_SESSION['NEW_USER'] = $NewId;
-            }
+                
+            $sql='SELECT MemberId FROM MemberInvites WHERE InvitationCode = "'.$_REQUEST['InvCode'].'"';
+            $result = mysql_query($sql);  
+            $row = mysql_fetch_assoc($result);
+            $SQL = 'UPDATE MemberInvites SET NewMemberId = '.$NewId.' WHERE MemberId = '.$row['MemberId'].' AND InvitationCode = "'.$_REQUEST['InvCode'].'"';
+            mysql_query($SQL);  
+            $_SESSION['UID'] = $NewId;
+            $_SESSION['NEW_USER'] = $NewId;
 	}    
 	
 	function Update($Id)
@@ -124,6 +135,15 @@ class ProfileModel extends Model
         try{
             mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
             @mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");
+            
+            if(isset($_REQUEST['InvCode'])){
+             $sql='SELECT MemberId FROM MemberInvites WHERE InvitationCode = "'.$_REQUEST['InvCode'].'"';
+            $result = mysql_query($sql);  
+            $row = mysql_fetch_assoc($result);
+            $SQL = 'UPDATE MemberInvites SET NewMemberId = '.$Id.' WHERE MemberId = '.$row['MemberId'].' AND InvitationCode = "'.$_REQUEST['InvCode'].'"';
+            mysql_query($SQL);               
+            }
+            
 			$Sql="UPDATE Members SET 
 				FirstName = '".$_REQUEST['FirstName']."',
 				LastName = '".$_REQUEST['LastName']."',
@@ -179,6 +199,7 @@ class MemberObject
 	var $Email;
 	var $UserName;
 	var $PassWord;
+        var $LoginType;
 	var $SkillLevel;
 	var $Gender;
 	var $DOB;
@@ -199,6 +220,7 @@ class MemberObject
 		$this->Email = $Row['Email'];
 		$this->UserName = $Row['UserName'];
 		$this->PassWord = $Row['PassWord'];
+                $this->LoginType = isset($Row['oauth_provider']) ? $Row['oauth_provider'] : "";
 		$this->SkillLevel = $Row['SkillLevel'];
 		$this->Gender = $Row['Gender'];
 		$this->DOB = $Row['DOB'];
