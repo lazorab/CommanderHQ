@@ -4,8 +4,8 @@ define("QA", true);
 
 define("SUBSCRIPTION", false);
 
-define("FRAMEWORK_ROOT", $_SERVER['DOCUMENT_ROOT']);
-define("THIS_ROOT", ''.$_SERVER['DOCUMENT_ROOT'].'/crossfit');
+//define("FRAMEWORK_ROOT", $_SERVER['DOCUMENT_ROOT']);
+//define("THIS_ROOT", ''.$_SERVER['DOCUMENT_ROOT'].'/crossfit');
 
 define('ERROR_REPORT_SITE_NAME', 'Commander HQ');
 define('ERROR_REPORT_EMAIL_ADDRESS', 'support@be-mobile.co.za');
@@ -56,4 +56,5 @@ define('INACTIVE', '0');
 $Device = new DeviceManager;
 define('SCREENWIDTH',$Device->GetScreenWidth());
 define('DEFAULT_SUB_NUMBER', '+27760000000');
+define('SMS_ENABLED', true);
 ?>

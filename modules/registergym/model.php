@@ -25,13 +25,15 @@ class RegistergymModel extends Model
 				Region,
 				Email,
 				TelNo,
-				URL) 
+				FeedURL,
+                                WebURL) 
 				VALUES('".$_REQUEST['gymname']."',
 				'".$_REQUEST['country']."',
 				'".$_REQUEST['region']."',
 				'".$_REQUEST['email']."',
 				'".$_REQUEST['tel']."',
-				'".$_REQUEST['url']."')";
+                                '".$_REQUEST['feedurl']."',    
+				'".$_REQUEST['weburl']."')";
 
 			if(!mysql_query($sql)){
 				$message = "Failed to register!";

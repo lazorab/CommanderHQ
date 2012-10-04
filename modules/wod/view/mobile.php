@@ -8,6 +8,20 @@ function getWOD()
 	$.getJSON("ajax.php?module=wod",{topselection:'mygym'},topdisplay);	
 }
 
+function getDetails(ThisWorkout)
+{
+    $('#back').html('<img alt="Back" onclick="goBack();" <?php echo $RENDER->NewImage('back.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>back.png"/>');
+    $.getJSON("ajax.php?module=wod",{Workout:ThisWorkout},display);
+    $.getJSON("ajax.php?module=wod",{topselection:ThisWorkout},topselectiondisplay);
+}
+
+function goBack()
+{
+	$('#AjaxLoading').html('<center><img alt="loading" src="/css/images/ajax-loader.gif" /><br />Loading...</center>');
+	$.getJSON("ajax.php?module=wod",{wod:'display'},display);	
+	$.getJSON("ajax.php?module=wod",{topselection:'mygym'},topdisplay);
+}
+
 function topdisplay(data)
 {
     $('#toplist').html(data);

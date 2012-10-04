@@ -46,8 +46,10 @@ class RegistergymController extends Controller
 <input class="textinput" style="width:75%;" type="tel" id="tel" name="tel" value="'.$_REQUEST['tel'].'" placeholder="+2778000000"/>
 <label for="email">Email</label>
 <input class="textinput" style="width:75%;" type="email" id="email" name="email" value="'.$_REQUEST['email'].'"/><br/>
-<label for="url">URL</label>
-<input class="textinput" style="width:75%;" type="text" id="url" name="url" value="'.$_REQUEST['url'].'"/><br/>
+<label for="url">Data Feed URL</label>
+<input class="textinput" style="width:75%;" type="text" id="feedurl" name="feedurl" value="'.$_REQUEST['feedurl'].'"/><br/>    
+<label for="url">Web URL</label>
+<input class="textinput" style="width:75%;" type="text" id="weburl" name="weburl" value="'.$_REQUEST['weburl'].'"/><br/>
 <br/><br/>
 <input class="buttongroup" type="button" onclick="gymformsubmit();" value="Save"/>
 </div>

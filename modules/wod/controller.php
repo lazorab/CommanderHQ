@@ -13,12 +13,18 @@ class WodController extends Controller
 	function TopSelection()
 	{
             $Html='';
-            if($_REQUEST['topselection'] == 'mygym'){
-                $Gym = $this->MemberGym();
-                $Html='<li>My Gym: '.$Gym->GymName.'</li>';
-            }
-            else{
-                $Html='<li>Workout Of the Day</li>';
+            if(isset($_REQUEST['topselection'])){
+                if($_REQUEST['topselection'] == 'mygym'){
+                    $Model = new WodModel;
+                    $GymFeed = $Model->getMyGymFeed();
+                    $Html='<li>'.$GymFeed[0]->WodDate.'</li>';
+                    //$Gym = $this->MemberGym();
+                    //$Html='<li>My Gym: '.$Gym->GymName.'</li>';
+                }else{
+                    $Html='<li>'.$_REQUEST['topselection'].'</li>';
+                }
+            }else{
+                $Html='<li>Workout Of the Day</li>';                   
             }
             return $Html;
 	}
@@ -51,14 +57,16 @@ class WodController extends Controller
                     //$WODdata .='<h2>Workout for '.date('d M Y').'</h2>';
                     $WODdata .= $this->MyGymFeed();
 		}	
+            }else if(isset($_REQUEST['Workout'])){
+                $WODdata .= $this->WorkoutDetails();
             }else{
-        $WODdata='
-    <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-        <li><a style="font-size:large;margin-top:10px" href="#" onclick="OpenThisPage(\'?module=baseline&origin=wod&baseline=Baseline\')"><div style="height:26px;width:1px;float:left"></div>Baseline</a></li>
-        <li><a style="font-size:large;margin-top:10px" href="#" onclick="OpenThisPage(\'?module=benchmark&origin=wod\)"><div style="height:26px;width:1px;float:left"></div>Benchmarks</a></li>
-	<li><a style="font-size:large;margin-top:10px" href="#" onclick="OpenThisPage(\'?module=custom&origin=wod\')"><div style="height:26px;width:1px;float:left"></div>Custom</a></li>
-	<li><a style="font-size:large;margin-top:10px" href="#" onclick="getWOD();"><div style="height:26px;width:1px;float:left"></div>My Gym</a></li>                
-    </ul><br/>';              
+                $WODdata='
+                <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+                <li><a style="font-size:large;margin-top:10px" href="#" onclick="OpenThisPage(\'?module=baseline&origin=wod&baseline=Baseline\')"><div style="height:26px;width:1px;float:left"></div>Baseline</a></li>
+                <li><a style="font-size:large;margin-top:10px" href="#" onclick="OpenThisPage(\'?module=benchmark&origin=wod\)"><div style="height:26px;width:1px;float:left"></div>Benchmarks</a></li>
+                <li><a style="font-size:large;margin-top:10px" href="#" onclick="OpenThisPage(\'?module=custom&origin=wod\')"><div style="height:26px;width:1px;float:left"></div>Custom</a></li>
+                <li><a style="font-size:large;margin-top:10px" href="#" onclick="getWOD();"><div style="height:26px;width:1px;float:left"></div>My Gym</a></li>                
+                </ul><br/>';              
             }	
             return $WODdata;
 	}
@@ -75,10 +83,22 @@ class WodController extends Controller
             $Html='';
             $Model = new WodModel;
             $GymFeed = $Model->getMyGymFeed();
+            $i = 0;
             foreach($GymFeed AS $Item)
             {
-                $Html.=''.$Item->WodDate.'<br/>';
+                if($i > 0)
+                    $Html.='<a href="#" onClick="getDetails(\''.urlencode($Item->WodDate).'\')">'.$Item->WodDate.'</a><br/><br/>';
+                $i++;
             }
+            return $Html;
+	}      
+        
+  	function WorkoutDetails()
+	{
+            $Html='';
+            $Model = new WodModel;
+            $WodDetails = $Model->getWodDetails();
+            $Html.=$WodDetails->WorkoutDescription;
             return $Html;
 	}       
         

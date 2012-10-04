@@ -46,14 +46,14 @@ class WodModel extends Model
         {
             $WODDetails = array();
             $SQL = 'SELECT RG.GymName,
-                RG.URL
+                RG.FeedURL
                 FROM Members M
                 LEFT JOIN MemberDetails MD ON MD.MemberId = M.UserId
                 LEFT JOIN RegisteredGyms RG ON RG.recid = MD.GymId
 		WHERE M.UserId = '.$_SESSION['UID'].'';
             $Result = mysql_query($SQL);	
             $Row = mysql_fetch_assoc($Result);          
-            $URL = $Row['URL'];
+            $URL = $Row['FeedURL'];
 		$ch = curl_init ();
 		curl_setopt ( $ch, CURLOPT_URL, $URL );
 		curl_setopt ( $ch, CURLOPT_TIMEOUT, 180 );
@@ -72,6 +72,44 @@ class WodModel extends Model
 			}  
                 return $WODDetails;        
         }
+        
+        function getWodDetails()
+        {
+            $WODDetails = array();
+            $SQL = 'SELECT RG.GymName,
+                RG.FeedURL
+                FROM Members M
+                LEFT JOIN MemberDetails MD ON MD.MemberId = M.UserId
+                LEFT JOIN RegisteredGyms RG ON RG.recid = MD.GymId
+		WHERE M.UserId = '.$_SESSION['UID'].'';
+            $Result = mysql_query($SQL);	
+            $Row = mysql_fetch_assoc($Result);          
+            $URL = $Row['FeedURL'];
+		$ch = curl_init ();
+		curl_setopt ( $ch, CURLOPT_URL, $URL );
+		curl_setopt ( $ch, CURLOPT_TIMEOUT, 180 );
+		curl_setopt ( $ch, CURLOPT_FOLLOWLOCATION, 1 );
+		curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, 1 );
+		$XML = curl_exec ( $ch );
+		curl_close ( $ch );
+
+		$Doc = new DOMDocument;
+		$Doc->loadXML ( $XML );
+		$Doc->strictErrorChecking = FALSE;
+                $i=1;		
+		$ItemList = $Doc->getElementsByTagName("item");
+                foreach ( $ItemList as $Item) {			
+                    foreach ( $Item->childNodes as $nodename) {
+                        if($nodename->nodeName == 'title' && urlencode($nodename->nodeValue) == $_REQUEST['Workout']){
+                            $Description = $Doc->getElementsByTagName('description')->item($i);
+                            $Row['WorkoutDescription'] = $Description->nodeValue;
+                            $WODDetails = new WODObject($Row);                           
+                        }
+                    } 
+		$i++;		
+                }               
+                return $WODDetails;        
+        }        
 	
         function getMyGymWOD()
 	{   
@@ -167,7 +205,7 @@ class WodModel extends Model
 	function getMemberGym()
 	{
 		$MemberGym = array();
-		$Query = 'SELECT RG.recid, RG.GymName, RG.Country, RG.Region, RG.URL
+		$Query = 'SELECT RG.recid, RG.GymName, RG.Country, RG.Region, RG.FeedURL, RG.WebURL
 		FROM RegisteredGyms RG
 		JOIN MemberDetails MD ON MD.GymId = RG.recid
 		WHERE MD.MemberId = "'.$_SESSION['UID'].'"';
@@ -213,7 +251,8 @@ class GymObject
 	var $Region;
 	var $TelNo;
 	var $Email;
-	var $URL;
+	var $FeedURL;
+        var $WebURL;
 
 	function __construct($Row)
 	{
@@ -223,7 +262,8 @@ class GymObject
 		$this->Region = isset($Row['Region']) ? $Row['Region'] : "";
 		$this->TelNo = isset($Row['TelNo']) ? $Row['TelNo'] : "";
 		$this->Email = isset($Row['Email']) ? $Row['Email'] : "";	
-		$this->URL = isset($Row['URL']) ? $Row['URL'] : "";
+		$this->FeedURL = isset($Row['FeedURL']) ? $Row['FeedURL'] : "";
+                $this->WebURL = isset($Row['WebURL']) ? $Row['WebURL'] : "";
 	}
 }
 ?>
