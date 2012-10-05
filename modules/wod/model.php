@@ -7,26 +7,6 @@ class WodModel extends Model
 		@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");	
 	}
 	
-	function InsertWOD($_DETAILS)
-	{
-		$FIELDS = '';
-		$VALUES = '';
-		$i = 0;
-		foreach($_DETAILS AS $key=>$val) 
-		{
-			if($i > 0)
-			{
-				$FIELDS .= ',';
-				$VALUES .= ',';
-			}
-				$FIELDS .= $key;
-				$VALUES .= '"'.$val.'"';
-			$i++;
-		}
-		$SQL = 'INSERT INTO WOD('.$FIELDS.') VALUES('.$VALUES.')';
-		mysql_query($SQL);	
-	}
-	
 	function Log()
 	{
         $SQL = 'SELECT recid, Attribute FROM Attributes';
@@ -73,7 +53,112 @@ class WodModel extends Model
                 return $WODDetails;        
         }
         
-        function getWodDetails()
+        function getGymWodWorkouts()
+        {
+            $Workouts = array();
+            $SQL = 'SELECT WW.recid AS WodId, WW.WorkoutName, WW.WodDate
+                FROM WodWorkouts WW
+                LEFT JOIN MemberDetails MD ON MD.GymId = WW.GymId
+                WHERE MD.MemberId = "'.$_SESSION['UID'].'"
+                AND WodDate >= CURDATE()
+                ORDER BY WorkoutName';
+            $Result = mysql_query($SQL);	
+            while($Row = mysql_fetch_assoc($Result))
+            {
+                $Row['WorkoutDescription'] = $this->WodDescription($Row['recid']);
+                array_push($Workouts, new WODObject($Row));
+            }
+            return $Workouts;
+        }       
+        
+         function getWODDetails()
+	{   
+            $WODDetails = array();
+
+		$SQL = 'SELECT WW.WorkoutName, 
+                        E.Exercise, 
+                        "'.$this->WodDescription($_REQUEST['Workout']).'" AS WorkoutDescription,
+                        E.recid AS ExerciseId, 
+                        A.Attribute, 
+                        WD.AttributeValue,  
+                        RoundNo
+			FROM WodDetails WD
+			LEFT JOIN WodWorkouts WW ON WW.recid = WD.WodId
+			LEFT JOIN Exercises E ON E.recid = WD.ExerciseId
+			LEFT JOIN Attributes A ON A.recid = WD.AttributeId
+			WHERE WD.WodId = '.$_REQUEST['Workout'].'
+			ORDER BY RoundNo, Attribute';
+
+		$Result = mysql_query($SQL);	
+            while($Row = mysql_fetch_assoc($Result))
+            {
+                array_push($WODDetails, new WODObject($Row));  
+            }
+            return $WODDetails;
+	}       
+        
+         function WodDescription($Id)
+        {
+             $SQL = 'SELECT E.Exercise, A.Attribute, WD.AttributeValue, WT.WorkoutType
+                FROM WodDetails WD
+                LEFT JOIN Exercises E ON E.recid = WD.ExerciseId
+                LEFT JOIN Attributes A ON A.recid = WD.AttributeId
+                LEFT JOIN WodWorkouts WW ON WW.recid = WD.WodId
+                LEFT JOIN WorkoutRoutineTypes WT ON WT.recid = WW.WorkoutTypeId
+                WHERE WD.WodId = "'.$Id.'"
+                ORDER BY Exercise';            
+            $Description = '';
+            $Result = mysql_query($SQL);
+            $Exercise = '';
+            $TotalRounds = '';
+            $WorkoutType = '';
+            while($Row = mysql_fetch_assoc($Result))
+            {
+                if($Exercise != $Row['Exercise']){
+                    if($Description == ''){
+                        if($Row['TotalRounds'] > 1){
+                            $TotalRounds = ''.$Row['TotalRounds'].' Rounds | ';
+                        }
+                        if($Row['WorkoutType'] == 'Timed')
+                            $WorkoutType = 'For Time | ';  
+                        else
+                            $WorkoutType = ''.$Row['WorkoutType'].' | ';
+                    }
+                    if($Row['Exercise'] != 'Timed' && $Row['Attribute'] != 'Reps')
+                        $Description .= ''.$Row['Exercise'].' | ';
+                    $Exercise = $Row['Exercise'];
+                }
+                if($Row['Attribute'] == 'Reps'){
+                    //$Description .= ' ';
+                    //$Description .= $Row['AttributeValue'];
+                    //$Description .= ' ';
+                    $Description .= ''.$Row['AttributeValue'].' '.$Row['Exercise'].' | ';
+                }else if($Row['Attribute'] == 'Weight'){
+                    //$Description .= ' ';
+                   // $Description .= $Row['AttributeValue'];
+                    //if($this->getSystemOfMeasure() == 'Metric')
+                    //    $Description .= 'kg';
+                    //else if($this->getSystemOfMeasure() == 'Imperial')
+                    //    $Description .= 'lbs';
+                }else if($Row['Attribute'] == 'Height'){
+                    
+                }else if($Row['Attribute'] == 'Distance'){
+                    
+                }else if($Row['Attribute'] == 'TimeToComplete'){
+                    
+                }else if($Row['Attribute'] == 'CountDown'){
+                    
+                }else if($Row['Attribute'] == 'Rounds'){
+                    
+                }else if($Row['Attribute'] == 'Calories'){
+                    
+                }
+            }
+            //$Description .= $TotalRounds.$WorkoutType;
+            return $TotalRounds.$WorkoutType.$Description;           
+        }       
+        
+        function getFeedDetails()
         {
             $WODDetails = array();
             $SQL = 'SELECT RG.GymName,
@@ -110,33 +195,6 @@ class WodModel extends Model
                 }               
                 return $WODDetails;        
         }        
-	
-        function getMyGymWOD()
-	{   
-            $WODDetails = array();
-            $MyGym = $this->getMemberGym();
-		$SQL = 'SELECT WW.recid,
-                        WW.WorkoutName, 
-                        E.Exercise, 
-                        E.recid AS ExerciseId, 
-                        A.Attribute, 
-                        WD.AttributeValue,  
-                        WD.RoundNo
-			FROM WodDetails WD
-			LEFT JOIN WodWorkouts WW ON WW.recid = WD.WodId
-			LEFT JOIN Exercises E ON E.recid = WD.ExerciseId
-			LEFT JOIN Attributes A ON A.recid = WD.AttributeId
-			WHERE WW.GymId = '.$MyGym->recid.'
-                        AND WW.WodDate = CURDATE()
-			ORDER BY RoundNo, Attribute';
-		$Result = mysql_query($SQL);	
-            while($Row = mysql_fetch_assoc($Result))
-            {
-                $Row['WorkoutDescription'] = $this->getWodDescription($Row['recid']);
-		array_push($WODDetails, new WODObject($Row));  
-            }
-            return $WODDetails;
-	}
         
          function getWodDescription($Id)
         {
@@ -223,20 +281,24 @@ class WodModel extends Model
 
 class WODObject
 {
-	var $recid;
+	var $WodId;
 	var $WorkoutName;
 	var $WodType;
 	var $WorkoutDescription;
+        var $Exercise;
+        var $ExerciseId;
 	var $Attribute;
 	var $AttributeValue;
 	var $WodDate;
 
 	function __construct($Row)
 	{
-		$this->recid = isset($Row['recid']) ? $Row['recid'] : "";
+		$this->WodId = isset($Row['WodId']) ? $Row['WodId'] : "";
 		$this->WorkoutName = isset($Row['WorkoutName']) ? $Row['WorkoutName'] : "";
 		$this->WodType = isset($Row['WorkoutType']) ? $Row['WorkoutType'] : "";
 		$this->WorkoutDescription = isset($Row['WorkoutDescription']) ? $Row['WorkoutDescription'] : "";
+                $this->ExerciseId = isset($Row['ExerciseId']) ? $Row['ExerciseId'] : "";
+                $this->Exercise = isset($Row['Exercise']) ? $Row['Exercise'] : "";
 		$this->Attribute = isset($Row['Attribute']) ? $Row['Attribute'] : "";
 		$this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : "";
 		$this->WodDate = isset($Row['WodDate']) ? $Row['WodDate'] : "";

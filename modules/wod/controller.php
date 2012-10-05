@@ -15,11 +15,11 @@ class WodController extends Controller
             $Html='';
             if(isset($_REQUEST['topselection'])){
                 if($_REQUEST['topselection'] == 'mygym'){
-                    $Model = new WodModel;
-                    $GymFeed = $Model->getMyGymFeed();
-                    $Html='<li>'.$GymFeed[0]->WodDate.'</li>';
-                    //$Gym = $this->MemberGym();
-                    //$Html='<li>My Gym: '.$Gym->GymName.'</li>';
+                    //$Model = new WodModel;
+                    //$GymFeed = $Model->getMyGymFeed();
+                   // $Html='<li>'.$GymFeed[0]->WodDate.'</li>';
+                    $Gym = $this->MemberGym();
+                    $Html='<li>'.$Gym->GymName.'</li>';
                 }else{
                     $Html='<li>'.$_REQUEST['topselection'].'</li>';
                 }
@@ -45,7 +45,6 @@ class WodController extends Controller
 	function Output()
 	{
             $WODdata = '';
-            $Model = new WodModel;
 
             if($_REQUEST['wod'] == 'display'){//my gym
                 //check for registered gym
@@ -55,7 +54,7 @@ class WodController extends Controller
 		}
 		else{//show details:
                     //$WODdata .='<h2>Workout for '.date('d M Y').'</h2>';
-                    $WODdata .= $this->MyGymFeed();
+                    $WODdata .= $this->MyGymWOD();
 		}	
             }else if(isset($_REQUEST['Workout'])){
                 $WODdata .= $this->WorkoutDetails();
@@ -97,21 +96,34 @@ class WodController extends Controller
 	{
             $Html='';
             $Model = new WodModel;
-            $WodDetails = $Model->getWodDetails();
-            $Html.=$WodDetails->WorkoutDescription;
+            $WodDetails = $Model->getWODDetails();
+            $Html.=$WodDetails[0]->WorkoutName;
+            $Html.='<br/>';
+            $Html.=$WodDetails[0]->WorkoutDescription;
             return $Html;
 	}       
         
-        function getMyGymWOD()
+        function MyGymWOD()
         {
             $Html='';
             $Model = new WodModel;
-            $DataObject = $Model->getMyGymWOD();
+            $DataObject = $Model->getGymWodWorkouts();
+            foreach($DataObject as $Item){
+                $Html.='<a href="#" onClick="getDetails(\''.$Item->WodId.'\')">Workout for '.date('d F Y',strtotime($Item->WodDate)).'</a><br/><br/>';
+            }
+            return $Html;
+        }
+        
+         function getMyGymFeed()
+        {
+            $Html='';
+            $Model = new WodModel;
+            $DataObject = $Model->getMyGymFeed();
             foreach($DataObject as $Data){
                 $Html .= '';
             }
             return $Html;
-        }
+        }       
 
 	function getStopWatch($ExerciseId)
     {
