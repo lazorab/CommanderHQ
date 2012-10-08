@@ -216,13 +216,15 @@ class BaselineModel extends Model
 		while($Row = mysql_fetch_assoc($Result))
         {
             if($Row['BaselineType'] == 'Benchmark'){
-                $NewQuery = 'SELECT MB.recid, BW.WorkoutName AS ActivityName
+                $NewQuery = 'SELECT MB.recid, 
+                    BW.WorkoutName AS ActivityName,
                     FROM MemberBaseline MB 
                     JOIN BenchmarkWorkouts BW ON MB.ExerciseId = BW.recid
                     WHERE BW.recid = '.$Row['WorkoutId'].'';
             }
             else if($Row['BaselineType'] == 'Custom'){
-                $NewQuery = 'SELECT MB.recid, CE.ActivityName AS ActivityName
+                $NewQuery = 'SELECT MB.recid, 
+                CE.ActivityName AS ActivityName
                 FROM MemberBaseline MB
                 JOIN CustomExercises CE ON CE.recid = MB.ExerciseId
                 WHERE CE.recid = '.$Row['WorkoutId'].'';               
@@ -264,10 +266,11 @@ class BaselineModel extends Model
                        
     function getBaselineDetails()
     {
-        $SQL = 'SELECT DISTINCT MB.WorkoutId, BT.WorkoutType AS BaselineType
-        FROM MemberBaseline MB 
-        LEFT JOIN WorkoutTypes BT ON BT.recid = MB.BaselineTypeId
-        WHERE MB.MemberId = "'.$_SESSION['UID'].'"'; 
+        $SQL = 'SELECT DISTINCT MB.WorkoutId, 
+            BT.WorkoutType AS BaselineType
+            FROM MemberBaseline MB 
+            LEFT JOIN WorkoutTypes BT ON BT.recid = MB.BaselineTypeId
+            WHERE MB.MemberId = "'.$_SESSION['UID'].'"'; 
 
         $Result = mysql_query($SQL);
         $Row = mysql_fetch_assoc($Result);
@@ -304,6 +307,7 @@ class BaselineModel extends Model
 		
 		$SQL = 'SELECT BW.WorkoutName, 
                         E.Exercise, 
+                        E.Acronym, 
                         BW.'.$DescriptionField.' AS WorkoutDescription,
                         E.recid AS ExerciseId, 
                         A.Attribute, 
@@ -330,6 +334,7 @@ class BaselineModel extends Model
 
 		$SQL = 'SELECT CW.WorkoutName, 
                         E.Exercise, 
+                        E.Acronym, 
                         "'.$this->getCustomDescription($Id).'" AS WorkoutDescription,
                         E.recid AS ExerciseId, 
                         A.Attribute, 
@@ -359,12 +364,13 @@ class BaselineModel extends Model
             "Baseline" AS BaselineType, 
             MB.ExerciseId AS ExerciseId, 
             E.Exercise AS Exercise, 
+            E.Acronym AS Acronym,
             A.Attribute, MB.AttributeValue,
             "1" AS TotalRounds
-        FROM MemberBaseline MB
-        JOIN Exercises E ON E.recid = MB.ExerciseId
-        JOIN Attributes A ON A.recid = MB.AttributeId
-        WHERE MB.MemberId = "'.$_SESSION['UID'].'"';
+            FROM MemberBaseline MB
+            JOIN Exercises E ON E.recid = MB.ExerciseId
+            JOIN Attributes A ON A.recid = MB.AttributeId
+            WHERE MB.MemberId = "'.$_SESSION['UID'].'"';
         //echo $SQL;
         $Result = mysql_query($SQL);
         while($Row = mysql_fetch_assoc($Result))
@@ -377,7 +383,11 @@ class BaselineModel extends Model
             function getCustomDescription($Id)
         {
             $Description = '';
-            $SQL = 'SELECT E.Exercise, A.Attribute, CD.AttributeValue, WT.WorkoutType 
+            $SQL = 'SELECT E.Exercise, 
+                E.Acronym, 
+                A.Attribute, 
+                CD.AttributeValue, 
+                WT.WorkoutType 
                 FROM CustomDetails CD
                 LEFT JOIN Exercises E ON E.recid = CD.ExerciseId
                 LEFT JOIN Attributes A ON A.recid = CD.AttributeId
@@ -431,29 +441,34 @@ class BaselineModel extends Model
 
 class BaselineObject
 {
-	var $ExerciseId;
-        var $WorkoutId;
-	var $WorkoutName;
-	var $BaselineType;
-        var $Exercise;
-	var $WorkoutDescription;
-	var $Attribute;
-	var $AttributeValue;
-        var $RoundNo;
-        var $TotalRounds;
+    var $ExerciseId;
+    var $WorkoutId;
+    var $WorkoutName;
+    var $BaselineType;
+    var $Exercise;
+    var $InputFieldName;   
+    var $WorkoutDescription;
+    var $Attribute;
+    var $AttributeValue;
+    var $RoundNo;
+    var $TotalRounds;
 
-	function __construct($Row)
-	{
-		$this->ExerciseId = isset($Row['ExerciseId']) ? $Row['ExerciseId'] : "";
-                $this->WorkoutId = isset($Row['WorkoutId']) ? $Row['WorkoutId'] : "";
-		$this->WorkoutName = isset($Row['WorkoutName']) ? $Row['WorkoutName'] : "";
-		$this->BaselineType = isset($Row['BaselineType']) ? $Row['BaselineType'] : "";
-                $this->Exercise = isset($Row['Exercise']) ? $Row['Exercise'] : "";
-		$this->WorkoutDescription = isset($Row['WorkoutDescription']) ? $Row['WorkoutDescription'] : "";
-		$this->Attribute = isset($Row['Attribute']) ? $Row['Attribute'] : "";
-		$this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : "";
-                $this->RoundNo = isset($Row['RoundNo']) ? $Row['RoundNo'] : "";
-                $this->TotalRounds = isset($Row['TotalRounds']) ? $Row['TotalRounds'] : "";
-	}
+    function __construct($Row)
+    {
+	$this->ExerciseId = isset($Row['ExerciseId']) ? $Row['ExerciseId'] : "";
+        $this->WorkoutId = isset($Row['WorkoutId']) ? $Row['WorkoutId'] : "";
+        $this->WorkoutName = isset($Row['WorkoutName']) ? $Row['WorkoutName'] : "";
+	$this->BaselineType = isset($Row['BaselineType']) ? $Row['BaselineType'] : "";
+        $this->Exercise = isset($Row['Exercise']) ? $Row['Exercise'] : "";
+        if(isset($Row['Acronym']) && $Row['Acronym'] != '')
+            $this->InputFieldName = $Row['Acronym'];
+        else
+            $this->InputFieldName = $this->Exercise;
+        $this->WorkoutDescription = isset($Row['WorkoutDescription']) ? $Row['WorkoutDescription'] : "";
+	$this->Attribute = isset($Row['Attribute']) ? $Row['Attribute'] : "";
+	$this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : "";
+        $this->RoundNo = isset($Row['RoundNo']) ? $Row['RoundNo'] : "";
+        $this->TotalRounds = isset($Row['TotalRounds']) ? $Row['TotalRounds'] : "";
+    }
 }
 ?>

@@ -60,29 +60,29 @@ class CustomController extends Controller
 	$Html = '';
 	$Model = new CustomModel;
 
-        $WorkoutTypes = $Model->getWorkoutTypes();
 	$Exercises = $Model->getExercises();
 
         $Html .= '<form action="index.php" id="customform" name="form">
                     <input type="hidden" name="action" value="save"/>
                     <input type="hidden" name="origin" value="'.$this->Origin.'"/>
-                    <input type="hidden" name="rowcount" id="rowcounter" value="0"/>
-                    <input class="textinput" type="text" name="WorkoutName" value="" placeholder="Enter Workout Name"/>';
-        $Html .= '<select class="select" name="workouttype" id="workouttype" onchange="addTypeParams(this.value);">
-                    <option value="none">Workout Type</option>';
-        foreach($WorkoutTypes AS $WorkoutType){
-            $Html .= '<option id="'.$WorkoutType->recid.'" value="'.$WorkoutType->ActivityType.'"';
-            if($WorkoutType->ActivityType == $_REQUEST['workouttype'])
-                $Html .='selected="selected"';
-            $Html .= '>'.$WorkoutType->ActivityType.'</option>';
-        }
-	$Html .= '</select>';
+                    <input type="hidden" name="rowcount" id="rowcounter" value="0"/>';
+        $Html .= '<input class="textinput" type="text" name="WorkoutName" value="" placeholder="Name your WOD"/>'; 
+
+        $Html .= '<br/>';
+        
 	$Html .= '<select class="select" name="exercise" id="exercise" onchange="SelectionControl(this.value);">
                     <option value="none">+ Activity</option>';
 	foreach($Exercises AS $Exercise){
             $Html .= '<option id="'.$Exercise->recid.'" value="'.$Exercise->ActivityName.'">'.$Exercise->ActivityName.'</option>';
 	}
 	$Html .= '</select>';
+        
+        $Html .= '<br/>';
+        
+        $Html .= '<div id="workouttypes">'.$this->WorkoutTypes($_REQUEST['workouttype']).'</div>';
+        
+        $Html .= '<br/>';
+        
 	if($_REQUEST['action'] == 'save'){
 	$Html .= '<div class="ui-grid-c">';
     $Html .= '<div class="ui-block-a"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#3f2b44" value="Weight" readonly="readonly"/></div>';
@@ -95,11 +95,28 @@ class CustomController extends Controller
                   <div id="add_exercise">'.$this->AddExercise().'</div>
                   <div id="new_exercise">'.$this->ChosenExercises().'</div>
                   </div>
-                  <div id="clock_input">'.$this->Clock().'</div>
-                  <div id="btnsubmit">'.$this->SubmitButton().'</div>                         
+                  <div id="clock_input">'.$this->Clock().'</div>                        
                   </form><br/>';
      	
 	return $Html;
+    }
+    
+    function WorkoutTypes($Type){
+        $Html='';
+        if($Type != ''){
+        $Model = new CustomModel;
+        $WorkoutTypes = $Model->getWorkoutTypes();
+         $Html .= '<select class="select" name="workouttype" id="workouttype" onchange="addTypeParams(this.value);">';
+         $Html .= '<option value="none">Select Workout Type</option>';
+        foreach($WorkoutTypes AS $WorkoutType){
+            $Html .= '<option id="'.$WorkoutType->recid.'" value="'.$WorkoutType->ActivityType.'"';
+            if($WorkoutType->ActivityType == $_REQUEST['workouttype'])
+                $Html .='selected="selected"';
+            $Html .= '>'.$WorkoutType->ActivityType.'</option>';
+        }
+	$Html .= '</select>';
+        }
+        return $Html;
     }
 	
 	function Output()
@@ -124,15 +141,16 @@ class CustomController extends Controller
         {
             $Html='';
             if(isset($_REQUEST['newexercise'])){
-                $Html ='<input class="textinput" type="text" id="NewExercise" name="NewExercise" value="" placeholder="New Exercise Name"/>';
+                $Html ='<br/><input class="textinput" type="text" id="NewExercise" name="NewExercise" value="" placeholder="New Exercise Name"/>';
+                $Html ='<br/><input class="textinput" type="text" id="Acronym" name="Acronym" value="" placeholder="Acronym for Exercise?"/>';
                 $Html .= '<br/>Applicable Attributes:<br/><br/>';
                 $Html .= '<input type="checkbox" name="ExerciseAttributes[]" value="Weight"/>Weight';
                 $Html .= ' <input type="checkbox" name="ExerciseAttributes[]" value="Height"/>Height<br/>';
                 $Html .= '<input type="checkbox" name="ExerciseAttributes[]" value="Distance"/>Distance';
                 $Html .= ' <input type="checkbox" name="ExerciseAttributes[]" value="Reps"/>Reps<br/><br/>';
                 $Html .= '<input class="buttongroup" type="button" name="btnsubmit" value="Add" onclick="addnew();"/>'; 
-                return $Html;
             }
+             return $Html;
         }
         
         function ChosenExercises()
@@ -164,7 +182,7 @@ class CustomController extends Controller
 				}
 				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
 				$html.='<div class="ui-block-a" style="padding:2px 0 2px 0">Round '.$Attribute->RoundNo.'</div><div class="ui-block-b" style="padding:2px 0 2px 0"></div><div class="ui-block-c" style="padding:2px 0 2px 0"></div>';
-				$html.='<div class="ui-block-a"><input class="textinput" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Attribute->ActivityName.'"/></div>';
+				$html.='<div class="ui-block-a"><input class="textinput" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Attribute->InputFieldName.'"/></div>';
 			}
 			else if($ThisExercise != $Attribute->ActivityName){
                             
@@ -186,7 +204,7 @@ class CustomController extends Controller
                                 if($Attribute->ActivityName == 'Total Rounds'){
                                     $Exercise = '<input class="buttongroup" data-inline="true" type="button" onclick="addRound();" value="+ Round"/>';
                                 }else{
-                                    $Exercise = '<input class="textinput" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Attribute->ActivityName.'"/>';
+                                    $Exercise = '<input class="textinput" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Attribute->InputFieldName.'"/>';
                                 }
 				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
 				$html.='<div class="ui-block-a">'.$Exercise.'</div>';
@@ -298,7 +316,7 @@ class CustomController extends Controller
         {
             $Html='';
             if($_REQUEST['action'] == 'save'){
-                $Html='<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>';      
+                $Html='<br/><input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>';      
             } 
             return $Html;
         }
@@ -420,7 +438,7 @@ class CustomController extends Controller
 	$Html ='<input type="text" id="clock" name="'.$RoundNo.'___'.$ExerciseId.'___TimeToComplete" value="'.$TimeToComplete.'" readonly/>';
 	$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="'.$StartStopButton.'"/>';
 	$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
-        
+        $Html.='<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>';
         
         return $Html;
     }
@@ -485,7 +503,8 @@ class CustomController extends Controller
         $Html.='<input id="clock" type="text" name="timer" value="'.$TimeToComplete.'" '.$Placeholder.'/>';
         $Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstopcountdown();" value="'.$StartStopButton.'"/>';
         $Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetcountdown();" value="Reset"/>';
-		
+	$Html.='<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>';
+        
         return $Html;
     }
     
@@ -502,6 +521,8 @@ class CustomController extends Controller
         $Html .='<input type="hidden" name="'.$RoundNo.'___'.$ExerciseId.'___CountDown" id="CountDown" value="00:00:0"/>';
         $Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstopcountdown();" value="Start"/>';
         $Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetcountdown();" value="Reset"/>';
+        $Html.='<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>';
+        
         return $Html;
     }
 }

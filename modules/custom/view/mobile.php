@@ -54,12 +54,13 @@ function SelectionControl(exercise)
 
 function addNewExercise()
 {
-    var Html ='<input class="textinput" type="text" id="NewExercise" name="NewExercise" value="" placeholder="New Exercise Name"/>';
+    var Html ='<br/><input class="textinput" type="text" id="NewExercise" name="NewExercise" value="" placeholder="New Exercise Name"/>';
+    Html += '<br/><input class="textinput" type="text" id="Acronym" name="Acronym" value="" placeholder="Acronym for Exercise?"/>';
     Html += '<br/>Applicable Attributes:<br/><br/>';
     Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Weight"/>Weight';
-    Html += ' <input type="checkbox" name="ExerciseAttributes[]" value="Height"/>Height<br/>';
+    Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Height"/>Height<br/>';
     Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Distance"/>Distance';
-    Html += ' <input type="checkbox" name="ExerciseAttributes[]" value="Reps"/>Reps<br/><br/>';
+    Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Reps"/>Reps<br/><br/>';
     Html += '<input class="buttongroup" type="button" name="btnsubmit" value="Add" onclick="addnew();"/>';
     $('#add_exercise').html(Html);
     $('.buttongroup').button();
@@ -81,9 +82,10 @@ function DisplayExercise(exercise)
     var ThisRound = '';
     var ThisExercise = '';
     var Unit = '';
-	var Style='';
     if(i < 1){
-        $('#btnsubmit').html('<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>');
+        $('#workouttypes').html('<?php echo $Display->WorkoutTypes('none selected');?>');
+        $('.select').selectmenu();
+        $('.select').selectmenu('refresh');
     }
     $.each(json, function() {
 	
@@ -121,10 +123,10 @@ function DisplayExercise(exercise)
                 html +='<div class="ui-block-a" style="font-size:small">';
                 if(this.BenchmarkId == 0){
                     html += '<input onclick="RemoveFromList(' + i + ',0)" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
-                    html +='' + this.ActivityName + '';
+                    html +='' + this.InputFieldName + '';
                     html +='"/>';
                 }
-                html +='' + this.ActivityName + '';
+                html +='' + this.InputFieldName + '';
                 html += '<div class="clear"></div>';
                 html +='</div>';
            
@@ -154,10 +156,10 @@ function DisplayExercise(exercise)
                 html +='<div class="ui-block-a" style="font-size:small">';
                 if(this.BenchmarkId == 0){
                     html += '<input onclick="RemoveFromList(' + i + ',0)" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
-                    html +='' + this.ActivityName + '';
+                    html +='' + this.InputFieldName + '';
                     html +='"/>';
                 }
-                html +='' + this.ActivityName + '';
+                html +='' + this.InputFieldName + '';
                 html += '<div class="clear"></div>';
                 html +='</div>';
            }
@@ -257,7 +259,7 @@ function RemoveFromList(RowId,BenchMarkId)
 	}
 	
     if(document.getElementById('rowcounter').value == 0){
-        $('#btnsubmit').html('');
+        $('#workouttypes').html('');
     }
 }
 
@@ -270,7 +272,8 @@ function customsubmit()
 function addnew()
 {
     var NewExercise = document.getElementById('NewExercise').value;
-    $.getJSON('ajax.php?module=custom', {newexercise:NewExercise},display);
+    var Acronym = document.getElementById('Acronym').value;
+    $.getJSON('ajax.php?module=custom', {newexercise:NewExercise,acronym:Acronym},display);
     window.location.hash = '#message';
 }
 

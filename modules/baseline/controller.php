@@ -94,7 +94,7 @@ class BaselineController extends Controller
 				
                                 $html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
 				$html.='<div class="ui-block-a"></div><div class="ui-block-b">Round '.$Baseline->RoundNo.'</div><div class="ui-block-c"></div>';
-				$html.='<div class="ui-block-a" style="font-size:small"><input class="textinput" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Baseline->Exercise.'"/></div>';
+				$html.='<div class="ui-block-a" style="font-size:small"><input class="textinput" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Baseline->InputFieldName.'"/></div>';
 			}
 			else if($ThisExercise != $Baseline->Exercise){
                             
@@ -116,7 +116,7 @@ class BaselineController extends Controller
                                 if($Baseline->Exercise == 'Total Rounds'){
                                     $Exercise = '<input class="buttongroup" data-inline="true" type="button" onclick="addRound();" value="+ Round"/>';
                                 }else{
-                                    $Exercise = '<input class="textinput" style="width:75%" readonly="readonly" type="text" data-inline="true" name="'.$Baseline->ExerciseId.'" value="'.$Baseline->Exercise.'"/>';
+                                    $Exercise = '<input class="textinput" style="width:75%" readonly="readonly" type="text" data-inline="true" name="'.$Baseline->ExerciseId.'" value="'.$Baseline->InputFieldName.'"/>';
                                 }
 				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
 				$html.='<div class="ui-block-a" style="font-size:small">'.$Exercise.'</div>';

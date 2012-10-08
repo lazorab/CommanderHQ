@@ -49,8 +49,8 @@ class CustomModel extends Model
         function SaveNewExercise()
 	{
             if($this->UserIsSubscribed()){
-                $SQL = 'INSERT INTO Exercises(Exercise) 
-                    VALUES("'.$_REQUEST['newexercise'].'")';
+                $SQL = 'INSERT INTO Exercises(Exercise, Acronym) 
+                    VALUES("'.$_REQUEST['newexercise'].'", "'.$_REQUEST['acronym'].'")';
                 mysql_query($SQL);
                 $ExerciseId = mysql_insert_id();
                 foreach($_REQUEST['ExerciseAttributes'] AS $Attribute){
@@ -207,11 +207,14 @@ class CustomModel extends Model
         $MemberActivities = array();
         if(!$this->MemberActivityExists())
             $this->SaveNewBaseline();
-        $SQL = 'SELECT MB.ExerciseId AS recid, E.Exercise AS ActivityName, A.Attribute, MB.AttributeValue 
-        FROM MemberBaseline MB
-        JOIN Exercises E ON E.recid = MB.ExerciseId
-        JOIN Attributes A ON A.recid = MB.AttributeId
-        WHERE MB.MemberId = "'.$_SESSION['UID'].'"';
+        $SQL = 'SELECT MB.ExerciseId AS recid, 
+            E.Exercise AS ActivityName, 
+            E.Acronym, 
+            A.Attribute, MB.AttributeValue 
+            FROM MemberBaseline MB
+            JOIN Exercises E ON E.recid = MB.ExerciseId
+            JOIN Attributes A ON A.recid = MB.AttributeId
+            WHERE MB.MemberId = "'.$_SESSION['UID'].'"';
         $Result = mysql_query($SQL);
         while($Row = mysql_fetch_assoc($Result))
         {
@@ -223,11 +226,13 @@ class CustomModel extends Model
 	function getExercises()
 	{
         $Exercises = array();
-        $SQL = 'SELECT DISTINCT E.recid, E.Exercise AS ActivityName 
-		FROM Exercises E
-                LEFT JOIN ExerciseAttributes EA ON EA.ExerciseId = E.recid
-		WHERE E.CustomOption > 0
-		ORDER BY Exercise';
+        $SQL = 'SELECT DISTINCT E.recid, 
+            E.Exercise AS ActivityName,
+            E.Acronym
+            FROM Exercises E
+            LEFT JOIN ExerciseAttributes EA ON EA.ExerciseId = E.recid
+            WHERE E.CustomOption > 0
+            ORDER BY Exercise';
         $Result = mysql_query($SQL);
         while($Row = mysql_fetch_assoc($Result))
         {
@@ -247,8 +252,9 @@ class CustomModel extends Model
 		$Row = mysql_fetch_assoc($Result);
 		$BenchmarkId = $Row['BenchmarkId'];
 		if($BenchmarkId == 0){
-			$SQL = 'SELECT DISTINCT E.recid, 
+                    $SQL = 'SELECT DISTINCT E.recid, 
 			E.Exercise AS ActivityName,
+                        E.Acronym, 
 			A.Attribute
 			FROM ExerciseAttributes EA
 			LEFT JOIN Attributes A ON EA.AttributeId = A.recid
@@ -259,11 +265,14 @@ class CustomModel extends Model
 		else{
                             if($Exercise == 'Baseline'){
 
-        $SQL = 'SELECT MB.ExerciseId AS recid, E.Exercise AS ActivityName, A.Attribute, MB.AttributeValue 
-        FROM MemberBaseline MB
-        JOIN Exercises E ON E.recid = MB.ExerciseId
-        JOIN Attributes A ON A.recid = MB.AttributeId
-        WHERE MB.MemberId = "'.$_SESSION['UID'].'"';
+        $SQL = 'SELECT MB.ExerciseId AS recid, 
+            E.Exercise AS ActivityName, 
+            E.Acronym, 
+            A.Attribute, MB.AttributeValue 
+            FROM MemberBaseline MB
+            JOIN Exercises E ON E.recid = MB.ExerciseId
+            JOIN Attributes A ON A.recid = MB.AttributeId
+            WHERE MB.MemberId = "'.$_SESSION['UID'].'"';
 
         }else{
 
@@ -276,13 +285,19 @@ class CustomModel extends Model
 		}
 		//$SQL = 'SELECT WorkoutName, '.$DescriptionField.' AS WorkoutDescription, '.$InputFields.' AS InputFields, VideoId FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
 		
-		$SQL = 'SELECT E.recid, E.Exercise AS ActivityName, BD.BenchmarkId, A.Attribute, BD.'.$AttributeValue.' AS AttributeValue, RoundNo
-			FROM BenchmarkDetails BD
-			LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
-			LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
-			LEFT JOIN Attributes A ON A.recid = BD.AttributeId
-			WHERE BD.BenchmarkId = '.$BenchmarkId.'
-			ORDER BY RoundNo, ActivityName, Attribute';
+		$SQL = 'SELECT E.recid, 
+                    E.Exercise AS ActivityName, 
+                    E.Acronym, 
+                    BD.BenchmarkId, 
+                    A.Attribute, 
+                    BD.'.$AttributeValue.' AS AttributeValue, 
+                    RoundNo
+                    FROM BenchmarkDetails BD
+                    LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
+                    LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
+                    LEFT JOIN Attributes A ON A.recid = BD.AttributeId
+                    WHERE BD.BenchmarkId = '.$BenchmarkId.'
+                    ORDER BY RoundNo, ActivityName, Attribute';
 		}
                 }
         $Result = mysql_query($SQL);
@@ -301,23 +316,28 @@ class CustomModel extends Model
 
 class CustomObject
 {
-	var $recid;
+    var $recid;
     var $BenchmarkId;
-	var $ActivityName;
-	var $ActivityType;
-	var $Attribute;
-	var $AttributeValue;
-	var $RoundNo;
+    var $ActivityName;
+    var $InputFieldName;
+    var $ActivityType;
+    var $Attribute;
+    var $AttributeValue;
+    var $RoundNo;
 
-	function __construct($Row)
-	{
-		$this->recid = isset($Row['recid']) ? $Row['recid'] : "";
+    function __construct($Row)
+    {
+	$this->recid = isset($Row['recid']) ? $Row['recid'] : "";
         $this->BenchmarkId = isset($Row['BenchmarkId']) ? $Row['BenchmarkId'] : "";
-		$this->ActivityName = isset($Row['ActivityName']) ? $Row['ActivityName'] : "";
-		$this->ActivityType = isset($Row['ActivityType']) ? $Row['ActivityType'] : "";
-		$this->Attribute = isset($Row['Attribute']) ? $Row['Attribute'] : "";
-		$this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : "";
-		$this->RoundNo = isset($Row['RoundNo']) ? $Row['RoundNo'] : "1";
-	}
+	$this->ActivityName = isset($Row['ActivityName']) ? $Row['ActivityName'] : "";
+        if(isset($Row['Acronym']) && $Row['Acronym'] != '')
+            $this->InputFieldName = $Row['Acronym'];
+        else
+            $this->InputFieldName = $this->ActivityName;
+	$this->ActivityType = isset($Row['ActivityType']) ? $Row['ActivityType'] : "";
+	$this->Attribute = isset($Row['Attribute']) ? $Row['Attribute'] : "";
+	$this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : "";
+	$this->RoundNo = isset($Row['RoundNo']) ? $Row['RoundNo'] : "1";
+    }
 }
 ?>

@@ -84,7 +84,11 @@ class BenchmarkModel extends Model
 	
         function getCustomDescription($Id)
         {
-            $SQL = 'SELECT E.Exercise, A.Attribute, CD.AttributeValue, WT.WorkoutType
+            $SQL = 'SELECT E.Exercise, 
+                E.Acronym, 
+                A.Attribute, 
+                CD.AttributeValue, 
+                WT.WorkoutType
                 FROM CustomDetails CD
                 LEFT JOIN Exercises E ON E.recid = CD.ExerciseId
                 LEFT JOIN Attributes A ON A.recid = CD.AttributeId
@@ -103,6 +107,7 @@ class BenchmarkModel extends Model
                 $AttributeValue = 'AttributeValueFemale';
             }
              $SQL = 'SELECT E.Exercise, 
+                 E.Acronym, 
                  A.Attribute, 
                  '.$AttributeValue.' AS AttributeValue, 
                      WT.WorkoutType,
@@ -216,6 +221,7 @@ class BenchmarkModel extends Model
                         BW.WorkoutName, 
                         E.Exercise, 
                         E.recid AS ExerciseId, 
+                        E.Acronym, 
                         A.Attribute, 
                         BD.'.$AttributeValue.' AS AttributeValue, 
                         VideoId, 
@@ -242,6 +248,7 @@ class BenchmarkModel extends Model
 
 		$SQL = 'SELECT CW.WorkoutName, 
                         E.Exercise, 
+                        E.Acronym, 
                         "'.$this->getCustomDescription($Id).'" AS WorkoutDescription,
                         E.recid AS ExerciseId, 
                         A.Attribute, 
@@ -266,6 +273,7 @@ class BenchmarkModel extends Model
         $ExerciseAttributes = array();
         $SQL = 'SELECT E.recid, 
 		E.Exercise AS WorkoutName,
+                E.Acronym, 
 		A.Attribute
 		FROM Attributes A
 		JOIN ExerciseAttributes EA ON EA.AttributeId = A.recid
@@ -498,6 +506,7 @@ class BenchmarkObject
 	var $Name;
 	var $Banner;
 	var $Exercise;
+        var $InputFieldName;
 	var $ExerciseId;
 	var $Description;
 	var $InputFields;
@@ -514,6 +523,10 @@ class BenchmarkObject
             $this->Name = $Row['WorkoutName'];
             $this->Banner = $Row['Banner'];
             $this->Exercise = $Row['Exercise'];
+            if(isset($Row['Acronym']) && $Row['Acronym'] != '')
+                $this->InputFieldName = $Row['Acronym'];
+            else
+                $this->InputFieldName = $this->Exercise;
             $this->ExerciseId = $Row['ExerciseId'];
             $this->Description = $Row['WorkoutDescription'];
             $this->InputFields = $Row['InputFields'];

@@ -7,13 +7,11 @@ $Query = 'SELECT * FROM tempExercises';
 $Result = mysql_query($Query);
 while($Row = mysql_fetch_assoc($Result))
 {
-    echo $Row['Exercise'];
-    /*
     $NewQuery = 'SELECT recid FROM Exercises WHERE Exercise = "'.$Row['Exercise'].'"';
     $NewResult = mysql_query($NewQuery);
     $NewRow = mysql_fetch_assoc($NewResult);
     $Recid = $NewRow['recid'];
-    
+/*    
     if($NewRow['recid'] > 0){
         $Recid = $Row['recid'];
     }
@@ -22,9 +20,9 @@ while($Row = mysql_fetch_assoc($Result))
         mysql_query($NewQuery);
         $Recid = mysql_insert_id();
     } 
-     
-     */
-    /*
+*/
+     if($NewRow['recid'] > 0){
+       
     if($Row['Weight'] > 0){
         $NewQuery = 'INSERT INTO ExerciseAttributes(ExerciseId,AttributeId) VALUES('.$Recid.', '.$Row['Weight'].')';
         mysql_query($NewQuery);
@@ -53,7 +51,11 @@ while($Row = mysql_fetch_assoc($Result))
         $NewQuery = 'INSERT INTO ExerciseAttributes(ExerciseId,AttributeId) VALUES('.$Recid.', '.$Row['Timed'].')';
         mysql_query($NewQuery);
     }
-*/
+     }
+     else{
+         echo $Row['Exercise'];
+         echo '<br/>';
+     }
 }
 
 ?>

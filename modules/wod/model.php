@@ -77,6 +77,7 @@ class WodModel extends Model
 
 		$SQL = 'SELECT WW.WorkoutName, 
                         E.Exercise, 
+                        E.Acronym, 
                         "'.$this->WodDescription($_REQUEST['Workout']).'" AS WorkoutDescription,
                         E.recid AS ExerciseId, 
                         A.Attribute, 
@@ -99,7 +100,11 @@ class WodModel extends Model
         
          function WodDescription($Id)
         {
-             $SQL = 'SELECT E.Exercise, A.Attribute, WD.AttributeValue, WT.WorkoutType
+             $SQL = 'SELECT E.Exercise, 
+                E.Acronym, 
+                A.Attribute, 
+                WD.AttributeValue, 
+                WT.WorkoutType
                 FROM WodDetails WD
                 LEFT JOIN Exercises E ON E.recid = WD.ExerciseId
                 LEFT JOIN Attributes A ON A.recid = WD.AttributeId
@@ -199,7 +204,11 @@ class WodModel extends Model
          function getWodDescription($Id)
         {
             $Description = '';
-            $SQL = 'SELECT E.Exercise, A.Attribute, WD.AttributeValue, WT.WorkoutType
+            $SQL = 'SELECT E.Exercise, 
+                E.Acronym, 
+                A.Attribute, 
+                WD.AttributeValue, 
+                WT.WorkoutType
                 FROM WodDetails WD
                 LEFT JOIN Exercises E ON E.recid = WD.ExerciseId
                 LEFT JOIN Attributes A ON A.recid = WD.AttributeId
@@ -286,6 +295,7 @@ class WODObject
 	var $WodType;
 	var $WorkoutDescription;
         var $Exercise;
+        var $InputFieldName;  
         var $ExerciseId;
 	var $Attribute;
 	var $AttributeValue;
@@ -299,6 +309,10 @@ class WODObject
 		$this->WorkoutDescription = isset($Row['WorkoutDescription']) ? $Row['WorkoutDescription'] : "";
                 $this->ExerciseId = isset($Row['ExerciseId']) ? $Row['ExerciseId'] : "";
                 $this->Exercise = isset($Row['Exercise']) ? $Row['Exercise'] : "";
+                if(isset($Row['Acronym']) && $Row['Acronym'] != '')
+                    $this->InputFieldName = $Row['Acronym'];
+                else
+                    $this->InputFieldName = $this->Exercise;
 		$this->Attribute = isset($Row['Attribute']) ? $Row['Attribute'] : "";
 		$this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : "";
 		$this->WodDate = isset($Row['WodDate']) ? $Row['WodDate'] : "";

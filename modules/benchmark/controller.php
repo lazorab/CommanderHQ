@@ -94,7 +94,7 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
 				}
 				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
 				$html.='<div class="ui-block-a" style="padding:2px 0 2px 0">Round '.$Benchmark->RoundNo.'</div><div class="ui-block-b" style="padding:2px 0 2px 0"></div><div class="ui-block-c" style="padding:2px 0 2px 0"></div>';
-				$html.='<div class="ui-block-a"><input data-role="none" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Benchmark->Exercise.'"/></div>';
+				$html.='<div class="ui-block-a"><input data-role="none" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Benchmark->InputFieldName.'"/></div>';
 			}
 			else if($ThisExercise != $Benchmark->Exercise){
                             
@@ -116,7 +116,7 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
                                 if($Benchmark->Exercise == 'Total Rounds'){
                                     $Exercise = '<input class="buttongroup" data-inline="true" type="button" onclick="addRound();" value="+ Round"/>';
                                 }else{
-                                    $Exercise = '<input data-role="none" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Benchmark->Exercise.'"/>';
+                                    $Exercise = '<input data-role="none" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Benchmark->InputFieldName.'"/>';
                                 }
 				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
 				$html.='<div class="ui-block-a">'.$Exercise.'</div>';
@@ -222,19 +222,36 @@ else
     
     $html.='    <div id="slides">
         <div class="slides_container">
+        
             <div class="slide">
             <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>The Girls</li>
             </ul>
             '.$this->getWorkoutList($Girls).'
-            </div>
-            <div class="slide">
+            </div>';
+            
+     $html .='<div class="slide">
             <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>The Heros</li>
             </ul>
                 '.$this->getWorkoutList($Heros).'
-            </div>
-            <div class="slide">
+            </div>';
+            
+     $html .='<div class="slide">
+            <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+                <li>Various</li>
+            </ul>
+                
+            </div>';
+     
+     $html .='<div class="slide">
+            <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+                <li>Popular</li>
+            </ul>
+                
+            </div>';
+
+     $html .='<div class="slide">
             <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>Travel Workouts</li>
             </ul>
@@ -243,18 +260,18 @@ else
 
      $html .='<div class="slide">
             <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-                <li>My Custom Workouts</li>
+                <li>My Saved WODs</li>
             </ul>
                 '.$this->getCustomMemberWorkouts().'
             </div>';
-     
+  /*   
      $html .='<div class="slide">
             <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>Custom Workouts from Others</li>
             </ul>
                 '.$this->getCustomPublicWorkouts().'
             </div>';
-     
+  */   
      $html.='           
         </div>
         <a href="#" class="prev"><img src="images/arrow-next.png" width="36" height="36" alt="Arrow Prev"></a>
