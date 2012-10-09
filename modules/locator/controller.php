@@ -113,21 +113,33 @@ return $html;
         function Output()
 	{
             $html='';
-            if(isset($_REQUEST['Id'])){
+            if(isset($_REQUEST['keyword'])){
                 $Model = new LocatorModel;
-                $Affiliate=$Model->getAffiliate($_REQUEST['Id']);
-
-                $html.=''.$Affiliate->Address.'<br/>';
-                $html.=''.$Affiliate->Region.'<br/>';
-                $html.=''.$Affiliate->TelNo.'<br/><br/>';
-                $html.= $this->getMap();
+                $Affiliates=$Model->getAffiliatesFromSearch();
+                if(count($Affiliates) > 0){
+                    $html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';               
+                    foreach($Affiliates AS $Affiliate){
+                        $html .= '<li>';
+                        $html .= '<a href="" onclick="getDetails('.$Affiliate->AffiliateId.');">'.$Affiliate->GymName.':<br/><span style="font-size:small">'.$Affiliate->Region.'</span></a>';
+                        $html .= '</li>';
+                    }
+                    $html .= '</ul><br/>';
+                }
+                else{
+                    $html='No Affiliate Gyms match your search';
+                }
+            }
+            else if(isset($_REQUEST['Id'])){
+    
+                $html.=$this->getMap();
+    
             }
             else{
                 if(isset($_REQUEST['latitude']) && isset($_REQUEST['longitude'])){
                     if($_REQUEST['latitude'] == null || $_REQUEST['longitude'] == null){
                         $html = 'Cannot determine your present location';
-            }
-            else{
+                    }
+                    else{
                 $Model = new LocatorModel;
                 $Affiliates=$Model->getAffiliates();
                 if(count($Affiliates) > 0){
@@ -142,19 +154,27 @@ return $html;
                 else{
                     $html='No Affiliate Gyms near your present location';
                 }
-            }
+                    }
             
-            }
+                }
             }
             return $html;
 	}
         
  	function TopSelection()
 	{
+            $validate = new ValidationUtils;
             $Model = new LocatorModel;
             $Affiliate=$Model->getAffiliate($_REQUEST['topselection']);
-            $Html = '<li><a href="'.$Affiliate->URL.'" target="_blank">'.$Affiliate->GymName.'</a></li>';
-
+            $Html = '<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+                <li><a href="'.$Affiliate->URL.'" target="_blank">'.$Affiliate->GymName.'</a></ul>';
+                $Html.='<br/>
+                '.$Affiliate->Address.'<br/>
+                '.$Affiliate->Region.'<br/>';
+            if($FormattedNumber = $validate->GeneralNumberCheck($Affiliate->TelNo)) {
+                $Html.='Tel: <a href="tel:'.$FormattedNumber.'">
+                        '.$Affiliate->TelNo.'</a>';
+            }    
             return $Html;	
 	}       
 }

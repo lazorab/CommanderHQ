@@ -8,12 +8,12 @@ $(document).ready(function () {
 </script>
 
 <br/>
-<h3>Food Log</h3>
+<h3>Nutrition</h3>
 <?php if($Display->Message != ''){?>
 <div style="background-color:RED;color:#fff;font-weight:bold;padding:1%;width:75%">* <?php echo $Display->Message;?></div>
 <?php } ?>
 <form name="foodlog" action="index.php" method="post">
-<input type="hidden" name="module" value="foodlog"/>
+<input type="hidden" name="module" value="nutrition"/>
 What did you eat?<br/>
 <textarea name="meal" rows="5" cols="15"></textarea><br/>
 When?<br/>

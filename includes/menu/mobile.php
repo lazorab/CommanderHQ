@@ -88,7 +88,7 @@ if(isset($_REQUEST['wodtype']) || (isset($_REQUEST['origin'])) || isset($_REQUES
     <img alt="Challenge" <?php echo $RENDER->NewImage('menu_challenges.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>menu_challenges.png"/>
 </a>
 
-<a href="#" onclick="OpenThisPage('?module=foodlog');" data-transition="slidefade" data-prefetch>
+<a href="#" onclick="OpenThisPage('?module=nutrition');" data-transition="slidefade" data-prefetch>
     <img alt="Nutrition" <?php echo $RENDER->NewImage('menu_nutrition.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>menu_nutrition.png"/>
 </a>
 

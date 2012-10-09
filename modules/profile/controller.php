@@ -32,7 +32,7 @@ class ProfileController extends Controller
                 $Message = 'Firstname Required';
             else if($_REQUEST['LastName'] == '')
                 $Message = 'Lastname Required';
-            else if($Model->CheckUserNameExists($_REQUEST['UserName']))
+            else if(!isset($_SESSION['UID']) && $Model->CheckUserNameExists($_REQUEST['UserName']))
                 $Message = 'Username already exists. Please choose another.';
             else if($_REQUEST['PassWord'] != $_REQUEST['ConfirmPassWord'])
                 $Message = 'Passwords do not match!';
@@ -42,7 +42,7 @@ class ProfileController extends Controller
                 $Message = 'Cell number invalid!';
             else if($_REQUEST['Email'] != '' && !$Validate->CheckEmailAddress($_REQUEST['Email']))
                 $Message = 'Email Address invalid!';
-            else if($Model->CheckEmailExists($_REQUEST['Email']))
+            else if(!isset($_SESSION['UID']) && $Model->CheckEmailExists($_REQUEST['Email']))
                 $Message = 'Email Address already exists!';
             else if($_REQUEST['DOB'] == '')
                 $Message = 'Invalid Date of Birth';				
@@ -58,12 +58,12 @@ class ProfileController extends Controller
             return $Message;	
 	}
     
-    function Save()
+    function Message()
     {
-        $Model = new ProfileModel;
         $Message = $this->Validate();
         if($Message == 'Success')
         {
+            $Model = new ProfileModel; 
             if(isset($_SESSION['UID'])){
                 $this->UserId = $_SESSION['UID'];
                 $Model->Update($_SESSION['UID']);
@@ -80,14 +80,9 @@ class ProfileController extends Controller
         
     function Output()
     {
-        $Message = '';
+
         $Model = new ProfileModel;
         $Html = '';
-        if($_REQUEST['action'] == 'save'){
-            $Message = $this->Save();
-        }
-        if($Message != 'Success'){
-            $Html .= '<div id="message">' . $Message . '</div>';
 
         $MemberDetails = $Model->getMemberDetails($this->UserId);
         
@@ -106,7 +101,6 @@ class ProfileController extends Controller
         <form action="index.php" method="post" id="profileform" name="profileform">
         <div data-role="fieldcontain">
         <input type="hidden" name="module" value="profile"/>
-        <input type="hidden" name="action" value="save"/>
         <input type="hidden" name="UserId" value="'.$MemberDetails->UserId.'"/>';
       if(!isset($_SESSION['UID'])){
           $Html.='<label for="invcode">Invitation Code</label>
@@ -187,10 +181,7 @@ $Html.='/>
 <input class="buttongroup" type="button" onclick="profilesubmit();" value="Save"/><br/><br/>
 </div>
 </form>';
-        }
-        else{
-            $Html = $Message;
-        }
+
         return $Html;
     }
 }

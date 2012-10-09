@@ -15,7 +15,9 @@
 	
 	$Ajax = new $ControllerClass;
 	
-        if(isset($_REQUEST['topselection'])){
+        if($_REQUEST['action'] == 'validateform'){
+            echo json_encode($Ajax->Message());
+        }else if(isset($_REQUEST['topselection'])){
             echo json_encode($Ajax->TopSelection());
         }else if(isset($_REQUEST['video'])){
             echo json_encode($Ajax->Video());

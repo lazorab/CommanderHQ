@@ -29,6 +29,16 @@ class Model
             return $Message;	
 	}
         
+ 	function getMessage()
+	{
+            $SQL = 'SELECT Message FROM ActionMessages WHERE recid = '.$_REQUEST['message'].'';
+            $Result = mysql_query($SQL);	
+            $Row = mysql_fetch_assoc($Result);
+            $Message = $Row['Message'];
+		
+            return $Message;	
+	}       
+        
         function getGender()
         {
             $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';

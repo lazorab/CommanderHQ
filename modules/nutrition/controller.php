@@ -1,5 +1,5 @@
 <?php
-class FoodlogController extends Controller
+class NutritionController extends Controller
 {
     var $Message;
     

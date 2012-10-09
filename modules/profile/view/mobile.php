@@ -25,16 +25,22 @@ function getSystem(val)
 
 function profilesubmit()
 {
-    $.getJSON('ajax.php?module=profile', $("#profileform").serialize(),display);
+    $.getJSON('ajax.php?module=profile&action=validateform', $("#profileform").serialize(),messagedisplay);
+}
+
+function messagedisplay(message)
+{
+    if(message == 'Success'){
+        window.location = 'index.php?module=memberhome&message=1';
+    }else{
+        alert(message);
+        $.getJSON('ajax.php?module=profile', $("#profileform").serialize(),display);
+    }
 }
 
 function display(data)
 {
-    if(data == 'Success'){
-        window.location = 'index.php?module=memberhome';
-    }else{
         $('#AjaxOutput').html(data);
-        window.location.hash = '#message';
         $('#listview').listview();
         $('#listview').listview('refresh');
         $('.controlbutton').button();
@@ -45,7 +51,6 @@ function display(data)
         $('.radioinput').checkboxradio('refresh');
         $('.textinput').textinput();
         $('#AjaxLoading').html('');
-    }
 }
 </script>
 

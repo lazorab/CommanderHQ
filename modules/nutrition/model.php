@@ -1,5 +1,5 @@
 <?php
-class FoodlogModel extends Model
+class NutritionModel extends Model
 {
 	function __construct()
 	{

@@ -14,35 +14,22 @@ class BaselineController extends Controller
         }
     }
     
-    function SaveWorkout()
+    function Message()
     {
-	$Model = new BaselineModel;
-	return $Model->Log();
-    }
+        $Model = new BaselineModel;
+        $Message = $Model->Log();
+        
+        return $Message;
+    }    
     
     function Output()
     {
-        $Html = '';
-        if($_REQUEST['action'] == 'save'){
-            $Html .= '<div id="message">'.$this->SaveWorkout().'</div>';
-        }
+        $Html='';
+        if($_REQUEST['save'] == 'successfull')
+            $Html.='<span style="color:green">Successfully Saved!</span>';
+        
         $Html.= $this->getBaselineDetails(); 
 	return $Html;
-    }
-    
-    function getCustomBaselineActivities()
-    {        
-        $Model = new BaselineModel;
-        $InputFields = $Model->getBaselineInputFields();
-        foreach($InputFields AS $Field){
-            $Html.='<div class="ui-block-a">
-            <input class="textinput" style="width:75%" type="text" data-inline="true" name="Activity" value="Squat"/>
-            </div>
-            <div class="ui-block-b"></div>
-            <div class="ui-block-c">
-            <input class="textinput" style="width:75%" type="text" data-inline="true" name="Reps" value="40"/>
-            </div>';        
-        }   
     }
     
     function getBaselineDetails()
@@ -65,8 +52,7 @@ class BaselineController extends Controller
         $ThisExercise = '';
         $html.='<form name="baselineform" id="baselineform" action="index.php">
         <input type="hidden" name="BaselineType" value="'.$BaselineDetails[0]->BaselineType.'"/>
-        <input type="hidden" name="WorkoutId" value="'.$BaselineDetails[0]->WorkoutId.'"/>
-        <input type="hidden" name="action" value="save"/>';
+        <input type="hidden" name="WorkoutId" value="'.$BaselineDetails[0]->WorkoutId.'"/>';
 
         $html.='<div class="ui-grid-b">';
 
@@ -127,38 +113,38 @@ class BaselineController extends Controller
             if($Baseline->Attribute == 'Height' || $Baseline->Attribute == 'Distance' || $Baseline->Attribute == 'Weight'){
                             $AttributeValue = '';	
 				if($Baseline->Attribute == 'Distance'){
-                                    $Style='style="width:75%;color:white;font-weight:bold;background-color:#6f747a"';
+                                    $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#6f747a"';
 					if($this->SystemOfMeasure() != 'Metric'){
-						$Unit = 'm';
+						$Unit = '<span style="float:left">m</span>';
                                                 $AttributeValue = round($Baseline->AttributeValue * 0.62, 2);
                                         }else{
-						$Unit = 'km';
+						$Unit = '<span style="float:left">km</span>';
                                                 $AttributeValue = $Baseline->AttributeValue;
                                         }
 				}		
 				else if($Baseline->Attribute == 'Weight'){
-                                    $Style='style="width:75%;color:white;font-weight:bold;background-color:#3f2b44"';
+                                    $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#3f2b44"';
 					if($this->SystemOfMeasure() != 'Metric'){
                                             $AttributeValue = round($Baseline->AttributeValue * 2.20, 2);
-						$Unit = 'lbs';
+						$Unit = '<span style="float:left">lbs</span>';
                                         }else{
-						$Unit = 'kg';
+						$Unit = '<span style="float:left">kg</span>';
                                                 $AttributeValue = $Baseline->AttributeValue;
                                         }
 				}
 				else if($Baseline->Attribute == 'Height'){
-                                    $Style='style="width:75%;color:white;font-weight:bold;background-color:#66486e"';
+                                    $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#66486e"';
 					if($this->SystemOfMeasure() != 'Metric'){
                                             $AttributeValue = round($Baseline->AttributeValue * 0.39, 2);
-						$Unit = 'inches';
+						$Unit = '<span style="float:left">inches</span>';
                                         }else{
-						$Unit = 'cm';
+						$Unit = '<span style="float:left">cm</span>';
                                                 $AttributeValue = $Baseline->AttributeValue;
                                         }
 				}
 
 				$Bhtml.='<div class="ui-block-b">';
-				$Bhtml.='<input class="textinput" '.$Style.' type="number" data-inline="true" name="'.$RoundNo.'___'.$Baseline->ExerciseId.'___'.$Baseline->Attribute.'" value="'.$AttributeValue.'"/> '.$Unit.'';
+				$Bhtml.='<input class="textinput" '.$Style.' type="number" data-inline="true" name="'.$RoundNo.'___'.$Baseline->ExerciseId.'___'.$Baseline->Attribute.'" value="'.$AttributeValue.'"/>'.$Unit.'';
 				$Bhtml.='</div>';		
 				if($Chtml != ''){
 					$html.=''.$Bhtml.''.$Chtml.'';
@@ -183,7 +169,7 @@ class BaselineController extends Controller
                                     $Value = $_REQUEST['Rounds'] + 1 ;
                                 }
                                 if($Baseline->Attribute == 'Reps'){
-                                    $Style='style="width:75%;color:black;font-weight:bold;background-color:#ccff66"';
+                                    $Style='style="float:left;width:50%;color:black;font-weight:bold;background-color:#ccff66"';
                                 }
 				$Chtml.='<div class="ui-block-c">';
 				$Chtml.='<input '.$InputAttributes.' '.$Style.' name="'.$InputName.'" '.$Placeholder.' value="'.$Value.'"/>';

@@ -2,6 +2,5 @@
 class MembershomeModel extends Model
 {
 
-	
 }
 ?>

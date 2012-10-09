@@ -1,19 +1,27 @@
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>   
 <script language="javascript">
     var lat;
-    var lng;
+    var lng;   
 navigator.geolocation.getCurrentPosition(findLocation, noLocation);
 function findLocation(position)
 {
     lat = position.coords.latitude;
     lng = position.coords.longitude;
     $.getJSON("ajax.php?module=locator",{latitude:lat,longitude:lng},display);
-    $('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif", SCREENWIDTH);?> src="/css/images/ajax-loader.gif" />');
 }
 
 function noLocation()
 {
     $.getJSON("ajax.php?module=locator",{latitude:null,longitude:null},display);
+}
+
+function GymSearch()
+{
+    $("#map_canvas").removeClass("active");
+    $.getJSON('ajax.php?module=locator', $("#searchform").serialize(),display);
+    $('#topselection').html('<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d"><li>Search Results</li></ul>');
+    $('#toplist').listview(); 
+    $('#toplist').listview('refresh');   
 }
 
 function goBack()
@@ -31,7 +39,8 @@ function getDetails(id)
 
 function topselectiondisplay(data)
 {
-    $('#toplist').html(data);
+    $('#topselection').html(data);
+    $('#toplist').listview(); 
     $('#toplist').listview('refresh'); 
 }
 
@@ -42,16 +51,23 @@ function display(data)
     $('#listview').listview('refresh');
     $('#AjaxLoading').html('');	
 }
-</script>
-<div id="topselection">
+</script> 
+
+    <div>
+     <form action="#" method="post" name="searchform" id="searchform">
+        <div style="padding:2%;float:left;width:70%;"><input type="search" results="5" placeholder="Search" name="keyword"/></div>
+        <div style="float:left;"><input type="button" name="btnSubmit" value="Go" data-inline="true" onclick="GymSearch();"/></div>
+    </form>  
+    </div> 
+<div class="clear"></div>
+<div id="topselection">   
     <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
         <li>Affiliate Gyms Near you</li>
     </ul>
 </div>
 
-<div id="map_canvas">
+<div id="map_canvas"></div>
 
-</div>
 <div id="AjaxOutput">       
     <?php echo $Display->Output();?>
 </div>

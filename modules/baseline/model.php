@@ -18,7 +18,8 @@ class BaselineModel extends Model
         $ActivityFields=$this->getActivityFields();
         if($this->Message == ''){
         //var_dump($ActivityFields);
-        $WorkoutTypeId = $this->WorkoutTypeId($_REQUEST['baseline']);
+        $WorkoutTypeId = $this->getWorkoutTypeId($_REQUEST['BaselineType']);
+        $WorkoutId = $_REQUEST['WorkoutId'];
         foreach($ActivityFields AS $Activity)
         {
             $AttributeValue = '';
@@ -54,13 +55,13 @@ class BaselineModel extends Model
             mysql_query($SQL);
             
             $SQL = 'INSERT INTO BaselineLog(MemberId, BaselineTypeId, WorkoutId, ExerciseId, AttributeId, AttributeValue) 
-            VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$Activity->WorkoutId.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
+            VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$WorkoutId.'", "'.$Activity->ExerciseId.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
             mysql_query($SQL);
 			
             $SQL = 'INSERT INTO WODLog(MemberId, WODTypeId, WorkoutId, ExerciseId, AttributeId, AttributeValue) 
-            VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$Activity->WorkoutId.'", "'.$Activity->ExerciseId.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
+            VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$WorkoutId.'", "'.$Activity->ExerciseId.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
             mysql_query($SQL);
-            $this->Message = '<span style="color:green">Successfully Saved!</span>';
+            $this->Message = 'Success';
         }
         }
             }else{
@@ -99,9 +100,9 @@ class BaselineModel extends Model
                 $ExerciseId = $ExplodedKey[1];
                 $Attribute = $ExplodedKey[2];
                 if($val == '00:00:0' || $val == '' || $val == '0' || $val == $Attribute){
-                    $this->Message .= '<span style="color:red">Invalid value for '.$Attribute.'!</span><br/>';
+                    $this->Message .= 'Invalid value for '.$Attribute.'!';
                 }else{
-                $Query='SELECT recid, (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, "'.$val.'" AS AttributeValue, "'.$RoundNo.'" AS RoundNo
+                $Query='SELECT recid AS ExerciseId, (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, "'.$val.'" AS AttributeValue, "'.$RoundNo.'" AS RoundNo
                 FROM Exercises
                 WHERE recid = "'.$ExerciseId.'"';
                 $Result = mysql_query($Query); 
@@ -111,7 +112,7 @@ class BaselineModel extends Model
             }
             else{
                    if($val == '00:00:0' || $val == $key){
-                        $this->Message .= '<span style="color:red">Invalid value for '.$key.'!</span><br/>';
+                        $this->Message .= 'Invalid value for '.$key.'!';
                 }else{
                 $SQL = 'SELECT recid FROM Attributes WHERE Attribute = "'.$key.'"';
                 $Result = mysql_query($SQL);
@@ -140,7 +141,7 @@ class BaselineModel extends Model
     
     function SaveNewBaseline()
 	{
-        $DefaultActivities=array('Row'=>'500','Squats'=>'40','Sit-Ups'=>'30','Push-Ups'=>'20','Pull-Ups'=>'10');
+        $DefaultActivities=array('Row'=>'0.5','Squats'=>'40','Sit-Ups'=>'30','Push-Ups'=>'20','Pull-Ups'=>'10','Timed'=>'00:00:0');
         
         foreach($DefaultActivities AS $key=>$val)
         {
@@ -150,7 +151,8 @@ class BaselineModel extends Model
             JOIN Exercises E ON EA.ExerciseId = E.recid
             WHERE E.Exercise = "'.$key.'"
             AND (A.Attribute = "Distance"
-                 OR A.Attribute = "Reps")'; 
+                 OR A.Attribute = "Reps"
+                 OR A.Attribute = "TimeToComplete")'; 
             $Result = mysql_query($Query);        
             $Row = mysql_fetch_assoc($Result);
             

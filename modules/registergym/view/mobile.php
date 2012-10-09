@@ -1,42 +1,30 @@
 <script type="text/javascript">
-function savedetails()
-{
-	if(document.form.gymname.value == '')
-		alert('Gym Name Required');
-	else if(document.form.url.value == '')
-		alert('URL Required');	
-	else{
-		document.form.submit();
-	}
-}
+
 function gymformsubmit()
+{  
+    $.getJSON('ajax.php?module=registergym&action=validateform', $("#gymform").serialize(),messagedisplay);
+}
+
+function messagedisplay(message)
 {
-    $.getJSON('ajax.php?module=registergym', $("#gymform").serialize(),display);
+    if(message == 'Success'){
+        window.location = 'index.php?module=memberhome&message=2';
+    }else{
+        alert(message);
+        //$.getJSON('ajax.php?module=registergym', $("#profileform").serialize(),display);
+    }
 }
 
 function display(data)
 {
-    if(data == 'Success'){
-        window.location = 'index.php?module=wod&wodtype=2';
-    }else{
-        $('#AjaxOutput').html(data);
-        window.location.hash = '#message';
-        $('#listview').listview();
-        $('#listview').listview('refresh');
-        $('.controlbutton').button();
-        $('.controlbutton').button('refresh');
-        $('.buttongroup').button();
-        $('.buttongroup').button('refresh'); 
-        $('.radioinput').checkboxradio();
-        $('.radioinput').checkboxradio('refresh');
-        $('.textinput').textinput();
-        $('#AjaxLoading').html('');
-    }
+    $('#AjaxOutput').html(data);
+    $('.select').selectmenu();
+    $('.select').selectmenu('refresh');
+    $('#AjaxLoading').html('');
 }
 </script>
 
 <br/>
-
 
 <div id="AjaxOutput">
     <?php echo $Display->Output();?>

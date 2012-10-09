@@ -35,12 +35,15 @@ class Controller
 	{
 		return $this->Environment;
 	}	
-	
-	function RandomMessage()
+        
+ 	function Message()
 	{
-		$Model= new Model;
-		return $Model->getRandomMessage();
-	}
+            $Model= new Model;
+            if(isset($_REQUEST['message']))
+                return $Model->getMessage();
+            else    
+                return $Model->getRandomMessage();
+	}       
         
         function Gender()
         {

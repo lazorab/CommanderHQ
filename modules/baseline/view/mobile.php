@@ -27,8 +27,8 @@ function getCustomExercise(id)
 function display(data)
 {
     $('#AjaxOutput').html(data);
-    $('#listview').listview();
-    $('#listview').listview('refresh');
+    $('#toplist').listview();
+    $('#toplist').listview('refresh');
     $("input").checkboxradio ();
     $("input").closest ("div:jqmData(role=controlgroup)").controlgroup ();
     $('.buttongroup').button();
@@ -57,8 +57,17 @@ $(function() {
 
 function baselinesubmit()
 {
-    $.getJSON('ajax.php?module=baseline', $("#baselineform").serialize(),display);
-    window.location.hash = '#message';
+    $.getJSON('ajax.php?module=baseline&action=validateform', $("#baselineform").serialize(),messagedisplay);
+}
+
+function messagedisplay(message)
+{
+    if(message != 'Success'){
+         alert(message);
+    }else{
+        resetclock();
+        $.getJSON('ajax.php?module=baseline', {save:'successfull'},display);
+    }   
 }
 
 </script>

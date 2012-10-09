@@ -7,7 +7,7 @@ echo $Display->FirstTimeMessage();
 
 ?>
 
-<div id="random"><?php echo $Display->RandomMessage();?></div>
+<div id="random"><?php echo $Display->Message();?></div>
 
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
 <a href="#" onclick="OpenThisPage('index.php?module=wod');">
@@ -31,7 +31,7 @@ echo $Display->FirstTimeMessage();
 </a>
 </div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
-<a href="#" onclick="OpenThisPage('?module=foodlog');">
+<a href="#" onclick="OpenThisPage('?module=nutrition');">
 <img alt="Nutrition" <?php echo $RENDER->NewImage('nutrition.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>nutrition.png"/>
 </a>
 </div>

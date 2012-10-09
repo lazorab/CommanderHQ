@@ -52,6 +52,27 @@ class LocatorModel extends Model {
         } 
         return $Affiliates;
     }
+    
+    function getAffiliatesFromSearch() {
+        $Affiliates = array();
+        
+        $Query = 'SELECT AffiliateId,
+            GymName,
+            URL,
+            Address,
+            City,
+            Region,
+            TelNo
+            FROM Affiliates
+            WHERE GymName LIKE "'.$_REQUEST['keyword'].'%"
+            OR City LIKE "'.$_REQUEST['keyword'].'%"
+            OR Region LIKE "'.$_REQUEST['keyword'].'%"';
+        $Result = mysql_query($Query);
+        while($Row = mysql_fetch_assoc($Result)){
+            array_push($Affiliates, new Affiliate($Row));
+        } 
+        return $Affiliates;
+    }    
 
 }
 
