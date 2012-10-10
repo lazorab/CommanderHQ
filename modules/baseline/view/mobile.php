@@ -62,11 +62,10 @@ function baselinesubmit()
 
 function messagedisplay(message)
 {
-    if(message != 'Success'){
-         alert(message);
-    }else{
+    alert(message);
+    if(message == 'Successfully Saved!'){
         resetclock();
-        $.getJSON('ajax.php?module=baseline', {save:'successfull'},display);
+        $.getJSON('ajax.php?module=baseline', {},display);
     }   
 }
 

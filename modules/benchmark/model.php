@@ -27,6 +27,14 @@ class BenchmarkModel extends Model
             $SQL = 'INSERT INTO BenchmarkWorkouts('.$FIELDS.') VALUES('.$VALUES.')';
             mysql_query($SQL);	
 	}
+        
+        function getExerciseName($ExerciseId)
+        {
+            $Query = 'SELECT Exercise FROM Exercises WHERE recid = '.$ExerciseId.'';
+            $Result = mysql_query($Query);
+            $Row = mysql_fetch_assoc($Result);
+            return $Row['Exercise'];
+        }
 	
 	function getCategories()
 	{
@@ -385,9 +393,10 @@ class BenchmarkModel extends Model
                 else
                     $RoundNo = $ExplodedKey[0];
                 $ExerciseId = $ExplodedKey[1];
+                $ExerciseName = $this->getExerciseName($ExerciseId);
                 $Attribute = $ExplodedKey[2];
                 if($val == '00:00:0' || $val == '' || $val == '0' || $val == $Attribute){
-                    $this->Message .= '<span style="color:red">Invalid value for '.$Attribute.'!</span><br/>';
+                    $this->Message .= 'Invalid value for '.$ExerciseName.' '.$Attribute.'!';
                 }else{
                 $Query='SELECT recid, (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, "'.$val.'" AS AttributeValue, "'.$RoundNo.'" AS RoundNo 
                 FROM Exercises
@@ -399,7 +408,7 @@ class BenchmarkModel extends Model
             }
             else{
                  if($val == $key){
-                   $this->Message .= '<span style="color:red">Invalid value for '.$key.'!</span><br/>';
+                   $this->Message .= 'Invalid value for '.$key.'!';
                 }else{
                 $SQL = 'SELECT recid FROM Attributes WHERE Attribute = "'.$key.'"';
                 $Result = mysql_query($SQL);

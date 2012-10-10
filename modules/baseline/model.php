@@ -61,7 +61,7 @@ class BaselineModel extends Model
             $SQL = 'INSERT INTO WODLog(MemberId, WODTypeId, WorkoutId, ExerciseId, AttributeId, AttributeValue) 
             VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$WorkoutId.'", "'.$Activity->ExerciseId.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
             mysql_query($SQL);
-            $this->Message = 'Success';
+            $this->Message = 'Successfully Saved!';
         }
         }
             }else{
@@ -82,6 +82,14 @@ class BaselineModel extends Model
         }
         */
 	}
+        
+        function getExerciseName($ExerciseId)
+        {
+            $Query = 'SELECT Exercise FROM Exercises WHERE recid = '.$ExerciseId.'';
+            $Result = mysql_query($Query);
+            $Row = mysql_fetch_assoc($Result);
+            return $Row['Exercise'];
+        }    
     
     function getActivityFields()
     {
@@ -98,9 +106,10 @@ class BaselineModel extends Model
                 else
                     $RoundNo = $ExplodedKey[0];
                 $ExerciseId = $ExplodedKey[1];
+                $ExerciseName = $this->getExerciseName($ExerciseId);
                 $Attribute = $ExplodedKey[2];
                 if($val == '00:00:0' || $val == '' || $val == '0' || $val == $Attribute){
-                    $this->Message .= 'Invalid value for '.$Attribute.'!';
+                    $this->Message .= 'Invalid value for '.$ExerciseName.' '.$Attribute.'!';
                 }else{
                 $Query='SELECT recid AS ExerciseId, (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, "'.$val.'" AS AttributeValue, "'.$RoundNo.'" AS RoundNo
                 FROM Exercises
@@ -141,7 +150,7 @@ class BaselineModel extends Model
     
     function SaveNewBaseline()
 	{
-        $DefaultActivities=array('Row'=>'0.5','Squats'=>'40','Sit-Ups'=>'30','Push-Ups'=>'20','Pull-Ups'=>'10','Timed'=>'00:00:0');
+        $DefaultActivities=array('Row'=>'500','Squats'=>'40','Sit-Ups'=>'30','Push-Ups'=>'20','Pull-Ups'=>'10','Timed'=>'00:00:0');
         
         foreach($DefaultActivities AS $key=>$val)
         {

@@ -37,7 +37,7 @@ class CustomModel extends Model
             $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue) 
             VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->recid.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
             mysql_query($SQL);
-            $this->Message = '<span style="color:green">Successfully Saved!</span>';
+            $this->Message = 'Success';
 		}
             }
             }else{
@@ -50,15 +50,15 @@ class CustomModel extends Model
 	{
             if($this->UserIsSubscribed()){
                 $SQL = 'INSERT INTO Exercises(Exercise, Acronym) 
-                    VALUES("'.$_REQUEST['newexercise'].'", "'.$_REQUEST['acronym'].'")';
+                    VALUES("'.$_REQUEST['NewExercise'].'", "'.$_REQUEST['Acronym'].'")';
                 mysql_query($SQL);
                 $ExerciseId = mysql_insert_id();
                 foreach($_REQUEST['ExerciseAttributes'] AS $Attribute){
                     $SQL = 'INSERT INTO ExerciseAttributes(ExerciseId, AttributeId) 
-                        VALUES("'.$ExerciseId.',"'.$this->getAttributeId($Attribute).'")';
+                        VALUES("'.$ExerciseId.'","'.$this->getAttributeId($Attribute).'")';
                     mysql_query($SQL);               
                 }
-                $Message = '<span style="color:green">Exercise Successfully Added!</span>';               
+                $Message = 'Exercise Successfully Added!';               
             }else{
                 $Message = 'You are not subscribed!';
             }
@@ -102,7 +102,7 @@ class CustomModel extends Model
                 $ExerciseName = $this->getExerciseName($ExerciseId);
                 $Attribute = $ExplodedKey[2];
                 if($val == '00:00:0' || $val == '' || $val == '0' || $val == $Attribute){
-                    $this->Message .= '<span style="color:red">Invalid value for '.$ExerciseName.' '.$Attribute.'!</span><br/>';
+                    $this->Message .= 'Invalid value for '.$ExerciseName.' '.$Attribute.'!';
                 }else{
                 $Query='SELECT recid, (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, "'.$val.'" AS AttributeValue, "'.$RoundNo.'" AS RoundNo 
                 FROM Exercises
@@ -114,7 +114,7 @@ class CustomModel extends Model
             }
             else{
                 if($val == '00:00:0' || $val == '' || $val == $key){
-                    $this->Message .= '<span style="color:red">Invalid value for '.$key.'!</span><br/>';
+                    $this->Message .= 'Invalid value for '.$key.'!';
                 }else{
 
                 $SQL = 'SELECT recid FROM Attributes WHERE Attribute = "'.$key.'"';
@@ -330,7 +330,7 @@ class CustomObject
 	$this->recid = isset($Row['recid']) ? $Row['recid'] : "";
         $this->BenchmarkId = isset($Row['BenchmarkId']) ? $Row['BenchmarkId'] : "";
 	$this->ActivityName = isset($Row['ActivityName']) ? $Row['ActivityName'] : "";
-        if(isset($Row['Acronym']) && $Row['Acronym'] != '')
+        if($Row['Acronym'] != '')
             $this->InputFieldName = $Row['Acronym'];
         else
             $this->InputFieldName = $this->ActivityName;

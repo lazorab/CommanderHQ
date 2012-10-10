@@ -9,6 +9,21 @@ function getCustomExercise(id)
     $.getJSON("ajax.php?module=custom",{customexercise:id},display);
 }
 
+function messagedisplay(message)
+{
+    if(message == 'Exercise Successfully Added!'){
+        $("#exercise option[value='none']").attr("selected","selected");
+        $('#add_exercise').html('');
+    }   
+    if(message != 'Success'){
+         alert(message);
+    }
+    else{
+        resetclock();
+        $.getJSON('ajax.php?module=custom', {save:'successfull'},display);
+    }   
+}
+
 function display(data)
 {
     $('#AjaxOutput').html(data);
@@ -265,16 +280,12 @@ function RemoveFromList(RowId,BenchMarkId)
 
 function customsubmit()
 {
-    $.getJSON('ajax.php?module=custom', $("#customform").serialize(),display);
-    window.location.hash = '#message';
+    $.getJSON('ajax.php?module=custom&action=validateform', $("#customform").serialize(),messagedisplay);
 }
 
 function addnew()
 {
-    var NewExercise = document.getElementById('NewExercise').value;
-    var Acronym = document.getElementById('Acronym').value;
-    $.getJSON('ajax.php?module=custom', {newexercise:NewExercise,acronym:Acronym},display);
-    window.location.hash = '#message';
+    $.getJSON('ajax.php?module=custom&action=validateform', $("#customform").serialize(),messagedisplay);
 }
 
 function addRound()

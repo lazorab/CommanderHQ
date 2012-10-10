@@ -24,11 +24,7 @@ class BaselineController extends Controller
     
     function Output()
     {
-        $Html='';
-        if($_REQUEST['save'] == 'successfull')
-            $Html.='<span style="color:green">Successfully Saved!</span>';
-        
-        $Html.= $this->getBaselineDetails(); 
+        $Html = $this->getBaselineDetails(); 
 	return $Html;
     }
     
@@ -115,10 +111,10 @@ class BaselineController extends Controller
 				if($Baseline->Attribute == 'Distance'){
                                     $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#6f747a"';
 					if($this->SystemOfMeasure() != 'Metric'){
-						$Unit = '<span style="float:left">m</span>';
-                                                $AttributeValue = round($Baseline->AttributeValue * 0.62, 2);
+						$Unit = '<span style="float:left">yd</span>';
+                                                $AttributeValue = round($Baseline->AttributeValue * 1.09, 2);
                                         }else{
-						$Unit = '<span style="float:left">km</span>';
+						$Unit = '<span style="float:left">m</span>';
                                                 $AttributeValue = $Baseline->AttributeValue;
                                         }
 				}		
@@ -136,7 +132,7 @@ class BaselineController extends Controller
                                     $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#66486e"';
 					if($this->SystemOfMeasure() != 'Metric'){
                                             $AttributeValue = round($Baseline->AttributeValue * 0.39, 2);
-						$Unit = '<span style="float:left">inches</span>';
+						$Unit = '<span style="float:left">in</span>';
                                         }else{
 						$Unit = '<span style="float:left">cm</span>';
                                                 $AttributeValue = $Baseline->AttributeValue;
@@ -156,14 +152,14 @@ class BaselineController extends Controller
             else if($Baseline->Attribute == 'Calories' || $Baseline->Attribute == 'Reps' || $Baseline->Attribute == 'Rounds'){
                                 $Placeholder = '';
                                 if($Baseline->Attribute == 'Calories'){
-                                    $Style='';
+                                    $Style='style="width:50%"';
                                     $Placeholder = 'placeholder="Calories"';
                                 }
                                 $InputAttributes = 'class="textinput" type="number"';
                                 $InputName = ''.$RoundNo.'___'.$Baseline->ExerciseId.'___'.$Baseline->Attribute.'';
                                 $Value = $Baseline->AttributeValue;
                                 if($Baseline->Attribute == 'Rounds'){
-                                    $Style='';
+                                    $Style='style="width:50%"';
                                     $InputAttributes .= ' id="addround"';
                                     $InputName = 'Rounds';
                                     $Value = $_REQUEST['Rounds'] + 1 ;
@@ -227,7 +223,6 @@ class BaselineController extends Controller
         <input type="hidden" name="module" value="baseline"/>
         <input type="hidden" name="baseline" value="'.$_REQUEST['baseline'].'"/>
         <input type="hidden" name="exercise" value="'.$exerciseId.'"/>
-        <input type="hidden" name="action" value="save"/>
 		<input type="number" name="Weight" value="" placeholder="Weight"/><br/><br/>
         <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="document.form.submit();"/>
         </form>';
@@ -243,7 +238,6 @@ class BaselineController extends Controller
         <input type="hidden" name="module" value="baseline"/>
         <input type="hidden" name="baseline" value="'.$_REQUEST['baseline'].'"/>
         <input type="hidden" name="exercise" value="'.$exerciseId.'"/>
-        <input type="hidden" name="action" value="save"/>
 		<input type="number" name="Reps" value="" placeholder="Reps"/><br/><br/>
         <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="document.form.submit();"/>
         </form>';

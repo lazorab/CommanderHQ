@@ -127,32 +127,32 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
             if($Benchmark->Attribute == 'Height' || $Benchmark->Attribute == 'Distance' || $Benchmark->Attribute == 'Weight'){
                             $AttributeValue = '';	
 				if($Benchmark->Attribute == 'Distance'){
-                                    $Style='style="width:75%;color:white;font-weight:bold;background-color:#6f747a"';
+                                    $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#6f747a"';
 					if($this->SystemOfMeasure() != 'Metric'){
-						$Unit = 'm';
-                                                $AttributeValue = round($Benchmark->AttributeValue * 0.62, 2);
+						$Unit = '<span style="float:left">yd</span>';
+                                                $AttributeValue = round($Benchmark->AttributeValue * 1.09, 2);
                                         }else{
-						$Unit = 'km';
+						$Unit = '<span style="float:left">m</span>';
                                                 $AttributeValue = $Benchmark->AttributeValue;
                                         }
 				}		
 				else if($Benchmark->Attribute == 'Weight'){
-                                    $Style='style="width:75%;color:white;font-weight:bold;background-color:#3f2b44"';
+                                    $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#3f2b44"';
 					if($this->SystemOfMeasure() != 'Metric'){
                                             $AttributeValue = round($Benchmark->AttributeValue * 2.20, 2);
-						$Unit = 'lbs';
+						$Unit = '<span style="float:left">lbs</span>';
                                         }else{
-						$Unit = 'kg';
+						$Unit = '<span style="float:left">kg</span>';
                                                 $AttributeValue = $Benchmark->AttributeValue;
                                         }
 				}
 				else if($Benchmark->Attribute == 'Height'){
-                                    $Style='style="width:75%;color:white;font-weight:bold;background-color:#66486e"';
+                                    $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#66486e"';
 					if($this->SystemOfMeasure() != 'Metric'){
                                             $AttributeValue = round($Benchmark->AttributeValue * 0.39, 2);
-						$Unit = 'inches';
+						$Unit = '<span style="float:left">in</span>';
                                         }else{
-						$Unit = 'cm';
+						$Unit = '<span style="float:left">cm</span>';
                                                 $AttributeValue = $Benchmark->AttributeValue;
                                         }
 				}
@@ -170,20 +170,20 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
             else if($Benchmark->Attribute == 'Calories' || $Benchmark->Attribute == 'Reps' || $Benchmark->Attribute == 'Rounds'){
                                 $Placeholder = '';
                                 if($Benchmark->Attribute == 'Calories'){
-                                    $Style='style="width:75%"';
+                                    $Style='style="width:50%"';
                                     $Placeholder = 'placeholder="Calories"';
                                 }
                                 $InputAttributes = 'type="number"';
                                 $InputName = ''.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'';
                                 $Value = $Benchmark->AttributeValue;
                                 if($Benchmark->Attribute == 'Rounds'){
-                                    $Style='style="width:75%"';
+                                    $Style='style="width:50%"';
                                     $InputAttributes .= ' id="addround"';
                                     $InputName = 'Rounds';
                                     $Value = $_REQUEST['Rounds'] + 1 ;
                                 }
                                 if($Benchmark->Attribute == 'Reps'){
-                                    $Style='style="width:75%;color:black;font-weight:bold;background-color:#ccff66"';
+                                    $Style='style="float:left;width:50%;color:black;font-weight:bold;background-color:#ccff66"';
                                 }
 				$Chtml.='<div class="ui-block-c">';
 				$Chtml.='<input data-role="none" '.$InputAttributes.' '.$Style.' name="'.$InputName.'" '.$Placeholder.' value="'.$Value.'"/>';
@@ -243,14 +243,14 @@ else
             </ul>
                 
             </div>';
-     
+ /*    
      $html .='<div class="slide">
             <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>Popular</li>
             </ul>
                 
             </div>';
-
+*/
      $html .='<div class="slide">
             <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>Travel Workouts</li>

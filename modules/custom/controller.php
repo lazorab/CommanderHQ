@@ -14,35 +14,40 @@ class CustomController extends Controller
             }
             $this->Origin = $_REQUEST['origin'];
             $this->SaveMessage = '';
-            if(!isset($_REQUEST['action']) && !isset($_REQUEST['newexercise']))
+            if(!isset($_REQUEST['form']) && !isset($_REQUEST['NewExercise']))
                 $this->ChosenExercises = array();
 	}
+        
+       function Message()
+    {
+        $Model = new CustomModel;
+        $Message = $Model->Log();
+             if(isset($_REQUEST['NewExercise'])){
+                $Message = $this->SaveNewExercise();
+            }
+            else{
+                $Message = $Model->Log();
+            }       
+        return $Message;
+    }      
         
     function Validate()
     {
         $Message = '';
-        foreach($_REQUEST AS $Key=>$Val){
-            if($Val == ''){
-                $Message = ''.$Key.' has no value!';
-            }
+        if($_REQUEST['NewExercise'] == ''){
+            $Message = 'Must Enter Exercise Name!';
         }
-        return $Message;
-    }
-    
-    function SaveWorkout()
-    {
-        $Model = new CustomModel;
-        $Result = $Model->Log();
+        else if(count($_REQUEST['ExerciseAttributes']) == 0){
+            $Message = 'Must Select at least one Attribute';
+        }
         
-        return $Result;
+        return $Message;
     }
     
     function SaveNewExercise()
     {
         $Result = '';
-        if(count($_REQUEST['ExerciseAttributes']) == 0){
-            $Result = 'Must Select at least one Attribute';
-        }else{
+
             $Validate = $this->Validate();
             if($Validate == ''){
                 $Model = new CustomModel;
@@ -51,7 +56,7 @@ class CustomController extends Controller
             else{
                 $Result = $Validate;
             }
-        }
+        
         return $Result;
     }
     
@@ -63,7 +68,7 @@ class CustomController extends Controller
 	$Exercises = $Model->getExercises();
 
         $Html .= '<form action="index.php" id="customform" name="form">
-                    <input type="hidden" name="action" value="save"/>
+                    <input type="hidden" name="form" value="submitted"/>
                     <input type="hidden" name="origin" value="'.$this->Origin.'"/>
                     <input type="hidden" name="rowcount" id="rowcounter" value="0"/>';
         $Html .= '<input class="textinput" type="text" name="WorkoutName" value="" placeholder="Name your WOD"/>'; 
@@ -83,7 +88,7 @@ class CustomController extends Controller
         
         $Html .= '<br/>';
         
-	if($_REQUEST['action'] == 'save'){
+	if($_REQUEST['form'] == 'submitted'){
 	$Html .= '<div class="ui-grid-c">';
     $Html .= '<div class="ui-block-a"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#3f2b44" value="Weight" readonly="readonly"/></div>';
     $Html .= '<div class="ui-block-b"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#66486e" value="Height" readonly="readonly"/></div>';
@@ -121,18 +126,12 @@ class CustomController extends Controller
 	
 	function Output()
 	{
-            $html='';
-            if(isset($_REQUEST['newexercise'])){
-                $html = '<div id="message">'.$this->SaveNewExercise().'</div>';
-                $html.= $this->MainOutput();
-            }
-            else if($_REQUEST['action'] == 'save'){
-                $html= '<div id="message">'.$this->SaveWorkout().'</div>';
-                $html.= $this->MainOutput();
+            if(isset($_REQUEST['chosenexercise'])){
+  		$Model = new CustomModel;
+		$html = $Model->getExerciseAttributes($_REQUEST['chosenexercise']);              
             }
             else{
-		$Model = new CustomModel;
-		$html = $Model->getExerciseAttributes($_REQUEST['chosenexercise']);
+                $html = $this->MainOutput();
             }
             return $html;
 	}
@@ -140,9 +139,9 @@ class CustomController extends Controller
         function AddExercise()
         {
             $Html='';
-            if(isset($_REQUEST['newexercise'])){
-                $Html ='<br/><input class="textinput" type="text" id="NewExercise" name="NewExercise" value="" placeholder="New Exercise Name"/>';
-                $Html ='<br/><input class="textinput" type="text" id="Acronym" name="Acronym" value="" placeholder="Acronym for Exercise?"/>';
+            if(isset($_REQUEST['NewExercise'])){
+                $Html .='<br/><input class="textinput" type="text" id="NewExercise" name="NewExercise" value="" placeholder="New Exercise Name"/>';
+                $Html .='<br/><input class="textinput" type="text" id="Acronym" name="Acronym" value="" placeholder="Acronym for Exercise?"/>';
                 $Html .= '<br/>Applicable Attributes:<br/><br/>';
                 $Html .= '<input type="checkbox" name="ExerciseAttributes[]" value="Weight"/>Weight';
                 $Html .= ' <input type="checkbox" name="ExerciseAttributes[]" value="Height"/>Height<br/>';
@@ -158,7 +157,7 @@ class CustomController extends Controller
             $Model = new CustomModel;
             $html='';
             $ThisExercise='';
-            if($_REQUEST['action'] == 'save'){
+            if($_REQUEST['form'] == 'submitted'){
                 foreach($_REQUEST AS $Key=>$Val){
                     $ExplodedKey = explode('_', $Key);
                     if($ExplodedKey[0] == 'exercise' && $Val != 'none'){
@@ -215,32 +214,32 @@ class CustomController extends Controller
             if($Attribute->Attribute == 'Height' || $Attribute->Attribute == 'Distance' || $Attribute->Attribute == 'Weight'){
                             $AttributeValue = '';	
 				if($Attribute->Attribute == 'Distance'){
-                                    $Style='style="width:75%;color:white;font-weight:bold;background-color:#6f747a"';
+                                    $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#6f747a"';
 					if($this->SystemOfMeasure() != 'Metric'){
-						$Unit = 'm';
-                                                $AttributeValue = round($Attribute->AttributeValue * 0.62, 2);
+						$Unit = '<span style="float:left">yd</span>';
+                                                $AttributeValue = round($Attribute->AttributeValue * 1.09, 2);
                                         }else{
-						$Unit = 'km';
+						$Unit = '<span style="float:left">m</span>';
                                                 $AttributeValue = $Attribute->AttributeValue;
                                         }
 				}		
 				else if($Attribute->Attribute == 'Weight'){
-                                    $Style='style="width:75%;color:white;font-weight:bold;background-color:#3f2b44"';
+                                    $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#3f2b44"';
 					if($this->SystemOfMeasure() != 'Metric'){
                                             $AttributeValue = round($Attribute->AttributeValue * 2.20, 2);
-						$Unit = 'lbs';
+						$Unit = '<span style="float:left">lbs</span>';
                                         }else{
-						$Unit = 'kg';
+						$Unit = '<span style="float:left">kg</span>';
                                                 $AttributeValue = $Attribute->AttributeValue;
                                         }
 				}
 				else if($Attribute->Attribute == 'Height'){
-                                    $Style='style="width:75%;color:white;font-weight:bold;background-color:#66486e"';
+                                    $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#66486e"';
 					if($this->SystemOfMeasure() != 'Metric'){
                                             $AttributeValue = round($Attribute->AttributeValue * 0.39, 2);
-						$Unit = 'inches';
+						$Unit = '<span style="float:left">in</span>';
                                         }else{
-						$Unit = 'cm';
+						$Unit = '<span style="float:left">cm</span>';
                                                 $AttributeValue = $Attribute->AttributeValue;
                                         }
 				}
@@ -258,20 +257,20 @@ class CustomController extends Controller
             else if($Attribute->Attribute == 'Calories' || $Attribute->Attribute == 'Reps' || ($Attribute->Attribute == 'Rounds' && $Attribute->ActivityType == 'Total Rounds')){
                                 $Placeholder = '';
                                 if($Attribute->Attribute == 'Calories'){
-                                    $Style='style="width:75%"';
+                                    $Style='style="width:50%"';
                                     $Placeholder = 'placeholder="Calories"';
                                 }
                                 $InputAttributes = 'type="number"';
                                 $InputName = ''.$RoundNo.'___'.$Attribute->recid.'___'.$Attribute->Attribute.'';
                                 $Value = $Attribute->AttributeValue;
                                 if($Attribute->Attribute == 'Rounds'){
-                                    $Style='style="width:75%"';
+                                    $Style='style="width:50%"';
                                     $InputAttributes .= ' id="addround"';
                                     $InputName = 'Rounds';
                                     $Value = $_REQUEST['Rounds'] + 1 ;
                                 }
                                 if($Attribute->Attribute == 'Reps'){
-                                    $Style='style="width:75%;color:black;font-weight:bold;background-color:#ccff66"';
+                                    $Style='style="float:left;width:50%;color:black;font-weight:bold;background-color:#ccff66"';
                                 }
 				$Chtml.='<div class="ui-block-c">';
 				$Chtml.='<input class="textinput" '.$InputAttributes.' '.$Style.' name="'.$InputName.'" '.$Placeholder.' value="'.$Value.'"/>';
@@ -296,7 +295,7 @@ class CustomController extends Controller
         function Clock()
         {
             $Html='';
-            if($_REQUEST['action'] == 'save'){
+            if($_REQUEST['form'] == 'submitted'){
                 if($_REQUEST['workouttype'] == 'Total Reps'){
                     $Html .='<input type="number" name="Reps" value="" placeholder="Total Reps"/>';
                 }
@@ -312,14 +311,6 @@ class CustomController extends Controller
             return $Html;
         }
         
-        function SubmitButton()
-        {
-            $Html='';
-            if($_REQUEST['action'] == 'save'){
-                $Html='<br/><input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>';      
-            } 
-            return $Html;
-        }
     
     function getCustomActivities()
     {        
@@ -382,7 +373,6 @@ class CustomController extends Controller
 
 		<form name="customform" action="index.php">
         <input type="hidden" name="module" value="custom"/>
-		<input type="hidden" name="action" value="save"/>
 		<input type="hidden" name="exercise" value="'.$_REQUEST['customexercise'].'"/>
 		<input type="hidden" name="origin" value="'.$this->Origin.'"/>';
 
@@ -451,7 +441,6 @@ class CustomController extends Controller
         <input type="hidden" name="module" value="baseline"/>
         <input type="hidden" name="baseline" value="'.$_REQUEST['baseline'].'"/>
         <input type="hidden" name="exercise" value="'.$exerciseId.'"/>
-        <input type="hidden" name="action" value="save"/>
 		<input type="number" name="Weight" value="" placeholder="Weight"/><br/><br/>
         <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="document.form.submit();"/>
         </form>';
@@ -467,7 +456,6 @@ class CustomController extends Controller
         <input type="hidden" name="module" value="baseline"/>
         <input type="hidden" name="baseline" value="'.$_REQUEST['baseline'].'"/>
         <input type="hidden" name="exercise" value="'.$exerciseId.'"/>
-        <input type="hidden" name="action" value="save"/>
 		<input type="number" name="Reps" value="" placeholder="Total Reps"/><br/><br/>
         <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="document.form.submit();"/>
         </form>';

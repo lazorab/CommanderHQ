@@ -82,6 +82,7 @@ class ProfileController extends Controller
     {
 
         $Model = new ProfileModel;
+        $Affiliates=$Model->getAffiliates();
         $Html = '';
 
         $MemberDetails = $Model->getMemberDetails($this->UserId);
@@ -103,36 +104,44 @@ class ProfileController extends Controller
         <input type="hidden" name="module" value="profile"/>
         <input type="hidden" name="UserId" value="'.$MemberDetails->UserId.'"/>';
       if(!isset($_SESSION['UID'])){
-          $Html.='<label for="invcode">Invitation Code</label>
-            <input style="width:75%;" class="textinput" type="text" id="invcode" name="InvCode" value="'.$_REQUEST['InvCode'].'"/>';
+          $Html.='
+            <input style="width:75%;" class="textinput" type="text" id="invcode" name="InvCode" placeholder="Invitation Code" value="'.$_REQUEST['InvCode'].'"/>';
       }      
-$Html.='<label for="firstname">First Name</label>
-<input style="width:75%;" class="textinput" type="text" id="firstname" name="FirstName" value="'.$MemberDetails->FirstName.'"/>
-<label for="lastname">Last Name</label>
-<input style="width:75%;" class="textinput" type="text" id="lastname" name="LastName" value="'.$MemberDetails->LastName.'"/>
-<label for="username">User Name</label>
-<input style="width:75%;" class="textinput" type="text" id="username" name="UserName" value="'.$MemberDetails->UserName.'"'; 
+$Html.='<br/><br/>
+<input style="width:75%;" class="textinput" type="text" id="firstname" name="FirstName" placeholder="First Name" value="'.$MemberDetails->FirstName.'"/>
+<br/><br/>
+<input style="width:75%;" class="textinput" type="text" id="lastname" name="LastName" placeholder="Last Name" value="'.$MemberDetails->LastName.'"/>
+<br/><br/>
+<input style="width:75%;" class="textinput" type="text" id="username" name="UserName" placeholder="User Name" value="'.$MemberDetails->UserName.'"'; 
 if(isset($_SESSION['UID']) || $MemberDetails->LoginType != '')   
     $Html.=' readonly="readonly"';
 $Html.='/>';
 if($MemberDetails->LoginType == ''){
-$Html.='<label for="password">Password</label>
-<input style="width:75%;" class="textinput" type="password" id="password" name="PassWord" value="'.$MemberDetails->PassWord.'"/>
-<label for="password">Confirm Password</label>
-<input style="width:75%;" class="textinput" type="password" id="confirmpassword" name="ConfirmPassWord" value="'.$MemberDetails->PassWord.'"/>';
+$Html.='<br/><br/>
+<input style="width:75%;" class="textinput" type="password" id="password" name="PassWord" placeholder="Password" value="'.$MemberDetails->PassWord.'"/>
+<br/><br/>
+<input style="width:75%;" class="textinput" type="password" id="confirmpassword" name="ConfirmPassWord" placeholder="Confirm Password" value="'.$MemberDetails->PassWord.'"/>';
 }
 else{
-   $Html.='<label for="oauth_provider">Login Type</label>
-<input style="width:75%;" class="textinput" type="text" id="oauth_provider" name="oauth_provider" value="'.$MemberDetails->LoginType.'" readonly="readonly"/>'; 
+   $Html.='<br/><br/>
+<input style="width:75%;" class="textinput" type="text" id="oauth_provider" name="oauth_provider" placeholder="Login Type" value="'.$MemberDetails->LoginType.'" readonly="readonly"/>'; 
 }
-$Html.='<label for="cell">Cell</label>
-<input style="width:75%;" class="textinput" type="tel" id="cell" name="Cell" value="'.$MemberDetails->Cell.'" placeholder="+2778000000"/>
-<label for="email">Email</label>
-<input style="width:75%;" class="textinput" type="email" id="email" name="Email" value="'.$MemberDetails->Email.'"/>
-<label for="DOB">Date of Birth</label>
-<input style="width:75%;" class="textinput" type="date" name="DOB" id="DOB" value="'.$MemberDetails->DOB.'"/>
+$Html.='<br/><br/>
+<input style="width:75%;" class="textinput" type="tel" id="cell" name="Cell" value="'.$MemberDetails->Cell.'" placeholder="Cell (+2778000000)"/>
 <br/><br/>
-<fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
+<input style="width:75%;" class="textinput" type="email" id="email" name="Email" placeholder="Email" value="'.$MemberDetails->Email.'"/>
+<br/><br/>
+<input style="width:75%;" class="textinput" type="date" name="DOB" id="DOB" placeholder="Date of Birth" value="'.$MemberDetails->DOB.'"/>
+<br/><br/>';
+
+ $Html.='<select class="select" name="AffiliateId" id="AffiliateId">
+            <option value="">Select your Gym</option>';
+        foreach($Affiliates AS $Affiliate){
+            $Html.='<option value="'.$Affiliate->AffiliateId.'">'.$Affiliate->GymName.'</option>';
+        }
+        $Html.='</select><br/><br/>';
+
+$Html.='<fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
 <label for="male">Male</label>
 <input class="radioinput" id="male" type="radio" name="Gender" value="M"';
 if($MemberDetails->Gender == 'M') 
