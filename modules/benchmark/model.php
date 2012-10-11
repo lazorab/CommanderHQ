@@ -147,19 +147,17 @@ class BenchmarkModel extends Model
                             $TotalRounds = ''.$Row['TotalRounds'].' Rounds | ';
                         }
                         if($Row['WorkoutType'] == 'Timed')
-                            $WorkoutType = 'For Time | ';  
-                        else
+                            $WorkoutType = 'For Time | ';    
+                        else if($Row['WorkoutType'] != 'AMRAP')
                             $WorkoutType = ''.$Row['WorkoutType'].' | ';
                     }
-                    if($Row['Exercise'] != 'Timed' && $Row['Attribute'] != 'Reps')
-                        $Description .= ''.$Row['Exercise'].' | ';
+
                     $Exercise = $Row['Exercise'];
                 }
-                if($Row['Attribute'] == 'Reps'){
-                    //$Description .= ' ';
-                    //$Description .= $Row['AttributeValue'];
-                    //$Description .= ' ';
+                if($Row['Attribute'] == 'Reps' && $Row['AttributeValue'] > 0){
                     $Description .= ''.$Row['AttributeValue'].' '.$Row['Exercise'].' | ';
+                }else if($Row['Exercise'] != 'Timed'){
+                        $Description .= ''.$Row['Exercise'].' | ';                   
                 }else if($Row['Attribute'] == 'Weight'){
                     //$Description .= ' ';
                    // $Description .= $Row['AttributeValue'];
@@ -179,7 +177,8 @@ class BenchmarkModel extends Model
                     
                 }else if($Row['Attribute'] == 'Calories'){
                     
-                }
+                }else if($Row['Attribute'] == 'TimeLimit')
+                    $WorkoutType = 'AMRAP In '.$Row['AttributeValue'].' | ';                
             }
             //$Description .= $TotalRounds.$WorkoutType;
             return $TotalRounds.$WorkoutType.$Description;           
@@ -187,12 +186,7 @@ class BenchmarkModel extends Model
         
 	function getBMWS($Filter)
 	{
-
-        if($this->getGender() == 'M')
-            $DescriptionField = 'MaleWorkoutDescription';
-        else
-            $DescriptionField = 'FemaleWorkoutDescription';
-		$SQL = 'SELECT recid, Banner, WorkoutName, '.$DescriptionField.' AS WorkoutDescription, VideoId 
+		$SQL = 'SELECT recid, WorkoutName, VideoId 
 		FROM BenchmarkWorkouts WHERE '; 	
 		if(!is_int($Filter)){
 			$SQL .= 'CategoryId = '.$Filter.'';
@@ -205,6 +199,7 @@ class BenchmarkModel extends Model
 		$Result = mysql_query($SQL);	
 		while($Row = mysql_fetch_assoc($Result))
 		{
+                        $Row['WorkoutDescription'] = $this->getBenchmarkDescription($Row['recid']);
 			array_push($Workouts, new BenchmarkObject($Row));
 		}
 		return $Workouts;
@@ -215,13 +210,9 @@ class BenchmarkModel extends Model
             $WorkoutDetails = array();
 
         if($this->getGender() == 'M'){
-            $DescriptionField = 'MaleWorkoutDescription';
             $AttributeValue = 'AttributeValueMale';
-            $InputFields = 'MaleInput';
         } else {
-            $DescriptionField = 'FemaleWorkoutDescription';
             $AttributeValue = 'AttributeValueFemale';
-            $InputFields = 'FemaleInput';
 		}
 		//$SQL = 'SELECT WorkoutName, '.$DescriptionField.' AS WorkoutDescription, '.$InputFields.' AS InputFields, VideoId FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
 		
@@ -356,7 +347,7 @@ class BenchmarkModel extends Model
                     $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue, LevelAchieved) 
 			VALUES("'.$_SESSION['UID'].'", "'.$ThisId.'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->Id.'", "'.$ActivityField->Attribute.'", "'.$AttributeValue.'", "'.$this->LevelAchieved($ActivityField).'")';
                     mysql_query($SQL);
-                    $this->Message = '<span style="color:green">Successfully Saved!</span>';
+                    $this->Message = 'Success';
 		}
             }
             }else{
@@ -395,7 +386,9 @@ class BenchmarkModel extends Model
                 $ExerciseId = $ExplodedKey[1];
                 $ExerciseName = $this->getExerciseName($ExerciseId);
                 $Attribute = $ExplodedKey[2];
-                if($val == '00:00:0' || $val == '' || $val == '0' || $val == $Attribute){
+                if($val == '00:00:0')
+                    $this->Message .= 'Invalid value for Stopwatch!';
+                else if($val == '' || $val == '0' || $val == $Attribute){
                     $this->Message .= 'Invalid value for '.$ExerciseName.' '.$Attribute.'!';
                 }else{
                 $Query='SELECT recid, (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, "'.$val.'" AS AttributeValue, "'.$RoundNo.'" AS RoundNo 

@@ -272,9 +272,9 @@ class WodModel extends Model
 	function getMemberGym()
 	{
 		$MemberGym = array();
-		$Query = 'SELECT RG.recid, RG.GymName, RG.Country, RG.Region, RG.FeedURL, RG.WebURL
-		FROM RegisteredGyms RG
-		JOIN MemberDetails MD ON MD.GymId = RG.recid
+		$Query = 'SELECT RG.AffiliateId, RG.GymName, RG.City, RG.Region, RG.URL
+		FROM Affiliates RG
+		JOIN MemberDetails MD ON MD.GymId = RG.AffiliateId
 		WHERE MD.MemberId = "'.$_SESSION['UID'].'"';
 		$Result = mysql_query($Query);	
 		if(mysql_num_rows($Result) > 0){

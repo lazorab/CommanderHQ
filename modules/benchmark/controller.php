@@ -44,16 +44,19 @@ class BenchmarkController extends Controller
             $Html = '<iframe marginwidth="0px" marginheight="0px" width="'.SCREENWIDTH.'" height="'.$this->Height.'" src="http://www.youtube.com/embed/'.$this->Video.'" frameborder="0">';
             return $Html;
         }
+        
+        function Message()
+        {
+            $Model = new BenchmarkModel;
+            $Message = $Model->Log();
+       
+            return $Message;
+        }
 	
 	function Output()
 	{
             $html = '';
             $Model = new BenchmarkModel;
-            if($_REQUEST['action'] == 'save'){
-                $html = '<div id="message">';
-		$html .= $Model->Log();
-                $html .= '</div>';
-            }
 
 if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
 {
@@ -65,7 +68,7 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
             <input type="hidden" name="benchmarkId" value="'.$_REQUEST['benchmarkId'].'"/>
             <input type="hidden" name="customId" value="'.$_REQUEST['customId'].'"/>
             <input type="hidden" name="wodtype" value="3"/>
-            <input type="hidden" name="action" value="save"/>';       
+            <input type="hidden" name="form" value="submitted"/>';       
         $html.='<input type="checkbox" name="baseline" value="yes" data-role="none"/>';
         $html.='Make this my baseline<br/><br/>';
         $html.='<div class="ui-grid-b">';
@@ -158,7 +161,7 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
 				}
 
 				$Bhtml.='<div class="ui-block-b">';
-				$Bhtml.='<input data-role="none" '.$Style.' type="number" data-inline="true" name="'.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" value="'.$AttributeValue.'"/>';
+				$Bhtml.='<input data-role="none" '.$Style.' type="number" data-inline="true" name="'.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" value="'.$AttributeValue.'"/>'.$Unit.'';
 				$Bhtml.='</div>';		
 				if($Chtml != ''){
 					$html.=''.$Bhtml.''.$Chtml.'';

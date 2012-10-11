@@ -9,7 +9,7 @@ class CustomModel extends Model
 		@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");	
 	}
     
-    function Log()
+    function Save()
 	{
             if($this->UserIsSubscribed()){
             $ActivityFields = $this->getActivityFields();
@@ -101,7 +101,9 @@ class CustomModel extends Model
                 $ExerciseId = $ExplodedKey[1];
                 $ExerciseName = $this->getExerciseName($ExerciseId);
                 $Attribute = $ExplodedKey[2];
-                if($val == '00:00:0' || $val == '' || $val == '0' || $val == $Attribute){
+                if($val == '00:00:0')
+                    $this->Message .= 'Invalid value for Stopwatch!';
+                else if($val == '' || $val == '0' || $val == $Attribute){
                     $this->Message .= 'Invalid value for '.$ExerciseName.' '.$Attribute.'!';
                 }else{
                 $Query='SELECT recid, (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, "'.$val.'" AS AttributeValue, "'.$RoundNo.'" AS RoundNo 
@@ -231,8 +233,7 @@ class CustomModel extends Model
             E.Acronym
             FROM Exercises E
             LEFT JOIN ExerciseAttributes EA ON EA.ExerciseId = E.recid
-            WHERE E.CustomOption > 0
-            ORDER BY Exercise';
+            ORDER BY ActivityName';
         $Result = mysql_query($SQL);
         while($Row = mysql_fetch_assoc($Result))
         {

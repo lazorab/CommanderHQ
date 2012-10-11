@@ -51,12 +51,7 @@ include("includes/header/$Environment.php");
 <div id="header">
 <img alt="Header" <?php echo $RENDER->NewImage(''.$Banner.'.png', SCREENWIDTH);?> src="<?php echo ImagePath.$Banner;?>.png"/>
 </div>
-<?php if(isset($_SESSION['UID'])){
-/*MENU*/	
-if (file_exists("includes/menu/$Environment.php"))
-include("includes/menu/$Environment.php");
-    }
-?>
+
 <div id="content">
 <?php
 /*CONTENT*/	

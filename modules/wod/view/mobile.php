@@ -2,8 +2,8 @@
 
 function getWOD()
 {    
+    $('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif", SCREENWIDTH);?> src="/css/images/ajax-loader.gif" />');
         $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=wod\');" <?php echo $RENDER->NewImage('back.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>back.png"/>');
-	$('#AjaxLoading').html('<center><img alt="loading" src="/css/images/ajax-loader.gif" /><br />Loading...</center>');
 	$.getJSON("ajax.php?module=wod",{wod:'display'},display);	
 	$.getJSON("ajax.php?module=wod",{topselection:'mygym'},topdisplay);	
 }
@@ -24,7 +24,7 @@ function getDetails(ThisWorkout)
 
 function goBack()
 {
-	$('#AjaxLoading').html('<center><img alt="loading" src="/css/images/ajax-loader.gif" /><br />Loading...</center>');
+	$('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif", SCREENWIDTH);?> src="/css/images/ajax-loader.gif" />');
 	$.getJSON("ajax.php?module=wod",{wod:'display'},display);	
 	$.getJSON("ajax.php?module=wod",{topselection:'mygym'},topdisplay);
 }
@@ -37,12 +37,18 @@ function topdisplay(data)
 
 function display(data)
 {
+    if(data == 'Must First Register Gym!'){
+        alert('Must First Register Gym!\nYou will be redirected now');
+        window.location = 'index.php?module=profile';
+    }
+    else{
 	$('#AjaxOutput').html(data);
 	$('#listview').listview();
 	$('#listview').listview('refresh');
 	$("input").checkboxradio ();
 	$("input").closest ("div:jqmData(role=controlgroup)").controlgroup ();
 	$('#AjaxLoading').html('');
+    }
 }
 </script>
 <br/>

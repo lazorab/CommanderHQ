@@ -61,7 +61,7 @@ class BaselineModel extends Model
             $SQL = 'INSERT INTO WODLog(MemberId, WODTypeId, WorkoutId, ExerciseId, AttributeId, AttributeValue) 
             VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$WorkoutId.'", "'.$Activity->ExerciseId.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
             mysql_query($SQL);
-            $this->Message = 'Successfully Saved!';
+            $this->Message = 'Success';
         }
         }
             }else{
@@ -108,7 +108,9 @@ class BaselineModel extends Model
                 $ExerciseId = $ExplodedKey[1];
                 $ExerciseName = $this->getExerciseName($ExerciseId);
                 $Attribute = $ExplodedKey[2];
-                if($val == '00:00:0' || $val == '' || $val == '0' || $val == $Attribute){
+                if($val == '00:00:0')
+                    $this->Message .= 'Invalid value for Stopwatch!';
+                else if($val == '' || $val == '0' || $val == $Attribute){
                     $this->Message .= 'Invalid value for '.$ExerciseName.' '.$Attribute.'!';
                 }else{
                 $Query='SELECT recid AS ExerciseId, (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, "'.$val.'" AS AttributeValue, "'.$RoundNo.'" AS RoundNo

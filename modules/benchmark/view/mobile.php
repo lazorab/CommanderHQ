@@ -26,6 +26,7 @@ $(document).ready(function() {
 	    }
 	});      
 });	
+
     $(function(){
         $('#slides').slides({
             preload: true,
@@ -35,10 +36,27 @@ $(document).ready(function() {
             effect: 'slide'
         });
     });
+    
 function benchmarksubmit()
 {
-    $.getJSON('ajax.php?module=benchmark', $("#benchmarkform").serialize(),display);
-    window.location.hash = '#message';
+    $.getJSON('ajax.php?module=benchmark&action=validateform', $("#benchmarkform").serialize(),messagedisplay);
+}
+
+function messagedisplay(message)
+{
+    if(message == 'Success'){
+        var r=confirm("Successfully Saved!\nWould you like to provide us with feedback?");
+        if (r==true)
+        {
+            window.location = 'index.php?module=contact';
+        }
+        else
+        {
+            resetclock();
+        }
+    }  
+    else
+        alert(message);
 }
 
 function getBenchmarks(catid)

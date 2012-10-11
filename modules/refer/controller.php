@@ -15,39 +15,38 @@ class ReferController extends Controller
             $Message = 'Name Required';
         else if($_REQUEST['FriendCell'] == '' && $_REQUEST['FriendEmail'] == '')
             $Message = 'Either a Cell or Email Required';
-        else if($_REQUEST['FriendCell'] == '' || !$Validate->CheckMobileNumber($_REQUEST['FriendCell']))
+        else if($_REQUEST['FriendCell'] != '' && !$Validate->CheckMobileNumber($_REQUEST['FriendCell']))
             $Message = 'Cell number invalid!';
         else if($_REQUEST['FriendEmail'] != '' && !$Validate->CheckEmailAddress($_REQUEST['FriendEmail']))
             $Message = 'Email Address invalid!';      
             
         return $Message;
     }
+    
+     function Message()
+    {
+        $Model = new ReferModel;
+        $Message = $this->Validate();
+        if($Message == 'Success')
+            $Message = $Model->ReferFriend();
+        
+        return $Message;
+    }   
         
     function Output()
     {
-        $Message = '';
-        $Model = new ReferModel;
-        $Html = '';
-        if($_REQUEST['submit'] == 'Submit'){
-            $Message = $this->Validate();
-            if($Message == 'Success')
-                $Message = $Model->ReferFriend();
-        }
-            $Html .= '<div id="message">' . $Message . '</div>
-            <div id="container" style="color:#fff;height:350px;padding-left:20%">
-            <br/><br/>
+            $Html .= '<h2>Refer a friend</h2><br/>
             <form action="index.php" name="refer" id="referform" method="post">
             <input type="hidden" name="module" value="refer"/>
-            <input type="hidden" name="submit" value="Submit"/>
-            <label for="name">Friend\'s Name</label>
-            <input class="textinput" style="margin:0 5% 2% 5%;width:50%;" id="name" type="text" name="FriendName" placeholder="Friend\'s name"/>                
-            <label for="email">Friend\'s Email</label>
-            <input class="textinput" style="margin:0 5% 2% 5%;width:50%;" id="email" type="email" name="FriendEmail" placeholder="Friend\'s Email Address"/>
-            <label for="cell">Friend\'s Cell</label>
-            <input class="textinput" style="margin:0 5% 2% 5%;width:50%;" id="cell" type="number" name="FriendCell" placeholder="'.DEFAULT_SUB_NUMBER.'"/>
+            <input type="hidden" name="form" value="submitted"/>
+            <input class="textinput" id="name" type="text" name="FriendName" placeholder="Friend\'s Name"/>                
+            <br/>
+            <input class="textinput" id="email" type="email" name="FriendEmail" placeholder="Friend\'s Email Address"/>
+            <br/>
+            <input class="textinput" id="cell" type="number" name="FriendCell" placeholder="Friend\'s Cell ('.DEFAULT_SUB_NUMBER.')"/>
+            <br/><br/>
             <input class="buttongroup" type="button" onClick="refersubmit();" value="Submit"/>
-            </form>
-            </div>';
+            </form>';
 
         return $Html;
     }

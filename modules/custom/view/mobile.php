@@ -15,13 +15,20 @@ function messagedisplay(message)
         $("#exercise option[value='none']").attr("selected","selected");
         $('#add_exercise').html('');
     }   
-    if(message != 'Success'){
-         alert(message);
-    }
-    else{
-        resetclock();
-        $.getJSON('ajax.php?module=custom', {save:'successfull'},display);
-    }   
+    else if(message == 'Success'){
+        var r=confirm("Successfully Saved!\nWould you like to provide us with feedback?");
+        if (r==true)
+        {
+            window.location = 'index.php?module=contact';
+        }
+        else
+        {
+            resetclock();
+            $.getJSON('ajax.php?module=custom', {},display);
+        }
+    }  
+    else
+        alert(message); 
 }
 
 function display(data)

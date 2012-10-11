@@ -62,11 +62,20 @@ function baselinesubmit()
 
 function messagedisplay(message)
 {
-    alert(message);
-    if(message == 'Successfully Saved!'){
-        resetclock();
-        $.getJSON('ajax.php?module=baseline', {},display);
-    }   
+    if(message == 'Success'){
+        var r=confirm("Successfully Saved!\nWould you like to provide us with feedback?");
+        if (r==true)
+        {
+            window.location = 'index.php?module=contact';
+        }
+        else
+        {
+            resetclock();
+            $.getJSON('ajax.php?module=baseline', {},display);
+        }
+    }  
+    else
+        alert(message);
 }
 
 </script>

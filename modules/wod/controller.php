@@ -44,20 +44,18 @@ class WodController extends Controller
 	
 	function Output()
 	{
-            $WODdata = '';
-
             if($_REQUEST['wod'] == 'display'){//my gym
                 //check for registered gym
                 $Gym = $this->MemberGym();
                 if(!$Gym){//must register gym
-                    header('location: index.php?module=registergym');	
+                    $WODdata = 'Must First Register Gym!';
 		}
 		else{//show details:
                     //$WODdata .='<h2>Workout for '.date('d M Y').'</h2>';
-                    $WODdata .= $this->MyGymWOD();
+                    $WODdata = $this->MyGymWOD();
 		}	
             }else if(isset($_REQUEST['Workout'])){
-                $WODdata .= $this->WorkoutDetails();
+                $WODdata = $this->WorkoutDetails();
             }else{
                 $WODdata='
                 <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">

@@ -43,6 +43,8 @@ Your exculsive code is <b>'.$InvCode.'</b>
 Eat Clean - Train Dirty!
 <br/>
 The Commander.';
+$MailResult = true;
+$SmsResult = true;
 
             if($_REQUEST['FriendEmail'] != ''){
 		$mail = new Rmail();
@@ -50,21 +52,18 @@ The Commander.';
 		$mail->setSubject('Invitation to Commander HQ');
 		$mail->setPriority('normal');
 		$mail->setHTML($message);
-                $success =  $mail->send(array($_REQUEST['FriendEmail']));
-                if($success)
-                    $ReturnMessage .= 'Successfully Referred by email<br/>';
-                else
-                    $ReturnMessage .= 'Email failed<br/>';
+                $MailResult =  $mail->send(array($_REQUEST['FriendEmail']));
             }
             
             if($_REQUEST['FriendCell'] != ''){
                 $SMS = new SmsManager(SITE_ID, trim($_REQUEST['FriendCell']), $message, 3, 0, SMS_FROM_NUMBER, 0, null, null);
-                $success = $SMS->Send(); 
-                if($success)
-                    $ReturnMessage .= 'Successfully Referred by SMS<br/>';
-                else
-                    $ReturnMessage .= 'SMS failed<br/>';
+                $SmsResult = $SMS->Send(); 
             }
+            
+                 if(!$MailResult || !$SmsResult)
+                    $ReturnMessage .= 'Error Referring - Please Try again';
+                else
+                    $ReturnMessage .= 'Friend Successfully Referred!';           
             return $ReturnMessage;
 	}
 }

@@ -1,12 +1,12 @@
 <script type='text/javascript'>
 function getContent(selection)
 {
-    $.getJSON("ajax.php?module=custom",{baseline:selection},display);
+    $.getJSON("ajax.php?module=upload",{baseline:selection},display);
 }
 
 function getCustomExercise(id)
 {
-    $.getJSON("ajax.php?module=custom",{customexercise:id},display);
+    $.getJSON("ajax.php?module=upload",{customexercise:id},display);
 }
 
 function display(data)
@@ -41,6 +41,7 @@ function addTypeParams(CustomType)
     $('.buttongroup').button();
     $('.buttongroup').button('refresh');
     $('#addround').textinput();
+    $('.textinput').textinput();
 }
 
 function SelectionControl(exercise)
@@ -69,7 +70,7 @@ function addNewExercise()
 
 function DisplayExercise(exercise)
 {
-    $.getJSON("ajax.php?module=custom",{chosenexercise:exercise},function(json) {
+    $.getJSON("ajax.php?module=upload",{chosenexercise:exercise},function(json) {
     var attributecount = 0;
     $.each(json, function() {attributecount++;});
     var new_exercise = $('#new_exercise');
@@ -81,10 +82,7 @@ function DisplayExercise(exercise)
     var ThisRound = '';
     var ThisExercise = '';
     var Unit = '';
-	var Style='';
-    if(i < 1){
-        $('#btnsubmit').html('<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>');
-    }
+
     $.each(json, function() {
 	
         if(this.BenchmarkId > 0 && j == 0){
@@ -261,17 +259,32 @@ function RemoveFromList(RowId,BenchMarkId)
     }
 }
 
-function customsubmit()
+function uploadsubmit()
 {
-    $.getJSON('ajax.php?module=custom', $("#customform").serialize(),display);
-    window.location.hash = '#message';
+    $.getJSON('ajax.php?module=upload&action=validateform', $("#uploadform").serialize(),messagedisplay);
+}
+
+function addnew()
+{
+    $.getJSON('ajax.php?module=upload&action=validateform', $("#uploadform").serialize(),messagedisplay);
+}
+
+function messagedisplay(message)
+{
+    if(message == 'Exercise Successfully Added!'){
+        $("#exercise option[value='none']").attr("selected","selected");
+        $('#add_exercise').html('');
+    }   
+    else{
+         alert(message); 
+        $.getJSON('ajax.php?module=upload', {},display);
+    }  
 }
 
 function addnew()
 {
     var NewExercise = document.getElementById('NewExercise').value;
-    $.getJSON('ajax.php?module=custom', {newexercise:NewExercise},display);
-    window.location.hash = '#message';
+    $.getJSON('ajax.php?module=upload', {newexercise:NewExercise},display);
 }
 
 function addRound()

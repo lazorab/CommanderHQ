@@ -21,12 +21,11 @@ class CustomController extends Controller
        function Message()
     {
         $Model = new CustomModel;
-        $Message = $Model->Log();
              if(isset($_REQUEST['NewExercise'])){
                 $Message = $this->SaveNewExercise();
             }
             else{
-                $Message = $Model->Log();
+                $Message = $Model->Save();
             }       
         return $Message;
     }      

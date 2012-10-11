@@ -105,34 +105,53 @@ class ProfileController extends Controller
         <input type="hidden" name="UserId" value="'.$MemberDetails->UserId.'"/>';
       if(!isset($_SESSION['UID'])){
           $Html.='
-            <input style="width:75%;" class="textinput" type="text" id="invcode" name="InvCode" placeholder="Invitation Code" value="'.$_REQUEST['InvCode'].'"/>';
+            <input class="textinput" type="text" id="invcode" name="InvCode" placeholder="Invitation Code" value="'.$_REQUEST['InvCode'].'"/>';
       }      
-$Html.='<br/><br/>
-<input style="width:75%;" class="textinput" type="text" id="firstname" name="FirstName" placeholder="First Name" value="'.$MemberDetails->FirstName.'"/>
-<br/><br/>
-<input style="width:75%;" class="textinput" type="text" id="lastname" name="LastName" placeholder="Last Name" value="'.$MemberDetails->LastName.'"/>
-<br/><br/>
-<input style="width:75%;" class="textinput" type="text" id="username" name="UserName" placeholder="User Name" value="'.$MemberDetails->UserName.'"'; 
+if(isset($_SESSION['UID'])){
+          $Html.='<labe for="firstname">First Name</label>';
+          }
+$Html.='<input class="textinput" type="text" id="firstname" name="FirstName" placeholder="First Name" value="'.$MemberDetails->FirstName.'"/>';
+if(isset($_SESSION['UID'])){
+          $Html.='<labe for="lastname">Last Name</label>';
+          }
+$Html.='<input class="textinput" type="text" id="lastname" name="LastName" placeholder="Last Name" value="'.$MemberDetails->LastName.'"/>';
+if(isset($_SESSION['UID'])){
+          $Html.='<labe for="username">User Name</label>';
+          }
+$Html.='<input class="textinput" type="text" id="username" name="UserName" placeholder="User Name" value="'.$MemberDetails->UserName.'"'; 
 if(isset($_SESSION['UID']) || $MemberDetails->LoginType != '')   
     $Html.=' readonly="readonly"';
 $Html.='/>';
 if($MemberDetails->LoginType == ''){
-$Html.='<br/><br/>
-<input style="width:75%;" class="textinput" type="password" id="password" name="PassWord" placeholder="Password" value="'.$MemberDetails->PassWord.'"/>
-<br/><br/>
-<input style="width:75%;" class="textinput" type="password" id="confirmpassword" name="ConfirmPassWord" placeholder="Confirm Password" value="'.$MemberDetails->PassWord.'"/>';
+if(isset($_SESSION['UID'])){
+          $Html.='<labe for="password">Password</label>';
+          }
+$Html.='<input class="textinput" type="password" id="password" name="PassWord" placeholder="Password" value="'.$MemberDetails->PassWord.'"/>';
+if(isset($_SESSION['UID'])){
+          $Html.='<labe for="confirmpassword">Confirm Password</label>';
+          }
+$Html.='<input class="textinput" type="password" id="confirmpassword" name="ConfirmPassWord" placeholder="Confirm Password" value="'.$MemberDetails->PassWord.'"/>';
 }
 else{
-   $Html.='<br/><br/>
-<input style="width:75%;" class="textinput" type="text" id="oauth_provider" name="oauth_provider" placeholder="Login Type" value="'.$MemberDetails->LoginType.'" readonly="readonly"/>'; 
+if(isset($_SESSION['UID'])){
+          $Html.='<labe for="oauth_provide">Login Type</label>';
+          }
+$Html.='<input class="textinput" type="text" id="oauth_provider" name="oauth_provider" placeholder="Login Type" value="'.$MemberDetails->LoginType.'" readonly="readonly"/>'; 
 }
-$Html.='<br/><br/>
-<input style="width:75%;" class="textinput" type="tel" id="cell" name="Cell" value="'.$MemberDetails->Cell.'" placeholder="Cell (+2778000000)"/>
-<br/><br/>
-<input style="width:75%;" class="textinput" type="email" id="email" name="Email" placeholder="Email" value="'.$MemberDetails->Email.'"/>
-<br/><br/>
-<input style="width:75%;" class="textinput" type="date" name="DOB" id="DOB" placeholder="Date of Birth" value="'.$MemberDetails->DOB.'"/>
-<br/><br/>';
+if(isset($_SESSION['UID'])){
+          $Html.='<labe for="cell">Cell (+2778000000)</label>';
+          }
+$Html.='<input class="textinput" type="tel" id="cell" name="Cell" value="'.$MemberDetails->Cell.'" placeholder="Cell (+2778000000)"/>';
+if(isset($_SESSION['UID'])){
+          $Html.='<labe for="email">Email</label>';
+          }
+$Html.='<input class="textinput" type="email" id="email" name="Email" placeholder="Email" value="'.$MemberDetails->Email.'"/>';
+if(isset($_SESSION['UID'])){
+          $Html.='<labe for="DOB">Date of Birth</label>';
+          }
+$Html.='<input class="textinput" type="date" name="DOB" id="DOB" placeholder="Date of Birth" value="'.$MemberDetails->DOB.'"/>';
+
+$Html.='<br/><br/>';
 
  $Html.='<select class="select" name="AffiliateId" id="AffiliateId">
             <option value="">Select your Gym</option>';
@@ -155,9 +174,9 @@ $Html.='/>
 </fieldset>
 <br/><br/>
 <div id="weightlabel">Height('.$HeightUnit.')</div>
-<input style="width:75%;" id="weight" class="textinput" type="number" name="Weight" value="'.$MemberDetails->Weight.'"/>
+<input id="weight" class="textinput" type="number" name="Weight" value="'.$MemberDetails->Weight.'"/>
 <div id="heightlabel">Weight('.$WeightUnit.')</div>
-<input style="width:75%;" id="height" class="textinput" type="number" name="Height" value="'.$MemberDetails->Height.'"/>
+<input id="height" class="textinput" type="number" name="Height" value="'.$MemberDetails->Height.'"/>
 <br/><br/>
 <fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
     <input class="radioinput" type="radio" name="SystemOfMeasure" id="radio-choice-1" value="Metric" onclick="getSystem(\'Metric\');"';
@@ -187,7 +206,7 @@ if($MemberDetails->CustomWorkouts == 'Public')
 $Html.='/>
 </fieldset>
 <br/>
-<input class="buttongroup" type="button" onclick="profilesubmit();" value="Save"/><br/><br/>
+<input class="buttongroup" type="button" onclick="profilesubmit();" value="Save"/><br/>
 </div>
 </form>';
 
