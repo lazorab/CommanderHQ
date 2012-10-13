@@ -92,13 +92,165 @@ class WodController extends Controller
         
   	function WorkoutDetails()
 	{
-            $Html='';
+            $html='';
             $Model = new WodModel;
             $WodDetails = $Model->getWODDetails();
-            $Html.=$WodDetails[0]->WorkoutName;
-            $Html.='<br/>';
-            $Html.=$WodDetails[0]->WorkoutDescription;
-            return $Html;
+
+	$Clock = '';
+	$Bhtml = '';
+	$Chtml = '';
+	$html.='<form name="form" id="wodform" action="index.php">
+            <input type="hidden" name="wodtype" value="2"/>
+            <input type="hidden" name="form" value="submitted"/>';       
+        $html.='<input type="checkbox" name="baseline" value="yes" data-role="none"/>';
+        $html.='Make this my baseline<br/><br/>';
+        $html.='<div class="ui-grid-b">';
+        $ThisRound = '';
+		$ThisExercise = '';
+	foreach($WodDetails as $Benchmark){
+		if($Benchmark->Attribute == 'TimeToComplete'){
+			$Clock = $this->getStopWatch($Benchmark->ExerciseId);
+		}
+		else if($Benchmark->Attribute == 'CountDown'){
+			$Clock = $this->getCountDown($Benchmark->ExerciseId,$Benchmark->AttributeValue);
+		}
+		else{
+			
+			if($Benchmark->TotalRounds > 1 && $Benchmark->RoundNo > 0 && $ThisRound != $Benchmark->RoundNo){
+			
+				if($Chtml != '' && $Bhtml == ''){
+					$html.='<div class="ui-block-b"></div>'.$Chtml.'';
+					$Chtml = '';
+					$Bhtml = '';
+				}
+				if($Chtml == '' && $Bhtml != ''){
+					$html.=''.$Bhtml.'<div class="ui-block-c"></div>';
+					$Chtml = '';
+					$Bhtml = '';
+				}
+				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
+				$html.='<div class="ui-block-a" style="padding:2px 0 2px 0">Round '.$Benchmark->RoundNo.'</div><div class="ui-block-b" style="padding:2px 0 2px 0"></div><div class="ui-block-c" style="padding:2px 0 2px 0"></div>';
+				$html.='<div class="ui-block-a"><input data-role="none" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Benchmark->InputFieldName.'"/></div>';
+			}
+			else if($ThisExercise != $Benchmark->Exercise){
+                            
+                                if(isset($_REQUEST['Rounds']))
+                                    $RoundNo = $_REQUEST['Rounds'];
+                                else
+                                    $RoundNo = $Benchmark->RoundNo;
+
+				if($Chtml != '' && $Bhtml == ''){
+					$html.='<div class="ui-block-b"></div>'.$Chtml.'';
+					$Chtml = '';
+					$Bhtml = '';
+				}
+				if($Chtml == '' && $Bhtml != ''){
+					$html.=''.$Bhtml.'<div class="ui-block-c"></div>';
+					$Chtml = '';
+					$Bhtml = '';
+				}
+                                if($Benchmark->Exercise == 'Total Rounds'){
+                                    $Exercise = '<input class="buttongroup" data-inline="true" type="button" onclick="addRound();" value="+ Round"/>';
+                                }else{
+                                    $Exercise = '<input data-role="none" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Benchmark->InputFieldName.'"/>';
+                                }
+				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
+				$html.='<div class="ui-block-a">'.$Exercise.'</div>';
+				}
+			}	
+
+		
+            if($Benchmark->Attribute == 'Height' || $Benchmark->Attribute == 'Distance' || $Benchmark->Attribute == 'Weight'){
+                            $AttributeValue = '';	
+				if($Benchmark->Attribute == 'Distance'){
+                                    $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#6f747a"';
+					if($this->SystemOfMeasure() != 'Metric'){
+						$Unit = '<span style="float:left">yd</span>';
+                                                $AttributeValue = round($Benchmark->AttributeValue * 1.09, 2);
+                                        }else{
+						$Unit = '<span style="float:left">m</span>';
+                                                $AttributeValue = $Benchmark->AttributeValue;
+                                        }
+				}		
+				else if($Benchmark->Attribute == 'Weight'){
+                                    $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#3f2b44"';
+					if($this->SystemOfMeasure() != 'Metric'){
+                                            $AttributeValue = round($Benchmark->AttributeValue * 2.20, 2);
+						$Unit = '<span style="float:left">lbs</span>';
+                                        }else{
+						$Unit = '<span style="float:left">kg</span>';
+                                                $AttributeValue = $Benchmark->AttributeValue;
+                                        }
+				}
+				else if($Benchmark->Attribute == 'Height'){
+                                    $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#66486e"';
+					if($this->SystemOfMeasure() != 'Metric'){
+                                            $AttributeValue = round($Benchmark->AttributeValue * 0.39, 2);
+						$Unit = '<span style="float:left">in</span>';
+                                        }else{
+						$Unit = '<span style="float:left">cm</span>';
+                                                $AttributeValue = $Benchmark->AttributeValue;
+                                        }
+				}
+
+				$Bhtml.='<div class="ui-block-b">';
+				$Bhtml.='<input data-role="none" '.$Style.' type="number" data-inline="true" name="'.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" value="'.$AttributeValue.'"/>'.$Unit.'';
+				$Bhtml.='</div>';		
+				if($Chtml != ''){
+					$html.=''.$Bhtml.''.$Chtml.'';
+					$Chtml = '';
+					$Bhtml = '';
+				}
+			}
+                        
+            else if($Benchmark->Attribute == 'Calories' || $Benchmark->Attribute == 'Reps' || $Benchmark->Attribute == 'Rounds'){
+                                $Placeholder = '';
+                                if($Benchmark->Attribute == 'Calories'){
+                                    $Style='style="width:50%"';
+                                    $Placeholder = 'placeholder="Calories"';
+                                }
+                                $InputAttributes = 'type="number"';
+                                $InputName = ''.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'';
+                                $Value = $Benchmark->AttributeValue;
+                                if($Benchmark->Attribute == 'Rounds'){
+                                    $Style='style="width:50%"';
+                                    $InputAttributes .= ' id="addround"';
+                                    $InputName = 'Rounds';
+                                    $Value = $_REQUEST['Rounds'] + 1 ;
+                                }
+                                if($Benchmark->Attribute == 'Reps'){
+                                    $Style='style="float:left;width:50%;color:black;font-weight:bold;background-color:#ccff66"';
+                                }
+				$Chtml.='<div class="ui-block-c">';
+				$Chtml.='<input data-role="none" '.$InputAttributes.' '.$Style.' name="'.$InputName.'" '.$Placeholder.' value="'.$Value.'"/>';
+				$Chtml.='</div>';
+				if($Bhtml != ''){
+					$html.=''.$Bhtml.''.$Chtml.'';
+					$Bhtml = '';
+					$Chtml = '';
+				}
+			}
+		
+		
+	$ThisRound = $Benchmark->RoundNo;
+	$ThisExercise = $Benchmark->Exercise;
+	}
+				if($Chtml != '' && $Bhtml == ''){
+					$html.='<div class="ui-block-b"></div>'.$Chtml.'';
+					$Chtml = '';
+					$Bhtml = '';
+				}
+				if($Chtml == '' && $Bhtml != ''){
+					$html.=''.$Bhtml.'<div class="ui-block-c"></div>';
+					$Chtml = '';
+					$Bhtml = '';
+				}	
+    $html.='</div>';
+    $html.=$Clock;
+    $html.='</form><br/><br/>';		
+
+
+            return $html;
 	}       
         
         function MyGymWOD()

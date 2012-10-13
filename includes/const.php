@@ -11,10 +11,10 @@ define('ERROR_REPORT_SITE_NAME', 'Commander HQ');
 define('ERROR_REPORT_EMAIL_ADDRESS', 'support@be-mobile.co.za');
 
 if (QA) {
-    define('TEST_EMAIL', 'devguru@be-mobile.co.za');
+    define('COMMANDER_EMAIL', 'devguru@be-mobile.co.za');
     define("THIS_DOMAIN", "crossfit.be-mobile.co.za");
 } else {
-    define('TEST_EMAIL', 'devguru@be-mobile.co.za');
+    define('COMMANDER_EMAIL', 'devguru@be-mobile.co.za');
     define("THIS_DOMAIN", "crossfit.be-mobile.co.za");
 }
 

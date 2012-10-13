@@ -43,12 +43,15 @@ function display(data)
     }
     else{
 	$('#AjaxOutput').html(data);
-	$('#listview').listview();
-	$('#listview').listview('refresh');
-	$("input").checkboxradio ();
-	$("input").closest ("div:jqmData(role=controlgroup)").controlgroup ();
-	$('#AjaxLoading').html('');
     }
+    $('#listview').listview();
+    $('#listview').listview('refresh');
+    $('.controlbutton').button();
+    $('.controlbutton').button('refresh');
+    $('.buttongroup').button();
+    $('.buttongroup').button('refresh');
+    $('.textinput').textinput();
+    $('#AjaxLoading').html('');	
 }
 </script>
 <br/>

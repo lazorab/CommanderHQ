@@ -221,6 +221,7 @@ else
 {
     $Girls = $Model->getBMWS('1');
     $Heros = $Model->getBMWS('2');
+    $Various = $Model->getBMWS('5');
     $Travel = $Model->getBMWS('3');
     
     $html.='    <div id="slides">
@@ -244,7 +245,7 @@ else
             <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>Various</li>
             </ul>
-                
+                '.$this->getWorkoutList($Various).'
             </div>';
  /*    
      $html .='<div class="slide">
