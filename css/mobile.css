@@ -69,10 +69,11 @@ p{
 
 #message
 {
-	color:red;
+	color:#333333;
 	font-weight:bold;
-	padding:1%;
-	width:75%
+	padding-top:2%;
+	width:75%;
+        text-align:center;    
 }
 
 #header

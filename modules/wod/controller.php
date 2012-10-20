@@ -15,19 +15,26 @@ class WodController extends Controller
             $Html='';
             if(isset($_REQUEST['topselection'])){
                 if($_REQUEST['topselection'] == 'mygym'){
-                    //$Model = new WodModel;
-                    //$GymFeed = $Model->getMyGymFeed();
-                   // $Html='<li>'.$GymFeed[0]->WodDate.'</li>';
                     $Gym = $this->MemberGym();
-                    $Html='<li>'.$Gym->GymName.'</li>';
+                    $Display = $Gym->GymName;
                 }else{
-                    $Html='<li>'.$_REQUEST['topselection'].'</li>';
+                    $Display = $this->getTopSelection();
                 }
             }else{
-                $Html='<li>Workout Of the Day</li>';                   
+                $Display = 'Workout Of the Day';                  
             }
+            $Html='<li>'.$Display.'</li>';
             return $Html;
 	}
+        
+        function getTopSelection()
+        {
+            $Html='';
+            $Model = new WodModel;
+            $WodDetails = $Model->getTopSelection();
+            $Html .= ''.$WodDetails[0]->WorkoutName.':<br/><span style="font-size:small">'.$WodDetails[0]->WorkoutDescription.'</span>';
+            return $Html;           
+        }
 	
 	function WodDetails()
 	{
@@ -94,7 +101,7 @@ class WodController extends Controller
 	{
             $html='';
             $Model = new WodModel;
-            $WodDetails = $Model->getWODDetails();
+            $WodDetails = $Model->getWODDetails($_REQUEST['Workout']);
 
 	$Clock = '';
 	$Bhtml = '';
@@ -258,8 +265,12 @@ class WodController extends Controller
             $Html='';
             $Model = new WodModel;
             $DataObject = $Model->getGymWodWorkouts();
+            if(count($DataObject) == 0){
+                $Html='No WOD\'s Available for your gym at present';
+            }else{
             foreach($DataObject as $Item){
-                $Html.='<a href="#" onClick="getDetails(\''.$Item->WodId.'\')">Workout for '.date('d F Y',strtotime($Item->WodDate)).'</a><br/><br/>';
+                $Html.='<a href="#" onClick="getDetails(\''.$Item->WodId.'\',\''.$Item->WodType.'\')">Workout for '.date('d F Y',strtotime($Item->WodDate)).'</a><br/><br/>';
+            }
             }
             return $Html;
         }

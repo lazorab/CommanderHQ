@@ -75,8 +75,8 @@ function getDetails(id,origin)
 
 function getCustomDetails(id,origin)
 {
-    $.getJSON("ajax.php?module=benchmark",{customId:id, origin:origin},display);
-    $.getJSON("ajax.php?module=benchmark",{topselection:id, customId:id},topselectiondisplay);
+    $.getJSON("ajax.php?module=benchmark",{WorkoutDate:id, origin:origin},display);
+    $.getJSON("ajax.php?module=benchmark",{topselection:id, WorkoutDate:id},topselectiondisplay);
 }
 
 function topselectiondisplay(data)

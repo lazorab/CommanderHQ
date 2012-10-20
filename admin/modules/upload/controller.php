@@ -61,39 +61,23 @@ class UploadController extends Controller
     
     function MainOutput()
     {
-	$Html = '';
-	$Model = new UploadModel;
-
-	$Exercises = $Model->getExercises();
-
-        $Html .= '<form action="index.php" id="customform" name="form">
+        $Html = '<form action="index.php" id="uploadform" name="form">
                     <input type="hidden" name="form" value="submitted"/>
-                    <input type="hidden" name="origin" value="'.$this->Origin.'"/>
                     <input type="hidden" name="rowcount" id="rowcounter" value="0"/>';
-        $Html .= '<input class="textinput" type="text" name="WorkoutName" value="" placeholder="Name your WOD"/>'; 
+        $Html .= '<input class="textinput" type="date" name="WodDate" value="" placeholder="Date of WOD yyyy-mm-dd"/><br/>'; 
+        $Html .= '<input id="wodname" class="textinput" type="text" name="WorkoutName" value="" placeholder="Name your WOD"/>'; 
+        $Html .= '<br/>';     
+        $Html .= $this->Benchmarks();             
+        $Html .= '<br/>';       
+        $Html .= $this->Activities();      
+        $Html .= '<br/>';
 
-        $Html .= '<br/>';
-        
-	$Html .= '<select class="select" name="exercise" id="exercise" onchange="SelectionControl(this.value);">
-                    <option value="none">+ Activity</option>';
-        $OptionGroup='';
-	foreach($Exercises AS $Exercise){
-            if($OptionGroup==''){
-                $Html .= '<optgroup label="'.$Exercise->OptionGroup.'">';
-                $OptionGroup = $Exercise->OptionGroup;
-            }
-            if($Exercise->OptionGroup != $OptionGroup){
-                $OptionGroup = $Exercise->OptionGroup;
-            $Html .= ' </optgroup><optgroup label="'.$Exercise->OptionGroup.'">';
-            }
-            $Html .= '<option id="'.$Exercise->recid.'" value="'.$Exercise->ActivityName.'">'.$Exercise->ActivityName.'</option>';
-	}
-	$Html .= ' </optgroup></select>';
-        
-        $Html .= '<br/>';
-        
-        $Html .= $this->WorkoutTypes();
-        
+       $Html .= '<div id="workouttypes">';
+        if(isset($_REQUEST['workouttype'])){
+        $Html .= $this->WorkoutTypes($_REQUEST['workouttype']);
+        }
+        $Html .= '</div>';
+                
         $Html .= '<br/>';
         
 	if($_REQUEST['form'] == 'submitted'){
@@ -105,13 +89,46 @@ class UploadController extends Controller
     $Html .= '</div>';
 	}
     $Html .= '<div class="ui-grid-b">
+                  <div id="display_benchmark"></div>
                   <div id="add_exercise">'.$this->AddExercise().'</div>
                   <div id="new_exercise">'.$this->ChosenExercises().'</div>
                   </div>
-                  <div id="clock_input">'.$this->Clock().'</div>                        
+                  <div id="clock_input">'.$this->Clock().'</div>
+                   <div id="btnsubmit"></div>   
                   </form><br/>';
      	
 	return $Html;
+    }
+    
+    function Benchmarks()
+    {
+  	$Html = '';
+	$Model = new UploadModel;
+
+	$Benchmarks = $Model->getBenchmarks(); 
+  	$Html .= '<select class="select" name="benchmark" id="benchmark" onchange="SelectionControl(\'benchmark\',this.value);">
+                    <option value="none">Benchmark</option>';
+	foreach($Benchmarks AS $Benchmark){
+            $Html .= '<option id="'.$Benchmark->recid.'" value="'.$Benchmark->recid.'">'.$Benchmark->WorkoutName.'</option>';
+	}
+	$Html .= '</select>';   
+        
+        return $Html;       
+    }
+    
+    function Activities()
+    {
+ 	$Html = '';
+	$Model = new UploadModel;
+	$Activities = $Model->getActivities();  
+ 	$Html .= '<select class="select" name="activity" id="activity" onchange="SelectionControl(\'activity\',this.value);">
+                    <option value="none">+ Activity</option>';
+	foreach($Activities AS $Activity){
+            $Html .= '<option id="'.$Activity->recid.'" value="'.$Activity->recid.'">'.$Activity->ActivityName.'</option>';
+	}
+	$Html .= '</select>';   
+        
+        return $Html;
     }
     
     function WorkoutTypes(){
@@ -134,9 +151,13 @@ class UploadController extends Controller
 	
 	function Output()
 	{
-            if(isset($_REQUEST['chosenexercise'])){
+            if(isset($_REQUEST['activityid'])){
   		$Model = new UploadModel;
-		$html = $Model->getExerciseAttributes($_REQUEST['chosenexercise']);              
+		$html = $Model->getExerciseAttributes($_REQUEST['activityid']);              
+            }
+            else if(isset($_REQUEST['benchmarkid'])){
+  		$Model = new UploadModel;
+		$html = $Model->getBenchmarkDetails($_REQUEST['benchmarkid']);              
             }
             else{
                 $html = $this->MainOutput();
@@ -314,7 +335,7 @@ class UploadController extends Controller
                     $Html.='</div>';
                 }  
 
-                $Html.= $this->getStopWatch();
+                //$Html.= $this->getStopWatch();
             } 
             return $Html;
         }

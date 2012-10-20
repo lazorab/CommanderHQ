@@ -6,6 +6,8 @@ var currenttime;
 var splitdate = '';
 var output;
 var clock;
+var countdown;
+var routineType = '';
 
 function save()
 {
@@ -21,13 +23,22 @@ function countclicks()
 
 function startstopcountdown()
 {
+    routineType = document.getElementById("workouttype");
     var startstop = document.getElementById('startstopbutton');
-                
+        
     if(flagclock==0)
     {
-        startstop.value = 'Stop';
-	flagclock = 1;
-	startcountdown();
+        if(!document.getElementById("clock").value .match(/[0-5]{1}[0-9]{1}:[0-5]{1}[0-9]{1}/)){
+            alert('invalid time format\n\nmust be like mm:ss');
+            document.getElementById("clock").value = 'mm:ss';
+        }
+        else{   
+            countdown = document.getElementById("clock").value;
+            document.getElementById("CountDown").value = ''+countdown+':0';
+            startstop.value = 'Stop';
+            flagclock = 1;
+            startcountdown();
+        }
     }
     else
     {
@@ -47,17 +58,16 @@ function stopcountdown()
 
 function resetcountdown()
 {
-    var val = document.getElementById("CountDown").value;
-    document.getElementById("clock").value = val;
+    document.getElementById("clock").value = countdown;
 }
 
 function startcountdown()
 {
-    var val = document.getElementById("clock").value;
+    var val = countdown;
     var time = val.split(":");
     var minutes=parseInt(time[0]);
     var seconds=parseInt(time[1]);
-    var splitseconds=parseInt(time[2]);
+    var splitseconds=0;
     var totalsplitseconds = (minutes*600) + (seconds*10) + splitseconds;
     javascript_countdown.init(totalsplitseconds, 'javascript_countdown_time');
 }

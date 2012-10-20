@@ -34,8 +34,8 @@ function addTypeParams(CustomType)
             Html+='<div class="ui-block-b"><input style="width:75%" id="addround" data-inline="true" type="number" name="0___66___Rounds" value="0"/></div>';
             Html+='</div>';
         }  
-
-        Html+= '<?php echo $Display->getStopWatch(CustomType);?>';
+        
+        Html+='<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="uploadsubmit();"/>';
         
     $('#clock_input').html(Html);
     $('.buttongroup').button();
@@ -44,13 +44,15 @@ function addTypeParams(CustomType)
     $('.textinput').textinput();
 }
 
-function SelectionControl(exercise)
+function SelectionControl(type,id)
 {
     $('#add_exercise').html('');
-    if(exercise == 'Add New')
+    if(id == 0)
         addNewExercise();
-    else
-        DisplayExercise(exercise);
+    else if(type=='activity')
+        DisplayExercise(id);
+    else if(type=='benchmark')
+        DisplayBenchmark(id);
 }
 
 function addNewExercise()
@@ -68,9 +70,36 @@ function addNewExercise()
     $('.textinput').textinput();
 }
 
-function DisplayExercise(exercise)
+function DisplayBenchmark(id)
 {
-    $.getJSON("ajax.php?module=upload",{chosenexercise:exercise},function(json) {
+    $("#exercise option[value='none']").attr("selected","selected");
+    $('#workouttypes').html('');
+    $('#add_exercise').html('');
+    $('#new_exercise').html('');
+    $('#clock_input').html('');
+    
+    document.getElementById('rowcounter').value = 0;
+    
+    $.getJSON("ajax.php?module=upload",{benchmarkid:id},function(j) {
+        $('#wodname').val('' + j.WorkoutName + '');
+        var html = '';
+        html +='<input class="benchmark_' + j.recid + '" type="hidden" name="benchmarkId" value="' + j.recid + '"/>';
+        html += '<div class="benchmark_' + j.recid + '">';
+        html += '<input onclick="RemoveFromList(\'benchmark\')" type="checkbox" name="benchmark_' + j.recid + '" checked="checked" value="' + j.WorkoutName + '"/>'; 
+        html +='' + j.WorkoutName + '</div>';  
+        $('#display_benchmark').html(html);
+    }); 
+    $('#btnsubmit').html('<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="uploadsubmit();"/>');
+    $('.buttongroup').button();
+    $('.buttongroup').button('refresh');
+}
+
+function DisplayExercise(id)
+{
+    $('#btnsubmit').html('');
+    $("#benchmark option[value='none']").attr("selected","selected");
+    $('#display_benchmark').html('');
+    $.getJSON("ajax.php?module=upload",{activityid:id},function(json) {
     var attributecount = 0;
     $.each(json, function() {attributecount++;});
     var new_exercise = $('#new_exercise');
@@ -82,14 +111,12 @@ function DisplayExercise(exercise)
     var ThisRound = '';
     var ThisExercise = '';
     var Unit = '';
-
+    if(i < 1){
+        $('#workouttypes').html('<?php echo $Display->WorkoutTypes('none selected');?>');
+        $('.select').selectmenu();
+        $('.select').selectmenu('refresh');
+    }
     $.each(json, function() {
-	
-        if(this.BenchmarkId > 0 && j == 0){
-           html +='<input class="benchmark_' + this.BenchmarkId + '" type="hidden" name="benchmarkId" value="' + this.BenchmarkId + '"/>';
-		   html += '<div class="benchmark_' + this.BenchmarkId + '"><input onclick="RemoveFromList(' + attributecount + ',' + this.BenchmarkId + ')" type="checkbox" name="exercise_' + i + '" checked="checked" value="' + exercise + '"/>';
-		   html +='' + exercise + '</div>';
-        }
 
            //not sure about this...so 1==2 disables it
            
@@ -106,22 +133,22 @@ function DisplayExercise(exercise)
                     Bhtml = '';
                 }
             
-                i++;
+                i++; 
                 if(j == 0){
-                    html +='<div id="row_' + i + '" class="benchmark_' + this.BenchmarkId + '">';
+                    html +='<div id="row_' + i + '">';
                 }
                 else{
-                    html +='</div><div id="row_' + i + '" class="benchmark_' + this.BenchmarkId + '">';
-                }           
+                    html +='</div><div id="row_' + i + '">';
+                }               
            
                 html +='<div class="ui-block-a"></div><div class="ui-block-b">Round ' + this.RoundNo + '</div><div class="ui-block-c"></div>';
              
                 html +='<div class="ui-block-a" style="font-size:small">';
-                if(this.BenchmarkId == 0){
-                    html += '<input onclick="RemoveFromList(' + i + ',0)" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
+ 
+                    html += '<input onclick="RemoveFromList(' + i + ')" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
                     html +='' + this.ActivityName + '';
                     html +='"/>';
-                }
+                
                 html +='' + this.ActivityName + '';
                 html += '<div class="clear"></div>';
                 html +='</div>';
@@ -142,19 +169,19 @@ function DisplayExercise(exercise)
            
                 i++;
                 if(j == 0){
-                    html +='<div id="row_' + i + '" class="benchmark_' + this.BenchmarkId + '">';
+                    html +='<div id="row_' + i + '">';
                 }
                 else{
-                    html +='</div><div id="row_' + i + '" class="benchmark_' + this.BenchmarkId + '">';
+                    html +='</div><div id="row_' + i + '">';
                 }
            
                 html +='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
                 html +='<div class="ui-block-a" style="font-size:small">';
-                if(this.BenchmarkId == 0){
-                    html += '<input onclick="RemoveFromList(' + i + ',0)" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
+
+                    html += '<input onclick="RemoveFromList(' + i + ')" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
                     html +='' + this.ActivityName + '';
                     html +='"/>';
-                }
+                
                 html +='' + this.ActivityName + '';
                 html += '<div class="clear"></div>';
                 html +='</div>';
@@ -239,22 +266,22 @@ function DisplayExercise(exercise)
     return false;	
 }
 
-function RemoveFromList(RowId,BenchMarkId)
+function RemoveFromList(RowId)
 {
-	if(BenchMarkId > 0){
-		$('.benchmark_' + BenchMarkId + '').remove();
-		document.getElementById('rowcounter').value = document.getElementById('rowcounter').value - (RowId - 1);
-	}
-	else if(RowId > 0){
-		$('#row_' + RowId + '').remove();
-		document.getElementById('rowcounter').value--;
-	}
+    if(RowId == 'benchmark'){
+        $('#display_benchmark').html('');
+    }
+    else if(RowId > 0){
+        $('#row_' + RowId + '').remove();
+	document.getElementById('rowcounter').value--;
+    }
 		
-	if(document.getElementById('clock_input').html != ''){
-		$('#clock_input').html('');
-	}
+    if(document.getElementById('clock_input').html != ''){
+        $('#clock_input').html('');
+    }
 	
     if(document.getElementById('rowcounter').value == 0){
+        $("#exercise option[value='none']").attr("selected","selected");
         $('#btnsubmit').html('');
     }
 }
@@ -277,7 +304,7 @@ function messagedisplay(message)
     }   
     else{
          alert(message); 
-        $.getJSON('ajax.php?module=upload', {},display);
+
     }  
 }
 
@@ -296,5 +323,5 @@ function addRound()
 <br/>
 
 <div id="AjaxOutput">       
-    <?php echo $Display->MainOutput();?>
+    <?php echo $Display->Output();?>
 </div>

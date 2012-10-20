@@ -59,3 +59,4 @@ function display(data)
 <div id="AjaxOutput">
     <?php echo $Display->Output();?>
 </div>
+

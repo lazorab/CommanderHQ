@@ -9,6 +9,7 @@
 <meta name="HandheldFriendly" content="True" />
 <meta name="apple-mobile-web-app-capable" content="YES" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
 <link rel="apple-touch-icon" href="images/icon.png" />
 	<link rel="apple-touch-icon" href="/images/touch-icon-iphone.png">
 	<link rel="apple-touch-icon" sizes="72x72" href="/images/touch-icon-ipad.png">

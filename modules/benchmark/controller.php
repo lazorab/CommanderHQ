@@ -8,7 +8,7 @@ class BenchmarkController extends Controller
 	var $Category;
         var $Height;
         var $Video;
-        var $Exercise;
+        var $Benchmark;
 	
 	function __construct()
 	{
@@ -23,20 +23,13 @@ class BenchmarkController extends Controller
 		$Model = new BenchmarkModel;
 		if(isset($_REQUEST['benchmarkId'])){
                     $this->Workout = $Model->getWorkoutDetails($_REQUEST['benchmarkId']);
-                    $this->Video = $this->Workout[0]->Video;
-                    $this->Exercise = $this->Workout[0];
+                    $this->Video = $this->Workout[0]->VideoId;
+                    $this->Benchmark = $this->Workout[0];
                 }
-                else if(isset($_REQUEST['customId'])){
-                    $this->Workout = $Model->getCustomDetails($_REQUEST['customId']);
-                    $this->Exercise = $this->Workout[0];
+                else if(isset($_REQUEST['WorkoutDate'])){
+                    $this->Workout = $Model->getCustomDetails($_REQUEST['WorkoutDate']);
+                    $this->Benchmark = $this->Workout[0];
                 }
-		$this->Categories = $Model->getCategories();
-		if(isset($_REQUEST['catid'])){
-			$this->Category = $Model->getCategory($_REQUEST['catid']);
-			if($this->Category != 'Historic'){
-				$this->BMWS = $Model->getBMWS($_REQUEST['catid']);
-			}
-		}
 	}
         
         function Video()
@@ -58,7 +51,7 @@ class BenchmarkController extends Controller
             $html = '';
             $Model = new BenchmarkModel;
 
-if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
+if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutDate']))
 {
 	$Clock = '';
 	$Bhtml = '';
@@ -66,7 +59,7 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
 	$html.='<form name="form" id="benchmarkform" action="index.php">
             <input type="hidden" name="origin" value="'.$this->Origin.'"/>
             <input type="hidden" name="benchmarkId" value="'.$_REQUEST['benchmarkId'].'"/>
-            <input type="hidden" name="customId" value="'.$_REQUEST['customId'].'"/>
+            <input type="hidden" name="WorkoutDate" value="'.$_REQUEST['WorkoutDate'].'"/>
             <input type="hidden" name="wodtype" value="3"/>
             <input type="hidden" name="form" value="submitted"/>';       
         $html.='<input type="checkbox" name="baseline" value="yes" data-role="none"/>';
@@ -219,10 +212,10 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['customId']))
 }
 else
 {
-    $Girls = $Model->getBMWS('1');
-    $Heros = $Model->getBMWS('2');
-    $Various = $Model->getBMWS('5');
-    $Travel = $Model->getBMWS('3');
+    $Girls = $Model->getBMWS('The Girls');
+    $Heros = $Model->getBMWS('The Heros');
+    $Various = $Model->getBMWS('Various');
+    $Travel = $Model->getBMWS('Travel');
     
     $html.='    <div id="slides">
         <div class="slides_container">
@@ -290,11 +283,12 @@ return $html;
         
         function getWorkoutList($Category)
         {
+            $Model = new BenchmarkModel;
             $html = '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
-            foreach($Category AS $Exercise){
-                $Description = str_replace('{br}',' | ',$Exercise->Description);
+            foreach($Category AS $Workout){
+                $Description = $Model->getBenchmarkDescription($Workout->Id);
                 $html .= '<li>';
-                $html .= '<a href="" onclick="getDetails('.$Exercise->Id.', \''.$this->Origin.'\');">'.$Exercise->Name.':<br/><span style="font-size:small">'.$Description.'</span></a>';
+                $html .= '<a href="" onclick="getDetails('.$Workout->Id.', \''.$this->Origin.'\');">'.$Workout->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span></a>';
                 $html .= '</li>';
             }	
             $html .= '</ul><br/>';
@@ -310,9 +304,10 @@ return $html;
                 $html .= '<br/>Oops! You have not recorded any Custom Workouts yet.';
             }else{
             $html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
-            foreach($CustomMemberWorkouts AS $Exercise){
+            foreach($CustomMemberWorkouts AS $Workout){
+                $Description = $Model->getCustomDescription($Workout->TimeCreated);
                 $html .= '<li>';
-                $html .= '<a href="" onclick="getCustomDetails('.$Exercise->Id.', \''.$this->Origin.'\');">'.$Exercise->Name.':<br/><span style="font-size:small">'.$Exercise->Description.'</span></a>';
+                $html .= '<a href="" onclick="getCustomDetails('.$Workout->TimeCreated.', \''.$this->Origin.'\');">'.$Workout->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span></a>';
                 $html .= '</li>';
             }	
             $html .= '</ul><br/>';
@@ -329,9 +324,10 @@ return $html;
                 $html .= '<br/>Looks like there are none yet!';
             }else{
             $html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
-            foreach($CustomPublicWorkouts AS $Exercise){
+            foreach($CustomPublicWorkouts AS $Workout){
+                $Description = $Model->getCustomDescription($Workout->TimeCreated);
                 $html .= '<li>';
-                $html .= '<a href="" onclick="getCustomDetails('.$Exercise->Id.', \''.$this->Origin.'\');">'.$Exercise->Name.':<br/><span style="font-size:small">'.$Exercise->Description.'</span></a>';
+                $html .= '<a href="" onclick="getCustomDetails('.$Workout->TimeCreated.', \''.$this->Origin.'\');">'.$Workout->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span></a>';
                 $html .= '</li>';
             }	
             $html .= '</ul><br/>';
@@ -355,9 +351,10 @@ return $html;
 	
 	function TopSelection()
 	{
-            $Description = str_replace('{br}',' | ',$this->Exercise->Description);
+            $Model = new BenchmarkModel;
+            $Description = $Model->getBenchmarkDescription($this->Benchmark->Id);
             $Html .= '<li>';
-            $Html .= ''.$this->Exercise->Name.':<br/><span style="font-size:small">'.$Description.'</span>';
+            $Html .= ''.$this->Benchmark->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span>';
             $Html .= '</li>';
             return $Html;	
 	}

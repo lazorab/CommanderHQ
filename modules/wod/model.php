@@ -22,6 +22,12 @@ class WodModel extends Model
         }
 	}
         
+        function getTopSelection()
+        {
+            $WodDetails = $this->getWODDetails($_REQUEST['topselection']);
+            return $WodDetails;
+        }
+        
         function getMyGymFeed()
         {
             $WODDetails = array();
@@ -56,9 +62,10 @@ class WodModel extends Model
         function getGymWodWorkouts()
         {
             $Workouts = array();
-            $SQL = 'SELECT WW.recid AS WodId, WW.WorkoutName, WW.WodDate
+            $SQL = 'SELECT WW.recid AS WodId, WT.WorkoutType, WW.WodDate
                 FROM WodWorkouts WW
                 LEFT JOIN MemberDetails MD ON MD.GymId = WW.GymId
+                LEFT JOIN WorkoutTypes WT ON WT.recid = WW.WodTypeId
                 WHERE MD.MemberId = "'.$_SESSION['UID'].'"
                 AND WodDate >= CURDATE()
                 ORDER BY WorkoutName';
@@ -71,14 +78,41 @@ class WodModel extends Model
             return $Workouts;
         }       
         
-         function getWODDetails()
+         function getWODDetails($Id)
 	{   
             $WODDetails = array();
-
+            $SQL = 'SELECT WT.WodType, WW.WorkoutRoutineTypeId
+                    FROM WODTypes WT 
+                    LEFT JOIN WodWorkouts WW ON WW.WodTypeId = WT.recid
+                    WHERE WW.recid = '.$Id.'';
+            $Result = mysql_query($SQL);	
+            $Row = mysql_fetch_assoc($Result);
+            if($Row['WodType'] == 'Benchmarks'){
+                
+ 		$SQL = 'SELECT BW.recid,
+                        BW.WorkoutName, 
+                        E.Exercise, 
+                        E.recid AS ExerciseId, 
+                        E.Acronym, 
+                        "'.$this->BenchmarkDescription($Row['WorkoutRoutineTypeId']).'" AS WorkoutDescription,
+                        A.Attribute, 
+                        BD.AttributeValueMale, 
+                        BD.AttributeValueFemale, 
+                        RoundNo,
+                        (SELECT MAX(RoundNo) FROM BenchmarkDetails WHERE BenchmarkId = "'.$Row['WorkoutRoutineTypeId'].'") AS TotalRounds
+			FROM BenchmarkDetails BD
+			LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
+			LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
+			LEFT JOIN Attributes A ON A.recid = BD.AttributeId
+			WHERE BD.BenchmarkId = '.$Row['WorkoutRoutineTypeId'].'
+			ORDER BY RoundNo, OrderBy, Attribute';               
+            }else{
+                
+            
 		$SQL = 'SELECT WW.WorkoutName, 
                         E.Exercise, 
                         E.Acronym, 
-                        "'.$this->WodDescription($_REQUEST['Workout']).'" AS WorkoutDescription,
+                        "'.$this->WodDescription($Id).'" AS WorkoutDescription,
                         E.recid AS ExerciseId, 
                         A.Attribute, 
                         WD.AttributeValue,  
@@ -87,16 +121,41 @@ class WodModel extends Model
 			LEFT JOIN WodWorkouts WW ON WW.recid = WD.WodId
 			LEFT JOIN Exercises E ON E.recid = WD.ExerciseId
 			LEFT JOIN Attributes A ON A.recid = WD.AttributeId
-			WHERE WD.WodId = '.$_REQUEST['Workout'].'
+			WHERE WD.WodId = '.$Id.'
 			ORDER BY RoundNo, Attribute';
-
+            }
 		$Result = mysql_query($SQL);	
             while($Row = mysql_fetch_assoc($Result))
             {
                 array_push($WODDetails, new WODObject($Row));  
             }
             return $WODDetails;
-	}       
+	}      
+        
+         function BenchmarkDescription($Id)
+        {
+            if($this->getGender() == 'M'){
+                $AttributeValue = 'AttributeValueMale';
+            } else {
+                $AttributeValue = 'AttributeValueFemale';
+            }
+             $SQL = 'SELECT E.Exercise, 
+                 E.Acronym, 
+                 A.Attribute, 
+                 '.$AttributeValue.' AS AttributeValue, 
+                     WT.WorkoutType,
+                     (SELECT MAX(RoundNo) FROM BenchmarkDetails WHERE BenchmarkId = "'.$Id.'") AS TotalRounds,
+                     BD.RoundNo
+                FROM BenchmarkDetails BD
+                LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
+                LEFT JOIN Attributes A ON A.recid = BD.AttributeId
+                LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
+                LEFT JOIN WorkoutRoutineTypes WT ON WT.recid = BW.WorkoutTypeId
+                WHERE BD.BenchmarkId = "'.$Id.'"
+                GROUP BY Exercise
+                ORDER BY OrderBy'; 
+             return $this->MakeDescription($SQL);
+        }       
         
          function WodDescription($Id)
         {
@@ -109,10 +168,14 @@ class WodModel extends Model
                 LEFT JOIN Exercises E ON E.recid = WD.ExerciseId
                 LEFT JOIN Attributes A ON A.recid = WD.AttributeId
                 LEFT JOIN WodWorkouts WW ON WW.recid = WD.WodId
-                LEFT JOIN WorkoutRoutineTypes WT ON WT.recid = WW.WorkoutTypeId
+                LEFT JOIN WorkoutRoutineTypes WT ON WT.recid = WW.WorkoutRoutineTypeId
                 WHERE WD.WodId = "'.$Id.'"
                 ORDER BY Exercise';            
-            $Description = '';
+            return $this->MakeDescription($SQL);
+        }
+        
+        function MakeDescription($SQL)
+        {
             $Result = mysql_query($SQL);
             $Exercise = '';
             $TotalRounds = '';
@@ -297,9 +360,13 @@ class WODObject
         var $Exercise;
         var $InputFieldName;  
         var $ExerciseId;
+        var $RoundNo;
 	var $Attribute;
 	var $AttributeValue;
+        var $AttributeValueMale;
+        var $AttributeValueFemale;
 	var $WodDate;
+        var $TotalRounds;
 
 	function __construct($Row)
 	{
@@ -308,6 +375,7 @@ class WODObject
 		$this->WodType = isset($Row['WorkoutType']) ? $Row['WorkoutType'] : "";
 		$this->WorkoutDescription = isset($Row['WorkoutDescription']) ? $Row['WorkoutDescription'] : "";
                 $this->ExerciseId = isset($Row['ExerciseId']) ? $Row['ExerciseId'] : "";
+                $this->RoundNo = isset($Row['RoundNo']) ? $Row['RoundNo'] : "";
                 $this->Exercise = isset($Row['Exercise']) ? $Row['Exercise'] : "";
                 if(isset($Row['Acronym']) && $Row['Acronym'] != '')
                     $this->InputFieldName = $Row['Acronym'];
@@ -315,7 +383,10 @@ class WODObject
                     $this->InputFieldName = $this->Exercise;
 		$this->Attribute = isset($Row['Attribute']) ? $Row['Attribute'] : "";
 		$this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : "";
+                $this->AttributeValueMale = isset($Row['AttributeValueMale']) ? $Row['AttributeValueMale'] : "";
+                $this->AttributeValueFemale = isset($Row['AttributeValueFemale']) ? $Row['AttributeValueFemale'] : "";
 		$this->WodDate = isset($Row['WodDate']) ? $Row['WodDate'] : "";
+                $this->TotalRounds = isset($Row['TotalRounds']) ? $Row['TotalRounds'] : "";
 	}
 }
 

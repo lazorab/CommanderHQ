@@ -1,5 +1,5 @@
 <?php
-define("THIS_DOMAIN", "crossfit.be-mobile.co.za");
+define("THIS_DOMAIN", "commanderhq.be-mobile.co.za");
 /*
  * Copyright 2010 Google Inc.
  *
@@ -36,9 +36,10 @@ $apiConfig = array(
     // OAuth1 Settings.
     // If you're using the apiOAuth auth class, it will use these values for the oauth consumer key and secret.
     // See http://code.google.com/apis/accounts/docs/RegistrationForWebAppsAuto.html for info on how to obtain those
-    'oauth_consumer_key'    => 'crossfit.be-mobile.co.za',
-    'oauth_consumer_secret' => 'ViOdNB5kqKJYxyC1Oiqgoow3',
-  
+    //'oauth_consumer_key'    => 'crossfit.be-mobile.co.za',
+    //'oauth_consumer_secret' => 'ViOdNB5kqKJYxyC1Oiqgoow3',
+    'oauth_consumer_key'    => 'commanderhq.be-mobile.co.za',
+    'oauth_consumer_secret' => 'Yt8GIs9wY5cdmwZKzNpNHWXO', 
     // Site name to show in the Google's OAuth 1 authentication screen.
     'site_name' => 'Commander HQ',
 

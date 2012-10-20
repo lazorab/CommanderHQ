@@ -9,6 +9,8 @@
 <meta name="HandheldFriendly" content="True" />
 <meta name="apple-mobile-web-app-capable" content="YES" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<!-- commanderhq.be-mobile.co.za: ldmUK2i2yiSlCJDFAjmjEvQox6oBjz0maCWNAqRRcjM-->
+<meta name="google-site-verification" content="ldmUK2i2yiSlCJDFAjmjEvQox6oBjz0maCWNAqRRcjM" />
 <link rel="apple-touch-icon" href="images/icon.png" />
 	<link rel="apple-touch-icon" href="/images/touch-icon-iphone.png">
 	<link rel="apple-touch-icon" sizes="72x72" href="/images/touch-icon-ipad.png">

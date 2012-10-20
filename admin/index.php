@@ -25,8 +25,8 @@ exit();
 }	
 
 $Display = new $ControllerClass;
-//$Environment = $Display->getEnvironment();
-$Environment = 'mobile';
+$Environment = 'website';
+
 ?>
 <!DOCTYPE html>
 <html manifest="manifest.php" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -49,7 +49,7 @@ include("includes/header/$Environment.php");
 <div data-role="page">
 
 <div id="header">
-<img alt="Header" <?php echo $RENDER->NewImage(''.$Banner.'.png', SCREENWIDTH);?> src="<?php echo ImagePath.$Banner;?>.png"/>
+<img alt="Header" src="<?php echo ImagePath.$Banner;?>.png"/>
 </div>
 
 <div id="content">

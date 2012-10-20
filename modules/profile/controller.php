@@ -108,15 +108,15 @@ class ProfileController extends Controller
             <input class="textinput" type="text" id="invcode" name="InvCode" placeholder="Invitation Code" value="'.$_REQUEST['InvCode'].'"/>';
       }      
 if(isset($_SESSION['UID'])){
-          $Html.='<labe for="firstname">First Name</label>';
+          $Html.='<label for="firstname">First Name</label>';
           }
 $Html.='<input class="textinput" type="text" id="firstname" name="FirstName" placeholder="First Name" value="'.$MemberDetails->FirstName.'"/>';
 if(isset($_SESSION['UID'])){
-          $Html.='<labe for="lastname">Last Name</label>';
+          $Html.='<label for="lastname">Last Name</label>';
           }
 $Html.='<input class="textinput" type="text" id="lastname" name="LastName" placeholder="Last Name" value="'.$MemberDetails->LastName.'"/>';
 if(isset($_SESSION['UID'])){
-          $Html.='<labe for="username">User Name</label>';
+          $Html.='<label for="username">User Name</label>';
           }
 $Html.='<input class="textinput" type="text" id="username" name="UserName" placeholder="User Name" value="'.$MemberDetails->UserName.'"'; 
 if(isset($_SESSION['UID']) || $MemberDetails->LoginType != '')   
@@ -124,37 +124,37 @@ if(isset($_SESSION['UID']) || $MemberDetails->LoginType != '')
 $Html.='/>';
 if($MemberDetails->LoginType == ''){
 if(isset($_SESSION['UID'])){
-          $Html.='<labe for="password">Password</label>';
+          $Html.='<label for="password">Password</label>';
           }
 $Html.='<input class="textinput" type="password" id="password" name="PassWord" placeholder="Password" value="'.$MemberDetails->PassWord.'"/>';
 if(isset($_SESSION['UID'])){
-          $Html.='<labe for="confirmpassword">Confirm Password</label>';
+          $Html.='<label for="confirmpassword">Confirm Password</label>';
           }
 $Html.='<input class="textinput" type="password" id="confirmpassword" name="ConfirmPassWord" placeholder="Confirm Password" value="'.$MemberDetails->PassWord.'"/>';
 }
 else{
 if(isset($_SESSION['UID'])){
-          $Html.='<labe for="oauth_provide">Login Type</label>';
+          $Html.='<label for="oauth_provide">Login Type</label>';
           }
 $Html.='<input class="textinput" type="text" id="oauth_provider" name="oauth_provider" placeholder="Login Type" value="'.$MemberDetails->LoginType.'" readonly="readonly"/>'; 
 }
 if(isset($_SESSION['UID'])){
-          $Html.='<labe for="cell">Cell (+2778000000)</label>';
+          $Html.='<label for="cell">Cell (+2778000000)</label>';
           }
 $Html.='<input class="textinput" type="tel" id="cell" name="Cell" value="'.$MemberDetails->Cell.'" placeholder="Cell (+2778000000)"/>';
 if(isset($_SESSION['UID'])){
-          $Html.='<labe for="email">Email</label>';
+          $Html.='<label for="email">Email</label>';
           }
 $Html.='<input class="textinput" type="email" id="email" name="Email" placeholder="Email" value="'.$MemberDetails->Email.'"/>';
 if(isset($_SESSION['UID'])){
-          $Html.='<labe for="DOB">Date of Birth</label>';
+          $Html.='<label for="DOB">Date of Birth</label>';
           }
 $Html.='<input class="textinput" type="date" name="DOB" id="DOB" placeholder="Date of Birth" value="'.$MemberDetails->DOB.'"/>';
 
 $Html.='<br/><br/>';
+ $Html.='<select class="chzn-select" name="AffiliateId" id="AffiliateId" tabindex="2">';
+ $Html.='<option value="" data-placeholder="true">Select your Gym</option>';
 
- $Html.='<select class="select" name="AffiliateId" id="AffiliateId">
-            <option value="">Select your Gym</option>';
         foreach($Affiliates AS $Affiliate){
             $Html.='<option value="'.$Affiliate->AffiliateId.'">'.$Affiliate->GymName.'</option>';
         }

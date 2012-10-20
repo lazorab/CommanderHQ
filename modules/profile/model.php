@@ -5,18 +5,16 @@ class ProfileModel extends Model
 	
     function __construct()
     {
-	mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
-	@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");
+        parent::__construct();	
     }
     
     function CheckInvitationCode($Code)
     {
-         mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
-	@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");
-        $sql='SELECT InvitationCode FROM MemberInvites WHERE InvitationCode = "'.$Code.'"';
-        
-	$result = mysql_query($sql);
-	if(mysql_num_rows($result) > 0)
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+        $SQL='SELECT InvitationCode FROM MemberInvites WHERE InvitationCode = "'.$Code.'"';
+        $db->setQuery($SQL);
+	$db->Query();
+	if($db->getNumRows() > 0)
             return true;
         else 
             return false;       
@@ -24,25 +22,23 @@ class ProfileModel extends Model
         
     function CheckUserNameExists($UserName)
     {
-        mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
-	@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");
-        $sql='SELECT UserId FROM Members WHERE UserName = "'.$UserName.'"';
-        
-	$result = mysql_query($sql);
-	if(mysql_num_rows($result) > 0)
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+        $SQL='SELECT UserId FROM Members WHERE UserName = "'.$UserName.'"';
+        $db->setQuery($SQL);
+	$db->Query();
+	if($db->getNumRows() > 0)
             return true;
         else 
-            return false;
+            return false; 
     }
     
     function CheckEmailExists($Email)
     {
-        mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
-	@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");
-        $sql='SELECT UserId FROM Members WHERE Email = "'.$Email.'"';
-        
-	$result = mysql_query($sql);
-	if(mysql_num_rows($result) > 0)
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+        $SQL='SELECT UserId FROM Members WHERE Email = "'.$Email.'"';
+        $db->setQuery($SQL);
+	$db->Query();
+	if($db->getNumRows() > 0)
             return true;
         else 
             return false;
@@ -51,15 +47,37 @@ class ProfileModel extends Model
     function getMemberDetails($Id)
     {
         if($Id > 0){
-            mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
-            @mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");
-            $Sql='SELECT M.*, MD.*
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+ 		$SQL='SELECT M.UserId,
+		M.FirstName,
+		M.LastName,
+		M.Cell,
+		M.Email,
+		M.UserName,
+		M.PassWord,
+                M.oauth_provider AS LoginType,
+		MD.SkillLevel,
+		MD.Gender,
+		MD.DOB,
+                MD.SystemOfMeasure,
+		MD.CustomWorkouts,
+                MD.Height,
+                MD.Weight,
+                MD.BMI,
+                MD.HR,
+                MD.RecHR
                 FROM Members M 
                 LEFT JOIN MemberDetails MD ON MD.MemberId = M.UserId 
-                WHERE M.UserId = "'.$Id.'"';
-            $Result = mysql_query($Sql);
-            $Row = mysql_fetch_assoc($Result);
-            $MemberDetails=new MemberObject($Row);    
+                WHERE M.UserId = "'.$Id.'"';           
+
+            $db->setQuery($SQL);
+		
+            $MemberDetails = $db->loadObject();   
+            if($MemberDetails->SystemOfMeasure == 'Imperial'){
+                //convert to metric for storage in db. Displaying of values will be converted back.
+                $MemberDetails->Weight = ceil($MemberDetails->Weight * 2.22);
+                $MemberDetails->Height = ceil($MemberDetails->Height * 0.39);
+            }          
         }
         else{
             $MemberDetails=new MemberObject($_REQUEST);
@@ -69,10 +87,9 @@ class ProfileModel extends Model
     
     function Register()
     {
-        mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
-	@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
 
-            $sql="INSERT INTO Members(FirstName,
+            $SQL="INSERT INTO Members(FirstName,
                 LastName,
                 Cell,
                 Email,
@@ -84,10 +101,10 @@ class ProfileModel extends Model
                    '".$_REQUEST['Email']."',
                    '".$_REQUEST['UserName']."',
                    '".$_REQUEST['PassWord']."')";
+                    $db->setQuery($SQL);
+                    $db->Query();
             
-		mysql_query($sql);
-            
-		$NewId = mysql_insert_id();
+		$NewId = $db->insertid();
 			
 		if($_REQUEST['SystemOfMeasure'] == 'Imperial'){
                 //convert to metric for storage in db. Displaying of values will be converted back.
@@ -101,7 +118,7 @@ class ProfileModel extends Model
                     $HeightInMeters = $Height / 100;
                     $BMI = floor($Weight / ($HeightInMeters * $HeightInMeters));
                     $DOB = date('Y-m-d',strtotime($_REQUEST['DOB']));
-                    $sql="INSERT INTO MemberDetails(
+                    $SQL="INSERT INTO MemberDetails(
                         MemberId,
                         GymId,
                         DOB,
@@ -120,42 +137,43 @@ class ProfileModel extends Model
                         '".$_REQUEST['SystemOfMeasure']."',
                         '".$_REQUEST['CustomWorkouts']."',
                         '".$BMI."')";
-            
-                mysql_query($sql);
+                    $db->setQuery($SQL);
+                    $db->Query();
                 
-            $sql='SELECT MemberId FROM MemberInvites WHERE InvitationCode = "'.$_REQUEST['InvCode'].'"';
-            $result = mysql_query($sql);  
-            $row = mysql_fetch_assoc($result);
-            $SQL = 'UPDATE MemberInvites SET NewMemberId = '.$NewId.' WHERE MemberId = '.$row['MemberId'].' AND InvitationCode = "'.$_REQUEST['InvCode'].'"';
-            mysql_query($SQL);  
+            $SQL='SELECT MemberId FROM MemberInvites WHERE InvitationCode = "'.$_REQUEST['InvCode'].'"';
+            $db->setQuery($SQL);
+            
+            $MemberId = $db->loadResult();
+            $SQL = 'UPDATE MemberInvites SET NewMemberId = '.$NewId.' WHERE MemberId = '.$MemberId.' AND InvitationCode = "'.$_REQUEST['InvCode'].'"';
+            $db->setQuery($SQL);
+            $db->Query();
             $_SESSION['UID'] = $NewId;
             $_SESSION['NEW_USER'] = $NewId;
 	}    
 	
 	function Update($Id)
 	{
-        try{
-            mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
-            @mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             
             if(isset($_REQUEST['InvCode'])){
-             $sql='SELECT MemberId FROM MemberInvites WHERE InvitationCode = "'.$_REQUEST['InvCode'].'"';
-            $result = mysql_query($sql);  
-            $row = mysql_fetch_assoc($result);
-            $SQL = 'UPDATE MemberInvites SET NewMemberId = '.$Id.' WHERE MemberId = '.$row['MemberId'].' AND InvitationCode = "'.$_REQUEST['InvCode'].'"';
-            mysql_query($SQL);               
+                $SQL='SELECT MemberId FROM MemberInvites WHERE InvitationCode = "'.$_REQUEST['InvCode'].'"';
+                $db->setQuery($SQL);
+            
+            $MemberId = $db->loadResult();
+            $SQL = 'UPDATE MemberInvites SET NewMemberId = '.$Id.' WHERE MemberId = '.$MemberId.' AND InvitationCode = "'.$_REQUEST['InvCode'].'"';
+            $db->setQuery($SQL);
+            $db->Query();              
             }
             
-			$Sql="UPDATE Members SET 
+			$SQL="UPDATE Members SET 
 				FirstName = '".$_REQUEST['FirstName']."',
 				LastName = '".$_REQUEST['LastName']."',
 				Cell = '".$_REQUEST['Cell']."',
 				Email = '".$_REQUEST['Email']."'
 				WHERE UserId = '".$Id."'";
-			mysql_query($Sql);
-        } catch (Exception $e) {
-            echo 'Caught exception: ',  $e->getMessage(), "\n";
-        }
+                        $db->setQuery($SQL);
+                        $db->Query();
+
 			
 			if($_REQUEST['system'] == 'Imperial'){
 			//convert to metric for storage in db. Displaying of values will be converted back.
@@ -169,10 +187,8 @@ class ProfileModel extends Model
 			$HeightInMeters = $Height / 100;
 			$BMI = floor($Weight / ($HeightInMeters * $HeightInMeters));
             $DOB = date('Y-m-d',strtotime($_REQUEST['DOB']));
-		try{
-            mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
-            @mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");
-			$Sql="UPDATE MemberDetails SET 
+
+			$SQL="UPDATE MemberDetails SET 
                                 GymId = '".$_REQUEST['AffiliateId']."',
 				DOB = '".$DOB."',    
 				Weight = '".$Weight."',
@@ -182,53 +198,24 @@ class ProfileModel extends Model
 				Gender = '".$_REQUEST['Gender']."',
 				BMI = '".$BMI."'		
 				WHERE MemberId = '".$Id."'";
-			mysql_query($Sql);
+                        $db->setQuery($SQL);
+                        $db->Query();
             if(!isset($_SESSION['UID'])){
                 $_SESSION['UID'] = $Id;
             }
             
-    } catch (Exception $e) {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
-    }
-	}	
-        function getAffiliates() {
-            $Affiliates = array();
+	}
         
-            $Query = 'SELECT AffiliateId,
+        function getAffiliates() {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT AffiliateId,
             GymName
             FROM Affiliates
             WHERE GymName <> ""
             ORDER BY GymName';
-            $Result = mysql_query($Query);
-            while($Row = mysql_fetch_assoc($Result)){
-                array_push($Affiliates, new Affiliate($Row));
-            } 
-            return $Affiliates;
-    }
-}
-
- class Affiliate {
-
-    var $AffiliateId;
-    var $GymName;
-    var $URL;
-    var $Address;
-    var $City;
-    var $Region;
-    var $TelNo;
-    var $Latitude;
-    var $Longitude;
-
-    function __construct($Row) {
-        $this->AffiliateId = isset($Row['AffiliateId']) ? $Row['AffiliateId'] : "";
-        $this->GymName = isset($Row['GymName']) ? $Row['GymName'] : "";
-        $this->URL = isset($Row['URL']) ? $Row['URL'] : "";
-        $this->Address = isset($Row['Address']) ? $Row['Address'] : "";
-        $this->City = isset($Row['City']) ? $Row['City'] : "";
-        $this->TelNo = isset($Row['TelNo']) ? $Row['TelNo'] : "";
-        $this->Region = isset($Row['Region']) ? $Row['Region'] : "";
-        $this->Latitude = isset($Row['Latitude']) ? $Row['Latitude'] : "";
-        $this->Longitude = isset($Row['Longitude']) ? $Row['Longitude'] : "";
+	$db->setQuery($SQL);
+		
+	return $db->loadObjectList();
     }
 }
 

@@ -14,20 +14,18 @@ Last Modified Date: 23 January 2012
 class Image
 {
     var $Image;
-    var $FilePath;
     var $RenderPath;
     var $Width;
     var $Height;
 	
     function __construct()
     {
-        $this->FilePath=''.THIS_ROOT.'/images';
 	$this->RenderPath = 'images/';
     }
 	
 	function Image($image, $ScreenWidth)
 	{
-		if(!file_exists(''.$this->FilePath.'/'.$image.''))
+		if(!file_exists(''.IMAGE_FILE_PATH.'/'.$image.''))
 		{
 		$ImageToRender = '';
 		}
@@ -36,7 +34,7 @@ class Image
 		$ImageName=explode(".",$image);
 		$FileName = $ImageName[0];
 		$Extension = $ImageName[1];
-		$Size = getimagesize(''.$this->FilePath.'/'.$image.'', $info);
+		$Size = getimagesize(''.IMAGE_FILE_PATH.'/'.$image.'', $info);
 		$MasterWidth=$Size[0];
 		$MasterHeight=$Size[1];
 
@@ -54,14 +52,14 @@ class Image
 
 		$NewWidth = floor($MasterWidth * $ratio);
 		$NewHeight = floor($MasterHeight * $ratio);
-		$this->Image = ''.$this->FilePath.'/'.$FileName.'_'.$NewWidth.'_'.$NewHeight.'.'.$Extension.'';
+		$this->Image = ''.IMAGE_FILE_PATH.'/'.$FileName.'_'.$NewWidth.'_'.$NewHeight.'.'.$Extension.'';
 		$ImageToRender = '/'.$FileName.'_'.$NewWidth.'_'.$NewHeight.'.'.$Extension.'';
 		
 		if(!file_exists($this->Image))
 		{			
-			if (preg_match("/jpg|jpeg/",$Extension)){$src_img=imagecreatefromjpeg(''.$this->FilePath.'/'.$image.'');}
-			if (preg_match("/png/",$Extension)){$src_img=imagecreatefrompng(''.$this->FilePath.'/'.$image.'');}
-			if (preg_match("/gif/",$Extension)){$src_img=imagecreatefromgif(''.$this->FilePath.'/'.$image.'');}	
+			if (preg_match("/jpg|jpeg/",$Extension)){$src_img=imagecreatefromjpeg(''.IMAGE_FILE_PATH.'/'.$image.'');}
+			if (preg_match("/png/",$Extension)){$src_img=imagecreatefrompng(''.IMAGE_FILE_PATH.'/'.$image.'');}
+			if (preg_match("/gif/",$Extension)){$src_img=imagecreatefromgif(''.IMAGE_FILE_PATH.'/'.$image.'');}	
 		
 			$dst_img = ImageCreateTrueColor($NewWidth, $NewHeight);
 			imagecopyresampled($dst_img, $src_img, 0, 0, 0, 0, $NewWidth, $NewHeight, $MasterWidth, $MasterHeight);
@@ -88,13 +86,13 @@ class Image
     
     function NewImage($image, $ScreenWidth)
 	{
-		if(!file_exists(''.$this->FilePath.'/'.$image.''))
+		if(!file_exists(''.IMAGE_FILE_PATH.'/'.$image.''))
 		{
             $ImageToRender = '';
 		}
 		else
 		{
-            $Size = getimagesize(''.$this->FilePath.'/'.$image.'', $info);
+            $Size = getimagesize(''.IMAGE_FILE_PATH.'/'.$image.'', $info);
             $MasterWidth=$Size[0];
             $MasterHeight=$Size[1];
             
@@ -118,13 +116,13 @@ class Image
     
     function BackgroundImage($image, $ScreenWidth)
 	{
-		if(!file_exists(''.$this->FilePath.'/'.$image.''))
+		if(!file_exists(''.IMAGE_FILE_PATH.'/'.$image.''))
 		{
             $ImageToRender = '';
 		}
 		else
 		{
-            $Size = getimagesize(''.$this->FilePath.'/'.$image.'', $info);
+            $Size = getimagesize(''.IMAGE_FILE_PATH.'/'.$image.'', $info);
             $MasterWidth=$Size[0];
             $MasterHeight=$Size[1];
             

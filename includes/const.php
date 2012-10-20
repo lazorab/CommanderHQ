@@ -12,14 +12,14 @@ define('ERROR_REPORT_EMAIL_ADDRESS', 'support@be-mobile.co.za');
 
 if (QA) {
     define('COMMANDER_EMAIL', 'devguru@be-mobile.co.za');
-    define("THIS_DOMAIN", "crossfit.be-mobile.co.za");
+    define("THIS_DOMAIN", "commanderhq.be-mobile.co.za");
 } else {
     define('COMMANDER_EMAIL', 'devguru@be-mobile.co.za');
-    define("THIS_DOMAIN", "crossfit.be-mobile.co.za");
+    define("THIS_DOMAIN", "commanderhq.be-mobile.co.za");
 }
 
 /* Database Settings */
-define("DB_CUSTOM_DATABASE", "bemobile_CrossFit");
+define("DB_CUSTOM_DATABASE", "bemobile_Commander");
 
 
 /* Global Pages */
@@ -34,7 +34,8 @@ define('ASSET_API_URL', 'http://asset.be-mobile.co.za/api/');
 /* Image Direct */
 define('IMAGE_DIRECT', 'http://www.be-mobile.co.za/framework/img_direct.php');
 define('ImagePath', '/images/');
-    
+//define('IMAGE_FILE_PATH', '/home/bemobile/public_html/content/images/53');
+define('IMAGE_FILE_PATH', '/home/bemobile/subdomains/commanderhq/images');
 /* Site Settings */
 define("SITE_ID", "53");
 define("DEFAULT_SITE_LANGUAGE", "1");

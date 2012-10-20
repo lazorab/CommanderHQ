@@ -1,4 +1,5 @@
 <script type='text/javascript'>
+var chosenexercises;
 function getContent(selection)
 {
     $.getJSON("ajax.php?module=custom",{baseline:selection},display);
@@ -10,12 +11,8 @@ function getCustomExercise(id)
 }
 
 function messagedisplay(message)
-{
-    if(message == 'Exercise Successfully Added!'){
-        $("#exercise option[value='none']").attr("selected","selected");
-        $('#add_exercise').html('');
-    }   
-    else if(message == 'Success'){
+{  
+    if(message == 'Success'){
         var r=confirm("Successfully Saved!\nWould you like to provide us with feedback?");
         if (r==true)
         {
@@ -24,11 +21,23 @@ function messagedisplay(message)
         else
         {
             resetclock();
-            $.getJSON('ajax.php?module=custom', {},display);
         }
     }  
-    else
+    else if(message.substring(0,5) == 'Error'){
         alert(message); 
+    }
+     else{
+        var exercise = message;
+        SelectionControl(exercise);
+        $.getJSON("ajax.php?module=custom",{dropdown:'refresh'},dropdownrefresh);
+    }   
+}
+
+function dropdownrefresh(data)
+{
+    $('#exercises').html(data);
+    $('.select').selectmenu();
+    $('.select').selectmenu('refresh');
 }
 
 function display(data)
@@ -41,28 +50,52 @@ function display(data)
     $('.buttongroup').button();
     $('.buttongroup').button('refresh');
     $('.textinput').textinput();
+    $('.numberinput').textinput();
 }
 
 function addTypeParams(CustomType)
 {
     var Html='';
-  
+    
         if(CustomType == 'Total Reps'){
             Html +='<input type="number" name="Reps" value="" placeholder="Total Reps"/>';
+            Html+='<?php echo $Display->getStopWatch();?>';
+            Html+='<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>';
         }
-        if(CustomType == 'Total Rounds'){
-            Html+='<div class="ui-grid-a">';
-            Html+='<div class="ui-block-a"><input class="buttongroup" data-inline="true" type="button" onclick="addRound();" value="+ Round"/></div>';
-            Html+='<div class="ui-block-b"><input style="width:75%" id="addround" data-inline="true" type="number" name="0___66___Rounds" value="0"/></div>';
-            Html+='</div>';
+        else if(CustomType == 'AMRAP Rounds'){
+        $('#RoundLabel').html('<div class="ui-block-a">Round 1</div><div class="ui-block-b"></div><div class="ui-block-c"></div>');
+        Html+='<?php echo $Display->getRoundCounter();?>';
+	Html+='<input type="hidden" name="63___CountDown[]" id="CountDown" value=""/>';
+        Html+='<input id="clock" type="text" name="timer" value="" placeholder="mm:ss"/>';
+        Html+='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstopcountdown();" value="Start"/>';
+        Html+='<input id="resetbutton" class="buttongroup" type="button" onClick="resetcountdown();" value="Reset"/>';
+        Html+='<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>';
         }  
-
-        Html+= '<?php echo $Display->getStopWatch(CustomType);?>';
+        else if(CustomType == 'AMRAP Reps'){
+	Html+='<input type="hidden" name="63___CountDown[]" id="CountDown" value=""/>';
+        Html+='<input id="clock" type="text" name="timer" value="" placeholder="mm:ss"/>';
+        Html+='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstopcountdown();" value="Start"/>';
+        Html+='<input id="resetbutton" class="buttongroup" type="button" onClick="resetcountdown();" value="Reset"/>';
+        Html+='<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>';
+        }
+         else if(CustomType == 'EMOM'){
+	Html+='<input type="hidden" name="63___CountDown[]" id="CountDown" value=""/>';
+        Html+='<input id="clock" type="text" name="timer" value="" placeholder="mm:ss"/>';
+        Html+='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstopcountdown();" value="Start"/>';
+        Html+='<input id="resetbutton" class="buttongroup" type="button" onClick="resetcountdown();" value="Reset"/>';
+        Html+='<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>';
+        }       
+        else if(CustomType == 'Timed'){
+            Html+='<?php echo $Display->getStopWatch();?>';
+            Html+='<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>';
+        }
         
+        if(Html != ''){
     $('#clock_input').html(Html);
     $('.buttongroup').button();
     $('.buttongroup').button('refresh');
     $('#addround').textinput();
+    }
 }
 
 function SelectionControl(exercise)
@@ -88,6 +121,7 @@ function addNewExercise()
     $('.buttongroup').button();
     $('.buttongroup').button('refresh');
     $('.textinput').textinput();
+    $('.numberinput').textinput();
 }
 
 function DisplayExercise(exercise)
@@ -110,50 +144,8 @@ function DisplayExercise(exercise)
         $('.select').selectmenu('refresh');
     }
     $.each(json, function() {
-	
-        if(this.BenchmarkId > 0 && j == 0){
-           html +='<input class="benchmark_' + this.BenchmarkId + '" type="hidden" name="benchmarkId" value="' + this.BenchmarkId + '"/>';
-		   html += '<div class="benchmark_' + this.BenchmarkId + '"><input onclick="RemoveFromList(' + attributecount + ',' + this.BenchmarkId + ')" type="checkbox" name="exercise_' + i + '" checked="checked" value="' + exercise + '"/>';
-		   html +='' + exercise + '</div>';
-        }
 
-           //not sure about this...so 1==2 disables it
-           
-           if(1==2 && ThisRound != this.RoundNo){
-           
-                if(Chtml != '' && Bhtml == ''){
-                    html +='<div class="ui-block-b"></div>' + Chtml + '';
-                    Chtml = '';
-                    Bhtml = '';
-                }
-                if(Chtml == '' && Bhtml != ''){
-                    html += '' + Bhtml + '<div class="ui-block-c"></div>';
-                    Chtml = '';
-                    Bhtml = '';
-                }
-            
-                i++;
-                if(j == 0){
-                    html +='<div id="row_' + i + '" class="benchmark_' + this.BenchmarkId + '">';
-                }
-                else{
-                    html +='</div><div id="row_' + i + '" class="benchmark_' + this.BenchmarkId + '">';
-                }           
-           
-                html +='<div class="ui-block-a"></div><div class="ui-block-b">Round ' + this.RoundNo + '</div><div class="ui-block-c"></div>';
-             
-                html +='<div class="ui-block-a" style="font-size:small">';
-                if(this.BenchmarkId == 0){
-                    html += '<input onclick="RemoveFromList(' + i + ',0)" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
-                    html +='' + this.InputFieldName + '';
-                    html +='"/>';
-                }
-                html +='' + this.InputFieldName + '';
-                html += '<div class="clear"></div>';
-                html +='</div>';
-           
-           }
-           else if(ThisExercise != this.ActivityName){
+           if(ThisExercise != this.ActivityName){
 
                 if(Chtml != '' && Bhtml == ''){
                     html +='<div class="ui-block-b"></div>' + Chtml + '';
@@ -167,20 +159,17 @@ function DisplayExercise(exercise)
                 }
            
                 i++;
-                if(j == 0){
-                    html +='<div id="row_' + i + '" class="benchmark_' + this.BenchmarkId + '">';
-                }
-                else{
-                    html +='</div><div id="row_' + i + '" class="benchmark_' + this.BenchmarkId + '">';
-                }
+
+                    html +='</div><div class="row_' + i + '">';
+                
            
                 html +='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
                 html +='<div class="ui-block-a" style="font-size:small">';
-                if(this.BenchmarkId == 0){
-                    html += '<input onclick="RemoveFromList(' + i + ',0)" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
+
+                    html += '<input onclick="RemoveFromList(' + i + ')" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
                     html +='' + this.InputFieldName + '';
                     html +='"/>';
-                }
+                
                 html +='' + this.InputFieldName + '';
                 html += '<div class="clear"></div>';
                 html +='</div>';
@@ -188,7 +177,7 @@ function DisplayExercise(exercise)
            	
            if(this.Attribute == 'Distance' || this.Attribute == 'Weight' || this.Attribute == 'Height'){
                 Bhtml +='<div class="ui-block-b">';
-                Bhtml +='<input class="textinput" ';		   
+                Bhtml +='<input class="numberinput" ';		   
                 if(this.Attribute == 'Distance'){
 					Bhtml +='style="width:75%;color:white;font-weight:bold;background-color:#6f747a" ';
                     if('<?php echo $Display->SystemOfMeasure();?>' == 'imperial')
@@ -211,8 +200,8 @@ function DisplayExercise(exercise)
                         Unit = 'cm';
                 }				
            
-				Bhtml +='type="number" data-inline="true" name="' + this.RoundNo + '___' + this.recid + '___' + this.Attribute + '"';
-                Bhtml +=' value="' + this.AttributeValue + '"';
+				Bhtml +='type="number" data-inline="true" name="' + this.ExerciseId + '___' + this.Attribute + '[]"';
+                Bhtml +=' value=""';
                 Bhtml +=' placeholder="Enter ' + this.Attribute + '"/>'+Unit+'';
                 Bhtml +='</div>';		
                 if(Chtml != ''){
@@ -223,10 +212,10 @@ function DisplayExercise(exercise)
            }
            else if(this.Attribute == 'Reps'){
 		        Chtml +='<div class="ui-block-c">';
-                Chtml +='<input class="textinput" ';
+                Chtml +='<input class="numberinput" ';
 				Chtml +='style="width:75%;color:black;font-weight:bold;background-color:#ccff66" ';
-				Chtml +='type="number" data-inline="true" name="' + this.RoundNo + '___' + this.recid + '___' + this.Attribute + '"';
-                Chtml +=' value="' + this.AttributeValue + '"';
+				Chtml +='type="number" data-inline="true" name="' + this.ExerciseId + '___' + this.Attribute + '[]"';
+                Chtml +=' value=""';
                 Chtml +=' placeholder="Enter ' + this.Attribute + '"/>';
                 Chtml +='</div>';
                 if(Bhtml != ''){
@@ -254,7 +243,7 @@ function DisplayExercise(exercise)
            Bhtml = '';
         }
         html +='</div>';
-
+        chosenexercises += html;
         $(html).appendTo(new_exercise);
         document.getElementById('rowcounter').value = i; 
         $('.buttongroup').button();
@@ -265,23 +254,20 @@ function DisplayExercise(exercise)
     return false;	
 }
 
-function RemoveFromList(RowId,BenchMarkId)
+function RemoveFromList(RowId)
 {
-	if(BenchMarkId > 0){
-		$('.benchmark_' + BenchMarkId + '').remove();
-		document.getElementById('rowcounter').value = document.getElementById('rowcounter').value - (RowId - 1);
-	}
-	else if(RowId > 0){
-		$('#row_' + RowId + '').remove();
-		document.getElementById('rowcounter').value--;
-	}
-		
-	if(document.getElementById('clock_input').html != ''){
-		$('#clock_input').html('');
-	}
+    $('.row_' + RowId + '').remove();
+    document.getElementById('rowcounter').value--;
 	
     if(document.getElementById('rowcounter').value == 0){
+     if(document.getElementById('clock_input').html != ''){
+        $('#clock_input').html('');
+    }       
         $('#workouttypes').html('');
+        $('#RoundLabel').html('');
+        $('.RoundLabel').html('');
+        document.getElementById('addround').value = 1;
+        chosenexercises = '';
     }
 }
 
@@ -296,9 +282,11 @@ function addnew()
 }
 
 function addRound()
-{
+{  
     document.getElementById('addround').value++; 
-    //$.getJSON('ajax.php?module=benchmark', $("#benchmarkform").serialize(),display);
+    var ThisRound ='<div class="RoundLabel"><div class="ui-block-a">Round ' + document.getElementById('addround').value + '</div><div class="ui-block-b"></div><div class="ui-block-c"></div></div>';
+    $(ThisRound).appendTo(new_exercise);
+    $(chosenexercises).appendTo(new_exercise);
 }
 </script>
 <br/>
