@@ -4,7 +4,6 @@ class LogoutController extends Controller
 	function __construct()
 	{
 		parent:: __construct();
-session_start();
 
 // Unset all of the session variables.
 $_SESSION = array();
@@ -21,7 +20,10 @@ if (ini_get("session.use_cookies")) {
 
 // Finally, destroy the session.
 session_destroy();
-		header('location: index.php?module=login');
+// Unset Cookies
+setcookie("CommanderUsername", "", time()-36000);
+setcookie("CommanderPassword", "", time()-36000);
+	header('location: index.php?module=login');
 	}
 }
 ?>

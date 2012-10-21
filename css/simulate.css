@@ -1,0 +1,124 @@
+body{background-color:#FFFFFF;text-shadow: 1px 1px #222;color:#DEDEDE;font:normal normal normal 12px arial;
+height:450px;width:320px;
+}
+
+#content{
+    height:450px;width:320px;
+}
+a{color:#fff;font-weight:bold;text-decoration:none;}
+#Mobile_Main{float:left;}
+
+.Vertical #Mobile_con			{position:relative;background:url(../img/iphone_ver.png) top left repeat-x;width:386px;height:728px;}
+.Vertical #Display			{position:absolute;height:486px;width:320px;}
+.Vertical #MobileStatus	{position:absolute;height:20px; width:320px;top:130px;left:34px;background:url(../img/statusbarwebbackground.png) top left repeat-x;}
+	.Vertical #MobileSignals	{position:absolute;height:12px; width:21px;top:3px;left:6px;}
+	.Vertical #MobileTitle	{position:absolute;height:12px; width:33px;top:2px;left:32px;color:#606163;font:normal normal bold 11px tahoma,arial;letter-spacing:-1px;text-shadow: 2px 2px #ECF0F3;}
+	.Vertical #DateTime	{position:absolute;height:12px; width:53px;top:2px;left:138px;color:#363636;font:normal normal bold 11px tahoma,arial;letter-spacing:0px;text-shadow: 2px 2px #ECF0F3;}
+	.Vertical #BatteryView	{position:absolute;height:12px; width:20px;top:3px;left:295px;background:url(../img/statusbarbatteryfull.png) top left no-repeat;}
+	.Vertical #MobileAddressBar	{position:absolute;height:60px; width:320px;top:150px;left:34px;background:url(../img/webaddressbarbackground.png) top left repeat-x;}
+	.Vertical #MobileTitleBar{text-shadow: 2px 2px #B9C9D8;position:absolute;height:20px; width:230px;top:1px;left:46px;color:#556572;font:normal normal bold 12px/20px arial;text-align:center;}
+	.Vertical #MobilePlusSign{position:absolute;height:24px; width:24px;top:25px;left:9px;background:url(../img/webaddressbarplusbutton_.png) top left no-repeat;}
+	.Vertical #MobileAddressBarLeft{position:absolute;height:31px; width:8px;top:22px;left:39px;}
+	.Vertical #MobileInputWindowMain{position:absolute;height:31px; width:227px;top:22px;left:47px;}
+	.Vertical #MobileInputWindow{position:absolute;height:31px;width:227px;top:0px;left:0px;}
+	.Vertical #MobileURL{
+	position:absolute;
+	height:14px;
+	width:227px;
+	top:0px;
+	left:0px;
+	line-height:14px;
+	font-weight:normal;font-size:14px;font-family:helvetica,Arial;
+	border-width:0px;
+	color:#8F9591;
+	background-color:transparent;
+	padding:10px 10px 0px 0px;
+	margin:0;}
+	/*.Vertical #MobileURL{position:absolute;height:23px;width:222px;top:-1px;left:-7px;font-weight:normal;font-size:14px;line-height:16px;font-family:helvetica,Arial;position:absolute;border-width:0px;color:#8F9591;background-color:transparent;padding:9px 10px 0px 10px;margin:0;} */
+	.Vertical #MobileAddressBarRight{position:absolute;height:31px; width:8px;top:22px;left:274px;}
+	.Vertical #RefreshWindow{position:absolute;height:24px; width:24px;top:25px;left:288px;background:url(../img/webaddressbarreloadbutto.png) top left no-repeat;}
+.Vertical #MobileWindow	{position:absolute;height:356px;width:320px;top:210px;left:34px;background-color:#fff;}
+.Vertical #Mobile_Toolbar	{position:absolute;height:40px;width:320px;top:566px;left:34px;background:url(../img/toolbar.png) top left no-repeat;}
+	.Vertical #Mobile_Toolbar a{display:block;position:absolute;height:20px;top:12px;}
+	.Vertical #BackButton{width:15px;left:28px;}
+	.Vertical #ForwardButton{width:15px;left:89px;}
+	.Vertical #PlusButton{width:18px;left:151px;}
+	.Vertical #BookButton{width:24px;left:210px;}
+	.Vertical #FlipButton{width:20px;left:275px;}
+.Vertical #MobileLeft{position:absolute;height:2px; width:2px;top:0px;left:0px;background:url(../img/tl.gif) top left no-repeat;}
+.Vertical #MobileRight{position:absolute;height:2px; width:2px;top:0px;left:318px;background:url(../img/tr.gif) top right no-repeat;}
+.Vertical #MobileCornerLeft{position:absolute;height:2px; width:2px;bottom:0px;left:0px;background:url(../img/bl.gif) top left no-repeat;}
+.Vertical #MobileCornerRight{position:absolute;height:2px; width:2px;bottom:0px;left:318px;background:url(../img/br.gif) top left no-repeat;}
+.Vertical #MobileCorners{left:420px;}
+
+.Horizontal #Mobile_con			{position:relative;background:url(../img/iphone_hor.png) top left repeat-x;width:728px;height:386px;}
+.Horizontal #Display			{position:absolute;height:335px;width:480px;}
+.Horizontal #MobileStatus	{position:absolute;height:20px; width:480px;top:31px;left:132px;background:url(../img/statusbarwebbackground.png) top left repeat-x;}
+	.Horizontal #MobileSignals	{position:absolute;height:12px; width:21px;top:3px;left:6px;}
+	.Horizontal #MobileTitle	{position:absolute;height:12px; width:33px;top:2px;left:32px;color:#606163;font:normal normal bold 11px tahoma,arial;letter-spacing:-1px;text-shadow: 2px 2px #ECF0F3;}
+	.Horizontal #DateTime	{position:absolute;height:12px; width:53px;top:2px;left:228px;color:#363636;font:normal normal bold 11px tahoma,arial;letter-spacing:0px;text-shadow: 2px 2px #ECF0F3;}
+	.Horizontal #BatteryView	{position:absolute;height:12px; width:20px;top:3px;left:455px;background:url(../img/statusbarbatteryfull.png) top left no-repeat;}
+.Horizontal #MobileAddressBar	{position:absolute;height:60px; width:480px;top:51px;left:132px;background:url(../img/webaddressbarbackground.png) top left repeat-x;}
+	.Horizontal #MobileTitleBar{text-shadow: 2px 2px #B9C9D8;position:absolute;height:20px; width:480px;top:1px;left:0px;color:#556572;font:normal normal bold 12px/20px arial;text-align:center;}
+	.Horizontal #MobilePlusSign{position:absolute;height:24px; width:24px;top:25px;left:12px;background:url(../img/webaddressbarplusbutton_.png) top left no-repeat;}
+	.Horizontal #MobileAddressBarLeft{position:absolute;height:31px; width:10px;top:22px;left:40px;}
+	.Horizontal #MobileInputWindowMain{position:absolute;height:31px; width:386px;top:22px;left:48px;}
+	.Horizontal #MobileInputWindow{position:absolute;height:31px;width:386px;top:0px;left:0px;}
+	.Horizontal #MobileURL   {position:absolute;height:23px;width:387px;top:0px;left:-7px;font-weight:normal;font-size:14px;line-height:16px;font-family:helvetica,arial;position:absolute;border-width:0px;color:#8F9591;background-color:transparent;padding:9px 6px 0px 8px;margin:0;}
+	.Horizontal #MobileAddressBarRight{position:absolute;height:32px; width:10px;top:22px;left:432px;}
+	.Horizontal #RefreshWindow{position:absolute;height:24px; width:24px;top:25px;left:447px;background:url(../img/webaddressbarreloadbutto.png) top left no-repeat;}
+.Horizontal #MobileWindow	{position:absolute;height:208px;width:480px;top:111px;left:132px;background-color:#fff;}
+.Horizontal #Mobile_Toolbar	{position:absolute;height:32px;width:480px;top:320px;left:132px;background:url(../img/toolbar_wide.png) top left no-repeat;}
+	.Horizontal #Mobile_Toolbar a{display:block;position:absolute;height:16px;top:8px;}
+	.Horizontal #BackButton{width:11px;left:28px;}
+	.Horizontal #ForwardButton{width:11px;left:135px;}
+  .Horizontal #PlusButton{width:15px;left:233px;}
+	.Horizontal #BookButton{width:20px;left:334px;}
+	.Horizontal #FlipButton{width:27px;left:437px;}
+.Horizontal #MobileLeft{position:absolute;height:2px; width:2px;top:0px;left:0px;background:url(../img/tl.gif) top left no-repeat;}
+.Horizontal #MobileRight{position:absolute;height:2px; width:2px;top:0px;left:478px;background:url(../img/tr.gif) top right no-repeat;}
+.Horizontal #MobileCornerLeft{position:absolute;height:2px; width:2px;bottom:0px;left:0px;background:url(../img/bl.gif) top left no-repeat;}
+.Horizontal #MobileCornerRight{position:absolute;height:2px; width:2px;bottom:0px;left:478px;background:url(../img/br.gif) top left no-repeat;}
+.Horizontal #MobileCorners{left:760px; }
+
+.Vertical #MobileCorners{position:absolute;top:0px;right:0px;padding:10px 0px;background-color:#FFFFFF;}
+.Horizontal #MobileCorners{position:absolute;top:0px;right:0px;left:765px;padding:10px 0px;background-color:#FFFFFF;}
+.toggle{border-bottom:1px solid #68A6CD;}
+.toggle:hover{cursor:pointer;}
+
+#sidein{padding:0px 40px;}
+#MobileCorners h1{color:#90B500;visibility:visible;}
+#MobileCorners h3{padding:0;margin:25px 0 0 0;color:#68A6CD;}
+#MobileCorners ul{list-style-type:none;padding:0;margin:0;}
+#MobileCorners ul li{line-height:22px;}
+#tips li,#faq li{list-style-type:square;}
+#tips ul,#faq ul{list-style-position:inside;}
+#tips a{color:#90B500;font-weight:bold;}
+#tips table{padding-left:10px;margin-top:10px;}
+#tips th{border-bottom:1px solid #90B500;border-top:1px solid #90B500;text-align:left;font-weight:normal;background-color:#000;color:#fff}
+#tips th,#tips td{padding:3px 8px;margin:0;line-height:14px;}
+#tips td{border-bottom:1px solid #92835C;}
+#tips .nm{padding-right:30px;border-right:1px solid #92835C;}
+#tips .nh{padding-right:30px;border-right:1px solid #90B500;}
+li strong{color:#90B500;font-weight:normal;}
+#apps ul li{line-height:20px;}
+#spread{background-color:#fff;display:block;height:18px;line-height:20px;width:220px;margin:20px 0;padding:3px 0px 3px 3px;border:5px solid #90B500;text-align:center;}
+#spread img{padding:0 10px;}
+#footer{padding:70px 0 40px 0;color:#888;font-size:10px;}
+#footer a{color:#888;}
+
+.Signals	{background:url(../img/statusbarservicefull.png) top left no-repeat;}
+.none	{background:url(../img/statusbarservicenone.png) top left no-repeat;}
+
+.loadingAon{background:url(../img/UIRoundedTextFieldLeft.png) top left no-repeat;}
+.loadingBon{background:url(../img/UIRoundedTextFieldMiddle.png) top left repeat-x;}
+.loadingCon{background:url(../img/UIRoundedTextFieldRight.png) top left no-repeat;}
+
+.Mobile_A_OffLoading{background:url(../img/UIRoundedTextFieldLeftInactive.png) top right no-repeat;}
+.Mobile_B_OffLoading{background:url(../img/UIRoundedTextFieldMiddleInactive.png) top right repeat-x;}
+.Mobile_C_OffLoading{background:url(../img/UIRoundedTextFieldRightInactive.png) top right no-repeat;}
+
+.loadingAact{background:url(../img/UIRoundedTextFieldProgressLeft.png) top left no-repeat;}
+.loadingBact{background:url(../img/UIRoundedTextFieldProgressMiddle.png) top left repeat-x;}
+.loadingCact{background:url(../img/UIRoundedTextFieldProgressRight.png) top left no-repeat;}
+

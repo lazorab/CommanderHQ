@@ -28,8 +28,8 @@ if (!empty($session)) {
         if(!empty($userdata)){
             session_start();
             $_SESSION['oauth_id'] = $uid;
-            $_SESSION['oauth_provider'] = $userdata['oauth_provider'];
-            $Redirect = $userdata['redirect'];
+            $_SESSION['oauth_provider'] = $userdata->oauth_provider;
+            $Redirect = $userdata->redirect;
             header("Location: index.php?module=".$Redirect."");
         }
     } else {

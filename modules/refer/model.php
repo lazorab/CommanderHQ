@@ -4,24 +4,24 @@ class ReferModel extends Model
 {
 	function __construct()
 	{
-		//mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
-		//@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");
+
         }
 	
 	function ReferFriend()
 	{
- 		mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
-		@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");           
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $ReturnMessage='';
             $message = '';
             $InvCode = base_convert(time(), 10, 16);
             $SQL = 'INSERT INTO MemberInvites(MemberId,InvitationCode,NewMemberName,NewMemberEmail,NewMemberCell) VALUES("'.$_SESSION['UID'].'","'.$InvCode.'","'.$_REQUEST['FriendName'].'","'.$_REQUEST['FriendEmail'].'","'.$_REQUEST['FriendCell'].'")';
-            mysql_query($SQL);
-            $sql='SELECT FirstName FROM Members WHERE UserId = "'.$_SESSION['UID'].'"';
-            $result = mysql_query($sql);
-            $row = mysql_fetch_assoc($result);
+            $db->setQuery($SQL);
+            $db->Query();
+            $SQL='SELECT FirstName FROM Members WHERE UserId = "'.$_SESSION['UID'].'"';
+            $db->setQuery($SQL);
+            
+            $FirstName = $db->loadResult();
  
-            $message .= ' Hi '.$_REQUEST['FriendName'].', Your friend '.$row['FirstName'].' has sent you an exclusive invite to CommanderHQ.
+            $message .= ' Hi '.$_REQUEST['FriendName'].', Your friend '.$FirstName.' has sent you an exclusive invite to CommanderHQ.
 <br/>
 The ONLY mobile Crossfit input and tracking tool.
 <br/>

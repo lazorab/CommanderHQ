@@ -1,5 +1,4 @@
 <?php
-define("THIS_DOMAIN", "commanderhq.be-mobile.co.za");
 /*
  * Copyright 2010 Google Inc.
  *
@@ -26,47 +25,41 @@ $apiConfig = array(
     'application_name' => 'Commander HQ',
 
     // OAuth2 Settings, you can get these keys at https://code.google.com/apis/console
-    'oauth2_client_id' => '1031760335827.apps.googleusercontent.com',
-    'oauth2_client_secret' => 'zThRCXeJeGKzDfcQwyOrdjv6',
-    'oauth2_redirect_uri' => 'http://'.THIS_DOMAIN.'/gplus_login.php',
+    'oauth2_client_id' => '101581614086.apps.googleusercontent.com',
+    'oauth2_client_secret' => '6FSB7DJu1C0TzQxA7yAmI9TX',
+    'oauth2_redirect_uri' => 'http://crossfit.be-mobile.co.za/gplus_login.php',
 
     // The developer key, you get this at https://code.google.com/apis/console
-    'developer_key' => 'AIzaSyAE4MIyaNDRq3Sm57alBvJKSLYQPbaUD_I',
-
-    // OAuth1 Settings.
-    // If you're using the apiOAuth auth class, it will use these values for the oauth consumer key and secret.
-    // See http://code.google.com/apis/accounts/docs/RegistrationForWebAppsAuto.html for info on how to obtain those
-    //'oauth_consumer_key'    => 'crossfit.be-mobile.co.za',
-    //'oauth_consumer_secret' => 'ViOdNB5kqKJYxyC1Oiqgoow3',
-    'oauth_consumer_key'    => 'commanderhq.be-mobile.co.za',
-    'oauth_consumer_secret' => 'Yt8GIs9wY5cdmwZKzNpNHWXO', 
+    'developer_key' => 'AIzaSyBS690cMlOcTFvFMlw3N1MtHQWtdelg5Uo',
+  
     // Site name to show in the Google's OAuth 1 authentication screen.
     'site_name' => 'Commander HQ',
 
     // Which Authentication, Storage and HTTP IO classes to use.
-    'authClass'    => 'apiOAuth2',
-    'ioClass'      => 'apiCurlIO',
-    'cacheClass'   => 'apiFileCache',
-
-    // If you want to run the test suite (by running # phpunit AllTests.php in the tests/ directory), fill in the settings below
-    'oauth_test_token' => '', // the oauth access token to use (which you can get by runing authenticate() as the test user and copying the token value), ie '{"key":"foo","secret":"bar","callback_url":null}'
-    'oauth_test_user' => '', // and the user ID to use, this can either be a vanity name 'testuser' or a numberic ID '123456'
+    'authClass'    => 'Google_OAuth2',
+    'ioClass'      => 'Google_CurlIO',
+    'cacheClass'   => 'Google_FileCache',
 
     // Don't change these unless you're working against a special development or testing environment.
     'basePath' => 'https://www.googleapis.com',
 
-    // IO Class dependent configuration, you only have to configure the values for the class that was configured as the ioClass above
+    // IO Class dependent configuration, you only have to configure the values
+    // for the class that was configured as the ioClass above
     'ioFileCache_directory'  =>
         (function_exists('sys_get_temp_dir') ?
-            sys_get_temp_dir() . '/apiClient' :
-        '/tmp/apiClient'),
-    'ioMemCacheStorage_host' => '127.0.0.1',
-    'ioMemcacheStorage_port' => '11211',
+            sys_get_temp_dir() . '/Google_Client' :
+        '/tmp/Google_Client'),
 
     // Definition of service specific values like scopes, oauth token URLs, etc
     'services' => array(
+      'analytics' => array('scope' => 'https://www.googleapis.com/auth/analytics.readonly'),
+      'calendar' => array(
+          'scope' => array(
+              "https://www.googleapis.com/auth/calendar",
+              "https://www.googleapis.com/auth/calendar.readonly",
+          )
+      ),
       'books' => array('scope' => 'https://www.googleapis.com/auth/books'),
-      'buzz' => array('scope' => 'https://www.googleapis.com/auth/buzz', 'authorization_token_url' => 'https://www.google.com/buzz/api/auth/OAuthAuthorizeToken'),
       'latitude' => array(
           'scope' => array(
               'https://www.googleapis.com/auth/latitude.all.best',
@@ -74,8 +67,13 @@ $apiConfig = array(
           )
       ),
       'moderator' => array('scope' => 'https://www.googleapis.com/auth/moderator'),
+      'oauth2' => array(
+          'scope' => array(
+              'https://www.googleapis.com/auth/userinfo.profile',
+              'https://www.googleapis.com/auth/userinfo.email',
+          )
+      ),
       'plus' => array('scope' => 'https://www.googleapis.com/auth/plus.me'),
-      'easyhybrid' => array('scope' => 'https://www.googleapis.com/auth/userinfo#email'),
       'siteVerification' => array('scope' => 'https://www.googleapis.com/auth/siteverification'),
       'tasks' => array('scope' => 'https://www.googleapis.com/auth/tasks'),
       'urlshortener' => array('scope' => 'https://www.googleapis.com/auth/urlshortener')

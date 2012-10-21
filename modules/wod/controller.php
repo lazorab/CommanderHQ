@@ -32,6 +32,7 @@ class WodController extends Controller
             $Html='';
             $Model = new WodModel;
             $WodDetails = $Model->getTopSelection();
+            //$Description = $Model->WodDescription($WodDetails->recid);
             $Html .= ''.$WodDetails[0]->WorkoutName.':<br/><span style="font-size:small">'.$WodDetails[0]->WorkoutDescription.'</span>';
             return $Html;           
         }
@@ -286,18 +287,22 @@ class WodController extends Controller
             return $Html;
         }       
 
-	function getStopWatch($ExerciseId)
+	function getStopWatch()
     {
-		$RoundNo = 0;
-		$Html.='<form name="clockform" action="index.php">';
-        $Html.='<input type="hidden" name="module" value="wod"/>';
-        $Html.='<input type="hidden" name="wodtype" value="'.$_REQUEST['wodtype'].'"/>';
-        $Html.='<input type="hidden" name="action" value="save"/>';
-		$Html.='<input type="text" id="clock" name="'.$RoundNo.'___'.$ExerciseId.'___TimeToComplete" value="00:00:0"/>';
-		$Html.='<input class="buttongroup" type="button" onclick="startstop()" value="Start/Stop"/>';
-		$Html.='<input class="buttongroup" type="button" onclick="reset()" value="Reset"/>';
-		$Html.='<input class="buttongroup" type="submit" value="Save"/>';
-        
+	$RoundNo = 0;
+        $ExerciseId = 63;
+        $TimeToComplete = '00:00:0';
+        $StartStopButton = 'Start';
+        if(isset($_REQUEST[''.$ExerciseId.'___TimeToComplete'])){
+            $TimeToComplete = $_REQUEST[''.$ExerciseId.'___TimeToComplete'];
+            if($TimeToComplete != '00:00:0')
+                $StartStopButton = 'Stop';
+        }
+	$Html ='<input type="text" id="clock" name="'.$ExerciseId.'___TimeToComplete[]" value="'.$TimeToComplete.'" readonly/>';
+	$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="'.$StartStopButton.'"/>';
+	$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
+        $Html.='<input class="buttongroup" type="button" onclick="wodsubmit();" value="Save"/>';
+
         return $Html;
     }
     
@@ -340,34 +345,23 @@ class WodController extends Controller
         return $Html;       
     }
     
-    function getCountDown($Details)
+    function getCountDown($ExerciseId,$Time)
     {
-        $RENDER = new Image();
-        $Start = $RENDER->NewImage('start.png', SCREENWIDTH);
-        $Stop = $RENDER->NewImage('stop.png', SCREENWIDTH);
-        $Reset = $RENDER->NewImage('report.png', SCREENWIDTH);
-        $Save = $RENDER->NewImage('save.png', SCREENWIDTH);
-        $WODdata='<form name="clockform" action="index.php">
-        <input type="hidden" name="module" value="wod"/>
-        <input type="hidden" name="wodtype" value="'.$_REQUEST['wodtype'].'"/>
-        <input type="hidden" name="exercise" value="'.$Details->recid.'"/>
-        <input type="hidden" name="action" value="save"/>
-		<input type="hidden" name="CountDown" value="'.$Details->AttributeValue.'"/>
-		<input type="hidden" name="Rounds" id="rounds" value="0"/>
-        <input id="clock" name="timer" value="'.$Details->AttributeValue.'"/>
-        </form>	
-        <div style="margin:0 30% 0 30%; width:50%">
-        <img alt="Start" '.$Start.' src="'.ImagePath.'start.png" onclick="startcountdown(document.clockform.timer.value)"/>&nbsp;&nbsp;
-        <img alt="Stop" '.$Stop.' src="'.ImagePath.'stop.png" onclick="stopcountdown()"/><br/><br/>
-        <img alt="Reset" '.$Reset.' src="'.ImagePath.'reset.png" onclick="resetcountdown(\''.$Details->AttributeValue.'\')"/>&nbsp;&nbsp;
-        <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="save()"/>
-        </div><br/>
-		<ul data-role="listview" id="listview" data-inset="true">
-			<li><a href="" onclick="countclicks();">+ Rounds <span class="ui-li-count">0</span></a></li>
-		</ul>
-		<br/>';
-        
-        return $WODdata;
+	$RoundNo = 0;
+        $TimeToComplete = $Time;
+        $StartStopButton = 'Start';
+        if(isset($_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'])){
+            $TimeToComplete = $_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'];
+            if($TimeToComplete != $Time)
+                $StartStopButton = 'Stop';
+        }
+	$Html ='<input type="hidden" name="'.$RoundNo.'___'.$ExerciseId.'___CountDown" id="CountDown" value="'.$Time.'"/>';
+        $Html.='<input id="clock" name="timer" value="'.$TimeToComplete.'"/>';
+        $Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstopcountdown();" value="'.$StartStopButton.'"/>';
+        $Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetcountdown();" value="Reset"/>';
+        $Html.='<input class="buttongroup" type="button" onClick="wodsubmit();" value="Save"/>';
+		
+        return $Html;
     }
 }
 ?>

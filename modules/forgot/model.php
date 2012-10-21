@@ -15,25 +15,24 @@ class ForgotModel extends Model
 {
 	function __construct()
 	{
-		mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
-		@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");
+
         }
 	
 	function RetrievePassword()
 	{
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $message = '';
-		$sql='SELECT FirstName, UserName, PassWord, oauth_provider FROM Members WHERE Email = "'.$_REQUEST['email'].'"';
-		$result = mysql_query($sql);
-                $num_rows = mysql_num_rows($result);
-		if($num_rows == 1){
-                    $row = mysql_fetch_assoc($result);
-                    $Name = $row['FirstName'];
-                    $UserName = $row['UserName'];
-                    $PassWord = $row['PassWord'];
+            $SQL='SELECT FirstName, UserName, PassWord, oauth_provider FROM Members WHERE Email = "'.$_REQUEST['email'].'"';
+            $db->setQuery($SQL);
+            $db->Query();
+            $num_rows = $db->getNumRows();
+            if($num_rows == 1){
+		
+                $Row = $db->loadObject();
                    
-                    $message .= 'Hi '.$Name.',<br/><br/>So you forgot your password?<br/>Well just to remind you again...<br/>';
+                    $message .= 'Hi '.$Row->FirstName.',<br/><br/>So you forgot your password?<br/>Well just to remind you again...<br/>';
                     if($row['oauth_provider'] == ''){
-                        $message .= ' your Password for accessing Commander is "'.$PassWord.'"<br/>';
+                        $message .= ' your Password for accessing Commander is "'.$Row->PassWord.'"<br/>';
                     }else if($row['oauth_provider'] == 'google'){
                         $message .= ' you access Commander with your Google account<br/>';  
                     }else if($row['oauth_provider'] == 'twitter'){
@@ -53,25 +52,22 @@ class ForgotModel extends Model
                         return 'Success';
 		}
                 else if($num_rows > 1){
+                    $Rows = $db->loadObjectList();
                     $i=0;
-                    while($row = mysql_fetch_assoc($result))
+                    foreach($Rows AS $Row)
                     {
                         $i++;
-                        $Name = $row['FirstName'];
-                        $UserName = $row['UserName'];
-			$PassWord = $row['PassWord'];
-			$method = $row['oauth_provider'];
                         if($i == 1)
-                            $message .= 'Hi '.$Name.',<br/><br/>So you forgot your password?<br/>Well just to remind you again...<br/><br/>You have multiple accounts with Commander:<br/>';
+                            $message .= 'Hi '.$Row->FirstName.',<br/><br/>So you forgot your password?<br/>Well just to remind you again...<br/><br/>You have multiple accounts with Commander:<br/>';
 
-                        if($method == ''){
-                            $message .= '<br/>Username:'.$UserName.'<br/>';
-                            $message .= 'Password:'.$PassWord.'<br/>';
-                        }else if($row['oauth_provider'] == 'google'){
+                        if($Row->oauth_provider == ''){
+                            $message .= '<br/>Username:'.$Row->UserName.'<br/>';
+                            $message .= 'Password:'.$Row->PassWord.'<br/>';
+                        }else if($Row->oauth_provider == 'google'){
                             $message .= '<br/>You access Commander with your Google account<br/>';  
-                        }else if($row['oauth_provider'] == 'twitter'){
+                        }else if($Row->oauth_provider == 'twitter'){
                             $message .= '<br/>You access Commander with your Twitter account<br/>';
-                        }else if($row['oauth_provider'] == 'facebook'){
+                        }else if($Row->oauth_provider == 'facebook'){
                             $message .= '<br/>You access Commander with your Facebook account<br/>';
                         }
                     }

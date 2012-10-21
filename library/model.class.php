@@ -3,7 +3,7 @@ class Model
 {
 	function __construct()
 	{
-            session_start();	
+	
 	}
 	
 	function getRandomMessage()

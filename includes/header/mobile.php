@@ -10,7 +10,9 @@
 <meta name="apple-mobile-web-app-capable" content="YES" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <!-- commanderhq.be-mobile.co.za: ldmUK2i2yiSlCJDFAjmjEvQox6oBjz0maCWNAqRRcjM-->
-<meta name="google-site-verification" content="ldmUK2i2yiSlCJDFAjmjEvQox6oBjz0maCWNAqRRcjM" />
+<!-- crossfit.be-mobile.co.za: -->
+<!-- https://accounts.google.com/ManageDomains-->
+<!--<meta name="google-site-verification" content="ldmUK2i2yiSlCJDFAjmjEvQox6oBjz0maCWNAqRRcjM" />-->
 <link rel="apple-touch-icon" href="images/icon.png" />
 	<link rel="apple-touch-icon" href="/images/touch-icon-iphone.png">
 	<link rel="apple-touch-icon" sizes="72x72" href="/images/touch-icon-ipad.png">
@@ -18,9 +20,15 @@
 <!-- startup image for web apps (320x460) -->
 <link rel="apple-touch-startup-image" href="/images/splashscreen.png" media="screen and (max-device-width: 320px)" />
 <link type="text/css" rel="stylesheet" href="/css/jquery.mobile-1.1.0.min.css" />
-<?php 
-    echo utility::mobile_stylesheet(SCREENWIDTH, 'css/mobile.css');
-?>
+<link type="text/css" rel="stylesheet" href="/css/mobile.css" />
+<style type="text/css">
+    body { width: <?php echo SCREENWIDTH;?>px;}
+    #header{width: <?php echo SCREENWIDTH;?>px;}
+    #nav{width: <?php echo SCREENWIDTH;?>px;}
+    #menu{width: <?php echo SCREENWIDTH;?>px;}
+    #content{width: <?php echo SCREENWIDTH;?>px;}
+    #footer{width: <?php echo SCREENWIDTH;?>px;<?php echo $RENDER->BackgroundImage('purple.png', SCREENWIDTH);?>}
+</style>
 <link rel="stylesheet" href="/css/add2home.css">
 <link rel="stylesheet" href="/css/slideshow.css">
 <script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>

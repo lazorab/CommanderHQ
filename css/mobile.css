@@ -1,12 +1,12 @@
-body {
-	margin: 0;
-	padding: 0;
-	font-family: helvetica;
-	width: ~|~width~|~px;
-	font-size: small;
-	color: #333333;
-	line-height: 130%;
-	font-weight: normal;
+
+body { 
+    margin: 0; 
+    padding: 0; 
+    font-family: helvetica; 
+    font-size: small; 
+    color: #333333; 
+    line-height: 130%; 
+    font-weight: normal; 
 }
 
 #buttongroup{
@@ -98,7 +98,6 @@ p{
 
 #content
 {
-	width:100%;
 	min-height: 320px;
 	color:#333;
 	background-color:#fff;
@@ -536,7 +535,7 @@ a {
 	font-size:12px;
 	color:#fff;
 	margin:0;
-	padding:2%;
+	padding-top:4px;
 	text-align:center;
 	background-repeat:no-repeat;
 }

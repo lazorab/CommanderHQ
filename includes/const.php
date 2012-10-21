@@ -4,6 +4,8 @@ define("QA", true);
 
 define("SUBSCRIPTION", false);
 
+define('FORCEMOBILE',true);
+
 //define("FRAMEWORK_ROOT", $_SERVER['DOCUMENT_ROOT']);
 //define("THIS_ROOT", ''.$_SERVER['DOCUMENT_ROOT'].'/crossfit');
 
@@ -12,27 +14,16 @@ define('ERROR_REPORT_EMAIL_ADDRESS', 'support@be-mobile.co.za');
 
 if (QA) {
     define('COMMANDER_EMAIL', 'devguru@be-mobile.co.za');
-    define("THIS_DOMAIN", "commanderhq.be-mobile.co.za");
+    define("THIS_DOMAIN", "crossfit.be-mobile.co.za");
 } else {
     define('COMMANDER_EMAIL', 'devguru@be-mobile.co.za');
-    define("THIS_DOMAIN", "commanderhq.be-mobile.co.za");
+    define("THIS_DOMAIN", "crossfit.be-mobile.co.za");
 }
 
 /* Database Settings */
 define("DB_CUSTOM_DATABASE", "bemobile_Commander");
 
 
-/* Global Pages */
-define('GLOBAL_PAGES', '../../global/pages/');
-
-/* Asset URL */
-
-define('ASSET_URL', 'http://www.be-mobile.co.za/framework/img.php?account_id=5&amp;disp=1&amp;meta=~~meta~~&amp;site_width=');
-
-define('ASSET_API_URL', 'http://asset.be-mobile.co.za/api/');
-
-/* Image Direct */
-define('IMAGE_DIRECT', 'http://www.be-mobile.co.za/framework/img_direct.php');
 define('ImagePath', '/images/');
 //define('IMAGE_FILE_PATH', '/home/bemobile/public_html/content/images/53');
 define('IMAGE_FILE_PATH', '/home/bemobile/subdomains/commanderhq/images');
@@ -54,8 +45,6 @@ define("EnquiryEmailAddress","devguru@be-mobile.co.za");
 define('ACTIVE', '1');
 define('INACTIVE', '0');
 
-$Device = new DeviceManager;
-define('SCREENWIDTH',$Device->GetScreenWidth());
 define('DEFAULT_SUB_NUMBER', '+27760000000');
 define('SMS_ENABLED', true);
 ?>

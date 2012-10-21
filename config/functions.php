@@ -1,27 +1,27 @@
 <?php
-
-require 'dbconfig.php';
+require_once('/home/bemobile/public_html/framework/general/databasemanager.class.php');
+require_once('dbconfig.php');
 
 class User {
     
     function __construct()
     {
-        mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
-        @mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");
+
     }
     
     function checkUser($user, $oauth_provider) 
 	{
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
         session_start();
         $explodedName = explode(' ', $user->name);
         $FirstName = $explodedName[0];
         $LastName= $explodedName[1];
-        $Sql = "SELECT *, 'memberhome' AS redirect FROM `Members` WHERE oauth_uid = '$user->id' and oauth_provider = '$oauth_provider'";
-        //echo $Sql;
-        $query = mysql_query($Sql) or die(mysql_error());
-        $result = mysql_fetch_array($query);
-        if (!empty($result)) {
-            $_SESSION['UID'] = $result['UserId'];
+        $SQL = "SELECT *, 'memberhome' AS redirect FROM `Members` WHERE oauth_uid = '$user->id' and oauth_provider = '$oauth_provider'";
+        $db->setQuery($SQL);
+	$db->Query();
+	if($db->getNumRows() > 0){	
+            $Row = $db->loadObject();
+            $_SESSION['UID'] = $Row->UserId;
         } else {
             $Gender = '';
             #user not present. Insert a new Record
@@ -40,22 +40,20 @@ class User {
                 else if($user->gender == 'female')
                     $Gender = 'F';
             }
-            $Sql = "INSERT INTO `Members` (oauth_provider, oauth_uid, FirstName, LastName, UserName) VALUES ('$oauth_provider', $user->id, '$FirstName', '$LastName','$UserName')";
-            //echo $Sql;
-            $query = mysql_query($Sql) or die(mysql_error());
-            $newUser = mysql_insert_id();
-            $Sql = "INSERT INTO `MemberDetails` (MemberId, Gender) VALUES ('$newUser', '$Gender')";
-            //echo $Sql;
-            $query = mysql_query($Sql) or die(mysql_error());
-            $Sql = "SELECT *, 'profile' AS redirect FROM `Members` WHERE oauth_uid = '$user->id' and oauth_provider = '$oauth_provider'";
-            //echo $Sql;
-            $query = mysql_query($Sql);
-            $result = mysql_fetch_array($query);
+            $SQL = "INSERT INTO `Members` (oauth_provider, oauth_uid, FirstName, LastName, UserName) VALUES ('$oauth_provider', $user->id, '$FirstName', '$LastName','$UserName')";
+            $db->setQuery($SQL);
+            $db->Query();
+            $NewId = $db->insertid();
+            $SQL = "INSERT INTO `MemberDetails` (MemberId, Gender) VALUES ('$NewId', '$Gender')";
+            $db->setQuery($SQL);
+            $db->Query();
+            $SQL = "SELECT *, 'profile' AS redirect FROM `Members` WHERE oauth_uid = '$user->id' and oauth_provider = '$oauth_provider'";
+            $db->setQuery($SQL);
+            $Row = $db->loadObject();
 
-            $_SESSION['NEW_USER'] = $result['UserId'];
-            return $result;
+            $_SESSION['NEW_USER'] = $Row->UserId;
         }
-        return $result;
+        return $Row;
     }
 }
 

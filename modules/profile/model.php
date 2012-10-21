@@ -64,7 +64,7 @@ class ProfileModel extends Model
                 MD.Height,
                 MD.Weight,
                 MD.BMI,
-                MD.HR,
+                MD.RestHR,
                 MD.RecHR
                 FROM Members M 
                 LEFT JOIN MemberDetails MD ON MD.MemberId = M.UserId 

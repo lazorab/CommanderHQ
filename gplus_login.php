@@ -14,49 +14,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-require_once 'src/apiClient.php';
-require_once 'src/contrib/apiOauth2Service.php';
 require 'config/functions.php';
+require_once 'src/Google_Client.php';
+require_once 'src/contrib/Google_PlusService.php';
 
 session_start();
 
-$client = new apiClient();
+$client = new Google_Client();
 $client->setApplicationName("Commander HQ");
-// Visit https://code.google.com/apis/console?api=plus to generate your
+// Visit https://code.google.com/apis/console to generate your
 // oauth2_client_id, oauth2_client_secret, and to register your oauth2_redirect_uri.
 // $client->setClientId('insert_your_oauth2_client_id');
 // $client->setClientSecret('insert_your_oauth2_client_secret');
-// $client->setRedirectUri('insert_your_redirect_uri');
+// $client->setRedirectUri('insert_your_oauth2_redirect_uri');
 // $client->setDeveloperKey('insert_your_developer_key');
-$oauth2 = new apiOauth2Service($client);
-
-if (isset($_GET['code'])) {
-  $client->authenticate();
-  $_SESSION['token'] = $client->getAccessToken();
-  $redirect = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
-  header('Location: ' . filter_var($redirect, FILTER_SANITIZE_URL));
-}
-
-if (isset($_SESSION['token'])) {
- $client->setAccessToken($_SESSION['token']);
-}
+$plus = new Google_PlusService($client);
 
 if (isset($_REQUEST['logout'])) {
-  unset($_SESSION['token']);
-  $client->revokeToken();
+  unset($_SESSION['access_token']);
 }
 
+if (isset($_GET['code'])) {
+  $client->authenticate($_GET['code']);
+  $_SESSION['access_token'] = $client->getAccessToken();
+  header('Location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
+}
+
+if (isset($_SESSION['access_token'])) {
+  $client->setAccessToken($_SESSION['access_token']);
+}
+
+
 if ($client->getAccessToken()) {
-  $user_info = new UserObject($oauth2->userinfo->get());
+    $me = $plus->people->get('me');
+    $user_info = new UserObject($me);
+
   // The access token may have been updated lazily.
   $_SESSION['token'] = $client->getAccessToken();
+  
         $google_user = new User();
         $userdata = $google_user->checkUser($user_info, 'google');
         if(!empty($userdata)){
             session_start();
             $_SESSION['oauth_id'] = $uid;
-            $_SESSION['oauth_provider'] = $userdata['oauth_provider'];
-            $Redirect = $userdata['redirect'];
+            $_SESSION['oauth_provider'] = $userdata->oauth_provider;
+            $Redirect = $userdata->redirect;
             header("Location: index.php?module=".$Redirect."");
         } 
   
@@ -75,7 +77,7 @@ class UserObject{
     function __construct($Array)
     {
         $this->id = $Array['id'];
-        $this->name = $Array['name'];
+        $this->name = $Array['displayName'];
         $this->email = $Array['email'];
         $this->gender = $Array['gender'];
     }

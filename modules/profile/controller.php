@@ -107,48 +107,48 @@ class ProfileController extends Controller
           $Html.='
             <input class="textinput" type="text" id="invcode" name="InvCode" placeholder="Invitation Code" value="'.$_REQUEST['InvCode'].'"/>';
       }      
-if(isset($_SESSION['UID'])){
+
           $Html.='<label for="firstname">First Name</label>';
-          }
+          
 $Html.='<input class="textinput" type="text" id="firstname" name="FirstName" placeholder="First Name" value="'.$MemberDetails->FirstName.'"/>';
-if(isset($_SESSION['UID'])){
+
           $Html.='<label for="lastname">Last Name</label>';
-          }
+          
 $Html.='<input class="textinput" type="text" id="lastname" name="LastName" placeholder="Last Name" value="'.$MemberDetails->LastName.'"/>';
-if(isset($_SESSION['UID'])){
+
           $Html.='<label for="username">User Name</label>';
-          }
+          
 $Html.='<input class="textinput" type="text" id="username" name="UserName" placeholder="User Name" value="'.$MemberDetails->UserName.'"'; 
 if(isset($_SESSION['UID']) || $MemberDetails->LoginType != '')   
     $Html.=' readonly="readonly"';
 $Html.='/>';
 if($MemberDetails->LoginType == ''){
-if(isset($_SESSION['UID'])){
+
           $Html.='<label for="password">Password</label>';
-          }
+          
 $Html.='<input class="textinput" type="password" id="password" name="PassWord" placeholder="Password" value="'.$MemberDetails->PassWord.'"/>';
-if(isset($_SESSION['UID'])){
+
           $Html.='<label for="confirmpassword">Confirm Password</label>';
-          }
+          
 $Html.='<input class="textinput" type="password" id="confirmpassword" name="ConfirmPassWord" placeholder="Confirm Password" value="'.$MemberDetails->PassWord.'"/>';
 }
 else{
-if(isset($_SESSION['UID'])){
+
           $Html.='<label for="oauth_provide">Login Type</label>';
-          }
+          
 $Html.='<input class="textinput" type="text" id="oauth_provider" name="oauth_provider" placeholder="Login Type" value="'.$MemberDetails->LoginType.'" readonly="readonly"/>'; 
 }
-if(isset($_SESSION['UID'])){
+
           $Html.='<label for="cell">Cell (+2778000000)</label>';
-          }
+          
 $Html.='<input class="textinput" type="tel" id="cell" name="Cell" value="'.$MemberDetails->Cell.'" placeholder="Cell (+2778000000)"/>';
-if(isset($_SESSION['UID'])){
+
           $Html.='<label for="email">Email</label>';
-          }
+          
 $Html.='<input class="textinput" type="email" id="email" name="Email" placeholder="Email" value="'.$MemberDetails->Email.'"/>';
-if(isset($_SESSION['UID'])){
+
           $Html.='<label for="DOB">Date of Birth</label>';
-          }
+          
 $Html.='<input class="textinput" type="date" name="DOB" id="DOB" placeholder="Date of Birth" value="'.$MemberDetails->DOB.'"/>';
 
 $Html.='<br/><br/>';
