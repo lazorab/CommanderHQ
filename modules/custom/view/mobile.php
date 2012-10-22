@@ -283,10 +283,35 @@ function addnew()
 
 function addRound()
 {  
+    if($('#addround').val() == 1){
+        $('#RoundLabel').html('<div class="ui-block-a">Round 1</div><div class="ui-block-b"></div><div class="ui-block-c"></div>');
+    }
     document.getElementById('addround').value++; 
     var ThisRound ='<div class="RoundLabel"><div class="ui-block-a">Round ' + document.getElementById('addround').value + '</div><div class="ui-block-b"></div><div class="ui-block-c"></div></div>';
     $(ThisRound).appendTo(new_exercise);
     $(chosenexercises).appendTo(new_exercise);
+}
+
+function selecttimer()
+{
+    $('#clockDisplay').html('<input type="hidden" name="63___CountDown[]" id="CountDown" value=""/><input id="clock" type="text" name="timer" value="" Placeholder="mm:ss"/>');
+    document.getElementById('clockType').value = 'timer';
+}
+
+function selectstopwatch()
+{
+    $('#clockDisplay').html('<input type="text" id="clock" name="63___TimeToComplete[]" value="00:00:0" readonly/>');
+    document.getElementById('clockType').value = 'stopwatch';
+}
+
+function clockControl()
+{
+    if(document.getElementById('clockType').value == 'timer')
+        startstopcountdown();
+    else if(document.getElementById('clockType').value == 'stopwatch')
+        startstop();
+    else
+        alert('Timer or Stopwatch?');
 }
 </script>
 <br/>

@@ -31,6 +31,7 @@ function goBack()
 
 function topdisplay(data)
 {
+    $('#toplist').listview();
     $('#toplist').html(data);
     $('#toplist').listview('refresh');
 }

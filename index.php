@@ -1,18 +1,14 @@
 <?php
-session_start();
+
 require_once("includes/includes.php");
 
 $Device = new DeviceManager();
- 
+
 $HtmlOutput = new HTML5CoreManager();	
 $Request = new BRequest();
-if(!QA){
-if(!isset($_SESSION['SCREENWIDTH']))
-    $_SESSION['SCREENWIDTH'] = $Request->get_screen_width();
-    define('SCREENWIDTH',$_SESSION['SCREENWIDTH']);
-}else{
-    define('SCREENWIDTH',$Request->get_screen_width());
-}
+
+define('SCREENWIDTH',$Request->get_screen_width());
+
 
 $RENDER = new Image();	
 

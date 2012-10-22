@@ -75,10 +75,9 @@ class CustomController extends Controller
         $Html .= '<div id="exercises">';
         $Html .= $this->getExercises();
         $Html .= '</div>';
-        
-        $Html .= '<br/>';
-        
-        $Html .= '<div id="workouttypes">'.$this->WorkoutTypes($_REQUEST['workouttype']).'</div>';
+
+        $Html .= $this->getRoundCounter();
+        //$Html .= '<div id="workouttypes">'.$this->WorkoutTypes($_REQUEST['workouttype']).'</div>';
         
         $Html .= '<br/>';
         
@@ -95,7 +94,7 @@ class CustomController extends Controller
                   <div id="add_exercise">'.$this->AddExercise().'</div>
                   <div id="new_exercise">'.$this->ChosenExercises().'</div>
                   </div>
-                  <div id="clock_input">'.$this->Clock().'</div>                        
+                  <div id="clock_input">'.$this->getStopWatch().'</div>                        
                   </form><br/>';
      	
 	return $Html;
@@ -429,7 +428,33 @@ class CustomController extends Controller
         return $Html;
     }
     
-	function getStopWatch()
+    function getStopWatch()
+    {
+        $ExerciseId = 63;
+        $TimeToComplete = '00:00:0';
+        $StartStopButton = 'Start';
+        if(isset($_REQUEST[''.$ExerciseId.'___TimeToComplete'])){
+            $TimeToComplete = $_REQUEST[''.$ExerciseId.'___TimeToComplete'];
+            if($TimeToComplete != '00:00:0')
+                $StartStopButton = 'Stop';
+        }
+        
+        $Html .='<div id="clockDisplay"></div>';   
+        $Html .='<input type="hidden" name="clockType" id="clockType" value=""/>';        
+        $Html.='<div class="ui-grid-a">';
+        $Html.='<div class="ui-block-a">';
+        $Html.='<input id="timer" class="buttongroup" type="button" onClick="selecttimer();" value="Timer"/>';
+        $Html.='</div><div class="ui-block-b">';
+        $Html.='<input id="stopwatch" class="buttongroup" type="button" onClick="selectstopwatch();" value="Stopwatch"/>';
+        $Html.='</div></div>';
+
+	$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="clockControl()" value="'.$StartStopButton.'"/>';
+	$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
+
+        return $Html;
+    }
+    
+	function getStopWatch_old()
     {
 	$RoundNo = 0;
         $ExerciseId = 63;
@@ -464,9 +489,7 @@ class CustomController extends Controller
     
     function getRoundCounter()
     {
-        $Html.='<div class="ui-grid-a">';
-        $Html.='<div class="ui-block-a"><input class="buttongroup" data-inline="true" type="button" onclick="addRound();" value="+ Round"/></div>';
-        $Html.='</div>';
+        $Html='<input class="buttongroup" type="button" onclick="addRound();" value="+ Round"/>';
         
         return $Html;
     }
