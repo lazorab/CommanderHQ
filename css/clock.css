@@ -1,43 +1,491 @@
-#sidebar {
-height:400px;
-overflow:hidden;
-position:relative;
-background-color:#eee;
-}	
+#timerLoading {
+	height: 14px;
+	width: 320px;
+	line-height: 14px;
+	background: url('images/timer_loading.gif') 50% 50% no-repeat;
+	font-size: 22px;
+	text-align: center;
+}
+#timerWrap {
+	margin-top: 0;
+	position: relative;
+	height: 218px;
+	width: 320px;
+	user-select: none;
+	-o-user-select: none;
+	-ms-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-webkit-touch-callout: none;
+	font-family: "Helvetica Neue", "Helvetica", "Arial", serif;
+}
+#timerWrap a {
+	text-decoration: none;
+}
+#timerPresetToolbarWrap {
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin: 0;
+	height: 16px;
+	width: 318px;
+	padding: 0;
+	list-style: none;
+	background-color: #e3e3e3;
+	background-image: linear-gradient(top, #f3f3f3 0%, #d3d3d3 100%);
+	background-image: -o-linear-gradient(top, #f3f3f3 0%, #d3d3d3 100%);
+	background-image: -ms-linear-gradient(top, #f3f3f3 0%, #d3d3d3 100%);
+	background-image: -moz-linear-gradient(top, #f3f3f3 0%, #d3d3d3 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #f3f3f3), color-stop(1, #d3d3d3));
+	background-image: -webkit-linear-gradient(top, #f3f3f3 0%, #d3d3d3 100%);
+	border: solid 1px #b3b3b3;
+	border-top-right-radius: 10px;
+	border-top-left-radius: 10px;
+	-moz-border-radius-topright: 10px;
+	-moz-border-radius-topleft: 10px;
+	-webkit-border-top-right-radius: 10px;
+	-webkit-border-top-left-radius: 10px;
+}
+#timerPresetToolbarWrap li {
+	float: left;
+	height: 15px;
+	border-right: solid 1px #b3b3b3;
+	border-bottom: solid 1px #eaeaea;
+	font-size: 6px;
+	font-weight: bold;
+	color: #4c4c4c;
+	text-shadow: 0 1px 0 #eaeaea;
+}
+#timerPresetToolbarWrap li a {
+	display: block;
+	color: #4c4c4c;
+}
+#timerPresetToolbarWrap li#timerPresetToolbarLabel {
+	width: 44px;
+	padding: 0 5px;
+	line-height: 16px;
+	text-align: center;
+}
+#timerPresetToolbarWrap li#timerPresetToolbarShowList {
+	width: 532px;
+}
+#timerPresetToolbarWrap li#timerPresetToolbarShowList a {
+	width: 180px;
+	padding: 0 5px;
+	line-height: 16px;
+	background: url('images/open_presets.png') 493px 50% no-repeat;
+}
+#timerPresetToolbarWrap li#timerPresetToolbarAdd {
+	width: 20px;
+}
+#timerPresetToolbarWrap li#timerPresetToolbarAdd a {
+	height: 16px;
+	width: 20px;
+	background: url('images/add_preset.png') 50% 50% no-repeat;
+}
+#timerPresetToolbarWrap li#timerPresetToolbarSoundOn {
+	width: 63px;
+	border-right: none;
+}
+#timerPresetToolbarWrap li#timerPresetToolbarSoundOn a {
+	width: 53px;
+	padding: 0 5px;
+	line-height: 16px;
+}
+#timerControlsWrap {
 
-#menu {
-width:100%;
-list-style:none;
-padding:0;
-margin:0;
-top:0;
-position:relative;
-height:100%;
-width:300px;
+	height: 204px;
+	width: 97px;
+	background-color: #E3E3E3;
+	border: solid 1px #b3b3b3;
+	border-top: none;
+	/*border-top-right-radius: 10px;*/
+	border-bottom-right-radius: 10px;
+	/*-moz-border-radius-topright: 10px;*/
+	-moz-border-radius-bottomright: 10px;
+	/*-webkit-border-top-right-radius: 10px;*/
+	-webkit-border-bottom-right-radius: 10px;
+}
+#timerIndicator {
+
+	width: 9px;
+	height: 204px;
+	z-index: 1000;
+	background: url('images/indicator_bg.png') 0 0 repeat-y;
+}
+#timerIndicatorArrow {
+
+    width: 9px;
+    height: 16px;
+    background: url('images/indicator.png') 0 0 no-repeat;
+    transition: top .25s ease-in;
+	-o-transition: top .25s ease-in;
+	-moz-transition: top .25s ease-in;
+	-webkit-transition: top .25s ease-in;
 }
 
-#menu li {
-padding:10px 0;
-text-align:right;
-display:block;
-cursor:hand;
-cursor:pointer;
+#timerClockWrap {
+
+	height: 204px;
+	width: 222px;
+	background-color: #000;
+	/*border-top-left-radius: 10px;*/
+	border-bottom-left-radius: 10px;
+	/*-moz-border-radius-topleft: 10px;*/
+	-moz-border-radius-bottomleft: 10px;
+	/*-webkit-border-top-left-radius: 10px;*/
+	-webkit-border-bottom-left-radius: 10px;
+	box-shadow: 0px 1px 2px #999;
+	-moz-box-shadow: 0px 1px 2px #999;
+	-webkit-box-shadow: 0px 1px 2px #999;
+}
+#timerClockFrame {
+
+	height: 99px;
+	width: 199px;
+	background-color: #FFF;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+}
+#timerClockFrame.default { 
+	background-color: #ffffff;
+	background-image: linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
+	background-image: -o-linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
+	background-image: -ms-linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
+	background-image: -moz-linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffffff), color-stop(1, #e0e0e0));
+	background-image: -webkit-linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
+	box-shadow: inset 0 0 5px #ffffff;
+	-moz-box-shadow: inset 0 0 5px #ffffff;
+	-webkit-box-shadow: inset 0 0 5px #ffffff;
+}
+#timerClockFrame.prepare { 
+	background-color: #ffff00;
+	background-image: linear-gradient(top, #ffff00 0%, #c6c600 100%);
+	background-image: -o-linear-gradient(top, #ffff00 0%, #c6c600 100%);
+	background-image: -ms-linear-gradient(top, #ffff00 0%, #c6c600 100%);
+	background-image: -moz-linear-gradient(top, #ffff00 0%, #c6c600 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffff00), color-stop(1, #c6c600));
+	background-image: -webkit-linear-gradient(top, #ffff00 0%, #c6c600 100%);
+	box-shadow: inset 0 0 5px #ffff00;
+	-moz-box-shadow: inset 0 0 5px #ffff00;
+	-webkit-box-shadow: inset 0 0 5px #ffff00;
+}
+#timerClockFrame.work { 
+	background-color: #00ff00;
+	background-image: linear-gradient(top, #00ff00 0%, #00c600 100%);
+	background-image: -o-linear-gradient(top, #00ff00 0%, #00c600 100%);
+	background-image: -ms-linear-gradient(top, #00ff00 0%, #00c600 100%);
+	background-image: -moz-linear-gradient(top, #00ff00 0%, #00c600 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #00ff00), color-stop(1, #00c600));
+	background-image: -webkit-linear-gradient(top, #00ff00 0%, #00c600 100%);
+	box-shadow: inset 0 0 5px #00ff00;
+	-moz-box-shadow: inset 0 0 5px #00ff00;
+	-webkit-box-shadow: inset 0 0 5px #00ff00;
+}
+#timerClockFrame.rest { 
+	background-color: #ff0000;
+	background-image: linear-gradient(top, #ff0000 0%, #c60000 100%);
+	background-image: -o-linear-gradient(top, #ff0000 0%, #c60000 100%);
+	background-image: -ms-linear-gradient(top, #ff0000 0%, #c60000 100%);
+	background-image: -moz-linear-gradient(top, #ff0000 0%, #c60000 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ff0000), color-stop(1, #c60000));
+	background-image: -webkit-linear-gradient(top, #ff0000 0%, #c60000 100%);
+	box-shadow: inset 0 0 5px #ff0000;
+	-moz-box-shadow: inset 0 0 5px #ff0000;
+	-webkit-box-shadow: inset 0 0 5px #ff0000;
+}
+#timerClockFrame span.value {
+	display: block;
+	line-height: 160px;
+	font-size: 157px;
+	font-weight: bold;
+	color: #000;
+	text-align: center;
+}
+#timerClockFrame span.label {
+	display: block;
+	margin-top: 5px;
+	line-height: 55px;
+	font-size: 50px;
+	color: #000;
+	text-align: center;
 }
 
-#menu li a {
-background:url() repeat #1f1f1f;
-
-color:#ddd;
-font-family:helvetica, arial, verdana;
-font-size:9px;
-font-weight:900;
-display:inline;
-padding:20px 8px 5px 20px;
-text-decoration:none;
+#timerCyclesFrame,
+#timerTabatasFrame {
+	background-color: #ffffff;
+	background-image: linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
+	background-image: -o-linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
+	background-image: -ms-linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
+	background-image: -moz-linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffffff), color-stop(1, #e0e0e0));
+	background-image: -webkit-linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
+	box-shadow: inset 0 0 5px #ffffff;
+	-moz-box-shadow: inset 0 0 5px #ffffff;
+	-webkit-box-shadow: inset 0 0 5px #ffffff;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
 }
 
-#menu li span {
-font-family:georgia, arial;
-font-size:9px;
-color:#464646;
+#timerCyclesFrame {
+
+	height: 70px;
+	width: 260px;
+}
+#timerTabatasFrame {
+
+	height: 206px;
+	width: 89px;
+}
+#timerCyclesFrame span.value,
+#timerTabatasFrame span.value {
+    display: block;
+    line-height: 58px;
+    font-size: 44px;
+    font-weight: bold;
+    color: #000;
+    text-align: center;
+}
+#timerCyclesFrame span.label,
+#timerTabatasFrame span.label {
+    display: block;
+    line-height: 0;
+    font-size: 26px;
+    color: #000;
+    text-align: center;
+}
+
+#timerControls li {
+
+	height: 40px;
+	width: 258px;
+}
+#timerSetPrepTime { top: 34px; }
+#timerSetWorkTime { top: 96px; }
+#timerSetRestTime { top: 158px; }
+#timerSetCycles { top: 220px; }
+#timerSetTabatas { top: 282px; }
+#timerSetSound { top: 344px; }
+#timerChangeSettingValue { top: 360px; }
+#timerActionsValue { top: 447px; }
+#timerControls li .field {
+	display: block;
+
+	height: 40px;
+	width: 248px;
+	padding-right: 8px;
+	cursor: pointer;
+	line-height: 40px;
+	background-color: #e3e3e3;
+	background-image: linear-gradient(top, #f3f3f3 0%, #e3e3e3 100%);
+	background-image: -o-linear-gradient(top, #f3f3f3 0%, #e3e3e3 100%);
+	background-image: -ms-linear-gradient(top, #f3f3f3 0%, #e3e3e3 100%);
+	background-image: -moz-linear-gradient(top, #f3f3f3 0%, #e3e3e3 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #f3f3f3), color-stop(1, #e3e3e3));
+	background-image: -webkit-linear-gradient(top, #f3f3f3 0%, #e3e3e3 100%);
+	border: solid 1px #b3b3b3;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	box-shadow: 0 1px 0 #f5f5f5;
+	-moz-box-shadow: 0 1px 0 #f5f5f5;
+	-webkit-box-shadow: 0 1px 0 #f5f5f5;
+	font-family: "Helvetica Neue", "Helvetica", "Arial", serif;
+	font-size: 22px;
+	color: #4c4c4c;
+	text-align: right;
+	text-shadow: #fff 0 1px 0;
+}
+#timerControls li:hover .field {
+	background-color: #000;
+	background-image: none;
+	border-color: #000;
+	text-shadow: none;
+	color: #efefef;
+	transition: all .25s ease;
+	-o-transition: all .25s ease;
+	-moz-transition: all .25s ease;
+	-webkit-transition: all .25s ease;
+}
+#timerControls li .label {
+	display: block;
+
+	padding: 0 10px;
+	cursor: pointer;
+	line-height: 42px;
+	text-shadow: #fff 0 1px 0;
+	font-size: 18px;
+	color: #4c4c4c;
+}
+#timerControls li:hover .label {
+    text-shadow: none;
+    color: #efefef;
+}
+a.timerBigButton,
+a.timerBigButtonSelected {
+	position: absolute;
+	display: block;
+	height: 60px;
+	width: 258px;
+	line-height: 60px;
+	cursor: pointer;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	font-size: 200%;
+	font-weight: bold;
+	text-align: center;
+}
+a.timerBigButton {
+	background-color: #e3e3e3;
+	background-image: linear-gradient(top, #f3f3f3 0%, #e3e3e3 100%);
+	background-image: -o-linear-gradient(top, #f3f3f3 0%, #e3e3e3 100%);
+	background-image: -ms-linear-gradient(top, #f3f3f3 0%, #e3e3e3 100%);
+	background-image: -moz-linear-gradient(top, #f3f3f3 0%, #e3e3e3 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #f3f3f3), color-stop(1, #e3e3e3));
+	background-image: -webkit-linear-gradient(top, #f3f3f3 0%, #e3e3e3 100%);
+	border: solid 1px #b3b3b3;
+	box-shadow: 0 1px 0 #f5f5f5;
+	-moz-box-shadow: 0 1px 0 #f5f5f5;
+	-webkit-box-shadow: 0 1px 0 #f5f5f5;
+	color: #4c4c4c;
+	text-shadow: #fff 0 1px 0;
+}
+a.timerBigButtonSelected,
+a.timerBigButton:active {
+    background-color: #000;
+    background-image: none;
+    border: solid 2px #000;
+    box-shadow: none;
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+    color: #fff;
+    text-shadow: none;
+}
+#timerStartButton { top: 505px; left: 14px; }
+#timerResetButton { top: 505px; left: 14px; }
+#timerPauseButton { top: 428px; left: 14px; }
+a.timerSmallButton {
+	display: block;
+	cursor: pointer;
+	background-color: #e3e3e3;
+	background-image: linear-gradient(top, #f3f3f3 0%, #e3e3e3 100%);
+	background-image: -o-linear-gradient(top, #f3f3f3 0%, #e3e3e3 100%);
+	background-image: -ms-linear-gradient(top, #f3f3f3 0%, #e3e3e3 100%);
+	background-image: -moz-linear-gradient(top, #f3f3f3 0%, #e3e3e3 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #f3f3f3), color-stop(1, #e3e3e3));
+	background-image: -webkit-linear-gradient(top, #f3f3f3 0%, #e3e3e3 100%);
+	box-shadow: 0 1px 0 #f5f5f5;
+	-moz-box-shadow: 0 1px 0 #f5f5f5;
+	-webkit-box-shadow: 0 1px 0 #f5f5f5;
+	line-height: 34px;
+	font-size: 22px;
+	font-weight: bold;
+	color: #4c4c4c;
+	text-align: center;
+	text-shadow: #fff 0 1px 0;
+}
+a.timerSmallButton:hover {
+    color: #000;
+	transition: color .25s ease;
+	-o-transition: color .25s ease;
+	-moz-transition: color .25s ease;
+	-webkit-transition: color .25s ease;
+}
+a.timerSmallButton:active {
+	background-color: #000;
+	background-image: none;
+    text-shadow: none;
+    color: #efefef;
+}
+#timerIncreaseSettingValue {
+	display: block;
+	width: 127px;
+	height: 38px;
+	float: right;
+	border: solid 1px #b3b3b3;
+	border-left: none;
+	border-top-right-radius: 20px;
+	border-bottom-right-radius: 20px;
+	-moz-border-radius-topright: 20px;
+	-moz-border-radius-bottomright: 20px;
+	-webkit-border-top-right-radius: 20px;
+	-webkit-border-bottom-right-radius: 20px;
+}
+#timerIncreaseSettingValue:active {
+    border: none;
+    height: 40px;
+    width: 128px;
+}
+#timerDecreaseSettingValue {
+    display: block;
+    width: 128px;
+    height: 38px;
+    float: left;
+    line-height: 38px;
+    border: solid 1px #b3b3b3;
+	border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+	-moz-border-radius-topleft: 20px;
+    -moz-border-radius-bottomleft: 20px;
+    -webkit-border-top-left-radius: 20px;
+    -webkit-border-bottom-left-radius: 20px;
+}
+#timerDecreaseSettingValue:active {
+    border: none;
+    height: 40px;
+    width: 130px;
+}
+
+#timerSaveActionValue {
+	display: block;
+	width: 56px;
+	height: 38px;
+	float: left;
+	border: solid 1px #b3b3b3;
+	border-top-left-radius: 20px;
+	border-bottom-left-radius: 20px;
+	-moz-border-radius-topleft: 20px;
+	-moz-border-radius-bottomleft: 20px;
+	-webkit-border-top-left-radius: 20px;
+	-webkit-border-bottom-left-radius: 20px;
+	line-height: 38px;
+	font-size: 14px;
+}
+
+#timerSaveActionValue.disabled,
+#timerSaveActionValue.disabled:active {
+	background: transparent;
+	color: #c0c0c0;
+}
+
+#timerSaveAsActionValue {
+	display: block;
+	width: 100px;
+	height: 38px;
+	float: left;
+	border: solid 1px #b3b3b3;
+	border-left: none;
+	line-height: 38px;
+	font-size: 14px;
+}
+#timerLoadActionValue {
+	display: block;
+	width: 98px;
+	height: 38px;
+	float: right;
+	border: solid 1px #b3b3b3;
+	border-left: none;
+	border-top-right-radius: 20px;
+	border-bottom-right-radius: 20px;
+	-moz-border-radius-topright: 20px;
+	-moz-border-radius-bottomright: 20px;
+	-webkit-border-top-right-radius: 20px;
+	-webkit-border-bottom-right-radius: 20px;
+	line-height: 38px;
+	font-size: 14px;
 }

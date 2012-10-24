@@ -1,5 +1,62 @@
+<script type="text/javascript" src="js/tabatatimer.js"></script>
 <script type='text/javascript'>
 var chosenexercises;
+
+	$(document).ready(function(){
+            $(document).on("click","#tabata",function(){
+            document.getElementById('clockType').value = 'tabata'; 
+		var timer = new STTabataTimerViewControllerNew();
+		timer.setValues({
+			userId: 0,
+			presetId: 0,
+			presetName: "Tabata",
+			prep: 10,
+			work: 20,
+			rest: 10,
+			cycles: 8,
+			tabatas: 1,
+			soundsOn: 1
+		});
+		timer.setLabels({
+			myPresets: "My Presets",
+			newPreset: "Create a New Preset",
+			save: "Save",
+			workout : "workout",
+			tabata : "Tabata",
+			prepare : "prepare",
+			work : "work",
+			rest : "rest",
+			cycles : "Cycles",
+			tabatas : "Tabatas",
+			cyclesl : "cycles",
+			tabatasl : "tabatas",
+			start : "start",
+			stop : "stop",
+			pause : "pause",
+			resume : "resume",
+			preset : "Preset",
+			sound : "Sound",
+			on : "On",
+			off : "Off"
+		});
+		timer.setSounds({
+			pausingSession : "PausingSession",
+			rest : "Rest",
+			sessionComplete : "SessionComplete",
+			soundOn : "SoundOn",
+			startingSession : "StartingSession",
+			stoppingSession : "StoppingSession",
+			tabataComplete : "TabataComplete",
+			work : "Work",
+			warning : "Warning2"
+		});
+		timer.loadSounds(function(){
+			timer.drawTimer("#timerContainer");
+		});
+	
+        });
+        });
+
 function getContent(selection)
 {
     $.getJSON("ajax.php?module=custom",{baseline:selection},display);
@@ -126,6 +183,9 @@ function addNewExercise()
 
 function DisplayExercise(exercise)
 {
+    if($('#addround').val() == 1){
+        $('#Round1Label').html('<div class="ui-block-a">Round 1</div><div class="ui-block-b"></div><div class="ui-block-c"></div>');
+    }
     $.getJSON("ajax.php?module=custom",{chosenexercise:exercise},function(json) {
     var attributecount = 0;
     $.each(json, function() {attributecount++;});
@@ -166,11 +226,12 @@ function DisplayExercise(exercise)
                 html +='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
                 html +='<div class="ui-block-a" style="font-size:small">';
 
-                    html += '<input onclick="RemoveFromList(' + i + ')" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
+                html+='<input class="buttongroup" data-icon="delete" name="exercise_' + i + '" type="button" onClick="RemoveFromList(' + i + ')" value="';
+                    //html += '<input onclick="RemoveFromList(' + i + ')" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
                     html +='' + this.InputFieldName + '';
                     html +='"/>';
                 
-                html +='' + this.InputFieldName + '';
+                //html +='' + this.InputFieldName + '';
                 html += '<div class="clear"></div>';
                 html +='</div>';
            }
@@ -202,7 +263,7 @@ function DisplayExercise(exercise)
            
 				Bhtml +='type="number" data-inline="true" name="' + this.ExerciseId + '___' + this.Attribute + '[]"';
                 Bhtml +=' value=""';
-                Bhtml +=' placeholder="Enter ' + this.Attribute + '"/>'+Unit+'';
+                Bhtml +=' placeholder="' + this.Attribute + '"/>'+Unit+'';
                 Bhtml +='</div>';		
                 if(Chtml != ''){
                     html +='' + Bhtml + '' + Chtml + '';
@@ -216,7 +277,7 @@ function DisplayExercise(exercise)
 				Chtml +='style="width:75%;color:black;font-weight:bold;background-color:#ccff66" ';
 				Chtml +='type="number" data-inline="true" name="' + this.ExerciseId + '___' + this.Attribute + '[]"';
                 Chtml +=' value=""';
-                Chtml +=' placeholder="Enter ' + this.Attribute + '"/>';
+                Chtml +=' placeholder="' + this.Attribute + '"/>';
                 Chtml +='</div>';
                 if(Bhtml != ''){
                     html +='' + Bhtml + '' + Chtml + '';
@@ -248,6 +309,7 @@ function DisplayExercise(exercise)
         document.getElementById('rowcounter').value = i; 
         $('.buttongroup').button();
         $('.buttongroup').button('refresh');
+        $('.numberinput').textinput();
     });
 
         $("#exercise option[value='none']").attr("selected","selected");
@@ -258,14 +320,11 @@ function RemoveFromList(RowId)
 {
     $('.row_' + RowId + '').remove();
     document.getElementById('rowcounter').value--;
-	
+
     if(document.getElementById('rowcounter').value == 0){
-     if(document.getElementById('clock_input').html != ''){
-        $('#clock_input').html('');
-    }       
-        $('#workouttypes').html('');
-        $('#RoundLabel').html('');
-        $('.RoundLabel').html('');
+
+        $('#new_exercise').html('');
+        $('#Round1Label').html('');
         document.getElementById('addround').value = 1;
         chosenexercises = '';
     }
@@ -273,7 +332,11 @@ function RemoveFromList(RowId)
 
 function customsubmit()
 {
+    if(document.getElementById('rowcounter').value == 0){
+        alert('No Exercises selected!');
+    }else{
     $.getJSON('ajax.php?module=custom&action=validateform', $("#customform").serialize(),messagedisplay);
+    }
 }
 
 function addnew()
@@ -283,24 +346,26 @@ function addnew()
 
 function addRound()
 {  
-    if($('#addround').val() == 1){
-        $('#RoundLabel').html('<div class="ui-block-a">Round 1</div><div class="ui-block-b"></div><div class="ui-block-c"></div>');
-    }
+    if(document.getElementById('rowcounter').value == 0){
+        alert('No Exercises selected!');
+    }else{
+
     document.getElementById('addround').value++; 
     var ThisRound ='<div class="RoundLabel"><div class="ui-block-a">Round ' + document.getElementById('addround').value + '</div><div class="ui-block-b"></div><div class="ui-block-c"></div></div>';
     $(ThisRound).appendTo(new_exercise);
     $(chosenexercises).appendTo(new_exercise);
 }
+}
 
-function selecttimer()
+function countdown()
 {
-    $('#clockDisplay').html('<input type="hidden" name="63___CountDown[]" id="CountDown" value=""/><input id="clock" type="text" name="timer" value="" Placeholder="mm:ss"/>');
+    $('#timerContainer').html('<input type="hidden" name="63___CountDown[]" id="CountDown" value=""/><input id="clock" type="text" name="timer" value="" Placeholder="mm:ss"/>');
     document.getElementById('clockType').value = 'timer';
 }
 
-function selectstopwatch()
+function stopwatch()
 {
-    $('#clockDisplay').html('<input type="text" id="clock" name="63___TimeToComplete[]" value="00:00:0" readonly/>');
+    $('#timerContainer').html('<input type="text" id="clock" name="63___TimeToComplete[]" value="00:00:0" readonly/>');
     document.getElementById('clockType').value = 'stopwatch';
 }
 
@@ -310,9 +375,25 @@ function clockControl()
         startstopcountdown();
     else if(document.getElementById('clockType').value == 'stopwatch')
         startstop();
+    else if(document.getElementById('clockType').value == 'tabata')
+        alert('tabata');
     else
-        alert('Timer or Stopwatch?');
+        alert('First choose Clock Type!');
 }
+
+function resetControl()
+{
+    if(document.getElementById('clockType').value == 'timer')
+        resetcountdown();
+    else if(document.getElementById('clockType').value == 'stopwatch')
+        reset();
+    else if(document.getElementById('clockType').value == 'tabata')
+        alert('tabata');
+    else
+        alert('First choose Clock Type!');
+}
+
+
 </script>
 <br/>
 

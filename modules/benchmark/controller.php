@@ -90,7 +90,7 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutDate']))
 				}
 				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
 				$html.='<div class="ui-block-a" style="padding:2px 0 2px 0">Round '.$Benchmark->RoundNo.'</div><div class="ui-block-b" style="padding:2px 0 2px 0"></div><div class="ui-block-c" style="padding:2px 0 2px 0"></div>';
-				$html.='<div class="ui-block-a"><input data-role="none" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Benchmark->InputFieldName.'"/></div>';
+				$html.='<div class="ui-block-a"><input class="textinput" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Benchmark->InputFieldName.'"/></div>';
 			}
 			else if($ThisExercise != $Benchmark->Exercise){
                             
@@ -112,7 +112,7 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutDate']))
                                 if($Benchmark->Exercise == 'Total Rounds'){
                                     $Exercise = '<input class="buttongroup" data-inline="true" type="button" onclick="addRound();" value="+ Round"/>';
                                 }else{
-                                    $Exercise = '<input data-role="none" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Benchmark->InputFieldName.'"/>';
+                                    $Exercise = '<input class="textinput" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Benchmark->InputFieldName.'"/>';
                                 }
 				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
 				$html.='<div class="ui-block-a">'.$Exercise.'</div>';
@@ -154,7 +154,7 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutDate']))
 				}
 
 				$Bhtml.='<div class="ui-block-b">';
-				$Bhtml.='<input data-role="none" '.$Style.' type="number" data-inline="true" name="'.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" value="'.$AttributeValue.'"/>'.$Unit.'';
+				$Bhtml.='<input class="textinput" '.$Style.' type="number" data-inline="true" name="'.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" value="'.$AttributeValue.'"/>'.$Unit.'';
 				$Bhtml.='</div>';		
 				if($Chtml != ''){
 					$html.=''.$Bhtml.''.$Chtml.'';
@@ -182,7 +182,7 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutDate']))
                                     $Style='style="float:left;width:50%;color:black;font-weight:bold;background-color:#ccff66"';
                                 }
 				$Chtml.='<div class="ui-block-c">';
-				$Chtml.='<input data-role="none" '.$InputAttributes.' '.$Style.' name="'.$InputName.'" '.$Placeholder.' value="'.$Value.'"/>';
+				$Chtml.='<input class="textinput" '.$InputAttributes.' '.$Style.' name="'.$InputName.'" '.$Placeholder.' value="'.$Value.'"/>';
 				$Chtml.='</div>';
 				if($Bhtml != ''){
 					$html.=''.$Bhtml.''.$Chtml.'';
@@ -207,7 +207,7 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutDate']))
 				}	
     $html.='</div>';
     $html.=$Clock;
-    $html.='</form><br/><br/>';		
+    $html.='</form><br/>';		
 
 }
 else
@@ -369,13 +369,21 @@ return $html;
             if($TimeToComplete != '00:00:0')
                 $StartStopButton = 'Stop';
         }
-	$Html ='<input type="text" id="clock" name="'.$RoundNo.'___'.$ExerciseId.'___TimeToComplete" value="'.$TimeToComplete.'" readonly/>';
-	$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="'.$StartStopButton.'"/>';
-        //$Html.='<input id="splitbutton" class="buttongroup" type="button" value="Split time" onClick="splittime();"/>';
-	$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
-	$Html.='<input class="buttongroup" type="button" onclick="benchmarksubmit();" value="Save"/>';
-        //$Html.='<textarea id="output"></textarea>';
+	$Html ='<div id="timerContainer"><input type="text" id="clock" name="'.$RoundNo.'___'.$ExerciseId.'___TimeToComplete" value="'.$TimeToComplete.'" readonly/></div>';
         
+        $Html.='<div class="ui-grid-b">';
+        $Html.='<div class="ui-block-a">';
+        $Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="'.$StartStopButton.'"/>';
+        $Html.='</div><div class="ui-block-b">';
+        $Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
+        $Html.='</div><div class="ui-block-c">';
+        $Html.='<input class="buttongroup" type="button" onClick="benchmarksubmit();" value="Save"/>';
+        $Html.='</div></div>';
+        
+	//$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="'.$StartStopButton.'"/>';
+	//$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
+	//$Html.='<input class="buttongroup" type="button" onclick="benchmarksubmit();" value="Save"/>';
+
         return $Html;
     }
 	

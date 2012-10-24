@@ -21,6 +21,7 @@
 <link rel="apple-touch-startup-image" href="/images/splashscreen.png" media="screen and (max-device-width: 320px)" />
 <link type="text/css" rel="stylesheet" href="/css/jquery.mobile-1.1.0.min.css" />
 <link type="text/css" rel="stylesheet" href="/css/mobile.css" />
+<link type="text/css" rel="stylesheet" href="/css/clock.css" />
 <style type="text/css">
     body { width: <?php echo SCREENWIDTH;?>px;}
     #header{width: <?php echo SCREENWIDTH;?>px;}

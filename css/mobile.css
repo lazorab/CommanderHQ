@@ -206,16 +206,27 @@ input
 	font-size:medium;
 }
 
+#timerContainer{
+    margin:6% auto 6% auto;
+    width:50%;
+}
+
 #clock{
-	margin:6% 18% 6% 18%;
+	
         padding:2%;
 	text-align:center;
-	width:50%;
+	width:100%;
 	font-size:xx-large;
 	font-weight:bold;
 	border-radius: 5px; 
 	-moz-border-radius: 5px; 
 	-webkit-border-radius: 5px;	
+}
+
+#ClockSelect{
+	margin:0 auto 0 auto;
+	text-align:center;
+	width:88%;	
 }
 
 .clsFooter
