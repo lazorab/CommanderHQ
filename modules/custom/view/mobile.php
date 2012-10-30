@@ -1,8 +1,34 @@
+        <style type="text/css">
+			
+			.swipeleft {
+			
+				cursor: -moz-grab;
+				
+			}
+			
+			.swipeleft:active {
+			
+				cursor: -moz-grabbing;
+				
+			}
+</style> 
+                       
 <script type="text/javascript" src="js/tabatatimer.js"></script>
+<script type="text/javascript" src="js/jquery.cj-swipe.js"></script>
 <script type='text/javascript'>
 var chosenexercises;
 
-	$(document).ready(function(){
+//onClick="RemoveFromList(' + i + ')"
+
+			
+			function swipeleftaction(direction) {
+				
+				alert(direction);
+			}
+	//$(document).bind('pageinit',function(){
+        $(document)..bind('pageinit',function() {    
+            
+             $(".swipeleft").unbindSwipe().touchSwipeLeft(callback);
             $(document).on("click","#tabata",function(){
             document.getElementById('clockType').value = 'tabata'; 
 		var timer = new STTabataTimerViewControllerNew();
@@ -17,6 +43,7 @@ var chosenexercises;
 			tabatas: 1,
 			soundsOn: 1
 		});
+                
 		timer.setLabels({
 			myPresets: "My Presets",
 			newPreset: "Create a New Preset",
@@ -39,6 +66,7 @@ var chosenexercises;
 			on : "On",
 			off : "Off"
 		});
+                
 		timer.setSounds({
 			pausingSession : "PausingSession",
 			rest : "Rest",
@@ -50,11 +78,11 @@ var chosenexercises;
 			work : "Work",
 			warning : "Warning2"
 		});
+                
 		timer.loadSounds(function(){
 			timer.drawTimer("#timerContainer");
 		});
-	
-        });
+            });
         });
 
 function getContent(selection)
@@ -184,7 +212,7 @@ function addNewExercise()
 function DisplayExercise(exercise)
 {
     if($('#addround').val() == 1){
-        $('#Round1Label').html('<div class="ui-block-a">Round 1</div><div class="ui-block-b"></div><div class="ui-block-c"></div>');
+        $('#Round1Label').html('<div class="ui-block-a"></div><div class="ui-block-b" style="text-align:center">Round 1</div><div class="ui-block-c"></div>');
     }
     $.getJSON("ajax.php?module=custom",{chosenexercise:exercise},function(json) {
     var attributecount = 0;
@@ -195,13 +223,10 @@ function DisplayExercise(exercise)
     var html = '';
     var Bhtml = '';
     var Chtml = '';
-    var ThisRound = '';
     var ThisExercise = '';
     var Unit = '';
-    if(i < 1){
-        $('#workouttypes').html('<?php echo $Display->WorkoutTypes('none selected');?>');
-        $('.select').selectmenu();
-        $('.select').selectmenu('refresh');
+    if(i < 1 && document.getElementById('controls').innerHTML == ''){
+        $('#controls').html('<input class="buttongroup" type="button" onclick="customsubmit();" value="Save"/>');
     }
     $.each(json, function() {
 
@@ -220,17 +245,15 @@ function DisplayExercise(exercise)
            
                 i++;
 
-                    html +='</div><div class="row_' + i + '">';
-                
-           
+                html +='</div><div class="row_' + i + '">';
                 html +='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
                 html +='<div class="ui-block-a" style="font-size:small">';
 
-                html+='<input class="buttongroup" data-icon="delete" name="exercise_' + i + '" type="button" onClick="RemoveFromList(' + i + ')" value="';
-                    //html += '<input onclick="RemoveFromList(' + i + ')" type="checkbox" name="exercise_' + i + '" checked="checked" value="';
-                    html +='' + this.InputFieldName + '';
-                    html +='"/>';
-                
+                //html+='<input class="buttongroup" data-icon="delete" name="exercise_' + i + '" type="button" onClick="RemoveFromList(' + i + ')" value="';
+                //html += '<input onclick="RemoveFromList(' + i + ')" type="checkbox" name="exercise_' + i + '" checked="checked" value="/>';
+                html +='<input id="' + this.InputFieldName + '" onclick="RemoveFromList(' + i + ')" class="textinput" data-inline="true" type="text" style="width:75%;" name="" value="' + this.InputFieldName + '"/>';
+                  //  html +='"/>';
+                //html += '<div class="swipeleft">' + this.InputFieldName + '</div>';
                 //html +='' + this.InputFieldName + '';
                 html += '<div class="clear"></div>';
                 html +='</div>';
@@ -238,9 +261,9 @@ function DisplayExercise(exercise)
            	
            if(this.Attribute == 'Distance' || this.Attribute == 'Weight' || this.Attribute == 'Height'){
                 Bhtml +='<div class="ui-block-b">';
-                Bhtml +='<input class="numberinput" ';		   
+                Bhtml +='<input data-corners="false" class="numberinput" ';		   
                 if(this.Attribute == 'Distance'){
-					Bhtml +='style="width:75%;color:white;font-weight:bold;background-color:#6f747a" ';
+                    Bhtml +='style="width:75%;color:white;font-weight:bold;background-color:#6f747a" ';
                     if('<?php echo $Display->SystemOfMeasure();?>' == 'imperial')
                         Unit = 'yards';
                     else
@@ -254,14 +277,14 @@ function DisplayExercise(exercise)
                         Unit = 'kg';
                 }
                 else if(this.Attribute == 'Height'){
-					Bhtml +='style="width:75%;color:white;font-weight:bold;background-color:#66486e" ';
+                    Bhtml +='style="width:75%;color:white;font-weight:bold;background-color:#66486e" ';
                     if('<?php $Display->SystemOfMeasure();?>' == 'imperial')
                         Unit = 'inches';
                     else
                         Unit = 'cm';
                 }				
            
-				Bhtml +='type="number" data-inline="true" name="' + this.ExerciseId + '___' + this.Attribute + '[]"';
+                Bhtml +='type="number" data-inline="true" name="' + this.ExerciseId + '___' + this.Attribute + '[]"';
                 Bhtml +=' value=""';
                 Bhtml +=' placeholder="' + this.Attribute + '"/>'+Unit+'';
                 Bhtml +='</div>';		
@@ -272,10 +295,10 @@ function DisplayExercise(exercise)
                 }
            }
            else if(this.Attribute == 'Reps'){
-		        Chtml +='<div class="ui-block-c">';
-                Chtml +='<input class="numberinput" ';
-				Chtml +='style="width:75%;color:black;font-weight:bold;background-color:#ccff66" ';
-				Chtml +='type="number" data-inline="true" name="' + this.ExerciseId + '___' + this.Attribute + '[]"';
+		Chtml +='<div class="ui-block-c">';
+                Chtml +='<input data-corners="false" class="numberinput" ';
+		Chtml +='style="width:75%;color:black;font-weight:bold;background-color:#ccff66" ';
+		Chtml +='type="number" data-inline="true" name="' + this.ExerciseId + '___' + this.Attribute + '[]"';
                 Chtml +=' value=""';
                 Chtml +=' placeholder="' + this.Attribute + '"/>';
                 Chtml +='</div>';
@@ -304,11 +327,13 @@ function DisplayExercise(exercise)
            Bhtml = '';
         }
         html +='</div>';
+        //alert(html);
         chosenexercises += html;
         $(html).appendTo(new_exercise);
         document.getElementById('rowcounter').value = i; 
         $('.buttongroup').button();
         $('.buttongroup').button('refresh');
+        $('.textinput').textinput();
         $('.numberinput').textinput();
     });
 
@@ -322,9 +347,10 @@ function RemoveFromList(RowId)
     document.getElementById('rowcounter').value--;
 
     if(document.getElementById('rowcounter').value == 0){
-
-        $('#new_exercise').html('');
+        //$('#new_exercise').html('');
         $('#Round1Label').html('');
+        $('.RoundLabel').html('');
+        $('#controls').html('');
         document.getElementById('addround').value = 1;
         chosenexercises = '';
     }
@@ -351,22 +377,42 @@ function addRound()
     }else{
 
     document.getElementById('addround').value++; 
-    var ThisRound ='<div class="RoundLabel"><div class="ui-block-a">Round ' + document.getElementById('addround').value + '</div><div class="ui-block-b"></div><div class="ui-block-c"></div></div>';
+    var ThisRound ='<div class="RoundLabel"><div class="ui-block-a"></div><div class="ui-block-b" style="text-align:center">Round ' + document.getElementById('addround').value + '</div><div class="ui-block-c"></div></div>';
     $(ThisRound).appendTo(new_exercise);
     $(chosenexercises).appendTo(new_exercise);
 }
+    $('.buttongroup').button();
+    $('.buttongroup').button('refresh');
+    $('.textinput').textinput();
+    $('.numberinput').textinput();
 }
 
-function countdown()
+function clockSelect(type)
 {
-    $('#timerContainer').html('<input type="hidden" name="63___CountDown[]" id="CountDown" value=""/><input id="clock" type="text" name="timer" value="" Placeholder="mm:ss"/>');
-    document.getElementById('clockType').value = 'timer';
-}
-
-function stopwatch()
-{
-    $('#timerContainer').html('<input type="text" id="clock" name="63___TimeToComplete[]" value="00:00:0" readonly/>');
-    document.getElementById('clockType').value = 'stopwatch';
+    if(document.getElementById('clockType').value != type){
+    var Clock = '<input type="text" id="clock" name="63___TimeToComplete[]" value="00:00:0" readonly/>';
+    var Controls = '<div class="ui-grid-b">';
+        Controls+='<div class="ui-block-a">';
+        Controls+='<input id="startstopbutton" class="buttongroup" type="button" onClick="clockControl();" value="Start"/>';
+        Controls+='</div><div class="ui-block-b">';
+        Controls+='<input id="resetbutton" class="buttongroup" type="button" onClick="resetControl();" value="Reset"/>';
+        Controls+='</div><div class="ui-block-c">';
+        Controls+='<input class="buttongroup" type="button" onclick="customsubmit();" value="Save"/>';
+        Controls+='</div></div>';
+    $('#timerContainer').html(Clock);
+    $('#controls').html(Controls);
+    document.getElementById('clockType').value = type;
+    }else{
+    $('#timerContainer').html('');
+    document.getElementById('clockType').value = ''; 
+        if(document.getElementById('rowcounter').value == 0){
+       $('#controls').html(''); 
+    }else{
+       $('#controls').html('<input class="buttongroup" type="button" onclick="customsubmit();" value="Save"/>');
+    }
+    }
+    $('.buttongroup').button();
+    $('.buttongroup').button('refresh');
 }
 
 function clockControl()

@@ -3,8 +3,7 @@
 require_once("includes/includes.php");
 
 $Device = new DeviceManager();
-
-$HtmlOutput = new HTML5CoreManager();	
+	
 $Request = new BRequest();
 
 define('SCREENWIDTH',$Request->get_screen_width());
@@ -49,7 +48,7 @@ include("includes/header/$Environment.php");
     }
 ?>
     <body>
-<div data-role="page">
+<div data-role="page" data-theme="c">
 
 <div id="header">
 <img alt="Header" <?php echo $RENDER->NewImage(''.$Banner.'.png', SCREENWIDTH);?> src="<?php echo ImagePath.$Banner;?>.png"/>

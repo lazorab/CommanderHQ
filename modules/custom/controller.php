@@ -81,25 +81,25 @@ class CustomController extends Controller
         
 	if($_REQUEST['form'] == 'submitted'){
 	$Html .= '<div class="ui-grid-c">';
-    $Html .= '<div class="ui-block-a"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#3f2b44" value="Weight" readonly="readonly"/></div>';
-    $Html .= '<div class="ui-block-b"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#66486e" value="Height" readonly="readonly"/></div>';
-    $Html .= '<div class="ui-block-c"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#6f747a" value="Distance" readonly="readonly"/></div>';
-    $Html .= '<div class="ui-block-d"><input type="text" data-role="none" style="width:80%;color:black;font-weight:bold;background-color:#ccff66" value="Reps" readonly="readonly"/></div>';
-    $Html .= '</div>';
+        $Html .= '<div class="ui-block-a"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#3f2b44" value="Weight" readonly="readonly"/></div>';
+        $Html .= '<div class="ui-block-b"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#66486e" value="Height" readonly="readonly"/></div>';
+        $Html .= '<div class="ui-block-c"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#6f747a" value="Distance" readonly="readonly"/></div>';
+        $Html .= '<div class="ui-block-d"><input type="text" data-role="none" style="width:80%;color:black;font-weight:bold;background-color:#ccff66" value="Reps" readonly="readonly"/></div>';
+        $Html .= '</div>';
 	}
-    $Html .= '<div class="ui-grid-b">
-                  <div id="Round1Label"></div>
-                  <div id="add_exercise">'.$this->AddExercise().'</div>
-                  <div id="new_exercise">'.$this->ChosenExercises().'</div>
-              </div>';
+        $Html .= '<div class="ui-grid-b">';
+        $Html .= '<div id="Round1Label"></div>';
+        $Html .= '<div id="add_exercise">'.$this->AddExercise().'</div>';
+        $Html .= '<div id="new_exercise">'.$this->ChosenExercises().'</div>';
+        $Html .= '</div>';
     
-        $Html.='<div id="timerContainer"><input type="text" id="clock" name="63___TimeToComplete[]" value="00:00:0" readonly/></div>';   
+        $Html.='<div id="timerContainer"></div>';   
         $Html.='<input type="hidden" name="clockType" id="clockType" value=""/>';
         $Html.='<div id="ClockSelect">';
     	$Html.='<fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">';
-	$Html.='<input type="radio" name="radio-choice-a" onClick="countdown();" id="radio-choice-a" value="Countdown"/>';
+	$Html.='<input type="radio" name="radio-choice-a" onClick="clockSelect(\'countdown\');" id="radio-choice-a" value="Countdown"/>';
 	$Html.='<label for="radio-choice-a">Countdown</label>';
-	$Html.='<input type="radio" name="radio-choice-a" onClick="stopwatch();" id="radio-choice-b" value="Stopwatch" checked="checked"/>';
+	$Html.='<input type="radio" name="radio-choice-a" onClick="clockSelect(\'timer\');" id="radio-choice-b" value="Stopwatch"/>';
 	$Html.='<label for="radio-choice-b">Stopwatch</label>';
 	$Html.='</fieldset>';
         $Html.='</div>';
@@ -112,14 +112,8 @@ class CustomController extends Controller
         //$Html.='</div><div class="ui-block-c">';  
         //$Html.='<input id="tabata" class="buttongroup" type="button" value="Tabata"/>';
         //$Html.='</div></div>'; 
-        $Html.='<div class="ui-grid-b">';
-        $Html.='<div class="ui-block-a">';
-        $Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="clockControl();" value="Start"/>';
-        $Html.='</div><div class="ui-block-b">';
-        $Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetControl();" value="Reset"/>';
-        $Html.='</div><div class="ui-block-c">';
-        $Html.='<input class="buttongroup" type="button" onclick="customsubmit();" value="Save"/>';
-        $Html.='</div></div>';
+        $Html.='<div id="controls"></div>';
+
         $Html.='</form><br/>';
      	
 	return $Html;
@@ -133,7 +127,7 @@ class CustomController extends Controller
         $Html .= '<select class="select" name="exercise" id="exercise" onChange="SelectionControl(this.value)">
          <option value="none">+ Activity</option>';
 	foreach($Exercises AS $Exercise){
-            $Html .= '<option id="'.$Exercise->recid.'" value="'.$Exercise->ActivityName.'">'.$Exercise->ActivityName.'</option>';
+            $Html .= '<option value="'.$Exercise->ActivityName.'">'.$Exercise->ActivityName.'</option>';
 	}
         $Html .= '</select>';
 	return $Html;

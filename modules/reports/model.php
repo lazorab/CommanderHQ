@@ -75,8 +75,9 @@ class ReportsModel extends Model
         B.WorkoutName
         FROM WODLog L
         LEFT JOIN BenchmarkWorkouts B ON B.recid = L.WorkoutId
+        LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
         WHERE L.MemberId = '.$_SESSION['UID'].'
-        AND L.WODTypeId = 2
+        AND WT.WorkoutType = "Benchmark"
         ORDER BY WorkoutName';
         $db->setQuery($SQL);
 		
@@ -167,13 +168,11 @@ class ReportsModel extends Model
     function getBaselineHistory()
     {
 	$db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-	$SQL = 'SELECT WT.WorkoutType AS ExerciseType,
-        CASE WHEN WorkoutType = "Custom" 
-        THEN (SELECT WorkoutName FROM CustomWorkouts WHERE recid = L.ExerciseId)
-        WHEN WorkoutType = "Benchmark"
+	$SQL = 'SELECT WT.WorkoutType,
+        CASE WHEN WorkoutType = "Benchmark"
         THEN (SELECT WorkoutName FROM BenchmarkWorkouts WHERE recid = L.ExerciseId)
         ELSE
-        E.Exercise 
+        WorkoutType
         END
         AS WorkoutName,
         E.Exercise, 
@@ -184,8 +183,8 @@ class ReportsModel extends Model
         LEFT JOIN Exercises E ON E.recid = L.ExerciseId
         LEFT JOIN Attributes A ON A.recid = L.AttributeId
 	WHERE L.MemberId = '.$_SESSION['UID'].'
-	GROUP BY Exercise,TimeCreated
-        ORDER BY TimeCreated';// AND L.ExerciseId = '.$_REQUEST['BaselineId'].'';
+        GROUP BY Exercise, TimeCreated
+	ORDER BY WorkoutType, TimeCreated';// AND L.ExerciseId = '.$_REQUEST['BaselineId'].'';
         $db->setQuery($SQL);
 		
         return $db->loadObjectList();       

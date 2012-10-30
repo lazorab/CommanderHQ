@@ -33,7 +33,7 @@ function getWODReport(id)
       //Closing Chart Element
       strXML += '</chart>';
       
-        var chartObj = new FusionCharts( "includes/FusionCharts/Line.swf", 
+        var chartObj = new FusionCharts( "includes/FusionCharts/Line.swf",
                     "ExerciseChartId", "300", "200", "0", "1" );
 
         chartObj.setXMLData(strXML);
@@ -63,7 +63,7 @@ function getBenchmarkReport(id)
       //Closing Chart Element
       strXML += '</chart>';
       
-        var chartObj = new FusionCharts( "includes/FusionCharts/Line.swf", 
+        var chartObj = new FusionCharts( "includes/FusionCharts/Line.swf",
                     "BenchmarkChartId", "300", "200", "0", "1" );
 
         chartObj.setXMLData(strXML);
@@ -79,12 +79,12 @@ function getBaselineReport(id,date)
 
 function display(data)
 {
-	document.getElementById("reportdata").innerHTML = data;
+document.getElementById("reportdata").innerHTML = data;
 }
 
 var i = 1;//prevent double rendering problem
 </script>
-		 
+
 <br/>
 <div id="topselection">
 
@@ -94,29 +94,29 @@ var i = 1;//prevent double rendering problem
     <div id="slides">
         <div class="slides_container">
             <div class="slide">
-                <div id="FirstChartContainer">FusionCharts will load here!</div>   
+                <div id="FirstChartContainer">FusionCharts will load here!</div>
 <script type="text/javascript">
     if(i == 1){
         i++;
-  	var myChart = new FusionCharts( "includes/FusionCharts/Line.swf", 
+   var myChart = new FusionCharts( "includes/FusionCharts/Line.swf",
                     "FirstChartId", "300", "250", "0", "1" );
 
         myChart.setXMLData('<?php echo $Display->BaselineOutput();?>');
 
         myChart.render("FirstChartContainer");
-    } 
-</script>                                                        
+    }
+</script>
             </div>
             <div class="slide">
                 <?php echo $Display->WODExercises();?>
-                <div id="ExerciseDetails">FusionCharts will load here!</div>
-            </div>
-            <div class="slide">
-                <?php echo $Display->WODBenchmarks();?>
-                <div id="BenchmarkDetails">FusionCharts will load here!</div>
-            </div>
-        </div>
-        <a href="#" class="prev"><img src="images/arrow-next.png" width="36" height="36" alt="Arrow Prev"></a>
-        <a href="#" class="next"><img src="images/arrow-prev.png" width="36" height="36" alt="Arrow Next"></a>
-    </div>
+<div id="ExerciseDetails">FusionCharts will load here!</div>
+</div>
+<div class="slide">
+<?php echo $Display->WODBenchmarks();?>
+<div id="BenchmarkDetails">FusionCharts will load here!</div>
+</div>
+</div>
+<a href="#" class="prev"><img src="images/arrow-next.png" width="36" height="36" alt="Arrow Prev"></a>
+<a href="#" class="next"><img src="images/arrow-prev.png" width="36" height="36" alt="Arrow Next"></a>
+</div>
 </div>

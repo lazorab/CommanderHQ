@@ -98,7 +98,7 @@ p{
 
 #content
 {
-	min-height: 320px;
+	min-height: 360px;
 	color:#333;
 	background-color:#fff;
 }
@@ -208,25 +208,37 @@ input
 
 #timerContainer{
     margin:6% auto 6% auto;
-    width:50%;
+    width:88%;
 }
 
 #clock{
-	
-        padding:2%;
+        padding:1%;
 	text-align:center;
-	width:100%;
-	font-size:xx-large;
+	width:98%;
+	font-size:40px;
 	font-weight:bold;
-	border-radius: 5px; 
-	-moz-border-radius: 5px; 
-	-webkit-border-radius: 5px;	
+	border-radius: 10px; 
+	-moz-border-radius: 10px; 
+	-webkit-border-radius: 10px;
+        background-color:#ccff66;
+}
+
+.textinput{
+    	border-radius: 1px; 
+	-moz-border-radius: 1px; 
+	-webkit-border-radius: 1px;
+}
+
+.numberinput{
+    	border-radius: 1px; 
+	-moz-border-radius: 1px; 
+	-webkit-border-radius: 1px;
 }
 
 #ClockSelect{
 	margin:0 auto 0 auto;
 	text-align:center;
-	width:88%;	
+	width:90%;	
 }
 
 .clsFooter

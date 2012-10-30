@@ -22,7 +22,7 @@
 	position:relative;
 	display:none;
 	overflow: auto;
-	height:280px;
+	height:275px;
 }
 
 /*
@@ -43,7 +43,7 @@
 	-webkit-border-radius: 5px; 
 	display:block;
 	overflow: auto;
-	height:280px;
+	height:275px;
 }
 
 

@@ -41,7 +41,8 @@ class LocatorModel extends Model {
             TelNo
             FROM Affiliates
             WHERE (Longitude BETWEEN "'.$StartLatitude.'" AND "'.$EndLatitude.'")
-            AND (Latitude BETWEEN "'.$StartLongitude.'" AND "'.$EndLongitude.'")';
+            AND (Latitude BETWEEN "'.$StartLongitude.'" AND "'.$EndLongitude.'")
+            ORDER BY GymName';
         $db->setQuery($SQL); 
         
         return $db->loadObjectList();
@@ -59,7 +60,8 @@ class LocatorModel extends Model {
             FROM Affiliates
             WHERE GymName LIKE "'.$_REQUEST['keyword'].'%"
             OR City LIKE "'.$_REQUEST['keyword'].'%"
-            OR Region LIKE "'.$_REQUEST['keyword'].'%"';
+            OR Region LIKE "'.$_REQUEST['keyword'].'%"
+            ORDER BY GymName';
         $db->setQuery($SQL); 
         
         return $db->loadObjectList();

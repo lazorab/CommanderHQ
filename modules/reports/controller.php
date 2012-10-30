@@ -84,7 +84,7 @@ class ReportsController extends Controller
 	$ExerciseItems = $Model->getCompletedExercises();
 	$Html='Completed Exercises:';
 	foreach($ExerciseItems AS $Exercise) { 
-            $Html.='<'.$this->Wall.'br/><'.$this->Wall.'a href="index.php?module=reports&id='.$Exercise->Id.'">'.$Exercise->Exercise.'</'.$this->Wall.'a>';
+            $Html.='<br/><a href="index.php?module=reports&id='.$Exercise->Id.'">'.$Exercise->Exercise.'</a>';
 	}
 	return $Html;	
     }
@@ -93,12 +93,12 @@ class ReportsController extends Controller
     {
         $Model=new ReportsModel();
 	$ExerciseItems = $Model->getWODExercises();
-	$Html='<'.$this->Wall.'select name="WODId" id="WODId" class="select" onchange="getWODReport(this.value);">';
-        $Html.='<'.$this->Wall.'option value=" ">Select Exercise</'.$this->Wall.'option>';
+	$Html='<select name="WODId" id="Exercises" class="select" onchange="getWODReport(this.value);">';
+        $Html.='<option value=" ">Select Exercise</option>';
 	foreach($ExerciseItems AS $Exercise) { 
-            $Html.='<'.$this->Wall.'option value="'.$Exercise->ExerciseId.'">'.$Exercise->Exercise.'</'.$this->Wall.'option>';
+            $Html.='<option value="'.$Exercise->ExerciseId.'">'.$Exercise->Exercise.'</option>';
 	}
-        $Html.='</'.$this->Wall.'select><br/><br/>';
+        $Html.='</select><br/><br/>';
 	return $Html;	
     }
     
@@ -106,12 +106,12 @@ class ReportsController extends Controller
     {
         $Model=new ReportsModel();
 	$BenchmarkItems = $Model->getBenchmarks();
-	$Html='<'.$this->Wall.'select name="WODId" id="WODId" class="select" onchange="getBenchmarkReport(this.value);">';
-        $Html.='<'.$this->Wall.'option value=" ">Select Benchmark</'.$this->Wall.'option>';
+	$Html='<select name="WODId" id="Benchmarks" class="select" onchange="getBenchmarkReport(this.value);">';
+        $Html.='<option value=" ">Select Benchmark</option>';
 	foreach($BenchmarkItems AS $Exercise) { 
-            $Html.='<'.$this->Wall.'option value="'.$Exercise->ExerciseId.'">'.$Exercise->WorkoutName.'</'.$this->Wall.'option>';
+            $Html.='<option value="'.$Exercise->ExerciseId.'">'.$Exercise->WorkoutName.'</option>';
 	}
-        $Html.='</'.$this->Wall.'select><br/><br/>';
+        $Html.='</select><br/><br/>';
 	return $Html;	
     }
     
@@ -168,12 +168,12 @@ class ReportsController extends Controller
 	{
         $Model=new ReportsModel();
 		$ExerciseItems = $Model->getBaselineExercises();
-		$Html='<'.$this->Wall.'select name="BaselineId" id="BaselineId" class="select" onchange="getBaselineReport(this.value, reportform.datetime.value);">';
-        $Html.='<'.$this->Wall.'option value="">Baseline Exercises</'.$this->Wall.'option>';
+		$Html='<select name="BaselineId" id="BaselineId" class="select" onchange="getBaselineReport(this.value, reportform.datetime.value);">';
+        $Html.='<option value="">Baseline Exercises</option>';
 		foreach($ExerciseItems AS $Exercise) { 
-			$Html.='<'.$this->Wall.'option value="'.$Exercise->ExerciseId.'">'.$Exercise->Exercise.'</'.$this->Wall.'option>';
+			$Html.='<option value="'.$Exercise->ExerciseId.'">'.$Exercise->Exercise.'</option>';
 		}
-        $Html.='</'.$this->Wall.'select><br/><br/>';
+        $Html.='</select><br/><br/>';
 		return $Html;	
 	}
     
@@ -196,7 +196,7 @@ class ReportsController extends Controller
         }
         $Average = floor($TotalSeconds / $NumLogs);
         $ChartData .= "<trendLines>";
-        $ChartData .= "<line startValue='".$Average."' color='009933' lineThickness='3' displayvalue=' '/>";
+        $ChartData .= "<line startValue='".$Average."' color='009933' lineThickness='3' displayvalue='Average' />";
         $ChartData .= "</trendLines>";
 
         $ChartData .= "</chart>";       
@@ -249,7 +249,7 @@ class ReportsController extends Controller
 			$Units = 'lbs';
 		foreach($History AS $Item)
 		{
-			$Html.=''.$Item->TimeCreated.'	'.$Item->Weight.'	'.$Units.'<'.$this->Wall.'br/>';
+			$Html.=''.$Item->TimeCreated.'	'.$Item->Weight.'	'.$Units.'<br/>';
 		}
 		return $Html;
 	}
@@ -260,7 +260,7 @@ class ReportsController extends Controller
 		$PendingExercises = $Model->getPendingExercises();
 		$Html='Pending Skill Exercises:';
 		foreach($PendingExercises AS $Exercise) { 
-			$Html.='<'.$this->Wall.'br/><'.$this->Wall.'a href="index.php?module=exercisedetails&id='.$Exercise->Id.'">'.$Exercise->Exercise.'</'.$this->Wall.'a>';
+			$Html.='<br/><a href="index.php?module=exercisedetails&id='.$Exercise->Id.'">'.$Exercise->Exercise.'</a>';
 		}
 		return $Html;
 	}
