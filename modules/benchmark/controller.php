@@ -35,6 +35,7 @@ class BenchmarkController extends Controller
         function Video()
         {
             $Html = '<iframe marginwidth="0px" marginheight="0px" width="'.SCREENWIDTH.'" height="'.$this->Height.'" src="http://www.youtube.com/embed/'.$this->Video.'" frameborder="0">';
+          
             return $Html;
         }
         
@@ -42,13 +43,20 @@ class BenchmarkController extends Controller
         {
             $Model = new BenchmarkModel;
             $Message = $Model->Log();
-       
+
             return $Message;
         }
-	
+        
+         function Message_()
+        {
+
+            return "Message";
+        }       
+        
 	function Output()
 	{
             $html = '';
+            
             $Model = new BenchmarkModel;
 
 if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutDate']))
@@ -221,21 +229,21 @@ else
         <div class="slides_container">
         
             <div class="slide">
-            <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+            <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>The Girls</li>
             </ul>
             '.$this->getWorkoutList($Girls).'
             </div>';
             
      $html .='<div class="slide">
-            <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+            <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>The Heros</li>
             </ul>
                 '.$this->getWorkoutList($Heros).'
             </div>';
             
      $html .='<div class="slide">
-            <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+            <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>Various</li>
             </ul>
                 '.$this->getWorkoutList($Various).'
@@ -249,14 +257,14 @@ else
             </div>';
 */
      $html .='<div class="slide">
-            <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+            <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>Travel Workouts</li>
             </ul>
                 '.$this->getWorkoutList($Travel).'
             </div>';
 
      $html .='<div class="slide">
-            <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+            <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>My Saved WODs</li>
             </ul>
                 '.$this->getCustomMemberWorkouts().'
@@ -271,8 +279,8 @@ else
   */   
      $html.='           
         </div>
-        <a href="#" class="prev"><img src="images/arrow-next.png" width="36" height="36" alt="Arrow Prev"></a>
-        <a href="#" class="next"><img src="images/arrow-prev.png" width="36" height="36" alt="Arrow Next"></a>
+        <a href="#" class="prev"><img src="'.IMAGE_RENDER_PATH.'arrow-next.png" width="36" height="36" alt="Arrow Prev"></a>
+        <a href="#" class="next"><img src="'.IMAGE_RENDER_PATH.'arrow-prev.png" width="36" height="36" alt="Arrow Next"></a>
     </div>';
 	
 
@@ -284,7 +292,7 @@ return $html;
         function getWorkoutList($Category)
         {
             $Model = new BenchmarkModel;
-            $html = '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
+            $html = '<ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
             foreach($Category AS $Workout){
                 $Description = $Model->getBenchmarkDescription($Workout->Id);
                 $html .= '<li>';
@@ -303,7 +311,7 @@ return $html;
             if(empty($CustomMemberWorkouts)){
                 $html .= '<br/>Oops! You have not recorded any Custom Workouts yet.';
             }else{
-            $html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
+            $html .= '<ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
             foreach($CustomMemberWorkouts AS $Workout){
                 $Description = $Model->getCustomDescription($Workout->TimeCreated);
                 $html .= '<li>';
@@ -323,7 +331,7 @@ return $html;
             if(empty($CustomPublicWorkouts)){
                 $html .= '<br/>Looks like there are none yet!';
             }else{
-            $html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
+            $html .= '<ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
             foreach($CustomPublicWorkouts AS $Workout){
                 $Description = $Model->getCustomDescription($Workout->TimeCreated);
                 $html .= '<li>';

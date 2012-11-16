@@ -2,7 +2,7 @@
 
 function getBaseline()
 {
-    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=baseline\');" <?php echo $RENDER->NewImage('back.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>back.png"/>');
+    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=baseline\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
     $('#toplist').html('<li>Baseline</li>');
     $.getJSON("ajax.php?module=baseline",{baseline:'Baseline'},display);
     $('#toplist').listview();

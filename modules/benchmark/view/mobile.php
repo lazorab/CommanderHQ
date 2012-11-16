@@ -16,12 +16,12 @@ $(document).ready(function() {
                     
                 $('#colorcodes').html(codes);
                 
-	    	$VideoTrigger.html('<img id="videoselect" alt="Video" <?php echo $RENDER->NewImage('video_specific.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>video_specific.png"/>');
+	    	$VideoTrigger.html('<img id="videoselect" alt="Video" <?php echo $RENDER->NewImage('video_specific.png');?> src="<?php echo IMAGE_RENDER_PATH;?>video_specific.png"/>');
 			
 	    	$Video.removeClass('active');
 		} else {
                 $('#colorcodes').html('');
-	    	$VideoTrigger.html('<img id="videoselect" alt="Video" <?php echo $RENDER->NewImage('video_specific_active.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>video_specific_active.png"/>');
+	    	$VideoTrigger.html('<img id="videoselect" alt="Video" <?php echo $RENDER->NewImage('video_specific_active.png');?> src="<?php echo IMAGE_RENDER_PATH;?>video_specific_active.png"/>');
 	    	$Video.addClass('active');
 	    }
 	});      
@@ -39,6 +39,8 @@ $(document).ready(function() {
     
 function benchmarksubmit()
 {
+    //console.log($("#benchmarkform").serializeArray());
+    //$.ajax({url:'ajax.php?module=benchmark&action=validateform',data:$("#benchmarkform").serializeArray(),dataType:"text",success:messagedisplay});
     $.getJSON('ajax.php?module=benchmark&action=validateform', $("#benchmarkform").serialize(),messagedisplay);
 }
 
@@ -61,22 +63,23 @@ function messagedisplay(message)
 
 function getBenchmarks(catid)
 {
-    $.getJSON("ajax.php?module=benchmark",{catid:catid},display);
+    $.ajax({url:'ajax.php?module=benchmark',data:{catid:catid},dataType:"html",success:display});
 }
 
 function getDetails(id,origin)
 {
-    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=benchmark\');" <?php echo $RENDER->NewImage('back.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>back.png"/>');
-    $.getJSON("ajax.php?module=benchmark",{benchmarkId:id, origin:origin},display);
-    $.getJSON("ajax.php?module=benchmark",{video:id, benchmarkId:id},videodisplay);
-    $.getJSON("ajax.php?module=benchmark",{topselection:id, benchmarkId:id},topselectiondisplay);
-    $('#menuvideo').html('<img id="videoselect" alt="Video" <?php echo $RENDER->NewImage('video_specific.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>video_specific.png"/>');
+    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=benchmark\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
+    $('#menuvideo').html('<img id="videoselect" alt="Video" <?php echo $RENDER->NewImage('video_specific.png');?> src="<?php echo IMAGE_RENDER_PATH;?>video_specific.png"/>');
+
+    $.ajax({url:'ajax.php?module=benchmark',data:{benchmarkId:id,origin:origin},dataType:"html",success:display});  
+    $.ajax({url:'ajax.php?module=benchmark',data:{video:id,benchmarkId:id},dataType:"html",success:videodisplay}); 
+    $.ajax({url:'ajax.php?module=benchmark',data:{topselection:id,benchmarkId:id},dataType:"html",success:topselectiondisplay});
 }
 
 function getCustomDetails(id,origin)
 {
-    $.getJSON("ajax.php?module=benchmark",{WorkoutDate:id, origin:origin},display);
-    $.getJSON("ajax.php?module=benchmark",{topselection:id, WorkoutDate:id},topselectiondisplay);
+    $.ajax({url:'ajax.php?module=benchmark',data:{WorkoutDate:id, origin:origin},dataType:"html",success:display});
+    $.ajax({url:'ajax.php?module=benchmark',data:{topselection:id, WorkoutDate:id},dataType:"html",success:topselectiondisplay});
 }
 
 function topselectiondisplay(data)
@@ -87,8 +90,8 @@ function topselectiondisplay(data)
     codes += '<div class="ui-block-c"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#6f747a" value="Distance" readonly="readonly"/></div>';
     codes += '<div class="ui-block-d"><input type="text" data-role="none" style="width:80%;color:black;font-weight:bold;background-color:#ccff66" value="Reps" readonly="readonly"/></div>';
     codes += '</div>';
-    $('#toplist').html(data);
-    $('#toplist').listview('refresh'); 
+    $('.toplist').html(data);
+    $('.toplist').listview('refresh'); 
     $('#colorcodes').html(codes);
 }
 
@@ -100,8 +103,8 @@ function videodisplay(data)
 function display(data)
 {
     $('#AjaxOutput').html(data);
-    $('#listview').listview();
-    $('#listview').listview('refresh');
+    $('.listview').listview();
+    $('.listview').listview('refresh');
     $('.controlbutton').button();
     $('.controlbutton').button('refresh');
     $('.buttongroup').button();
@@ -119,7 +122,7 @@ function addRound()
 <br/>
 
 <div id="topselection">
-    <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d"></ul>
+    <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d"></ul>
     <div id="colorcodes"></div>
 </div> 
 

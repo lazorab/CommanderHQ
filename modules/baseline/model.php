@@ -122,7 +122,7 @@ class BaselineModel extends Model
                 WHERE recid = "'.$ExerciseId.'"';
                 $db->setQuery($SQL);
                 $Row = $db->loadObject();
-                array_push($Activities, new BaselineObject($Row));
+                array_push($Activities, $Row);
                 }
             }
             else{
@@ -134,7 +134,7 @@ class BaselineModel extends Model
 		$db->Query();
                 if($db->getNumRows() > 0){
                     $Attribute = $db->loadResult();
-                    array_push($Activities, new BaselineObject(array('recid'=>'0','Attribute'=>''.$Attribute.'','AttributeValue'=>''.$val.'','RoundNo'=>''.$RoundNo.'')));
+                    array_push($Activities, array('ExerciseId'=>'0','Attribute'=>''.$Attribute.'','AttributeValue'=>''.$val.'','RoundNo'=>''.$RoundNo.''));
                 }
                 }
             }

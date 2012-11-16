@@ -196,7 +196,7 @@ class ReportsController extends Controller
         }
         $Average = floor($TotalSeconds / $NumLogs);
         $ChartData .= "<trendLines>";
-        $ChartData .= "<line startValue='".$Average."' color='009933' lineThickness='3' displayvalue='Average' />";
+        $ChartData .= "<line startValue='".$Average."' color='009933' lineThickness='3' displayvalue=' ' />";
         $ChartData .= "</trendLines>";
 
         $ChartData .= "</chart>";       

@@ -1,8 +1,4 @@
-<?php
-    $ratio = SCREENWIDTH / 500;
-    $height = floor(660*$ratio);
-    $spacer = floor(150*$ratio);
-    ?>
+
 <div id="loginback">
 <?php echo $Display->Message;?><br/>
 
@@ -19,13 +15,13 @@
 Remember me
 <input type="checkbox" id="remember" name="remember" value="yes" data-role="none"/>
 
-<img onclick="document.login.submit();" alt="Login" <?php echo $RENDER->NewImage('login.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>login.png"/>
+<img onclick="document.login.submit();" alt="Login" <?php echo $RENDER->NewImage('login.png');?> src="<?php echo IMAGE_RENDER_PATH;?>login.png"/>
 </form>
 
 <br/>
 Not a member yet?
 <a href="?module=profile" style="margin-left:0.1%">
-<img alt="Signup" <?php echo $RENDER->NewImage('register.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>register.png"/>
+<img alt="Signup" <?php echo $RENDER->NewImage('register.png');?> src="<?php echo IMAGE_RENDER_PATH;?>register.png"/>
 </a>
 <br/>
 
@@ -38,18 +34,18 @@ Not a member yet?
 <a href="https://dev.twitter.com/docs/auth/implementing-sign-twitter">
 -->
 <a href="?module=login&oauth_provider=twitter" rel="external">
-<img alt="Twitter" <?php echo $RENDER->NewImage('twitter.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>twitter.png"/></a>
+<img alt="Twitter" <?php echo $RENDER->NewImage('twitter.png');?> src="<?php echo IMAGE_RENDER_PATH;?>twitter.png"/></a>
 <!--
 <a href="https://developers.google.com/accounts/docs/OpenID#settingup">
 -->
 <a href="?module=login&oauth_provider=google" rel="external">
-<img alt="Google" <?php echo $RENDER->NewImage('google.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>google.png"/>
+<img alt="Google" <?php echo $RENDER->NewImage('google.png');?> src="<?php echo IMAGE_RENDER_PATH;?>google.png"/>
 </a>
 <!--
 <a href="http://developers.facebook.com/docs/authentication/server-side/">
 -->
 <a href="?module=login&oauth_provider=facebook" rel="external">
-<img alt="Facebook" <?php echo $RENDER->NewImage('facebook.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>facebook.png"/>
+<img alt="Facebook" <?php echo $RENDER->NewImage('facebook.png');?> src="<?php echo IMAGE_RENDER_PATH;?>facebook.png"/>
 </a>
 </div>
 </div>

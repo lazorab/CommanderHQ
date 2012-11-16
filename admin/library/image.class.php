@@ -13,136 +13,164 @@ Last Modified Date: 23 January 2012
 
 class Image
 {
-    var $Image;
-    var $FilePath;
-    var $RenderPath;
-    var $Width;
-    var $Height;
-	
-    function __construct()
-    {
-        $this->FilePath=''.THIS_ROOT.'/images';
-	$this->RenderPath = 'images/';
-    }
-	
-	function Image($image, $ScreenWidth)
+	function __Construct()
+        {
+            
+        }
+        
+	function Image($MasterImage)
 	{
-		if(!file_exists(''.$this->FilePath.'/'.$image.''))
-		{
+            if(!file_exists(''.IMAGE_FILE_PATH.'/'.LAYOUT_WIDTH.'/'.$MasterImage.''))
+            {
 		$ImageToRender = '';
-		}
-		else
-		{
-		$ImageName=explode(".",$image);
+            }
+            else
+            {
+		$ImageName=explode(".",$MasterImage);
 		$FileName = $ImageName[0];
 		$Extension = $ImageName[1];
-		$Size = getimagesize(''.$this->FilePath.'/'.$image.'', $info);
+		$Size = getimagesize(''.IMAGE_FILE_PATH.'/'.LAYOUT_WIDTH.'/'.$MasterImage.'', $info);
 		$MasterWidth=$Size[0];
 		$MasterHeight=$Size[1];
 
-		if($MasterWidth > $ScreenWidth)
+		if(LAYOUT_WIDTH > SCREENWIDTH)
 		{
-			if($MasterWidth > 640)
-				$ratio = $ScreenWidth / $MasterWidth;
-			else
-				$ratio = $ScreenWidth / 640;
+                    $ratio = SCREENWIDTH / LAYOUT_WIDTH;
 		}
-		else
+		else if(SCREENWIDTH > LAYOUT_WIDTH)
 		{
-			$ratio = $ScreenWidth / 640;
-		}	
+                    $ratio = LAYOUT_WIDTH / SCREENWIDTH;
+		}
+                else
+                    $ratio = 1;	
 
 		$NewWidth = floor($MasterWidth * $ratio);
 		$NewHeight = floor($MasterHeight * $ratio);
-		$this->Image = ''.$this->FilePath.'/'.$FileName.'_'.$NewWidth.'_'.$NewHeight.'.'.$Extension.'';
-		$ImageToRender = '/'.$FileName.'_'.$NewWidth.'_'.$NewHeight.'.'.$Extension.'';
+		$Image = ''.IMAGE_FILE_PATH.'/'.LAYOUT_WIDTH.'/'.$FileName.'_'.$NewWidth.'_'.$NewHeight.'.'.$Extension.'';
+		$ImageToRender = ''.$FileName.'_'.$NewWidth.'_'.$NewHeight.'.'.$Extension.'';
 		
-		if(!file_exists($this->Image))
+		if(!file_exists($Image))
 		{			
-			if (preg_match("/jpg|jpeg/",$Extension)){$src_img=imagecreatefromjpeg(''.$this->FilePath.'/'.$image.'');}
-			if (preg_match("/png/",$Extension)){$src_img=imagecreatefrompng(''.$this->FilePath.'/'.$image.'');}
-			if (preg_match("/gif/",$Extension)){$src_img=imagecreatefromgif(''.$this->FilePath.'/'.$image.'');}	
+			if (preg_match("/jpg|jpeg/",$Extension)){$src_img=imagecreatefromjpeg(''.IMAGE_FILE_PATH.'/'.LAYOUT_WIDTH.'/'.$MasterImage.'');}
+			if (preg_match("/png/",$Extension)){$src_img=imagecreatefrompng(''.IMAGE_FILE_PATH.'/'.LAYOUT_WIDTH.'/'.$MasterImage.'');}
+			if (preg_match("/gif/",$Extension)){$src_img=imagecreatefromgif(''.IMAGE_FILE_PATH.'/'.LAYOUT_WIDTH.'/'.$MasterImage.'');}	
 		
 			$dst_img = ImageCreateTrueColor($NewWidth, $NewHeight);
 			imagecopyresampled($dst_img, $src_img, 0, 0, 0, 0, $NewWidth, $NewHeight, $MasterWidth, $MasterHeight);
 			
         if (preg_match("/png/",$Extension))
         {
-            imagepng($dst_img, $this->Image);
+            imagepng($dst_img, $Image);
         } else {
             if (preg_match("/gif/",$Extension))
-                imagegif($dst_img, $this->Image);
+                imagegif($dst_img, $Image);
             else
                 if (preg_match("/wbmp/",$Extension))
-                    imagewbmp($dst_img, $this->Image);
+                    imagewbmp($dst_img, $Image);
                 else
-                    imagejpeg($dst_img, $this->Image);
+                    imagejpeg($dst_img, $Image);
         }			
 
 			imagedestroy($dst_img);
 			imagedestroy($src_img);	
 		}
 		}
-		return ''.$this->RenderPath.''.$ImageToRender.'';
+		return $ImageToRender;
 	}
     
-    function NewImage($image, $ScreenWidth)
+    function NewImage($MasterImage)
 	{
-		if(!file_exists(''.$this->FilePath.'/'.$image.''))
+            $Height = 0;
+            $Width = 0;
+            if(file_exists(''.IMAGE_FILE_PATH.'/'.LAYOUT_WIDTH.'/'.$MasterImage.''))
+            {
+		$Size = getimagesize(''.IMAGE_FILE_PATH.'/'.LAYOUT_WIDTH.'/'.$MasterImage.'', $info);
+		$MasterWidth=$Size[0];
+		$MasterHeight=$Size[1];
+
+		if(LAYOUT_WIDTH > SCREENWIDTH)
 		{
-            $ImageToRender = '';
+                    $ratio = SCREENWIDTH / LAYOUT_WIDTH;
 		}
-		else
+		else if(SCREENWIDTH > LAYOUT_WIDTH)
 		{
-            $Size = getimagesize(''.$this->FilePath.'/'.$image.'', $info);
-            $MasterWidth=$Size[0];
-            $MasterHeight=$Size[1];
-            
-            if($MasterWidth > $ScreenWidth)
-            {
-                if($MasterWidth > 640)
-                    $ratio = $ScreenWidth / $MasterWidth;
+                    $ratio = LAYOUT_WIDTH / SCREENWIDTH;
+		}
                 else
-                    $ratio = $ScreenWidth / 640;
-            }
-            else
-            {
-                $ratio = $ScreenWidth / 640;
-            }	
-            
+                    $ratio = 1;
             $Width = floor($MasterWidth * $ratio);
             $Height = floor($MasterHeight * $ratio);
+                
 		}
 		return 'height="'.$Height.'" width="'.$Width.'"';
 	}
-    
-    function BackgroundImage($image, $ScreenWidth)
+        
+     function ImageSandwich($MiddleImage, $LeftImage, $RightImage)
 	{
-		if(!file_exists(''.$this->FilePath.'/'.$image.''))
+		$Size = getimagesize(''.IMAGE_FILE_PATH.'/'.LAYOUT_WIDTH.'/'.$LeftImage.'', $info);
+		$LeftWidth=floor($Size[0]);
+		$LeftHeight=floor($Size[1]);
+                
+  		$Size = getimagesize(''.IMAGE_FILE_PATH.'/'.LAYOUT_WIDTH.'/'.$RightImage.'', $info);
+		$RightWidth=floor($Size[0]);
+		$RightHeight=floor($Size[1]);  
+                
+                $Size = getimagesize(''.IMAGE_FILE_PATH.'/'.LAYOUT_WIDTH.'/'.$MiddleImage.'', $info);
+		
+		$MiddleHeight=floor($Size[1]);
+
+		if(LAYOUT_WIDTH > SCREENWIDTH)
 		{
-            $ImageToRender = '';
+                    $ratio = SCREENWIDTH / LAYOUT_WIDTH;
 		}
-		else
+		else if(SCREENWIDTH > LAYOUT_WIDTH)
 		{
-            $Size = getimagesize(''.$this->FilePath.'/'.$image.'', $info);
-            $MasterWidth=$Size[0];
-            $MasterHeight=$Size[1];
-            
-            if($MasterWidth > $ScreenWidth)
-            {
-                if($MasterWidth > 640)
-                    $ratio = $ScreenWidth / $MasterWidth;
+                    $ratio = LAYOUT_WIDTH / SCREENWIDTH;
+		}
                 else
-                    $ratio = $ScreenWidth / 640;
-            }
-            else
+                    $ratio = 1;
+                
+            $LeftWidth = floor($LeftWidth * $ratio);
+            $LeftHeight = floor($LeftHeight * $ratio);
+            $RightWidth = floor($RightWidth * $ratio);
+            $RightHeight = floor($RightHeight * $ratio);
+            $MiddleWidth= SCREENWIDTH - $LeftWidth - $RightWidth;
+            $MiddleHeight = floor($MiddleHeight * $ratio);           
+		
+            return 'height="'.$MiddleHeight.'" width="'.$MiddleWidth.'"';
+	}       
+    
+    function BackgroundImage($MasterImage,$Height,$Width)
+	{
+            if(file_exists(''.IMAGE_FILE_PATH.'/'.LAYOUT_WIDTH.'/'.$MasterImage.''))
             {
-                $ratio = $ScreenWidth / 640;
-            }	
-            
-            $Width = floor($MasterWidth * $ratio);
-            $Height = floor($MasterHeight * $ratio);
+		$Size = getimagesize(''.IMAGE_FILE_PATH.'/'.LAYOUT_WIDTH.'/'.$MasterImage.'', $info);
+		$MasterWidth=$Size[0];
+		$MasterHeight=$Size[1];
+
+		if(LAYOUT_WIDTH > SCREENWIDTH)
+		{
+                    $ratio = SCREENWIDTH / LAYOUT_WIDTH;
 		}
-		return "height:".$Height."px; width:".$Width."px; background-image:url('/images/".$image."');";
+		else if(SCREENWIDTH > LAYOUT_WIDTH)
+		{
+                    $ratio = LAYOUT_WIDTH / SCREENWIDTH;
+		}
+                else
+                    $ratio = 1;
+                
+            if($Height > 0){
+                $NewHeight = floor($Height * $ratio);
+            }else{
+                $NewHeight = floor($MasterHeight * $ratio);
+            }
+            
+             if($Width > 0){
+                $NewWidth = floor($Width * $ratio);
+            }else{
+                $NewWidth = floor($MasterWidth * $ratio);
+            }           
+		}
+		return "height:".$NewHeight."px; width:".$NewWidth."px; background-image:url('".IMAGE_FILE_PATH."/".LAYOUT_WIDTH."/".$MasterImage."');";
 	}
 }

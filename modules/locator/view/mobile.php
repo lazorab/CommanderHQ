@@ -7,18 +7,21 @@ function findLocation(position)
 {
     lat = position.coords.latitude;
     lng = position.coords.longitude;
-    $.getJSON("ajax.php?module=locator",{latitude:lat,longitude:lng},display);
+    $.ajax({url:'ajax.php?module=locator',data:{latitude:lat,longitude:lng},dataType:"html",success:display}); 
+    //$.getJSON("ajax.php?module=locator",{latitude:lat,longitude:lng},display);
 }
 
 function noLocation()
 {
-    $.getJSON("ajax.php?module=locator",{latitude:null,longitude:null},display);
+    $.ajax({url:'ajax.php?module=locator',data:{latitude:null,longitude:null},dataType:"html",success:display}); 
+    //$.getJSON("ajax.php?module=locator",{latitude:null,longitude:null},display);
 }
 
 function GymSearch()
 {
     $("#map_canvas").removeClass("active");
-    $.getJSON('ajax.php?module=locator', $("#searchform").serialize(),display);
+    $.ajax({url:'ajax.php?module=locator',data:$("#searchform").serialize(),dataType:"html",success:display});
+    //$.getJSON('ajax.php?module=locator', $("#searchform").serialize(),display);
     $('#topselection').html('<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d"><li>Search Results</li></ul>');
     $('#toplist').listview(); 
     $('#toplist').listview('refresh');   
@@ -26,15 +29,20 @@ function GymSearch()
 
 function goBack()
 {
+    $.ajax({url:'ajax.php?module=locator',data:{latitude:lat,longitude:lng},dataType:"html",success:display});
+    $("#map_canvas").html("");
     $("#map_canvas").removeClass("active");
-    $.getJSON("ajax.php?module=locator",{latitude:lat,longitude:lng},display);
+    topselectiondisplay('<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d"><li>Affiliate Gyms Near you</li></ul>');
+    //$.getJSON("ajax.php?module=locator",{latitude:lat,longitude:lng},display);
 }
 
 function getDetails(id)
 {
-    $('#back').html('<img alt="Back" onclick="goBack();" <?php echo $RENDER->NewImage('back.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>back.png"/>');
-    $.getJSON("ajax.php?module=locator",{Id:id,lat:lat,lng:lng},display);
-    $.getJSON("ajax.php?module=locator",{topselection:id},topselectiondisplay);
+    $('#back').html('<img alt="Back" onclick="goBack();" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
+    $.ajax({url:'ajax.php?module=locator',data:{Id:id,lat:lat,lng:lng},dataType:"html",success:display});
+    $.ajax({url:'ajax.php?module=locator',data:{topselection:id},dataType:"html",success:topselectiondisplay});
+    //$.getJSON("ajax.php?module=locator",{Id:id,lat:lat,lng:lng},display);
+    //$.getJSON("ajax.php?module=locator",{topselection:id},topselectiondisplay);
 }
 
 function topselectiondisplay(data)

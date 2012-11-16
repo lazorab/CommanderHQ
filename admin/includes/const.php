@@ -4,37 +4,41 @@ define("QA", true);
 
 define("SUBSCRIPTION", false);
 
+define('FORCEMOBILE',true);
+
+//define('HOST','Local');
+define('HOST','Remote');
+
+if(HOST == 'Remote'){
 //define("FRAMEWORK_ROOT", $_SERVER['DOCUMENT_ROOT']);
 //define("THIS_ROOT", ''.$_SERVER['DOCUMENT_ROOT'].'/crossfit');
+  define('FRAMEWORK_URL','http://framework.be-mobile.co.za'); 
+  define('FRAMEWORK_PATH','/home/bemobile/public_html/framework'); 
+  define('GLOBAL_LIBRARY','/home/bemobile/public_html/global/library/2_0/'); 
+}else{
+  define('FRAMEWORK_URL','http://localhost/framework/new');  
+  define('FRAMEWORK_PATH',''.$_SERVER['DOCUMENT_ROOT'].'/be-mobile/framework/new'); 
+  define('GLOBAL_LIBRARY','/home/bemobile/public_html/framework/'); 
+}
 
 define('ERROR_REPORT_SITE_NAME', 'Commander HQ');
 define('ERROR_REPORT_EMAIL_ADDRESS', 'support@be-mobile.co.za');
 
 if (QA) {
-    define('TEST_EMAIL', 'devguru@be-mobile.co.za');
+    define('COMMANDER_EMAIL', 'devguru@be-mobile.co.za');
     define("THIS_DOMAIN", "crossfit.be-mobile.co.za");
+    define("THIS_ADDRESS", "http://crossfit.be-mobile.co.za/admin/");
 } else {
-    define('TEST_EMAIL', 'devguru@be-mobile.co.za');
+    define('COMMANDER_EMAIL', 'devguru@be-mobile.co.za');
     define("THIS_DOMAIN", "crossfit.be-mobile.co.za");
+    define("THIS_ADDRESS", "http://crossfit.be-mobile.co.za/admin/");
 }
 
 /* Database Settings */
-define("DB_CUSTOM_DATABASE", "bemobile_CrossFit");
+define("DB_CUSTOM_DATABASE", "bemobile_Commander");
 
 
-/* Global Pages */
-define('GLOBAL_PAGES', '../../global/pages/');
-
-/* Asset URL */
-
-define('ASSET_URL', 'http://www.be-mobile.co.za/framework/img.php?account_id=5&amp;disp=1&amp;meta=~~meta~~&amp;site_width=');
-
-define('ASSET_API_URL', 'http://asset.be-mobile.co.za/api/');
-
-/* Image Direct */
-define('IMAGE_DIRECT', 'http://www.be-mobile.co.za/framework/img_direct.php');
-define('ImagePath', '/images/');
-    
+define('IMAGE_FILE_PATH', './images');
 /* Site Settings */
 define("SITE_ID", "53");
 define("DEFAULT_SITE_LANGUAGE", "1");
@@ -53,8 +57,6 @@ define("EnquiryEmailAddress","devguru@be-mobile.co.za");
 define('ACTIVE', '1');
 define('INACTIVE', '0');
 
-$Device = new DeviceManager;
-define('SCREENWIDTH',$Device->GetScreenWidth());
 define('DEFAULT_SUB_NUMBER', '+27760000000');
 define('SMS_ENABLED', true);
 ?>

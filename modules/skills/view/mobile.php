@@ -1,8 +1,17 @@
 <script type="text/javascript">	
+    $(function(){
+        $('#slides').slides({
+            preload: true,
+            preloadImage: 'images/ajax-loader.gif',
+            generatePagination: true,
+            slideSpeed: 500,
+            effect: 'slide'
+        });
+    });    
 
-function getExercise(exercise)
+function getImages(type)
 {
-    $.getJSON("ajax.php?module=skills",{exercise:exercise},display);
+    $.getJSON("ajax.php?module=skills",{exercisetype:type},display);
 }
 
 function display(data)
@@ -19,24 +28,26 @@ function display(data)
 
 </script>
 
-<div id="content">
 <br/>
-<form name="skillsform" id="skillsform" action="index.php" method="post">
-<input type="hidden" name="module" value="skills"/>
-<select id="exerciseselect" name="exercise" class="select" onchange="getExercise(this.value);">
-<option value="">Select Exercise</option>
-<?php
-$Selected = '';
-$Exercises = $Display->getExercises();
-foreach($Exercises as $Exercise){
-    if($_REQUEST['exercise'] == $Exercise->Id)
-        $Selected =' selected="selected"'; ?>
-    <option value="<?php echo $Exercise->Exercise;?>"<?php echo $Selected;?>><?php echo $Exercise->Exercise; ?></option>
-<?php } ?>
-</select><br/>
-</form>
+
 <br/>
 <div id="AjaxOutput">
-<?php echo $Display->Output();?>
-</div>
+      <div id="slides">
+        <div class="slides_container">
+            <div class="slide">
+                <img alt="Level1" <?php echo $RENDER->NewImage('Level 2 Hips.png');?> src="<?php echo IMAGE_RENDER_PATH;?>Level 2 Hips.png"/>
+            </div>
+            <div class="slide">
+                <img alt="Level2" <?php echo $RENDER->NewImage('Level 2 Hips.png');?> src="<?php echo IMAGE_RENDER_PATH;?>Level 2 Hips.png"/>
+            </div>
+            <div class="slide">
+                <img alt="Level3" <?php echo $RENDER->NewImage('Level 2 Hips.png');?> src="<?php echo IMAGE_RENDER_PATH;?>Level 2 Hips.png"/>
+            </div>
+            <div class="slide">
+                <img alt="Level4" <?php echo $RENDER->NewImage('Level 2 Hips.png');?> src="<?php echo IMAGE_RENDER_PATH;?>Level 2 Hips.png"/>
+            </div>       
+        </div>
+        <a href="#" class="prev"><img src="<?php echo IMAGE_RENDER_PATH;?>arrow-next.png" width="36" height="36" alt="Arrow Prev"></a>
+        <a href="#" class="next"><img src="<?php echo IMAGE_RENDER_PATH;?>arrow-prev.png" width="36" height="36" alt="Arrow Next"></a>
+    </div>
 </div>

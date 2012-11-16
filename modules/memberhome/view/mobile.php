@@ -11,49 +11,49 @@ echo $Display->FirstTimeMessage();
 
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
 <a href="#" onclick="OpenThisPage('index.php?module=wod');">
-<img alt="WOD" <?php echo $RENDER->NewImage('wod.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>wod.png"/>
+<img alt="WOD" <?php echo $RENDER->NewImage('wod.png');?> src="<?php echo IMAGE_RENDER_PATH;?>wod.png"/>
 </a>
 </div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
 <a href="#" onclick="OpenThisPage('?module=locator');">
-<img alt="Affiliates" <?php echo $RENDER->NewImage('affiliates.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>affiliates.png"/>
+<img alt="Affiliates" <?php echo $RENDER->NewImage('affiliates.png');?> src="<?php echo IMAGE_RENDER_PATH;?>affiliates.png"/>
 </a>
 </div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
 <a href="#" onclick="OpenThisPage('?module=aboutcrossfit');">
-<img alt="About" <?php echo $RENDER->NewImage('crossfit.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>crossfit.png"/>
+<img alt="About" <?php echo $RENDER->NewImage('crossfit.png');?> src="<?php echo IMAGE_RENDER_PATH;?>crossfit.png"/>
 </a>
 </div>
 <div class="clear"></div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
 <a href="#" onclick="OpenThisPage('?module=challenge');">
-<img alt="Challenge" <?php echo $RENDER->NewImage('challenges.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>challenges.png"/>
+<img alt="Challenge" <?php echo $RENDER->NewImage('challenges.png');?> src="<?php echo IMAGE_RENDER_PATH;?>challenges.png"/>
 </a>
 </div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
 <a href="#" onclick="OpenThisPage('?module=nutrition');">
-<img alt="Nutrition" <?php echo $RENDER->NewImage('nutrition.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>nutrition.png"/>
+<img alt="Nutrition" <?php echo $RENDER->NewImage('nutrition.png');?> src="<?php echo IMAGE_RENDER_PATH;?>nutrition.png"/>
 </a>
 </div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
 <a href="#" onclick="OpenThisPage('?module=book');">
-<img alt="Book" <?php echo $RENDER->NewImage('booking.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>booking.png"/>
+<img alt="Book" <?php echo $RENDER->NewImage('booking.png');?> src="<?php echo IMAGE_RENDER_PATH;?>booking.png"/>
 </a>
 </div>
 <div class="clear"></div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px <?php echo $margin;?>px <?php echo $margin;?>px;">
 <a href="#" onclick="OpenThisPage('?module=reports');">
-<img alt="Reports" <?php echo $RENDER->NewImage('reports.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>reports.png"/>
+<img alt="Reports" <?php echo $RENDER->NewImage('reports.png');?> src="<?php echo IMAGE_RENDER_PATH;?>reports.png"/>
 </a>
 </div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px <?php echo $margin;?>px <?php echo $margin;?>px;">
 <a href="#" onclick="OpenThisPage('?module=skills');">
-<img alt="Skills" <?php echo $RENDER->NewImage('skills.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>skills.png"/>
+<img alt="Skills" <?php echo $RENDER->NewImage('skills.png');?> src="<?php echo IMAGE_RENDER_PATH;?>skills.png"/>
 </a>
 </div>
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px <?php echo $margin;?>px <?php echo $margin;?>px;">
 <a href="#" onclick="OpenThisPage('?module=products');">
-<img alt="Store" <?php echo $RENDER->NewImage('store.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>store.png"/>
+<img alt="Store" <?php echo $RENDER->NewImage('store.png');?> src="<?php echo IMAGE_RENDER_PATH;?>store.png"/>
 </a>
 </div>
 <div class="clear"></div>

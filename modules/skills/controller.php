@@ -13,67 +13,90 @@ class SkillsController extends Controller
     
     function getExercises()
     {
-		$Model = new SkillsModel;
+	$Model = new SkillsModel;
         $Exercises = $Model->getExercises();
-        return $Exercises;
+        $Html = '<form name="skillsform" id="skillsform" action="index.php" method="post">
+                <input type="hidden" name="module" value="skills"/>
+                <select id="exerciseselect" name="exercise" class="select" onchange="getImages(this.value);">
+                <option value="">Select Exercise</option>';
+
+        $Selected = '';
+
+        foreach($Exercises as $Exercise){
+            if($_REQUEST['exercise'] == $Exercise->Id)
+                $Selected =' selected="selected"';
+            $Html .= '<option value="'.$Exercise->Exercise.'"'.$Selected.'>'.$Exercise->Exercise.'</option>';
+        } 
+        $Html .= '</select></form><br/>';   
+        return $Html;
     }
+    
+     function getExerciseTypes()
+    {
+        $Html = '<form name="skillsform" id="skillsform" action="index.php" method="post">
+                <input type="hidden" name="module" value="skills"/>
+                <select id="exerciseselect" name="exercisetype" class="select" onchange="getImages(this.value);">
+                <option value="">Select Exercise Type</option>';
+            $Selected ='';
+            if($_REQUEST['exercisetype'] == 'Core')
+                $Selected =' selected="selected"';
+            $Html .= '<option value="Core"'.$Selected.'>Core</option>';
+             $Selected ='';
+            if($_REQUEST['exercisetype'] == 'Hips')
+                $Selected =' selected="selected"';           
+            $Html .= '<option value="Hips"'.$Selected.'>Hips</option>';
+             $Selected ='';
+            if($_REQUEST['exercisetype'] == 'Pull')
+                $Selected =' selected="selected"';           
+            $Html .= '<option value="Pull"'.$Selected.'>Pull</option>';
+             $Selected ='';
+            if($_REQUEST['exercisetype'] == 'Push')
+                $Selected =' selected="selected"';           
+            $Html .= '<option value="Push"'.$Selected.'>Push</option>';
+             $Selected ='';
+            if($_REQUEST['exercisetype'] == 'Speed')
+                $Selected =' selected="selected"';           
+            $Html .= '<option value="Speed"'.$Selected.'>Speed</option>';
+             $Selected ='';
+            if($_REQUEST['exercisetype'] == 'Work')
+                $Selected =' selected="selected"';           
+            $Html .= '<option value="Work"'.$Selected.'>Work</option>';
+         
+        $Html .= '</select></form><br/>';   
+        return $Html;
+    }   
 	
 	function Output()
 	{
-		$Model = new SkillsModel;
-
-            $html='';
-		if(isset($_REQUEST['exercise']))
-		{	
-            $ChosenExercise = $Model->getExercise();
-			//var_dump($ChosenExercise);
-            $html .= 'Current Skills Level: '.$ChosenExercise[0]->CurrentSkillsLevel.'<'.$this->Wall.'br/>';
-
-            //$ExerciseAttributes = $Model->getExerciseAttributes($_REQUEST['exercise']);
-
-            $clock = '';
-            $LevelOneHtml = '<div class="ui-block-a">Level 1:</div><div class="ui-block-b">';
-            $LevelTwoHtml = '<div class="ui-block-a">Level 2:</div><div class="ui-block-b">';
-            $LevelThreeHtml = '<div class="ui-block-a">Level 3:</div><div class="ui-block-b">';
-            $LevelFourHtml = '<div class="ui-block-a">Level 4:</div><div class="ui-block-b">';
-            foreach($ChosenExercise as $Exercise){
+            $RENDER = new Image();
+            $Html=$this->getExerciseTypes();
+            if(isset($_REQUEST['exercisetype'])){
                 
-                if($Exercise->Attribute == 'TimeToComplete'){
-                    $Attribute = 'Time';
-                }else{
-                    $Attribute = $Exercise->Attribute;
-                }
-                if($Exercise->Attribute == 'Weight' && $Exercise->LevelOneValue == '0.00'){
-                    $html .= 'Body Weight';
-                }else if($Exercise->Attribute == 'Weight' && $Exercise->LevelTwoValue == '0.00'){
-                    $html .= 'Body Weight';
-                }else if($Exercise->Attribute == 'Weight' && $Exercise->LevelThreeValue == '0.00'){
-                    $html .= 'Body Weight';
-                }else if($Exercise->Attribute == 'Weight' && $Exercise->LevelFourValue == '0.00'){
-                    $html .= 'Body Weight';
-                }else{
-                    if($Exercise->LevelOneValue != null){
-                        $LevelOneHtml .= ''.$Attribute.':</div><div class="ui-block-c">'.$Exercise->LevelOneValue.'</div><div class="ui-block-a"></div><div class="ui-block-b">';
-                    }
-                    if($Exercise->LevelTwoValue != null){
-                        $LevelTwoHtml .= ''.$Attribute.':</div><div class="ui-block-c">'.$Exercise->LevelTwoValue.'</div><div class="ui-block-a"></div><div class="ui-block-b">';
-                    }
-                    if($Exercise->LevelThreeValue != null){
-                        $LevelThreeHtml .= ''.$Attribute.':</div><div class="ui-block-c">'.$Exercise->LevelThreeValue.'</div><div class="ui-block-a"></div><div class="ui-block-b">';	
-                    }
-                    if($Exercise->LevelFourValue != null){
-                        $LevelFourHtml .= ''.$Attribute.':</div><div class="ui-block-c">'.$Exercise->LevelFourValue.'</div><div class="ui-block-a"></div><div class="ui-block-b">';
-                    }
-                }
-                
-			
-		}
-		$html .= '<div class="ui-grid-b">'.$LevelOneHtml.'</div>'.$LevelTwoHtml.'</div>'.$LevelThreeHtml.'</div>'.$LevelFourHtml.'</div></div>';
-}
-else{
-    $html = 'Select an exercise to view the breakdown of suggested skills levels';
-}
-        return $html;
+                 $Level1Image = ''.$RENDER->NewImage('Level 1 '.$_REQUEST['exercisetype'].'.png').' src="'.IMAGE_RENDER_PATH.'Level 1 '.$_REQUEST['exercisetype'].'.png"';
+                $Level2Image = ''.$RENDER->NewImage('Level 2 '.$_REQUEST['exercisetype'].'.png').' src="'.IMAGE_RENDER_PATH.'Level 2 '.$_REQUEST['exercisetype'].'.png"';
+                $Level3Image = ''.$RENDER->NewImage('Level 3 '.$_REQUEST['exercisetype'].'.png').' src="'.IMAGE_RENDER_PATH.'Level 3 '.$_REQUEST['exercisetype'].'.png"';
+                $Level4Image = ''.$RENDER->NewImage('Level 4 '.$_REQUEST['exercisetype'].'.png').' src="'.IMAGE_RENDER_PATH.'Level 4 '.$_REQUEST['exercisetype'].'.png"';
+      $Html.='<div id="slides">';
+      $Html.='  <div class="slides_container">';
+       $Html.='     <div class="slide">';
+        $Html.='        <img alt="Level1" '.$Level1Image.'/>';
+        $Html.='    </div>';
+        $Html.='    <div class="slide">';
+        $Html.='        <img alt="Level2" '.$Level2Image.'/>';
+        $Html.='    </div>';
+        $Html.='    <div class="slide">';
+         $Html.='       <img alt="Level3" '.$Level3Image.'/>';
+          $Html.='  </div>';
+         $Html.='   <div class="slide">';
+         $Html.='       <img alt="Level4" '.$Level4Image.'/>';
+          $Html.='  </div>  ';         
+       $Html.=' </div>';
+       $Html.=' <a href="#" class="prev"><img src="'.IMAGE_RENDER_PATH.'arrow-next.png" width="36" height="36" alt="Arrow Prev"></a>';
+        $Html.='<a href="#" class="next"><img src="'.IMAGE_RENDER_PATH.'arrow-prev.png" width="36" height="36" alt="Arrow Next"></a>';
+    $Html.='</div>';             
+            }
+
+            return $Html;
 	}
 	
 	function getStopWatch()

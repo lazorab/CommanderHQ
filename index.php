@@ -1,15 +1,6 @@
 <?php
 
-require_once("includes/includes.php");
-
-$Device = new DeviceManager();
-	
-$Request = new BRequest();
-
-define('SCREENWIDTH',$Request->get_screen_width());
-
-
-$RENDER = new Image();	
+require_once("includes/includes.php");	
 
 if( !isset( $_REQUEST['module'] ) )
 $Module = 'login';
@@ -43,7 +34,7 @@ include("includes/header/$Environment.php");
     if(isset($_REQUEST['banner']))
         $Banner = $_REQUEST['banner'];
     else if($_REQUEST['module'] != '' && $_REQUEST['module'] != 'memberhome'){
-        if (file_exists(''.ImagePath.$_REQUEST['module'].'.php'))
+        if (file_exists(''.IMAGE_RENDER_PATH.$_REQUEST['module'].'.php'))
         $Banner = ''.$_REQUEST['module'].'_header';
     }
 ?>
@@ -51,7 +42,7 @@ include("includes/header/$Environment.php");
 <div data-role="page" data-theme="c">
 
 <div id="header">
-<img alt="Header" <?php echo $RENDER->NewImage(''.$Banner.'.png', SCREENWIDTH);?> src="<?php echo ImagePath.$Banner;?>.png"/>
+<img alt="Header" <?php echo $RENDER->NewImage(''.$Banner.'.png');?> src="<?php echo IMAGE_RENDER_PATH.$Banner;?>.png"/>
 </div>
 <?php if(isset($_SESSION['UID'])){
 /*MENU*/	

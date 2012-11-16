@@ -67,17 +67,25 @@ class CustomController extends Controller
         <input type="hidden" name="form" value="submitted"/>
         <input type="hidden" name="origin" value="'.$this->Origin.'"/>
         <input type="hidden" name="rowcount" id="rowcounter" value="0"/>
+        <input type="hidden" name="Round1Counter" id="Round1Counter" value="0"/>
         <input type="hidden" name="Rounds" id="addround" value="1"/>';
         
-        //$Html .= '<input class="textinput" type="text" name="WorkoutName" value="" placeholder="Name your WOD"/>'; 
-
-        //$Html .= '<br/>';
+        $Html .= '<div class="ui-grid-b">';
+        $Html .= '<div id="Round1Label"></div>';
+        $Html .= '<div id="new_exercise">'.$this->ChosenExercises().'</div>';
+        $Html .= '</div>';
+        
+        $Html .= '<div class="ui-grid-b">';
+        $Html .= '<div id="add_exercise">'.$this->AddExercise().'</div>';
+        $Html .= '</div>';       
+        
+        $Html .= '<br/>';
+        
         $Html .= '<div id="exercises">';
         $Html .= $this->getExercises();
         $Html .= '</div>';
 
         $Html .= $this->getRoundCounter();
-        //$Html .= '<div id="workouttypes">'.$this->WorkoutTypes($_REQUEST['workouttype']).'</div>';
         
 	if($_REQUEST['form'] == 'submitted'){
 	$Html .= '<div class="ui-grid-c">';
@@ -87,11 +95,7 @@ class CustomController extends Controller
         $Html .= '<div class="ui-block-d"><input type="text" data-role="none" style="width:80%;color:black;font-weight:bold;background-color:#ccff66" value="Reps" readonly="readonly"/></div>';
         $Html .= '</div>';
 	}
-        $Html .= '<div class="ui-grid-b">';
-        $Html .= '<div id="Round1Label"></div>';
-        $Html .= '<div id="add_exercise">'.$this->AddExercise().'</div>';
-        $Html .= '<div id="new_exercise">'.$this->ChosenExercises().'</div>';
-        $Html .= '</div>';
+
     
         $Html.='<div id="timerContainer"></div>';   
         $Html.='<input type="hidden" name="clockType" id="clockType" value=""/>';

@@ -52,7 +52,7 @@ $SmsResult = true;
 		$mail->setSubject('Invitation to Commander HQ');
 		$mail->setPriority('normal');
 		$mail->setHTML($message);
-                $MailResult =  $mail->send(array($_REQUEST['FriendEmail']));
+                $MailResult =  $mail->send(array($_REQUEST['FriendEmail']));                
             }
             
             if($_REQUEST['FriendCell'] != ''){

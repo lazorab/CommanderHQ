@@ -2,29 +2,29 @@
 
 function getWOD()
 {    
-    $('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif", SCREENWIDTH);?> src="/css/images/ajax-loader.gif" />');
-        $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=wod\');" <?php echo $RENDER->NewImage('back.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>back.png"/>');
+    $('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif");?> src="/css/images/ajax-loader.gif" />');
+        $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=wod\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
 	$.getJSON("ajax.php?module=wod",{wod:'display'},display);	
 	$.getJSON("ajax.php?module=wod",{topselection:'mygym'},topdisplay);	
 }
 
 function getFeedDetails(ThisWorkout)
 {
-    $('#back').html('<img alt="Back" onclick="goBack();" <?php echo $RENDER->NewImage('back.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>back.png"/>');
+    $('#back').html('<img alt="Back" onclick="goBack();" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
     $.getJSON("ajax.php?module=wod",{Workout:ThisWorkout},display);
     $.getJSON("ajax.php?module=wod",{topselection:ThisWorkout},topselectiondisplay);
 }
 
 function getDetails(ThisWorkout,ThisWodType)
 {
-    $('#back').html('<img alt="Back" onclick="goBack();" <?php echo $RENDER->NewImage('back.png', SCREENWIDTH);?> src="<?php echo ImagePath;?>back.png"/>');
+    $('#back').html('<img alt="Back" onclick="goBack();" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
     $.getJSON("ajax.php?module=wod",{Workout:ThisWorkout},display);
     $.getJSON("ajax.php?module=wod",{topselection:ThisWorkout},topselectiondisplay);
 }
 
 function goBack()
 {
-	$('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif", SCREENWIDTH);?> src="/css/images/ajax-loader.gif" />');
+	$('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif");?> src="/css/images/ajax-loader.gif" />');
 	$.getJSON("ajax.php?module=wod",{wod:'display'},display);	
 	$.getJSON("ajax.php?module=wod",{topselection:'mygym'},topdisplay);
 }

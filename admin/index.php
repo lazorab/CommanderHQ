@@ -1,13 +1,6 @@
 <?php
-require_once("includes/includes.php");
-session_start();
 
-//$Device = new DeviceManager();
-$HtmlOutput = new HTML5CoreManager();	
-$Request = new BRequest();
-
-//global $RENDER;
-$RENDER = new Image();	
+require_once("includes/includes.php");	
 
 if( !isset( $_REQUEST['module'] ) )
 $Module = 'login';
@@ -25,8 +18,8 @@ exit();
 }	
 
 $Display = new $ControllerClass;
+//$Environment = $Display->getEnvironment();
 $Environment = 'website';
-
 ?>
 <!DOCTYPE html>
 <html manifest="manifest.php" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -41,17 +34,22 @@ include("includes/header/$Environment.php");
     if(isset($_REQUEST['banner']))
         $Banner = $_REQUEST['banner'];
     else if($_REQUEST['module'] != '' && $_REQUEST['module'] != 'memberhome'){
-        if (file_exists(''.ImagePath.$_REQUEST['module'].'.php'))
+        if (file_exists(''.IMAGE_RENDER_PATH.$_REQUEST['module'].'.php'))
         $Banner = ''.$_REQUEST['module'].'_header';
     }
 ?>
     <body>
-<div data-role="page">
+<div data-role="page" data-theme="c">
 
 <div id="header">
-<img alt="Header" src="<?php echo ImagePath.$Banner;?>.png"/>
+<img alt="Header" src="<?php echo IMAGE_RENDER_PATH.$Banner;?>.png"/>
 </div>
-
+<?php if(isset($_SESSION['UID'])){
+/*MENU*/	
+if (file_exists("includes/menu/$Environment.php"))
+include("includes/menu/$Environment.php");
+    }
+?>
 <div id="content">
 <?php
 /*CONTENT*/	
@@ -69,4 +67,4 @@ include("includes/footer/$Environment.php");
 </div><!-- /page -->
 <?php //echo $HtmlOutput->GetCloseBodyTag();?>
     </body>
-</html>
+</html>l>

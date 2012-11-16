@@ -116,7 +116,7 @@ var i = 1;//prevent double rendering problem
 <div id="BenchmarkDetails">FusionCharts will load here!</div>
 </div>
 </div>
-<a href="#" class="prev"><img src="images/arrow-next.png" width="36" height="36" alt="Arrow Prev"></a>
-<a href="#" class="next"><img src="images/arrow-prev.png" width="36" height="36" alt="Arrow Next"></a>
+<a href="#" class="prev"><img src="<?php echo IMAGE_RENDER_PATH;?>/arrow-next.png" width="36" height="36" alt="Arrow Prev"></a>
+<a href="#" class="next"><img src="<?php echo IMAGE_RENDER_PATH;?>/arrow-prev.png" width="36" height="36" alt="Arrow Next"></a>
 </div>
 </div>

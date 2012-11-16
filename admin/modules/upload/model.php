@@ -5,8 +5,7 @@ class UploadModel extends Model
     
 	function __construct()
 	{
-		mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD);
-		@mysql_select_db(DB_CUSTOM_DATABASE) or die("Unable to select database");	
+	
 	}
     
     function Save()
@@ -23,18 +22,20 @@ class UploadModel extends Model
                 }
             //var_dump($ActivityFields);
             if($this->Message == ''){
-      
-            $SQL = 'INSERT INTO WodWorkouts(GymId, WorkoutName, WodTypeId, WorkoutRoutineTypeId, WodDate) 
+                $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+                $SQL = 'INSERT INTO WodWorkouts(GymId, WorkoutName, WodTypeId, WorkoutRoutineTypeId, WodDate) 
                 VALUES("'.$_SESSION['GID'].'", "'.$_REQUEST['WorkoutName'].'", "'.$WodTypeId.'", "'.$WorkoutRoutineTypeId.'", "'.$_REQUEST['WodDate'].'")';
-            mysql_query($SQL);
-            $WodId = mysql_insert_id();
+                $db->setQuery($SQL);
+                $db->Query();
+                $WodId = $db->insertid();
             
             if($Activities != null){
             foreach($Activities AS $ActivityField)
             {
                 $SQL = 'INSERT INTO WodDetails(WodId, ExerciseId, AttributeId, AttributeValue, RoundNo) 
                 VALUES("'.$WodId.'", "'.$ActivityField->recid.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->RoundNo.'")';
-                mysql_query($SQL);
+        $db->setQuery($SQL);
+	$db->Query();
 		}
             }
                 $this->Message = 'Success';
@@ -47,14 +48,17 @@ class UploadModel extends Model
         function SaveNewExercise()
 	{
             if($this->UserIsSubscribed()){
+                $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
                 $SQL = 'INSERT INTO Exercises(Exercise, Acronym) 
                     VALUES("'.$_REQUEST['NewExercise'].'", "'.$_REQUEST['Acronym'].'")';
-                mysql_query($SQL);
-                $ExerciseId = mysql_insert_id();
+                $db->setQuery($SQL);
+                $db->Query();
+                $ExerciseId = $db->insertid();
                 foreach($_REQUEST['ExerciseAttributes'] AS $Attribute){
                     $SQL = 'INSERT INTO ExerciseAttributes(ExerciseId, AttributeId) 
                         VALUES("'.$ExerciseId.'","'.$this->getAttributeId($Attribute).'")';
-                    mysql_query($SQL);               
+                    $db->setQuery($SQL);
+                    $db->Query();              
                 }
                 $Message = 'Exercise Successfully Added!';               
             }else{
@@ -65,23 +69,20 @@ class UploadModel extends Model
         
 	function getAttributes()
 	{
-            $Attributes = array();
-            $Query = 'SELECT recid, Attribute FROM Attributes';
-            $Result = mysql_query($Query);	
-            while($Row = mysql_fetch_assoc($Result))
-            {
-		array_push($Attributes, new UploadObject($Row));
-            }
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT recid, Attribute FROM Attributes';
+            $db->setQuery($SQL);
 		
-            return $Attributes; 
+            return $db->loadObjectList(); 
 	}
         
         function getExerciseName($ExerciseId)
         {
-            $Query = 'SELECT Exercise FROM Exercises WHERE recid = '.$ExerciseId.'';
-            $Result = mysql_query($Query);
-            $Row = mysql_fetch_assoc($Result);
-            return $Row['Exercise'];
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT Exercise FROM Exercises WHERE recid = '.$ExerciseId.'';
+            $db->setQuery($SQL);
+		
+            return $db->loadResult();
         }     
     
     function getActivityFields()

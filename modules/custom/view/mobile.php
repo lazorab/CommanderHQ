@@ -26,9 +26,9 @@ var chosenexercises;
 				alert(direction);
 			}
 	//$(document).bind('pageinit',function(){
-        $(document)..bind('pageinit',function() {    
+        $(document).bind('pageinit',function() {    
             
-             $(".swipeleft").unbindSwipe().touchSwipeLeft(callback);
+             $(".swipeleft").unbindSwipe().touchSwipeLeft(swipeleftaction);
             $(document).on("click","#tabata",function(){
             document.getElementById('clockType').value = 'tabata'; 
 		var timer = new STTabataTimerViewControllerNew();
@@ -86,13 +86,15 @@ var chosenexercises;
         });
 
 function getContent(selection)
-{
-    $.getJSON("ajax.php?module=custom",{baseline:selection},display);
+{  
+    $.ajax({url:'ajax.php?module=custom',data:{baseline:selection},dataType:"html",success:display});  
+    //$.getJSON("ajax.php?module=custom",{baseline:selection},display);
 }
 
 function getCustomExercise(id)
 {
-    $.getJSON("ajax.php?module=custom",{customexercise:id},display);
+    $.ajax({url:'ajax.php?module=custom',data:{customexercise:id},dataType:"html",success:display});  
+    //$.getJSON("ajax.php?module=custom",{customexercise:id},display);
 }
 
 function messagedisplay(message)
@@ -211,20 +213,23 @@ function addNewExercise()
 
 function DisplayExercise(exercise)
 {
-    if($('#addround').val() == 1){
-        $('#Round1Label').html('<div class="ui-block-a"></div><div class="ui-block-b" style="text-align:center">Round 1</div><div class="ui-block-c"></div>');
-    }
-    $.getJSON("ajax.php?module=custom",{chosenexercise:exercise},function(json) {
+    //$.getJSON("ajax.php?module=custom",{chosenexercise:exercise},function(json) {
+    $.ajax({url:'ajax.php?module=custom',data:{chosenexercise:exercise,encode:'json'},dataType:"json",success:function(json) { 
+
     var attributecount = 0;
     $.each(json, function() {attributecount++;});
     var new_exercise = $('#new_exercise');
     var i = document.getElementById('rowcounter').value;
+    var RoundNo = document.getElementById('addround').value;
     var j = 0;
     var html = '';
     var Bhtml = '';
     var Chtml = '';
     var ThisExercise = '';
     var Unit = '';
+    if($('#addround').val() == 1){
+        $('#Round1Label').html('<div class="ui-block-a"></div><div class="ui-block-b" style="text-align:center">Round 1</div><div class="ui-block-c"></div>');
+    }
     if(i < 1 && document.getElementById('controls').innerHTML == ''){
         $('#controls').html('<input class="buttongroup" type="button" onclick="customsubmit();" value="Save"/>');
     }
@@ -244,14 +249,15 @@ function DisplayExercise(exercise)
                 }
            
                 i++;
-
-                html +='</div><div class="row_' + i + '">';
+                document.getElementById('Round' + RoundNo + 'Counter').value++;
+                
+                html +='</div><div id="row_' + i + '">';
                 html +='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
                 html +='<div class="ui-block-a" style="font-size:small">';
 
                 //html+='<input class="buttongroup" data-icon="delete" name="exercise_' + i + '" type="button" onClick="RemoveFromList(' + i + ')" value="';
                 //html += '<input onclick="RemoveFromList(' + i + ')" type="checkbox" name="exercise_' + i + '" checked="checked" value="/>';
-                html +='<input id="' + this.InputFieldName + '" onclick="RemoveFromList(' + i + ')" class="textinput" data-inline="true" type="text" style="width:75%;" name="" value="' + this.InputFieldName + '"/>';
+                html +='<input id="' + this.InputFieldName + '" onclick="RemoveFromList(' + i + ', ' + RoundNo + ')" class="textinput" data-inline="true" type="text" style="width:75%;" name="" value="' + this.InputFieldName + '"/>';
                   //  html +='"/>';
                 //html += '<div class="swipeleft">' + this.InputFieldName + '</div>';
                 //html +='' + this.InputFieldName + '';
@@ -284,7 +290,7 @@ function DisplayExercise(exercise)
                         Unit = 'cm';
                 }				
            
-                Bhtml +='type="number" data-inline="true" name="' + this.ExerciseId + '___' + this.Attribute + '[]"';
+                Bhtml +='type="number" data-inline="true" name="' + RoundNo + '___' + this.ExerciseId + '___' + this.Attribute + '"';
                 Bhtml +=' value=""';
                 Bhtml +=' placeholder="' + this.Attribute + '"/>'+Unit+'';
                 Bhtml +='</div>';		
@@ -298,7 +304,7 @@ function DisplayExercise(exercise)
 		Chtml +='<div class="ui-block-c">';
                 Chtml +='<input data-corners="false" class="numberinput" ';
 		Chtml +='style="width:75%;color:black;font-weight:bold;background-color:#ccff66" ';
-		Chtml +='type="number" data-inline="true" name="' + this.ExerciseId + '___' + this.Attribute + '[]"';
+		Chtml +='type="number" data-inline="true" name="'+ RoundNo + '___' + this.ExerciseId + '___' + this.Attribute + '"';
                 Chtml +=' value=""';
                 Chtml +=' placeholder="' + this.Attribute + '"/>';
                 Chtml +='</div>';
@@ -312,7 +318,6 @@ function DisplayExercise(exercise)
 
            j++;
           
-           ThisRound = this.RoundNo;
            ThisExercise = this.ActivityName;           
         }); 
      
@@ -328,23 +333,32 @@ function DisplayExercise(exercise)
         }
         html +='</div>';
         //alert(html);
-        chosenexercises += html;
+        //chosenexercises += html;
         $(html).appendTo(new_exercise);
         document.getElementById('rowcounter').value = i; 
         $('.buttongroup').button();
         $('.buttongroup').button('refresh');
         $('.textinput').textinput();
         $('.numberinput').textinput();
-    });
-
         $("#exercise option[value='none']").attr("selected","selected");
-    return false;	
+    }}); 
+        
+    $("#exercise option[value='none']").attr("selected","selected");
+    return false;	       
 }
 
-function RemoveFromList(RowId)
+function RemoveFromList(RowId,RoundNo)
 {
-    $('.row_' + RowId + '').remove();
+    var r=confirm("Remove item?");
+    if (r==true)
+    {
+    $('#row_' + RowId + '').remove();
     document.getElementById('rowcounter').value--;
+    document.getElementById('Round' + RoundNo + 'Counter').value--;
+
+    if(document.getElementById('Round' + RoundNo + 'Counter').value == 0){
+        $('#Round' + RoundNo + 'Label').html('');
+    }
 
     if(document.getElementById('rowcounter').value == 0){
         //$('#new_exercise').html('');
@@ -352,7 +366,8 @@ function RemoveFromList(RowId)
         $('.RoundLabel').html('');
         $('#controls').html('');
         document.getElementById('addround').value = 1;
-        chosenexercises = '';
+        //chosenexercises = '';
+    }
     }
 }
 
@@ -372,14 +387,19 @@ function addnew()
 
 function addRound()
 {  
+    var PrevRoundNo = document.getElementById('addround').value;
     if(document.getElementById('rowcounter').value == 0){
         alert('No Exercises selected!');
+    }else if(document.getElementById('Round' + PrevRoundNo + 'Counter').value == 0){
+        alert('No Exercises selected for round ' + PrevRoundNo + '!');
     }else{
 
-    document.getElementById('addround').value++; 
-    var ThisRound ='<div class="RoundLabel"><div class="ui-block-a"></div><div class="ui-block-b" style="text-align:center">Round ' + document.getElementById('addround').value + '</div><div class="ui-block-c"></div></div>';
+    document.getElementById('addround').value++;
+    var RoundNo = document.getElementById('addround').value;
+    var ThisRound ='<div class="RoundLabel" id="Round' + RoundNo + 'Label"><div class="ui-block-a"></div><div class="ui-block-b" style="text-align:center"><br/>Round ' + RoundNo + '</div><div class="ui-block-c"></div></div>';
+    ThisRound+='<input type="hidden" name="Round' + RoundNo + 'Counter" id="Round' + RoundNo + 'Counter" value="0"/>';
     $(ThisRound).appendTo(new_exercise);
-    $(chosenexercises).appendTo(new_exercise);
+    //$(chosenexercises).appendTo(new_exercise);
 }
     $('.buttongroup').button();
     $('.buttongroup').button('refresh');

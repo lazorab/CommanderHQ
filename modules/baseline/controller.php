@@ -198,7 +198,7 @@ class BaselineController extends Controller
     
     function getStopWatch()
     {
-        $Html='';
+        $Html='<br/>';
         $TimeToComplete = '00:00:0';
         $StartStopButton = 'Start';
         if(isset($_REQUEST['TimeToComplete'])){

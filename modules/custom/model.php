@@ -110,7 +110,6 @@ class CustomModel extends Model
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
         $this->Message = '';
         $Activities = array();
-        $Rounds = $_REQUEST['Rounds'];
         
         foreach($_REQUEST AS $Name=>$Value)
         {
@@ -118,13 +117,12 @@ class CustomModel extends Model
             $ExerciseId = 0;
             $Attribute = '';
             $ExplodedKey = explode('___', $Name);
-            if(sizeof($ExplodedKey) > 1)
+            if(count($ExplodedKey) == 3)
             {
-                foreach($_REQUEST[''.$Name.''] AS $Key=>$Val){
-                    $RoundNo++;
-                $ExerciseId = $ExplodedKey[0];
-                $ExerciseName = $this->getExerciseName($ExerciseId);
-                $Attribute = $ExplodedKey[1];
+                    $RoundNo = $ExplodedKey[0];
+                    $ExerciseId = $ExplodedKey[1];
+                    $ExerciseName = $this->getExerciseName($ExerciseId);
+                    $Attribute = $ExplodedKey[2];
                 if($Val == '' || $Val == '0' || $Val == $Attribute){
                     if($this->Message == ''){
                         $this->Message .= "Error - \n";
@@ -145,7 +143,7 @@ class CustomModel extends Model
                 $Row = $db->loadObject();
                 array_push($Activities, $Row);
                 }
-            }
+            
             }
             /*
             else{

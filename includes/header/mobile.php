@@ -30,7 +30,7 @@ body { width: <?php echo SCREENWIDTH;?>px;}
 #nav{width: <?php echo SCREENWIDTH;?>px;}
 #menu{width: <?php echo SCREENWIDTH;?>px;}
 #content{width: <?php echo SCREENWIDTH;?>px;}
-#footer{width: <?php echo SCREENWIDTH;?>px; <?php echo $RENDER->BackgroundImage('purple.png', SCREENWIDTH);?>}
+#footer{<?php echo $RENDER->BackgroundImage('purple.png',0,0);?>}
 </style>
 
 <script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
@@ -82,7 +82,7 @@ $('#AjaxLoading').html('');
 
 function OpenThisPage(page)
 {
-$('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif", SCREENWIDTH);?> src="/css/images/ajax-loader.gif" />');
+$('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif");?> src="/css/images/ajax-loader.gif" />');
 window.location = page;
 }
 
@@ -93,7 +93,7 @@ $( document ).bind( 'mobileinit', function(){
 $.mobile.loader.prototype.options.text = "loading";
 $.mobile.loader.prototype.options.textVisible = false;
 $.mobile.loader.prototype.options.theme = "a";
-$.mobile.loader.prototype.options.html = '<img <?php echo $RENDER->NewImage("ajax-loader.gif", SCREENWIDTH);?> src="/css/images/ajax-loader.gif" />';
+$.mobile.loader.prototype.options.html = '<img <?php echo $RENDER->NewImage("ajax-loader.gif");?> src="/css/images/ajax-loader.gif" />';
 });
 </script>
 </head>
