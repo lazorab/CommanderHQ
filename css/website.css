@@ -29,6 +29,20 @@ p{
 	font-weight: normal;   
 }
 
+ul#admin-menu li {
+    float: left;
+    padding-right: 4%;
+    list-style-type: none;
+}
+
+div.block-button {
+    margin-right: 5%;
+    width: 20%;
+    height: 5%;
+    border: 1px solid blue;
+    float: left;
+}
+
 #menu
 { 
 	position:fixed;

@@ -61,16 +61,30 @@ class UploadController extends Controller
     
     function MainOutput()
     {
-        $Html = '<form action="index.php" id="uploadform" name="form">
-                    <input type="hidden" name="form" value="submitted"/>
-                    <input type="hidden" name="rowcount" id="rowcounter" value="0"/>';
-        $Html .= '<input class="textinput" type="date" name="WodDate" value="" placeholder="Date of WOD yyyy-mm-dd"/><br/>'; 
-        $Html .= '<input id="wodname" class="textinput" type="text" name="WorkoutName" value="" placeholder="Name your WOD"/>'; 
-        $Html .= '<br/>';     
-        $Html .= $this->Benchmarks();             
-        $Html .= '<br/>';       
-        $Html .= $this->Activities();      
-        $Html .= '<br/>';
+        $Html = "<ul id='admin-menu'>
+                    <li><a href='#'>Load New</a></li>
+                    <li><a href='#'>Historic</a></li>
+                    <li><a href='#'>Reports</a></li>
+                    <li><a href='#'>Booking</a></li>
+                    <li><a href='#'>Messages</a></li>
+                 </ul>
+                 <p class='clear'></p>
+                 <br />";
+
+        $Html .= "<div class='block-button'><p>Add Activity</p></div>";
+        $Html .= "<div class='block-button'><p>Add Timing</p></div>";
+        $Html .= "<div class='block-button'><p>Add Comments</p></div>";
+        $Html .= "<p class='clear'></p>
+                  <br />";
+        
+        $Html .= "<div class='routines-container'>
+                    <h3>Routine 1</h3>
+                    <div class='routine' id='routine_1'>
+                        ".$this->Activities()."
+                    <div>
+                    <br /><br />
+                    <a href='#' id='add_routine'>+</a>
+                  </div>";
 
        $Html .= '<div id="workouttypes">';
         if(isset($_REQUEST['workouttype'])){
@@ -511,6 +525,7 @@ class UploadController extends Controller
         }
         $StartStopButton = 'Start';
         if(isset($_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'])){
+                        
             $TimeToComplete = $_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'];
             if($TimeToComplete != $Time)
                 $StartStopButton = 'Stop';
