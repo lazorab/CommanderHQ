@@ -183,7 +183,7 @@ class ReportsController extends Controller
         $BaselineData = $Model->getBaselineHistory();
         $NumLogs = 0;
         $TotalSeconds = 0;
-        $ChartData = "<chart showLabels='0' showYAxisValues='0' animation='0' lineColor='00008B' xAxisNamePadding='0' caption='Baseline' xAxisName='Time' yAxisName='Output' showValues= '0'>";
+        $ChartData = "<chart showLabels='0' canvasPadding='10' showYAxisValues='0' animation='0' lineColor='00008B' xAxisNamePadding='0' yAxisNamePadding='0' caption='Baseline' xAxisName='Time' yAxisName='Output' showToolTip='0' showValues= '0'>";
         foreach($BaselineData as $Data)
         {
             if($Data->Attribute == 'TimeToComplete'){

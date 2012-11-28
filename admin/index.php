@@ -67,4 +67,4 @@ include("includes/footer/$Environment.php");
 </div><!-- /page -->
 <?php //echo $HtmlOutput->GetCloseBodyTag();?>
     </body>
-</html>l>
+</html>

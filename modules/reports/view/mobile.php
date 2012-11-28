@@ -15,36 +15,79 @@ function getOptions(action,date)
     $.getJSON("ajax.php?module=reports",{report:action, date:date},display);
 }
 
+function AttributeExists(obj, val)
+{
+    for(var i=0;i < obj.length; i++) {
+        if (obj[i]['Attribute'] == val) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function getWODReport(id)
 {
-    $.getJSON("ajax.php?module=reports",{WODId:id},function(json) {
+    $.ajax({url:'ajax.php?module=reports',data:{WODId:id,encode:'json'},dataType:"json",success:function(json) { 
        //Storage for XML data document
        var strXML = '';
+       var data1XML = '';
+       var data2XML = '';
+       var catXML = '<categories>';
        var first = true;
        //Add <set> elements
         $.each(json, function() {
             if(first)
-            strXML += '<chart caption="' + this.Exercise + '" showLabels="0" showYAxisValues="0" animation="0" lineColor="00008B" xAxisNamePadding="0" xAxisName="Time" yAxisName="Output" showValues="0">';
-            if(this.Attribute == 'Reps'){
-                strXML += '<set label="' + this.TimeCreated + '" value="' + this.AttributeValue + '"/>';
+                strXML += '<chart caption="' + this.Exercise + '" showLabels="0" animation="0" lineColor="00008B" canvasPadding="10" xAxisNamePadding="0" yAxisNamePadding="10" xAxisName="Time" yAxisName="Output" showToolTip="0" showValues="0">';
+ 
+            if(AttributeExists(json, 'Weight') && AttributeExists(json, 'Reps')){
+                if(this.Attribute == 'Weight'){
+                    if(data1XML == ''){
+                        catXML += '<category Label="' + this.Attribute + '"/>';
+                        data1XML += '<dataset seriesName="' + this.Attribute + '">';
+                    }
+                    data1XML += '<set value="' + this.AttributeValue + '"/>';
+                }
+
+                if(this.Attribute == 'Reps'){
+                    if(data2XML == ''){
+                        catXML += '<category Label="' + this.Attribute + '"/>';
+                        data2XML += '<dataset seriesName="' + this.Attribute + '">';
+                    }   
+                    data2XML += '<set value="' + this.AttributeValue + '"/>';
+                }    
+            }else if(AttributeExists(json, 'Weight')){
+                if(this.Attribute == 'Weight'){
+                    strXML += '<set label="' + this.Attribute + '" value="' + this.AttributeValue + '"/>';
+                }
+            }else if(AttributeExists(json, 'Reps')){
+                if(this.Attribute == 'Reps'){
+                    strXML += '<set label="' + this.Attribute + '" value="' + this.AttributeValue + '"/>';
+                }
             }
+            else
+                strXML += '<set label="' + this.Attribute + '" value="' + this.AttributeValue + '"/>';
             first = false;
         });
-      //Closing Chart Element
-      strXML += '</chart>';
-      
-        var chartObj = new FusionCharts( "includes/FusionCharts/Line.swf",
+         
+        if(data1XML != ''){
+            strXML += ''+catXML+'</categories>'+data1XML+'</dataset>'+data2XML+'</dataset>'+'</chart>';
+            var chartObj = new FusionCharts( "includes/FusionCharts/MSLine.swf",
                     "ExerciseChartId", "300", "200", "0", "1" );
-
-        chartObj.setXMLData(strXML);
-
-        chartObj.render("ExerciseDetails");
-    });
+            chartObj.setXMLData(strXML);
+            chartObj.render("ExerciseDetails");          
+        }else{
+            strXML += '</chart>';
+             var chartObj = new FusionCharts( "includes/FusionCharts/Line.swf",
+                    "ExerciseChartId", "300", "200", "0", "1" );
+            chartObj.setXMLData(strXML);
+            chartObj.render("ExerciseDetails");           
+        }
+    }});
 }
 
 function getBenchmarkReport(id)
 {
-    $.getJSON("ajax.php?module=reports",{BenchmarkId:id},function(json) {
+    $.ajax({url:'ajax.php?module=reports',data:{BenchmarkId:id,encode:'json'},dataType:"json",success:function(json) { 
        //Storage for XML data document
        var strXML = '';
        var first = true;
@@ -69,7 +112,7 @@ function getBenchmarkReport(id)
         chartObj.setXMLData(strXML);
 
         chartObj.render("BenchmarkDetails");
-    });
+    }});
 }
 
 function getBaselineReport(id,date)
@@ -109,11 +152,11 @@ var i = 1;//prevent double rendering problem
             </div>
             <div class="slide">
                 <?php echo $Display->WODExercises();?>
-<div id="ExerciseDetails">FusionCharts will load here!</div>
+<div id="ExerciseDetails">Chart will load here once selection is made</div>
 </div>
 <div class="slide">
 <?php echo $Display->WODBenchmarks();?>
-<div id="BenchmarkDetails">FusionCharts will load here!</div>
+<div id="BenchmarkDetails">Chart will load here once selection is made</div>
 </div>
 </div>
 <a href="#" class="prev"><img src="<?php echo IMAGE_RENDER_PATH;?>/arrow-next.png" width="36" height="36" alt="Arrow Prev"></a>

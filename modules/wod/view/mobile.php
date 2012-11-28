@@ -3,9 +3,11 @@
 function getWOD()
 {    
     $('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif");?> src="/css/images/ajax-loader.gif" />');
-        $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=wod\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
-	$.getJSON("ajax.php?module=wod",{wod:'display'},display);	
-	$.getJSON("ajax.php?module=wod",{topselection:'mygym'},topdisplay);	
+    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=wod\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
+    $.ajax({url:'ajax.php?module=wod',data:{wod:'display'},dataType:"html",success:display});
+    $.ajax({url:'ajax.php?module=wod',data:{topselection:'mygym'},dataType:"html",success:topdisplay});
+    //$.getJSON("ajax.php?module=wod",{wod:'display'},display);	
+    //$.getJSON("ajax.php?module=wod",{topselection:'mygym'},topdisplay);	
 }
 
 function getFeedDetails(ThisWorkout)
@@ -24,9 +26,9 @@ function getDetails(ThisWorkout,ThisWodType)
 
 function goBack()
 {
-	$('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif");?> src="/css/images/ajax-loader.gif" />');
-	$.getJSON("ajax.php?module=wod",{wod:'display'},display);	
-	$.getJSON("ajax.php?module=wod",{topselection:'mygym'},topdisplay);
+    $('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif");?> src="/css/images/ajax-loader.gif" />');
+    $.getJSON("ajax.php?module=wod",{wod:'display'},display);	
+    $.getJSON("ajax.php?module=wod",{topselection:'mygym'},topdisplay);
 }
 
 function topdisplay(data)

@@ -3,12 +3,12 @@ function HtmlOutputs(outputType, properties)
 {
     if (outputType == "routine")
     {
-        HtmlRoutine = ""
-            +"<div class='routine' id='routine_" + properties.id + "'>"
-            +"  <input name='routine_name_" + properties.id + "' type='text' value='Name of routine' />"
-            +"<br />"
-            +"<div>"
-            +"<a onclick='addRoutine(" + properties.id + ")' href='#' class='add_routine'>+</a>";
+        var HtmlRoutine = '';
+        HtmlRoutine+='<div class="routine" id="routine_' + properties.id + '">';
+        HtmlRoutine+='<input name="routine_name_' + properties.id + '" type="text" value="Name of routine"/>';
+        HtmlRoutine+='<br/>';
+        HtmlRoutine+='<div>';
+        HtmlRoutine+='<a onclick="addRoutine(' + properties.id + ')" href="#" class="add_routine">+</a>';
         return HtmlRoutine;
     }
 }

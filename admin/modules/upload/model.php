@@ -138,196 +138,173 @@ class UploadModel extends Model
     
     function MemberActivityExists()
     {
-        $SQL = 'SELECT count(MemberId) AS MemberRecord FROM MemberBaseline WHERE MemberId = "'.$_SESSION['UID'].'"';
-        $Result = mysql_query($SQL); 
-        $Row = mysql_fetch_assoc($Result);
-        if($Row['MemberRecord'] > 0)
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+        $SQL = 'SELECT MemberId AS MemberRecord FROM MemberBaseline WHERE MemberId = "'.$_SESSION['UID'].'"';
+        $db->setQuery($SQL);
+	$db->Query();
+	if($db->getNumRows() > 0)
             return true;
-        else
-            return false;
+        else 
+            return false; 
     }
     
     function getCustomTypeId()
     {
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
         $SQL = 'SELECT recid FROM WorkoutTypes WHERE WorkoutType = "Custom"';
-        $Result = mysql_query($SQL);        
-        $Row = mysql_fetch_assoc($Result);
-        return $Row['recid'];
+        $db->setQuery($SQL);
+		
+        return $db->loadResult();
     }
     
     function SaveNewActivities()
-    {        
+    {   
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
         for($i=1; $i<$_REQUEST['newcount']; $i++)
         {
-            $Query='SELECT recid FROM Exercises WHERE Exercise = "'.$_REQUEST['newattribute_\'.$i.\''].'"';
-            $Result = mysql_query($SQL); 
-            if(!empty($Result)){
-                $Row = mysql_fetch_assoc($Result);
-                $ExerciseId = $Row['recid'];
+            $SQL='SELECT recid FROM Exercises WHERE Exercise = "'.$_REQUEST['newattribute_\'.$i.\''].'"';
+            $db->setQuery($SQL);
+            $db->Query();
+            if($db->getNumRows() > 0){
+                $ExerciseId = $db->loadResult();
             }
             else{
                 $SQL = 'INSERT INTO Exercises(Exercise) VALUES("'.$_REQUEST['newattribute_\'.$i.\''].'")';
-                mysql_query($SQL);
-                $ExerciseId = mysql_insert_id();
+                $db->setQuery($SQL);
+                $db->Query();
+                $ExerciseId = $db->insertid();
             }
             $SQL = 'INSERT INTO MemberBaseline(MemberId, ExerciseId) VALUES("'.$_SESSION['UID'].'", '.$ExerciseId.')';
-            mysql_query($SQL);
+            $db->setQuery($SQL);
+            $db->Query();
         }
-	}  
+    }  
         
 	function getWodTypeId($type)
 	{
-		$Query = 'SELECT recid FROM WorkoutTypes WHERE WorkoutType = "'.$type.'"';
-		$Result = mysql_query($Query);
-		$Row = mysql_fetch_assoc($Result);
-		return $Row['recid'];
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT recid FROM WorkoutTypes WHERE WorkoutType = "'.$type.'"';
+            $db->setQuery($SQL);
+		
+            return $db->loadResult();
 	}      
         
     function getWorkoutTypes()
     {
-		$CustomTypes = array();
-		$SQL = 'SELECT recid, WorkoutType as ActivityType 
+	$db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+	$SQL = 'SELECT recid, WorkoutType as ActivityType 
                     FROM WorkoutRoutineTypes 
                     ORDER BY ActivityType';
-		$Result = mysql_query($SQL);	
-		while($Row = mysql_fetch_assoc($Result))
-		{
-			array_push($CustomTypes, new UploadObject($Row));
-		}
+        $db->setQuery($SQL);
 		
-		return $CustomTypes;        
+        return $db->loadObjectList();         
     }
 	
 	function getWorkoutTypeId($type)
 	{
-		$Query = 'SELECT recid FROM WorkoutRoutineTypes WHERE WorkoutType = "'.$type.'"';
-		$Result = mysql_query($Query);
-		$Row = mysql_fetch_assoc($Result);
-		return $Row['recid'];
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT recid FROM WorkoutRoutineTypes WHERE WorkoutType = "'.$type.'"';
+            $db->setQuery($SQL);
+		
+            return $db->loadResult();
 	}
 	
 	function getAttributeId($attribute)
 	{
-		$Query = 'SELECT recid FROM Attributes WHERE Attribute = "'.$attribute.'"';
-		$Result = mysql_query($Query);
-		$Row = mysql_fetch_assoc($Result);
-		return $Row['recid'];	
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT recid FROM Attributes WHERE Attribute = "'.$attribute.'"';
+            $db->setQuery($SQL);
+		
+            return $db->loadResult();	
 	}  
     
     function getMemberActivities()
     {
-        $MemberActivities = array();
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
         if(!$this->MemberActivityExists())
             $this->SaveNewBaseline();
         $SQL = 'SELECT MB.ExerciseId AS recid, 
             E.Exercise AS ActivityName, 
-            E.Acronym, 
+            CASE 
+            WHEN E.Acronym <> ""
+            THEN E.Acronym
+            ELSE E.Exercise
+            END
+            AS InputFieldName,
             A.Attribute, MB.AttributeValue 
             FROM MemberBaseline MB
             JOIN Exercises E ON E.recid = MB.ExerciseId
             JOIN Attributes A ON A.recid = MB.AttributeId
             WHERE MB.MemberId = "'.$_SESSION['UID'].'"';
-        $Result = mysql_query($SQL);
-        while($Row = mysql_fetch_assoc($Result))
-        {
-            array_push($MemberActivities, new UploadObject($Row));  
-        }
-        return $MemberActivities;
+            $db->setQuery($SQL);
+		
+            return $db->loadObjectList();
     }
 	
 	function getActivities()
 	{
-        $Activities = array();
-        $SQL = 'SELECT DISTINCT E.recid, 
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT DISTINCT E.recid, 
             E.Exercise AS ActivityName,
-            E.Acronym
+            CASE 
+            WHEN E.Acronym <> ""
+            THEN E.Acronym
+            ELSE E.Exercise
+            END
+            AS InputFieldName
             FROM Exercises E
             LEFT JOIN ExerciseAttributes EA ON EA.ExerciseId = E.recid
             ORDER BY ActivityName';
-        $Result = mysql_query($SQL);
-        while($Row = mysql_fetch_assoc($Result))
-        {
-            array_push($Activities, new UploadObject($Row));  
-        }
-        return $Activities;	
+            $db->setQuery($SQL);
+		
+            return $db->loadObjectList();	
 	}   
         
         function getBenchmarks()
         {
-         $Benchmarks = array();
-        $SQL = 'SELECT DISTINCT recid,
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT DISTINCT recid,
             WorkoutName
             FROM BenchmarkWorkouts
             ORDER BY WorkoutName';
-        $Result = mysql_query($SQL);
-        while($Row = mysql_fetch_assoc($Result))
-        {
-            array_push($Benchmarks, new UploadObject($Row));  
-        }           
-            return $Benchmarks;
+            $db->setQuery($SQL);
+		
+            return $db->loadObjectList();
         }
         
          function getBenchmarkDetails($Id)
         {
-
-        $SQL = 'SELECT DISTINCT recid,
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT DISTINCT recid,
             WorkoutName
             FROM BenchmarkWorkouts
             WHERE recid = '.$Id.'';
-        $Result = mysql_query($SQL);
-        $Row = mysql_fetch_assoc($Result);
-        $Benchmark = new UploadObject($Row);  
-                  
-            return $Benchmark;
+            $db->setQuery($SQL);
+		
+            return $db->loadObject();
         }       
 
 	function getExerciseAttributes($Id)
 	{
-        $Attributes = array();
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
 
         $SQL = 'SELECT DISTINCT E.recid, 
-			E.Exercise AS ActivityName,
-                        E.Acronym, 
-			A.Attribute
-			FROM ExerciseAttributes EA
-			LEFT JOIN Attributes A ON EA.AttributeId = A.recid
-			LEFT JOIN Exercises E ON EA.ExerciseId = E.recid
-			WHERE E.recid = "'.$Id.'"
-			ORDER BY ActivityName, Attribute';
-
-        $Result = mysql_query($SQL);
-        while($Row = mysql_fetch_assoc($Result))
-        {
-            array_push($Attributes, new UploadObject($Row));  
+            E.Exercise AS ActivityName,
+            CASE 
+            WHEN E.Acronym <> ""
+            THEN E.Acronym
+            ELSE E.Exercise
+            END
+            AS InputFieldName,
+            A.Attribute
+            FROM ExerciseAttributes EA
+            LEFT JOIN Attributes A ON EA.AttributeId = A.recid
+            LEFT JOIN Exercises E ON EA.ExerciseId = E.recid
+            WHERE E.recid = "'.$Id.'"
+            ORDER BY ActivityName, Attribute';
+            $db->setQuery($SQL);
+		
+            return $db->loadObjectList();
         }
-        return $Attributes;	
-	}	
-}
-
-class UploadObject
-{
-    var $recid;
-    var $WorkoutName;
-    var $ActivityName;
-    var $InputFieldName;
-    var $ActivityType;
-    var $Attribute;
-    var $AttributeValue;
-    var $RoundNo;
-
-    function __construct($Row)
-    {
-	$this->recid = isset($Row['recid']) ? $Row['recid'] : "";
-        $this->WorkoutName = isset($Row['WorkoutName']) ? $Row['WorkoutName'] : "";
-	$this->ActivityName = isset($Row['ActivityName']) ? $Row['ActivityName'] : "";
-        if($Row['Acronym'] != '')
-            $this->InputFieldName = $Row['Acronym'];
-        else
-            $this->InputFieldName = $this->ActivityName;
-	$this->ActivityType = isset($Row['ActivityType']) ? $Row['ActivityType'] : "";
-	$this->Attribute = isset($Row['Attribute']) ? $Row['Attribute'] : "";
-	$this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : "";
-	$this->RoundNo = isset($Row['RoundNo']) ? $Row['RoundNo'] : "1";
-    }
 }
 ?>
