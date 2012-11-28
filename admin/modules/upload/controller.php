@@ -58,6 +58,21 @@ class UploadController extends Controller
         
         return $Result;
     }
+
+    function HtmlOutputs($type, $properties)
+    {
+        if ($type == 'routine')
+        {
+            $HtmlRoutine = "
+                <div class='routine' id='routine_".$properties['id']."'>
+                    <input name='routine_name_".$properties['id']."' type='text' value='Name of routine' />
+                    <br />
+                    ".$this->Activities()."
+                <div>
+                <a onclick='addRoutine(".$properties['id'].")' href='#' class='add_routine'>+</a>";
+            return $HtmlRoutine;
+        }
+    }
     
     function MainOutput()
     {
@@ -79,15 +94,10 @@ class UploadController extends Controller
         
         $Html .= "<div class='routines-container'>
                     <form id='routines-form'>
-                        <div class='routine' id='routine_1'>
-                            <input name='routine_name_1' type='text' value='Routine 1' />
-                            <br />
-                            ".$this->Activities()."
-                        <div>
+                    ".$this->HtmlOutputs('routine', array('id' => 1))."
                     </form>
 
                     <br /><br />
-                    <a href='#' id='add_routine'>+</a>
                   </div>";
 
        $Html .= '<div id="workouttypes">';

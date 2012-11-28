@@ -1,4 +1,19 @@
 <script type='text/javascript'>
+function HtmlOutputs(outputType, properties)
+{
+    if (outputType == "routine")
+    {
+        HtmlRoutine = ""
+            +"<div class='routine' id='routine_" + properties.id + "'>"
+            +"  <input name='routine_name_" + properties.id + "' type='text' value='Name of routine' />"
+            +"<br />"
+            +"<div>"
+            +"<a onclick='addRoutine(" + properties.id + ")' href='#' class='add_routine'>+</a>";
+        return HtmlRoutine;
+    }
+}
+
+
 function getContent(selection)
 {
     $.getJSON("ajax.php?module=upload",{baseline:selection},display);
@@ -19,6 +34,13 @@ function display(data)
     $('.buttongroup').button();
     $('.buttongroup').button('refresh');
     $('.textinput').textinput();
+}
+
+function addRoutine(id)
+{
+    var Html = HtmlOutputs('routine', {'id': id + 1});
+    
+    $($("form#routines-form div.routine")[id - 1]).after($(Html));
 }
 
 function addTypeParams(CustomType)
@@ -46,7 +68,6 @@ function addTypeParams(CustomType)
 
 function SelectionControl(type,id)
 {
-   $('form#routines-form').append("<p>Routine...</p>"); 
 
     $('#add_exercise').html('');
     if(id == 0)
