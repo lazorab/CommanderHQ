@@ -46,7 +46,7 @@ function addTypeParams(CustomType)
 
 function SelectionControl(type,id)
 {
-    
+   $('form#routines-form').append("<p>Routine...</p>"); 
 
     $('#add_exercise').html('');
     if(id == 0)

@@ -78,10 +78,14 @@ class UploadController extends Controller
                   <br />";
         
         $Html .= "<div class='routines-container'>
-                    <h3>Routine 1</h3>
-                    <div class='routine' id='routine_1'>
-                        ".$this->Activities()."
-                    <div>
+                    <form id='routines-form'>
+                        <div class='routine' id='routine_1'>
+                            <input name='routine_name_1' type='text' value='Routine 1' />
+                            <br />
+                            ".$this->Activities()."
+                        <div>
+                    </form>
+
                     <br /><br />
                     <a href='#' id='add_routine'>+</a>
                   </div>";
