@@ -3,12 +3,8 @@ function HtmlOutputs(outputType, properties)
 {
     if (outputType == "routine")
     {
-        var HtmlRoutine = '';
-        HtmlRoutine+='<div class="routine" id="routine_' + properties.id + '">';
-        HtmlRoutine+='<input name="routine_name_' + properties.id + '" type="text" value="Name of routine"/>';
-        HtmlRoutine+='<br/>';
-        HtmlRoutine+='<div>';
-        HtmlRoutine+='<a onclick="addRoutine(' + properties.id + ')" href="#" class="add_routine">+</a>';
+        var HtmlRoutine = '<?php echo str_replace('\'', '\\\'', $Display->HtmlOutputs('routine')) ?>';
+        HtmlRoutine = HtmlRoutine.replace(/unclassified/g, properties.id);
         return HtmlRoutine;
     }
 }
@@ -38,6 +34,15 @@ function display(data)
 
 function addRoutine(id)
 {
+    $('div.routine').each(function() {
+        var idNumber = $(this).attr('id').split("_")[1];
+        if (idNumber > id)
+        {
+            $(this).attr('id', 'routine_' + (parseInt(idNumber) + 1));
+        }
+    });
+
+
     var Html = HtmlOutputs('routine', {'id': id + 1});
     
     $($("form#routines-form div.routine")[id - 1]).after($(Html));

@@ -59,19 +59,46 @@ class UploadController extends Controller
         return $Result;
     }
 
-    function HtmlOutputs($type, $properties)
+    function HtmlOutputs($type, $properties = 'unclassified')
     {
         if ($type == 'routine')
         {
-            $HtmlRoutine = "
-                <div class='routine' id='routine_".$properties['id']."'>
-                    <input name='routine_name_".$properties['id']."' type='text' value='Name of routine' />
+            if ($properties == 'unclassified')
+            {
+                $properties = array('id' => 'unclassified');
+            }
+
+            $HtmlReturn= '
+                <div class="routine" id="routine_'.$properties['id'].'">
+                    <input name="routine_name_'.$properties['id'].'" type="text" value="Name of routine" />
                     <br />
-                    ".$this->Activities()."
+                    '.$this->HtmlOutputs('activities').'
                 <div>
-                <a onclick='addRoutine(".$properties['id'].")' href='#' class='add_routine'>+</a>";
-            return $HtmlRoutine;
+                <a onclick="addRoutine('.$properties['id'].')" href="#" class="add_routine">+</a>';
         }
+        elseif ($type == 'activities')
+        {
+            if ($properties == 'unclassified')
+            {
+                $properties = array('id' => 'unclassified');
+            }
+
+            $HtmlReturn = '';
+            $Model = new UploadModel;
+            $Activities = $Model->getActivities();  
+            $HtmlReturn .= '<select class="select" name="activity" id="'.$properties['id'].'" onchange="SelectionControl(\'activity\',this.value);">
+                        <option value="none">+ Activity</option>';
+            foreach($Activities AS $Activity){
+                $HtmlReturn .= '<option id="'.$Activity->recid.'" value="'.$Activity->recid.'">'.$Activity->ActivityName.'</option>';
+            }
+            $HtmlReturn .= '</select>';   
+            
+        }
+        
+        // Remove line breaks as javascript errors otherwise
+        $HtmlReturn = str_replace(array("\r\n", "\r", "\n"), "", $HtmlReturn);
+        
+        return $HtmlReturn;
     }
     
     function MainOutput()
@@ -146,17 +173,7 @@ class UploadController extends Controller
     
     function Activities()
     {
- 	$Html = '';
-	$Model = new UploadModel;
-	$Activities = $Model->getActivities();  
- 	$Html .= '<select class="select" name="activity" id="activity" onchange="SelectionControl(\'activity\',this.value);">
-                    <option value="none">+ Activity</option>';
-	foreach($Activities AS $Activity){
-            $Html .= '<option id="'.$Activity->recid.'" value="'.$Activity->recid.'">'.$Activity->ActivityName.'</option>';
-	}
-	$Html .= '</select>';   
-        
-        return $Html;
+
     }
     
     function WorkoutTypes(){
