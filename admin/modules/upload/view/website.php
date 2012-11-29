@@ -32,16 +32,20 @@ function display(data)
     $('.textinput').textinput();
 }
 
-function addRoutine(id)
+function addActivity(routineId, activityOrderId,activityId)
+{
+
+}
+
+function addRoutine(routineOrderId)
 {
     $('div.routine').each(function() {
         var idNumber = $(this).attr('id').split("_")[1];
-        if (idNumber > id)
+        if (idNumber > routineOrderId)
         {
             $(this).attr('id', 'routine_' + (parseInt(idNumber) + 1));
         }
     });
-
 
     var Html = HtmlOutputs('routine', {'id': id + 1});
     
