@@ -47,9 +47,9 @@ function addRoutine(routineOrderId)
         }
     });
 
-    var Html = HtmlOutputs('routine', {'id': id + 1});
+    var Html = HtmlOutputs('routine', {'id': routineOrderId + 1});
     
-    $($("form#routines-form div.routine")[id - 1]).after($(Html));
+    $($("form#routines-form div.routine")[routineOrderId - 1]).after($(Html));
 }
 
 function addTypeParams(CustomType)
