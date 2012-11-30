@@ -144,7 +144,7 @@ function DisplayExercise(id)
     var ThisExercise = '';
     var Unit = '';
     if(i < 1){
-        $('#workouttypes').html('<?php echo $Display->WorkoutTypes('none selected');?>');
+        $('#workouttypes').html('<?php echo $Display->TimingTypes('none selected');?>');
         $('.select').selectmenu();
         $('.select').selectmenu('refresh');
     }
@@ -360,12 +360,12 @@ function addRound()
     <a href="#"><li>Booking</li></a>
     <a href="#"><li>Messages</li></a>
 </ul>
-<p class="clear"></p>
+<div class="clear"></div>
 <br />
 <div class="actionbutton"><a href="#" onclick=""><img alt="Add Activity" src="images/AddActivity.png"/></a></div>
 <div class="actionbutton"><a href="#" onclick=""><img alt="Add Timing" src="images/AddTiming.png"/></a></div>
 <div class="actionbutton"><a href="#" onclick=""><img alt="Add Comments" src="images/AddComments.png"/></a></div>
-<p class="clear"></p>
+<div class="clear"></div>
 <br />
 <div id="AjaxOutput">       
     <?php echo $Display->Output();?>

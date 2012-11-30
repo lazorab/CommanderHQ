@@ -9,6 +9,39 @@ body {
 	font-weight: normal;
 }
 
+#exercises{
+    float:left;
+    padding:4px;
+    width:680px;
+    height:400px;
+    overflow:auto;
+    border:1px solid #0079a5;
+    -moz-border-radius: 15px; 
+    -webkit-border-radius: 15px;    
+}
+
+#timing{
+    margin: 0 0 0 5px;
+    padding:4px;
+    float:left;
+    width:175px;
+    height:400px;
+    overflow:auto;
+    border:1px solid #0079a5;
+    -moz-border-radius: 15px; 
+    -webkit-border-radius: 15px;
+}
+
+#comments{
+    margin: 5px 0 0 0;
+    float:left;
+    width:680px;
+    height:75px;
+    border:1px solid #0079a5;
+    -moz-border-radius: 15px; 
+    -webkit-border-radius: 15px; 
+}
+
 #buttongroup{
 	margin:0 10% 0 10%; 
 	width:80%;
@@ -128,9 +161,9 @@ div.actionbutton {
 	min-height: 326px;
         color:#fff;
         height:350px;
-        padding:20px;
+        padding:5px;
   	margin: 0 auto 0 auto;
-	width: 980px;    
+	width: 975px;    
 }
 
 #header
@@ -248,7 +281,7 @@ input
 #AjaxOutput
 {
 	width:90%;
-	margin:2% 5% 0 5%;
+	margin:2%;
 	font-weight:bold;
 	font-size:medium;
 }

@@ -254,6 +254,7 @@ class UploadModel extends Model
             AS InputFieldName
             FROM Exercises E
             LEFT JOIN ExerciseAttributes EA ON EA.ExerciseId = E.recid
+            WHERE recid > 0
             ORDER BY ActivityName';
             $db->setQuery($SQL);
 		

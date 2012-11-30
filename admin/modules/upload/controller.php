@@ -103,36 +103,28 @@ class UploadController extends Controller
     
     function MainOutput()
     {       
-        
-        $Html .= "<div class='routines-container'>
-                    <form id='routines-form'>
-                    ".$this->HtmlOutputs('routine', array('id' => 1))."
-                    </form>
-                    <br /><br />
-                  </div>";
-        $Html .= '<form action="index.php" id="customform" name="form">
+        $Html .= '<form action="index.php" id="gymform" name="form">
         <input type="hidden" name="form" value="submitted"/>
-        <input type="hidden" name="origin" value="'.$this->Origin.'"/>
         <input type="hidden" name="rowcount" id="rowcounter" value="0"/>
         <input type="hidden" name="Round1Counter" id="Round1Counter" value="0"/>
         <input type="hidden" name="Rounds" id="addround" value="1"/>';
         
-       $Html .= '<div id="workouttypes">';
-        if(isset($_REQUEST['workouttype'])){
-        $Html .= $this->WorkoutTypes($_REQUEST['workouttype']);
-        }
+        $Html .= '<div id="exercises">';
+        $Html .= $this->getExercises();
         $Html .= '</div>';
-                
+        $Html .= '<div id="timing">';
+        $Html .= $this->TimingTypes($_REQUEST['workouttype']);
+        $Html .= '</div>';
+        $Html .= '<div id="comments">';
+        $Html .= '<textarea name="comments" rows="4" cols="50"></textarea>';
+        $Html .= '</div>';      
+        $Html .= '<div style="width:125px;float:right">';
+        $Html .= '<input type="button" name="" value="Publish"/>';
+        $Html .= '<input type="button" name="" value="+"/>';
+        $Html .= '</div>';
+        $Html .= '<div class="clear"></div>';
         $Html .= '<br/>';
-        
-	if($_REQUEST['form'] == 'submitted'){
-	$Html .= '<div class="ui-grid-c">';
-    $Html .= '<div class="ui-block-a"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#3f2b44" value="Weight" readonly="readonly"/></div>';
-    $Html .= '<div class="ui-block-b"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#66486e" value="Height" readonly="readonly"/></div>';
-    $Html .= '<div class="ui-block-c"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#6f747a" value="Distance" readonly="readonly"/></div>';
-    $Html .= '<div class="ui-block-d"><input type="text" data-role="none" style="width:80%;color:black;font-weight:bold;background-color:#ccff66" value="Reps" readonly="readonly"/></div>';
-    $Html .= '</div>';
-	}
+
     $Html .= '<div class="ui-grid-b">
                   <div id="display_benchmark"></div>
                   <div id="add_exercise">'.$this->AddExercise().'</div>
@@ -144,6 +136,25 @@ class UploadController extends Controller
      	
 	return $Html;
     }
+    
+    function getExercises()
+    {
+        $Html='';
+        $Model = new UploadModel;
+        $Exercises = $Model->getActivities();
+
+	foreach($Exercises AS $Exercise){
+            $Html.='<div style="height:42px;width:800px"><div style="float:left;width:300px"><input data-role="none" type="checkbox" name="exercises[]" value="'.$Exercise->recid.'"/>'.$Exercise->ActivityName.'</div>';
+            $Html.='<input type="text" name="Rounds_'.$Exercise->recid.'" value="" style="float:left;width:75px" placeholder="Rounds"/>';
+            $Html.='<input type="text" name="FWeight_'.$Exercise->recid.'" value="" style="float:left;width:75px" placeholder="Weight(F)"/>';
+            $Html.='<input type="text" name="MWeight_'.$Exercise->recid.'" value="" style="float:left;width:75px" placeholder="Weight(M)"/>';
+            $Html.='<input type="text" name="Reps_'.$Exercise->recid.'" value="" style="float:left;width:75px" placeholder="Reps"/></div>';
+            
+            //$Html .= '<option value="'.$Exercise->ActivityName.'">'.$Exercise->ActivityName.'</option>';
+	}
+
+	return $Html;
+    }   
     
     function Benchmarks()
     {
@@ -166,21 +177,14 @@ class UploadController extends Controller
 
     }
     
-    function WorkoutTypes(){
+    function TimingTypes(){
         $Html='';
-
         $Model = new UploadModel;
         $WorkoutTypes = $Model->getWorkoutTypes();
-         $Html .= '<select class="select" name="workouttype" id="workouttype" onchange="addTypeParams(this.value);">';
-         $Html .= '<option value="none">Select Workout Type</option>';
         foreach($WorkoutTypes AS $WorkoutType){
-            $Html .= '<option id="'.$WorkoutType->recid.'" value="'.$WorkoutType->ActivityType.'"';
-            if($WorkoutType->ActivityType == $_REQUEST['workouttype'])
-                $Html .='selected="selected"';
-            $Html .= '>'.$WorkoutType->ActivityType.'</option>';
+            $Html .= '<input type="button" name="" value="'.$WorkoutType->ActivityType.'"/>';
         }
-	$Html .= '</select>';
-        
+        $Html.='<br/><input style="width:150px;margin-left:4px" type="text" name="" value="" placeholder="00:00"/>';
         return $Html;
     }
 	
