@@ -2,7 +2,7 @@ body {
 	margin: 0 auto 0 auto;
 	padding: 0;
 	font-family: helvetica;
-	width: 780px;
+	width: 980px;
 	font-size: small;
 	color: #333333;
 	line-height: 130%;
@@ -27,6 +27,54 @@ p{
  	font-size: small;
 	color: #333333;
 	font-weight: normal;   
+}
+
+ul#admin-menu li {
+    float: left;
+    text-align:center;
+    margin: 0 4px 0 4px;
+    padding: 14px 0 0 0;
+    height:36px;
+    width:100px;
+    list-style-type: none;
+    background-color:#e6e6e6;  
+}
+
+ul#admin-menu{
+    height:50px;
+    width:940px;
+    background-color:#e6e6e6;  
+}
+
+ul#admin-menu li:hover{
+    background-color:#0079a5;
+    color:#fff;
+}
+
+ul#admin-menu li a{
+
+    text-decoration:none;
+    color:#0079a5;
+}
+
+ul#admin-menu li a:hover{
+    text-decoration:none;
+    color:#fff;
+}
+
+div.block-button {
+    margin-right: 5%;
+    width: 20%;
+    height: 5%;
+    border: 1px solid blue;
+    float: left;
+}
+
+div.actionbutton {
+    width: 298px;
+    height: 144px;
+    padding: 12px;
+    float: left;
 }
 
 #menu
@@ -75,6 +123,16 @@ p{
 	width:75%
 }
 
+#container{
+    	background-color:#252525;
+	min-height: 326px;
+        color:#fff;
+        height:350px;
+        padding:20px;
+  	margin: 0 auto 0 auto;
+	width: 980px;    
+}
+
 #header
 {
 	font-family:Airstrip Four;
@@ -82,7 +140,7 @@ p{
 	color:#ffea00;
 	background-color:#3f2b44;
  	margin: 0 auto 0 auto;
-	width: 780px;       
+	width: 980px;       
 }
 
 #nav{
@@ -91,18 +149,20 @@ p{
 
 #canvas
 {
-	width:780px;
+	width:980px;
 	min-height: 320px;
 	color:#333;
 	background-color:#fff;
+        margin: 0 auto 0 auto;
 }
 
 #content
 {
-	width:780px;
+	width:980px;
 	min-height: 320px;
 	color:#333;
 	background-color:#fff;
+        margin: 0 auto 0 auto;
 }
 
 #video
@@ -536,8 +596,9 @@ a {
 	font-family:Arial, Helvetica, sans-serif;
 	font-size:12px;
 	color:#fff;
-	margin:0;
-	padding:2%;
+	margin:0 auto 0 auto;
+        width:980px;
+        height:50px;
 	text-align:center;
 	background-repeat:no-repeat;
 }

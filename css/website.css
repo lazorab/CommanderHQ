@@ -2,7 +2,7 @@ body {
 	margin: 0 auto 0 auto;
 	padding: 0;
 	font-family: helvetica;
-	width: 780px;
+	width: 980px;
 	font-size: small;
 	color: #333333;
 	line-height: 130%;
@@ -40,6 +40,13 @@ div.block-button {
     width: 20%;
     height: 5%;
     border: 1px solid blue;
+    float: left;
+}
+
+div.actionbutton {
+    width: 298px;
+    height: 144px;
+    padding: 15px;
     float: left;
 }
 
@@ -96,7 +103,7 @@ div.block-button {
         height:350px;
         padding:20px;
   	margin: 0 auto 0 auto;
-	width: 740px;    
+	width: 980px;    
 }
 
 #header
@@ -106,7 +113,7 @@ div.block-button {
 	color:#ffea00;
 	background-color:#3f2b44;
  	margin: 0 auto 0 auto;
-	width: 780px;       
+	width: 980px;       
 }
 
 #nav{
@@ -115,7 +122,7 @@ div.block-button {
 
 #canvas
 {
-	width:780px;
+	width:980px;
 	min-height: 320px;
 	color:#333;
 	background-color:#fff;
@@ -124,7 +131,7 @@ div.block-button {
 
 #content
 {
-	width:780px;
+	width:980px;
 	min-height: 320px;
 	color:#333;
 	background-color:#fff;
@@ -563,7 +570,7 @@ a {
 	font-size:12px;
 	color:#fff;
 	margin:0 auto 0 auto;
-        width:780px;
+        width:980px;
         height:50px;
 	text-align:center;
 	background-repeat:no-repeat;

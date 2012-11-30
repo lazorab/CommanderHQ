@@ -73,7 +73,7 @@ class UploadController extends Controller
                     <input name="routine_name_'.$properties['id'].'" type="text" value="Name of routine" />
                     <br />
                     '.$this->HtmlOutputs('activities').'
-                <div>
+                </div>
                 <a onclick="addRoutine('.$properties['id'].')" href="#" class="add_routine">+</a>';
         }
         elseif ($type == 'activities')
@@ -102,31 +102,21 @@ class UploadController extends Controller
     }
     
     function MainOutput()
-    {
-        $Html = "<ul id='admin-menu'>
-                    <li><a href='#'>Load New</a></li>
-                    <li><a href='#'>Historic</a></li>
-                    <li><a href='#'>Reports</a></li>
-                    <li><a href='#'>Booking</a></li>
-                    <li><a href='#'>Messages</a></li>
-                 </ul>
-                 <p class='clear'></p>
-                 <br />";
-
-        $Html .= "<div class='block-button'><p>Add Activity</p></div>";
-        $Html .= "<div class='block-button'><p>Add Timing</p></div>";
-        $Html .= "<div class='block-button'><p>Add Comments</p></div>";
-        $Html .= "<p class='clear'></p>
-                  <br />";
+    {       
         
         $Html .= "<div class='routines-container'>
                     <form id='routines-form'>
                     ".$this->HtmlOutputs('routine', array('id' => 1))."
                     </form>
-
                     <br /><br />
                   </div>";
-
+        $Html .= '<form action="index.php" id="customform" name="form">
+        <input type="hidden" name="form" value="submitted"/>
+        <input type="hidden" name="origin" value="'.$this->Origin.'"/>
+        <input type="hidden" name="rowcount" id="rowcounter" value="0"/>
+        <input type="hidden" name="Round1Counter" id="Round1Counter" value="0"/>
+        <input type="hidden" name="Rounds" id="addround" value="1"/>';
+        
        $Html .= '<div id="workouttypes">';
         if(isset($_REQUEST['workouttype'])){
         $Html .= $this->WorkoutTypes($_REQUEST['workouttype']);

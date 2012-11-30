@@ -353,7 +353,20 @@ function addRound()
 }
 </script>
 <br/>
-
+<ul id="admin-menu">
+    <a href="#"><li>Load New</li></a>
+    <a href="#"><li>Historic</li></a>
+    <a href="#"><li>Reports</li></a>
+    <a href="#"><li>Booking</li></a>
+    <a href="#"><li>Messages</li></a>
+</ul>
+<p class="clear"></p>
+<br />
+<div class="actionbutton"><a href="#" onclick=""><img alt="Add Activity" src="images/AddActivity.png"/></a></div>
+<div class="actionbutton"><a href="#" onclick=""><img alt="Add Timing" src="images/AddTiming.png"/></a></div>
+<div class="actionbutton"><a href="#" onclick=""><img alt="Add Comments" src="images/AddComments.png"/></a></div>
+<p class="clear"></p>
+<br />
 <div id="AjaxOutput">       
     <?php echo $Display->Output();?>
 </div>

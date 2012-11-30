@@ -17,7 +17,7 @@
 <!-- startup image for web apps (320x460) -->
 <link rel="apple-touch-startup-image" href="/images/splashscreen.png" media="screen and (max-device-width: 320px)" />
 <link type="text/css" rel="stylesheet" href="/css/jquery.mobile-1.1.0.min.css" />
-<link rel="stylesheet" href="/css/website.css">
+<link rel="stylesheet" href="css/website.css">
 <link rel="stylesheet" href="/css/add2home.css">
 <link rel="stylesheet" href="/css/slideshow.css">
 <script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
