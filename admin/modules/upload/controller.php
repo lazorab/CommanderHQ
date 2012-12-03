@@ -4,6 +4,7 @@ class UploadController extends Controller
     var $Origin;
     var $SaveMessage;
     var $ChosenExercises;
+    var $RoutineNumber;
     
 	function __construct()
 	{
@@ -104,10 +105,10 @@ class UploadController extends Controller
     function MainOutput()
     {       
         $Html .= '<form action="index.php" id="gymform" name="form">
-        <input type="hidden" name="form" value="submitted"/>
-        <input type="hidden" name="rowcount" id="rowcounter" value="0"/>
-        <input type="hidden" name="Round1Counter" id="Round1Counter" value="0"/>
-        <input type="hidden" name="Rounds" id="addround" value="1"/>';
+                <input type="hidden" name="form" value="submitted"/>
+                <input type="hidden" name="rowcount" id="rowcounter" value="0"/>
+                <input type="hidden" name="RoutineCounter" id="RoutineCounter" value="0"/>
+                <input type="hidden" name="Rounds" id="addround" value="1"/>';
         
         $Html .= '<div id="exercises">';
         $Html .= $this->getExercises();
@@ -116,22 +117,22 @@ class UploadController extends Controller
         $Html .= $this->TimingTypes($_REQUEST['workouttype']);
         $Html .= '</div>';
         $Html .= '<div id="comments">';
-        $Html .= '<textarea name="comments" rows="4" cols="50"></textarea>';
+        $Html .= '<textarea name="'.$this->RoutineNumber.'___0___Notes" rows="4" cols="50"></textarea>';
         $Html .= '</div>';      
         $Html .= '<div style="width:125px;float:right">';
-        $Html .= '<input type="button" name="" value="Publish"/>';
-        $Html .= '<input type="button" name="" value="+"/>';
+        $Html .= '<input type="button" onClick="Publish();" name="" value="Publish"/>';
+        $Html .= '<input type="button" onClick="AddRoutine()" name="" value="+"/>';
         $Html .= '</div>';
         $Html .= '<div class="clear"></div>';
         $Html .= '<br/>';
 
-    $Html .= '<div class="ui-grid-b">
+        $Html .= '<div class="ui-grid-b">
                   <div id="display_benchmark"></div>
                   <div id="add_exercise">'.$this->AddExercise().'</div>
                   <div id="new_exercise">'.$this->ChosenExercises().'</div>
                   </div>
                   <div id="clock_input">'.$this->Clock().'</div>
-                   <div id="btnsubmit"></div>   
+                  <div id="btnsubmit"></div>   
                   </form><br/>';
      	
 	return $Html;
@@ -144,11 +145,15 @@ class UploadController extends Controller
         $Exercises = $Model->getActivities();
 
 	foreach($Exercises AS $Exercise){
-            $Html.='<div style="height:42px;width:800px"><div style="float:left;width:300px"><input data-role="none" type="checkbox" name="exercises[]" value="'.$Exercise->recid.'"/>'.$Exercise->ActivityName.'</div>';
-            $Html.='<input type="text" name="Rounds_'.$Exercise->recid.'" value="" style="float:left;width:75px" placeholder="Rounds"/>';
-            $Html.='<input type="text" name="FWeight_'.$Exercise->recid.'" value="" style="float:left;width:75px" placeholder="Weight(F)"/>';
-            $Html.='<input type="text" name="MWeight_'.$Exercise->recid.'" value="" style="float:left;width:75px" placeholder="Weight(M)"/>';
-            $Html.='<input type="text" name="Reps_'.$Exercise->recid.'" value="" style="float:left;width:75px" placeholder="Reps"/></div>';
+            $Html.='<div style="height:42px;width:800px">
+                        <div style="float:left;width:300px">
+                            <input data-role="none" type="checkbox" name="exercises_'.$this->RoutineNumber.'[]" value="'.$Exercise->recid.'"/>'.$Exercise->ActivityName.'
+                        </div>';
+            $Html.='<input type="text" name="'.$this->RoutineNumber.'___'.$Exercise->recid.'___Rounds" value="" style="float:left;width:75px" placeholder="Rounds"/>';
+            $Html.='<input type="text" name="'.$this->RoutineNumber.'___'.$Exercise->recid.'___FWeight" value="" style="float:left;width:75px" placeholder="Weight(F)"/>';
+            $Html.='<input type="text" name="'.$this->RoutineNumber.'___'.$Exercise->recid.'___MWeight" value="" style="float:left;width:75px" placeholder="Weight(M)"/>';
+            $Html.='<input type="text" name="'.$this->RoutineNumber.'___'.$Exercise->recid.'___Reps" value="" style="float:left;width:75px" placeholder="Reps"/>
+                    </div>';
             
             //$Html .= '<option value="'.$Exercise->ActivityName.'">'.$Exercise->ActivityName.'</option>';
 	}
