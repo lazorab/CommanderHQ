@@ -13,7 +13,7 @@ class UploadModel extends Model
 
             $Activities = $this->getActivityFields();
 
-            //var_dump($ActivityFields);
+            var_dump($ActivityFields);
             if($this->Message == ''){
                 $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
                 $SQL = 'INSERT INTO WodWorkouts(GymId, WorkoutName, WodTypeId, WorkoutRoutineTypeId, WodDate) 
@@ -86,17 +86,17 @@ class UploadModel extends Model
         $Routines = $_REQUEST['RoutineCounter'];
         for($i=1;$i<$Routines;$i++){
             $SelectedExercises=$_REQUEST['exercises_'.$i.''];
-        foreach($SelectedExercises AS $key=>$val)
+        foreach($SelectedExercises AS $key=>$Id)
         {
             $ExerciseId = 0;
             $Attribute = '';
-            $ExplodedKey = explode('___', $key);
 
-            $RoutineNo = $ExplodedKey[0];
-            $ExerciseId = $ExplodedKey[1];
+            $RoutineNo = $i;
+            $ExerciseId = $Id;
             $ExerciseName = $this->getExerciseName($ExerciseId);
-            $Attribute = $ExplodedKey[2];
-            
+            $Attributes = array('Rounds','FWeight','MWeight','Reps');
+            foreach($Attributes AS $Attribute){
+            $val = $_REQUEST[''.$i.'___'.$Id.'___'.$Attribute.''];
             if($val != ''){
                 if($Attribute == 'MWeight'){
                  $SQL='SELECT recid, 
@@ -113,8 +113,6 @@ class UploadModel extends Model
                     FROM Exercises
                     WHERE recid = "'.$ExerciseId.'"';                   
                 }else{
-                    
-                
                     if($ExerciseId > 0){
                         $SQL='SELECT recid, 
                             (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, 
@@ -137,6 +135,7 @@ class UploadModel extends Model
                 $db->setQuery($SQL);
 		
                 array_push($Activities,$db->loadObject());
+            }
             }
 
         }

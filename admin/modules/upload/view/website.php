@@ -9,6 +9,44 @@ function HtmlOutputs(outputType, properties)
     }
 }
 
+function addActivity(){
+    $.getJSON('ajax.php?module=upload&action=validateform', $("#uploadform").serialize(),messagedisplay);
+}
+
+function SelectTimingType(type){
+    var ThisRoutineNumber = document.getElementById('RoutineCounter').value;
+    var Exercises = '<?php echo $Display->getExercises(0);?>';
+    var Html = Exercises.replace(/RoutineNumber/g, ThisRoutineNumber);
+    $('#new_routine').html(Html);   
+    document.getElementById('TimingType').value = type;
+}
+
+function addTiming(){
+    var ThisRoutineNumber = document.getElementById('RoutineCounter').value;
+    var TimingTypes = '<?php echo $Display->TimingTypes();?>';
+    var Html = TimingTypes.replace(/RoutineNumber/g, ThisRoutineNumber); 
+    $('#AddTiming_'+ThisRoutineNumber).html(Html);  
+}
+
+function addComments(){
+    var ThisRoutineNumber = document.getElementById('RoutineCounter').value;
+    var Notes = '<?php echo $Display->getNotes();?>';
+    var Html = Notes.replace(/RoutineNumber/g, ThisRoutineNumber);
+    $('#AddNotes_'+ThisRoutineNumber).html(Html);   
+}
+
+function Publish(){
+
+    $.getJSON('ajax.php?module=upload&action=validateform', $("#gymform").serialize(),messagedisplay);
+}
+
+function AddRoutine(){
+    document.getElementById('RoutineCounter').value++;
+    var ThisRoutineNumber = document.getElementById('RoutineCounter').value;   
+    var Exercises = '<?php echo $Display->getExercises(0);?>';
+    var Html = Exercises.replace(/RoutineNumber/g, ThisRoutineNumber);
+    $('#new_routine').html(Html);
+}
 
 function getContent(selection)
 {
@@ -37,7 +75,7 @@ function addActivity(routineId, activityOrderId,activityId)
 
 }
 
-function addRoutine(routineOrderId)
+function _addRoutine(routineOrderId)
 {
     $('div.routine').each(function() {
         var idNumber = $(this).attr('id').split("_")[1];
@@ -318,32 +356,13 @@ function RemoveFromList(RowId)
     }
 }
 
-function uploadsubmit()
-{
-    $.getJSON('ajax.php?module=upload&action=validateform', $("#uploadform").serialize(),messagedisplay);
-}
-
-function addnew()
-{
-    $.getJSON('ajax.php?module=upload&action=validateform', $("#uploadform").serialize(),messagedisplay);
-}
-
 function messagedisplay(message)
 {
-    if(message == 'Exercise Successfully Added!'){
+    if(message == 'Successfully Saved!'){
         $("#exercise option[value='none']").attr("selected","selected");
         $('#add_exercise').html('');
     }   
-    else{
-         alert(message); 
-
-    }  
-}
-
-function addnew()
-{
-    var NewExercise = document.getElementById('NewExercise').value;
-    $.getJSON('ajax.php?module=upload', {newexercise:NewExercise},display);
+    alert(message); 
 }
 
 function addRound()
@@ -362,9 +381,9 @@ function addRound()
 </ul>
 <div class="clear"></div>
 <br />
-<div class="actionbutton"><a href="#" onclick=""><img alt="Add Activity" src="images/AddActivity.png"/></a></div>
-<div class="actionbutton"><a href="#" onclick=""><img alt="Add Timing" src="images/AddTiming.png"/></a></div>
-<div class="actionbutton"><a href="#" onclick=""><img alt="Add Comments" src="images/AddComments.png"/></a></div>
+<div class="actionbutton"><a href="#" onClick="addActivity();"><img alt="Add Activity" src="images/AddActivity.png"/></a></div>
+<div class="actionbutton"><a href="#" onClick="addTiming();"><img alt="Add Timing" src="images/AddTiming.png"/></a></div>
+<div class="actionbutton"><a href="#" onClick="addComments();"><img alt="Add Comments" src="images/AddComments.png"/></a></div>
 <div class="clear"></div>
 <br />
 <div id="AjaxOutput">       
