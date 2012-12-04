@@ -123,7 +123,7 @@ class UploadController extends Controller
             $RoutineNumber = 'RoutineNumber';
         else
             $RoutineNumber = $DefaultRoutine;
-        $Html='<div id="exercises">';
+        $Html='<div class="exercises"id="exercise_'.$RoutineNumber.'">';
         $Model = new UploadModel;
         $Exercises = $Model->getActivities();
 

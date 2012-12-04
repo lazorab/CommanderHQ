@@ -52,9 +52,11 @@ function getInputFields(exerciseId){
 function AddRoutine(){
     document.getElementById('RoutineCounter').value++;
     var ThisRoutineNumber = document.getElementById('RoutineCounter').value;   
+    var RoutineNumberAppend = ThisRoutineNumber - 1;
+
     var Exercises = '<?php echo $Display->getExercises(0);?>';
     var Html = Exercises.replace(/RoutineNumber/g, ThisRoutineNumber);
-    $('#new_routine').html(Html);
+    $('div#exercise_'+RoutineNumberAppend).after(Html);
 }
 
 function getContent(selection)

@@ -9,7 +9,7 @@ body {
 	font-weight: normal;
 }
 
-#exercises{
+.exercises{
     float:left;
     padding:4px;
     width:680px;
@@ -246,6 +246,7 @@ select
 
 input
 {
+    margin-left: 2%;
 	border-radius: 5px; 
 	-moz-border-radius: 5px; 
 	-webkit-border-radius: 5px; 
