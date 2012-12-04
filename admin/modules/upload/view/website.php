@@ -18,7 +18,7 @@ function SelectTimingType(type){
     var Exercises = '<?php echo $Display->getExercises(0);?>';
     var Html = Exercises.replace(/RoutineNumber/g, ThisRoutineNumber);
     $('#new_routine').html(Html);   
-    document.getElementById('TimingType').value = type;
+    document.getElementById(''+ThisRoutineNumber+'_TimingType').value = type;
 }
 
 function addTiming(){
@@ -38,6 +38,15 @@ function addComments(){
 function Publish(){
 
     $.getJSON('ajax.php?module=upload&action=validateform', $("#gymform").serialize(),messagedisplay);
+}
+
+function getInputFields(exerciseId){
+    var ThisRoutineNumber = document.getElementById('RoutineCounter').value;
+    var Html='<input type="text" name="'+ThisRoutineNumber+'_'+exerciseId+'_Rounds" value="" style="float:left;width:75px" placeholder="Rounds"/>';
+    Html+='<input type="text" name="'+ThisRoutineNumber+'_'+exerciseId+'_FWeight" value="" style="float:left;width:75px" placeholder="Weight(F)"/>';
+    Html+='<input type="text" name="'+ThisRoutineNumber+'_'+exerciseId+'_MWeight" value="" style="float:left;width:75px" placeholder="Weight(M)"/>';
+    Html+='<input type="text" name="'+ThisRoutineNumber+'_'+exerciseId+'_Reps" value="" style="float:left;width:75px" placeholder="Reps"/>';
+    $('#exercise_'+exerciseId+'_input').html(Html); 
 }
 
 function AddRoutine(){
@@ -386,6 +395,33 @@ function addRound()
 <div class="actionbutton"><a href="#" onClick="addComments();"><img alt="Add Comments" src="images/AddComments.png"/></a></div>
 <div class="clear"></div>
 <br />
-<div id="AjaxOutput">       
+<form action="index.php" id="gymform" name="form">
+<input type="hidden" name="form" value="submitted"/>
+<input type="hidden" name="rowcount" id="rowcounter" value="0"/>
+<input type="hidden" name="RoutineCounter" id="RoutineCounter" value="1"/>
+<input class="inputbox-required" type="text" name="WodDate" id="WodDate" maxlength="25" placeholder="Use Calendar" value=""/>
+<img src="images/calendar-blue.gif" alt="calendar" id="Start_trigger"/>
+<script type="text/javascript">
+      Calendar.setup({
+        inputField : "WodDate",
+        trigger    : "Start_trigger",
+        onSelect   : function() { this.hide() },
+        dateFormat : "%Y-%m-%d"
+      });
+</script>
+<div id="AjaxOutput">    
     <?php echo $Display->Output();?>
 </div>
+<div style="width:125px;float:right">
+<input type="button" onClick="Publish();" name="" value="Publish"/>
+<input type="button" onClick="AddRoutine()" name="" value="+"/>
+</div>
+<div class="clear"></div>
+<br/>
+
+<div class="ui-grid-b">
+<div id="display_benchmark"></div>
+<div id="add_exercise"></div>
+<div id="new_routine"></div>
+</div>
+</form><br/>

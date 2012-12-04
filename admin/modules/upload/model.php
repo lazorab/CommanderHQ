@@ -7,31 +7,55 @@ class UploadModel extends Model
 	{
 	
 	}
+        
+        function Validate()
+        {
+            if($_REQUEST['WodDate'] == ''){
+                $this->Message = 'Must Select Date!';
+            }else{
+            $Routines = $_REQUEST['RoutineCounter'];
+            for($i=1;$i<=$Routines;$i++){ 
+                foreach($_REQUEST['Routine'.$i.'exercises'] as $ExerciseId){
+                    $RoundsVal = $_REQUEST[''.$i.'_'.$ExerciseId.'_Rounds'];
+                    $FWeightVal = $_REQUEST[''.$i.'_'.$ExerciseId.'_FWeight'];
+                    $MWeightVal = $_REQUEST[''.$i.'_'.$ExerciseId.'_MWeight'];
+                    $RepsVal = $_REQUEST[''.$i.'_'.$ExerciseId.'_Reps'];
+                    $TimingVal = $_REQUEST[''.$i.'_Timing'];
+                }
+            } 
+            }
+        }
     
-    function Save()
+        function Save()
 	{
-
-            $Activities = $this->getActivityFields();
-
-            var_dump($ActivityFields);
+            $this->Validate();
             if($this->Message == ''){
+            $WodTypeId = $this->getWodTypeId('My Gym');
+            
+                $Routines = $_REQUEST['RoutineCounter'];
+                for($i=1;$i<=$Routines;$i++){
+                    $TimingTypeVal = $_REQUEST[''.$i.'_TimingType'];
+                    $NotesVal = $_REQUEST[''.$i.'_Notes'];
+                
                 $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-                $SQL = 'INSERT INTO WodWorkouts(GymId, WorkoutName, WodTypeId, WorkoutRoutineTypeId, WodDate) 
-                VALUES("'.$_SESSION['GID'].'", "'.$_REQUEST['WorkoutName'].'", "'.$WodTypeId.'", "'.$WorkoutRoutineTypeId.'", "'.$_REQUEST['WodDate'].'")';
+                $SQL = 'INSERT INTO WodWorkouts(GymId, Routine, WodTypeId, WorkoutRoutineTypeId, Notes, WodDate) 
+                VALUES("'.$_SESSION['GID'].'", "'.$i.'", "'.$WodTypeId.'", "'.$TimingTypeVal.'", "'.$NotesVal.'", "'.$_REQUEST['WodDate'].'")';
                 $db->setQuery($SQL);
                 $db->Query();
                 $WodId = $db->insertid();
-            
-            if($Activities != null){
-            foreach($Activities AS $ActivityField)
+                $ActivityFields = $this->getActivityFields($i);
+            if($ActivityFields != null){
+            foreach($ActivityFields AS $ActivityField)
             {
-                $SQL = 'INSERT INTO WodDetails(WodId, ExerciseId, AttributeId, AttributeValue, RoundNo) 
-                VALUES("'.$WodId.'", "'.$ActivityField->recid.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->RoundNo.'")';
+                $SQL = 'INSERT INTO WodDetails(WodId, ExerciseId, AttributeId, AttributeValueMale, AttributeValueFemale) 
+                VALUES("'.$WodId.'", "'.$ActivityField->recid.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValueMale.'", "'.$ActivityField->AttributeValueFemale.'")';
                 $db->setQuery($SQL);
                 $db->Query();
 		}
             }
                 $this->Message = 'Success';
+            }
+            
             }
 
         return $this->Message;
@@ -78,68 +102,61 @@ class UploadModel extends Model
             return $db->loadResult();
         }     
     
-    function getActivityFields()
+    function getActivityFields($RoutineNo)
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
         $this->Message = '';
         $Activities = array();
-        $Routines = $_REQUEST['RoutineCounter'];
-        for($i=1;$i<$Routines;$i++){
-            $SelectedExercises=$_REQUEST['exercises_'.$i.''];
-        foreach($SelectedExercises AS $key=>$Id)
-        {
-            $ExerciseId = 0;
-            $Attribute = '';
+            foreach($_REQUEST['Routine'.$RoutineNo.'exercises'] as $ExerciseId){
 
-            $RoutineNo = $i;
-            $ExerciseId = $Id;
-            $ExerciseName = $this->getExerciseName($ExerciseId);
-            $Attributes = array('Rounds','FWeight','MWeight','Reps');
-            foreach($Attributes AS $Attribute){
-            $val = $_REQUEST[''.$i.'___'.$Id.'___'.$Attribute.''];
-            if($val != ''){
-                if($Attribute == 'MWeight'){
-                 $SQL='SELECT recid, 
-                    (SELECT recid FROM Attributes WHERE Attribute = "Weight") AS Attribute, 
-                    "'.$val.'" AS AttributeValueMale,  
-                    "'.$RoutineNo.'" AS RoutineNo
+                $Attribute = '';
+                $ExerciseName = $this->getExerciseName($ExerciseId);
+                $RoundsVal = $_REQUEST[''.$RoutineNo.'_'.$ExerciseId.'_Rounds'];
+                $FWeightVal = $_REQUEST[''.$RoutineNo.'_'.$ExerciseId.'_FWeight'];
+                $MWeightVal = $_REQUEST[''.$RoutineNo.'_'.$ExerciseId.'_MWeight'];
+                $RepsVal = $_REQUEST[''.$RoutineNo.'_'.$ExerciseId.'_Reps'];
+                $TimingVal = $_REQUEST[''.$RoutineNo.'_Timing'];
+                if($RoundsVal != ''){
+                    $SQL='SELECT recid, 
+                    (SELECT recid FROM Attributes WHERE Attribute = "Rounds") AS AttributeId, 
+                    "'.$RoundsVal.'" AS AttributeValueMale, 
+                    "'.$RoundsVal.'" AS AttributeValueFemale
                     FROM Exercises
-                    WHERE recid = "'.$ExerciseId.'"';                   
-                }else if($Attribute == 'FWeight'){
-                 $SQL='SELECT recid, 
-                    (SELECT recid FROM Attributes WHERE Attribute = "Weight") AS Attribute,  
-                    "'.$val.'" AS AttributeValueFeMale, 
-                    "'.$RoutineNo.'" AS RoutineNo
-                    FROM Exercises
-                    WHERE recid = "'.$ExerciseId.'"';                   
-                }else{
-                    if($ExerciseId > 0){
-                        $SQL='SELECT recid, 
-                            (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, 
-                            "'.$val.'" AS AttributeValueMale, 
-                            "'.$val.'" AS AttributeValueFeMale, 
-                            "'.$RoutineNo.'" AS RoutineNo
-                            FROM Exercises
-                            WHERE recid = "'.$ExerciseId.'"';
-                    }
-                    else{
-                        $SQL='SELECT "'.$ExerciseId.'" AS recid,
-                            recid AS Attribute,
-                            "'.$val.'" AS AttributeValueMale, 
-                            "'.$val.'" AS AttributeValueFeMale, 
-                            "'.$RoutineNo.'" AS RoutineNo
-                            FROM Attributes WHERE Attribute = "'.$Attribute.'"';
-                    
-                    }
+                    WHERE recid = "'.$ExerciseId.'"';
+                    $db->setQuery($SQL);
+                    array_push($Activities,$db->loadObject());
                 }
-                $db->setQuery($SQL);
-		
-                array_push($Activities,$db->loadObject());
+                if($FWeightVal != '' && $MWeightVal != ''){
+                    $SQL='SELECT recid, 
+                    (SELECT recid FROM Attributes WHERE Attribute = "Weight") AS AttributeId, 
+                    "'.$MWeightVal.'" AS AttributeValueMale, 
+                    "'.$FWeightVal.'" AS AttributeValueFemale
+                    FROM Exercises
+                    WHERE recid = "'.$ExerciseId.'"';
+                    $db->setQuery($SQL);
+                    array_push($Activities,$db->loadObject());                    
+                }
+                if($RepsVal != ''){
+                    $SQL='SELECT recid, 
+                    (SELECT recid FROM Attributes WHERE Attribute = "Reps") AS AttributeId, 
+                    "'.$RepsVal.'" AS AttributeValueMale, 
+                    "'.$RepsVal.'" AS AttributeValueFemale
+                    FROM Exercises
+                    WHERE recid = "'.$ExerciseId.'"';
+                    $db->setQuery($SQL);
+                    array_push($Activities,$db->loadObject());                   
+                }
+                 if($TimingVal != ''){
+                    $SQL='SELECT recid, 
+                    (SELECT recid FROM Attributes WHERE Attribute = "TimeToComplete") AS AttributeId, 
+                    "'.$TimingVal.'" AS AttributeValueMale, 
+                    "'.$TimingVal.'" AS AttributeValueFemale
+                    FROM Exercises
+                    WHERE recid = "'.$ExerciseId.'"';
+                    $db->setQuery($SQL);
+                    array_push($Activities,$db->loadObject());                  
+                }               
             }
-            }
-
-        }
-    }
         return $Activities;
     }
     
@@ -187,14 +204,23 @@ class UploadModel extends Model
         }
     }  
         
-	function getWodTypeId($type)
+	function getTimingTypeId($type)
 	{
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $SQL = 'SELECT recid FROM WorkoutTypes WHERE WorkoutType = "'.$type.'"';
             $db->setQuery($SQL);
 		
             return $db->loadResult();
-	}      
+	}    
+        
+ 	function getWodTypeId($type)
+	{
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT recid FROM WODTypes WHERE WODType = "'.$type.'"';
+            $db->setQuery($SQL);
+		
+            return $db->loadResult();
+	}       
         
     function getWorkoutTypes()
     {

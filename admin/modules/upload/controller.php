@@ -103,28 +103,8 @@ class UploadController extends Controller
     }
     
     function MainOutput()
-    {       
-        $Html .= '<form action="index.php" id="gymform" name="form">';
-        $Html .= '<input type="hidden" name="form" value="submitted"/>';
-        $Html .= '<input type="hidden" name="rowcount" id="rowcounter" value="0"/>';
-        $Html .= '<input type="hidden" name="RoutineCounter" id="RoutineCounter" value="1"/>';
-        $Html .= '<input type="hidden" name="TimingType" id="TimingType" value="0"/>';
-        
+    {        
         $Html .= $this->getExercises(1);
-
-        $Html .= '<div style="width:125px;float:right">';
-        $Html .= '<input type="button" onClick="Publish();" name="" value="Publish"/>';
-        $Html .= '<input type="button" onClick="AddRoutine()" name="" value="+"/>';
-        $Html .= '</div>';
-        $Html .= '<div class="clear"></div>';
-        $Html .= '<br/>';
-
-        $Html .= '<div class="ui-grid-b">';
-        $Html .= '<div id="display_benchmark"></div>';
-        $Html .= '<div id="add_exercise">'.$this->AddExercise().'</div>';
-        $Html .= '<div id="new_routine"></div>';
-        $Html .= '</div>';
-        $Html .= '</form><br/>';
      	
 	return $Html;
     }
@@ -150,12 +130,8 @@ class UploadController extends Controller
 	foreach($Exercises AS $Exercise){
             $Html.='<div style="height:42px;width:800px">';
             $Html.='<div style="float:left;width:300px">';
-            $Html.='<input data-role="none" type="checkbox" name="exercises_'.$RoutineNumber.'[]" value="'.$Exercise->recid.'"/>'.$Exercise->ActivityName.'';
-            $Html.='</div>';
-            $Html.='<input type="text" name="'.$RoutineNumber.'___'.$Exercise->recid.'___Rounds" value="" style="float:left;width:75px" placeholder="Rounds"/>';
-            $Html.='<input type="text" name="'.$RoutineNumber.'___'.$Exercise->recid.'___FWeight" value="" style="float:left;width:75px" placeholder="Weight(F)"/>';
-            $Html.='<input type="text" name="'.$RoutineNumber.'___'.$Exercise->recid.'___MWeight" value="" style="float:left;width:75px" placeholder="Weight(M)"/>';
-            $Html.='<input type="text" name="'.$RoutineNumber.'___'.$Exercise->recid.'___Reps" value="" style="float:left;width:75px" placeholder="Reps"/>';
+            $Html.='<input data-role="none" type="checkbox" onClick="getInputFields('.$Exercise->recid.');" name="Routine'.$RoutineNumber.'exercises[]" value="'.$Exercise->recid.'"/>'.$Exercise->ActivityName.'';
+            $Html.='</div><div id="exercise_'.$Exercise->recid.'_input"></div>';
             $Html.='</div>';
 	}
          $Html.='</div>';
@@ -186,13 +162,14 @@ class UploadController extends Controller
     }
     
     function TimingTypes(){
-        $Html='<div id="timing">';
+        
+        $Html='<div id="timing"><input type="hidden" name="RoutineNumber_TimingType" id="RoutineNumber_TimingType" value="0"/>';
         $Model = new UploadModel;
         $WorkoutTypes = $Model->getWorkoutTypes();
         foreach($WorkoutTypes AS $WorkoutType){
-            $Html .= '<input type="button" onclick="SelectTimingType('.$WorkoutType->recid.');" id="'.$WorkoutType->recid.'" name="timingtype" value="'.$WorkoutType->ActivityType.'"/>';
+            $Html .= '<input type="button" onclick="SelectTimingType('.$WorkoutType->recid.');" name="TimingType_'.$WorkoutType->recid.'" value="'.$WorkoutType->ActivityType.'"/>';
         }
-        $Html.='<br/><input style="width:150px;margin-left:4px" type="text" name="RoutineNumber___'.$WorkoutType->recid.'" value="" placeholder="00:00"/>';
+        $Html.='<br/><input style="width:150px;margin-left:4px" type="text" name="RoutineNumber_Timing" id="RoutineNumber_Timing" value="" placeholder="00:00"/>';
         $Html.='</div>';
         return $Html;
     }

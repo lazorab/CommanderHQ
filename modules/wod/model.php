@@ -109,7 +109,11 @@ class WodModel extends Model
 			ORDER BY RoundNo, OrderBy, Attribute';               
             }else{
                 
-            
+             if($this->getGender() == 'M'){
+                $AttributeValue = 'AttributeValueMale';
+            } else {
+                $AttributeValue = 'AttributeValueFemale';
+            }           
 		$SQL = 'SELECT WW.WorkoutName, 
                         E.Exercise, 
                         CASE 
@@ -121,8 +125,11 @@ class WodModel extends Model
                         "'.$this->WodDescription($Id).'" AS WorkoutDescription,
                         E.recid AS ExerciseId, 
                         A.Attribute, 
-                        WD.AttributeValue,  
-                        RoundNo
+                       '.$AttributeValue.' AS AttributeValue, 
+                        WW.Routine AS RoundNo,
+                        WW.WorkoutRoutineTypeId,
+                        WW.WodDate,
+                        WW.Notes
 			FROM WodDetails WD
 			LEFT JOIN WodWorkouts WW ON WW.recid = WD.WodId
 			LEFT JOIN Exercises E ON E.recid = WD.ExerciseId
@@ -161,10 +168,15 @@ class WodModel extends Model
         
          function WodDescription($Id)
         {
+             if($this->getGender() == 'M'){
+                $AttributeValue = 'AttributeValueMale';
+            } else {
+                $AttributeValue = 'AttributeValueFemale';
+            }            
              $SQL = 'SELECT E.Exercise, 
                 E.Acronym, 
                 A.Attribute, 
-                WD.AttributeValue, 
+                '.$AttributeValue.' AS AttributeValue, 
                 WT.WorkoutType
                 FROM WodDetails WD
                 LEFT JOIN Exercises E ON E.recid = WD.ExerciseId
@@ -206,12 +218,12 @@ class WodModel extends Model
                     //$Description .= ' ';
                     $Description .= ''.$Row->AttributeValue.' '.$Row->Exercise.' | ';
                 }else if($Row->Attribute == 'Weight'){
-                    //$Description .= ' ';
-                   // $Description .= $Row->AttributeValue;
-                    //if($this->getSystemOfMeasure() == 'Metric')
-                    //    $Description .= 'kg';
-                    //else if($this->getSystemOfMeasure() == 'Imperial')
-                    //    $Description .= 'lbs';
+                    $Description .= ' ';
+                    $Description .= $Row->AttributeValue;
+                    if($this->getSystemOfMeasure() == 'Metric')
+                        $Description .= 'kg';
+                    else if($this->getSystemOfMeasure() == 'Imperial')
+                        $Description .= 'lbs';
                 }else if($Row->Attribute == 'Height'){
                     
                 }else if($Row->Attribute == 'Distance'){

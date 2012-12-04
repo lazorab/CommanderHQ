@@ -22,13 +22,11 @@ $Display = new $ControllerClass;
 $Environment = 'website';
 ?>
 <!DOCTYPE html>
-<html manifest="manifest.php" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html>
 <?php
 /*HEADER*/
 if (file_exists("includes/header/$Environment.php"))
 include("includes/header/$Environment.php");
-
-//echo $HtmlOutput->GetOpenBodyTag();
   
     $Banner = 'header';//default
     if(isset($_REQUEST['banner']))
@@ -39,7 +37,6 @@ include("includes/header/$Environment.php");
     }
 ?>
     <body>
-<div data-role="page" data-theme="c">
 
 <div id="header">
 <img alt="Header" src="<?php echo IMAGE_RENDER_PATH.$Banner;?>.png"/>
@@ -64,7 +61,6 @@ include("modules/$Module/view/$Environment.php");
     if (file_exists("includes/footer/$Environment.php"))
 include("includes/footer/$Environment.php");
 ?>
-</div><!-- /page -->
-<?php //echo $HtmlOutput->GetCloseBodyTag();?>
+
     </body>
 </html>

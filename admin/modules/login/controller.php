@@ -12,8 +12,8 @@ class LoginController extends Controller
 		}
 		else if($_REQUEST['action'] == 'Login')
 		{
-			$UserId = $Model->Login($_REQUEST['username'], $_REQUEST['password']);	
-			if(!$UserId){
+			$GymId = $Model->Login($_REQUEST['username'], $_REQUEST['password']);	
+			if(!$GymId){
 				$this->Message = 'Invalid Credentials, Please try again.';
 			}
 			else{
@@ -21,7 +21,7 @@ class LoginController extends Controller
 					setcookie("AdminUsername", $_REQUEST['username'], time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
 					setcookie("AdminPassword", $_REQUEST['password'], time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
 				}			
-				$_SESSION['GID'] = $UserId;
+				$_SESSION['GID'] = $GymId;
 
 				header('location: index.php?module=upload');
 			}		

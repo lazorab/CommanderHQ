@@ -33,7 +33,7 @@ class WodController extends Controller
             $Model = new WodModel;
             $WodDetails = $Model->getTopSelection();
             //$Description = $Model->WodDescription($WodDetails->recid);
-            $Html .= ''.$WodDetails[0]->WorkoutName.':<br/><span style="font-size:small">'.$WodDetails[0]->WorkoutDescription.'</span>';
+            $Html .= ''.$WodDetails[0]->WodDate.':<br/><span style="font-size:small">'.$WodDetails[0]->WorkoutDescription.'</span>';
             return $Html;           
         }
 	
@@ -111,20 +111,21 @@ class WodController extends Controller
             <input type="hidden" name="wodtype" value="2"/>
             <input type="hidden" name="form" value="submitted"/>';       
         $html.='<input type="checkbox" name="baseline" value="yes" data-role="none"/>';
-        $html.='Make this my baseline<br/><br/>';
+        $html.='Make this my baseline';
+        $html.='<p>'.$WodDetails[0]->Notes.'</p>';
         $html.='<div class="ui-grid-b">';
         $ThisRound = '';
 		$ThisExercise = '';
-	foreach($WodDetails as $Benchmark){
-		if($Benchmark->Attribute == 'TimeToComplete'){
-			$Clock = $this->getStopWatch($Benchmark->ExerciseId);
+	foreach($WodDetails as $Detail){
+		if($Detail->Attribute == 'TimeToComplete'){
+			$Clock = $this->getStopWatch();
 		}
-		else if($Benchmark->Attribute == 'CountDown'){
-			$Clock = $this->getCountDown($Benchmark->ExerciseId,$Benchmark->AttributeValue);
+		else if($Detail->Attribute == 'CountDown'){
+			$Clock = $this->getCountDown($Detail->ExerciseId,$Detail->AttributeValue);
 		}
 		else{
 			
-			if($Benchmark->TotalRounds > 1 && $Benchmark->RoundNo > 0 && $ThisRound != $Benchmark->RoundNo){
+			if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0 && $ThisRound != $Detail->RoundNo){
 			
 				if($Chtml != '' && $Bhtml == ''){
 					$html.='<div class="ui-block-b"></div>'.$Chtml.'';
@@ -137,15 +138,15 @@ class WodController extends Controller
 					$Bhtml = '';
 				}
 				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
-				$html.='<div class="ui-block-a" style="padding:2px 0 2px 0">Round '.$Benchmark->RoundNo.'</div><div class="ui-block-b" style="padding:2px 0 2px 0"></div><div class="ui-block-c" style="padding:2px 0 2px 0"></div>';
-				$html.='<div class="ui-block-a"><input data-role="none" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Benchmark->InputFieldName.'"/></div>';
+				$html.='<div class="ui-block-a" style="padding:2px 0 2px 0">Round '.$Detail->RoundNo.'</div><div class="ui-block-b" style="padding:2px 0 2px 0"></div><div class="ui-block-c" style="padding:2px 0 2px 0"></div>';
+				$html.='<div class="ui-block-a"><input data-role="none" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Detail->InputFieldName.'"/></div>';
 			}
-			else if($ThisExercise != $Benchmark->Exercise){
+			else if($ThisExercise != $Detail->Exercise){
                             
                                 if(isset($_REQUEST['Rounds']))
                                     $RoundNo = $_REQUEST['Rounds'];
                                 else
-                                    $RoundNo = $Benchmark->RoundNo;
+                                    $RoundNo = $Detail->RoundNo;
 
 				if($Chtml != '' && $Bhtml == ''){
 					$html.='<div class="ui-block-b"></div>'.$Chtml.'';
@@ -157,10 +158,10 @@ class WodController extends Controller
 					$Chtml = '';
 					$Bhtml = '';
 				}
-                                if($Benchmark->Exercise == 'Total Rounds'){
+                                if($Detail->Exercise == 'Total Rounds'){
                                     $Exercise = '<input class="buttongroup" data-inline="true" type="button" onclick="addRound();" value="+ Round"/>';
                                 }else{
-                                    $Exercise = '<input data-role="none" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Benchmark->InputFieldName.'"/>';
+                                    $Exercise = '<input data-role="none" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Detail->InputFieldName.'"/>';
                                 }
 				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
 				$html.='<div class="ui-block-a">'.$Exercise.'</div>';
@@ -168,41 +169,41 @@ class WodController extends Controller
 			}	
 
 		
-            if($Benchmark->Attribute == 'Height' || $Benchmark->Attribute == 'Distance' || $Benchmark->Attribute == 'Weight'){
+            if($Detail->Attribute == 'Height' || $Detail->Attribute == 'Distance' || $Detail->Attribute == 'Weight'){
                             $AttributeValue = '';	
-				if($Benchmark->Attribute == 'Distance'){
+				if($Detail->Attribute == 'Distance'){
                                     $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#6f747a"';
 					if($this->SystemOfMeasure() != 'Metric'){
 						$Unit = '<span style="float:left">yd</span>';
-                                                $AttributeValue = round($Benchmark->AttributeValue * 1.09, 2);
+                                                $AttributeValue = round($Detail->AttributeValue * 1.09, 2);
                                         }else{
 						$Unit = '<span style="float:left">m</span>';
-                                                $AttributeValue = $Benchmark->AttributeValue;
+                                                $AttributeValue = $Detail->AttributeValue;
                                         }
 				}		
-				else if($Benchmark->Attribute == 'Weight'){
+				else if($Detail->Attribute == 'Weight'){
                                     $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#3f2b44"';
 					if($this->SystemOfMeasure() != 'Metric'){
-                                            $AttributeValue = round($Benchmark->AttributeValue * 2.20, 2);
+                                            $AttributeValue = round($Detail->AttributeValue * 2.20, 2);
 						$Unit = '<span style="float:left">lbs</span>';
                                         }else{
 						$Unit = '<span style="float:left">kg</span>';
-                                                $AttributeValue = $Benchmark->AttributeValue;
+                                                $AttributeValue = $Detail->AttributeValue;
                                         }
 				}
-				else if($Benchmark->Attribute == 'Height'){
+				else if($Detail->Attribute == 'Height'){
                                     $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#66486e"';
 					if($this->SystemOfMeasure() != 'Metric'){
-                                            $AttributeValue = round($Benchmark->AttributeValue * 0.39, 2);
+                                            $AttributeValue = round($Detail->AttributeValue * 0.39, 2);
 						$Unit = '<span style="float:left">in</span>';
                                         }else{
 						$Unit = '<span style="float:left">cm</span>';
-                                                $AttributeValue = $Benchmark->AttributeValue;
+                                                $AttributeValue = $Detail->AttributeValue;
                                         }
 				}
 
 				$Bhtml.='<div class="ui-block-b">';
-				$Bhtml.='<input data-role="none" '.$Style.' type="number" data-inline="true" name="'.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" value="'.$AttributeValue.'"/>'.$Unit.'';
+				$Bhtml.='<input data-role="none" '.$Style.' type="number" data-inline="true" name="'.$RoundNo.'___'.$Detail->ExerciseId.'___'.$Detail->Attribute.'" value="'.$AttributeValue.'"/>'.$Unit.'';
 				$Bhtml.='</div>';		
 				if($Chtml != ''){
 					$html.=''.$Bhtml.''.$Chtml.'';
@@ -211,22 +212,20 @@ class WodController extends Controller
 				}
 			}
                         
-            else if($Benchmark->Attribute == 'Calories' || $Benchmark->Attribute == 'Reps' || $Benchmark->Attribute == 'Rounds'){
+            else if($Detail->Attribute == 'Calories' || $Detail->Attribute == 'Reps' || $Detail->Attribute == 'Rounds'){
                                 $Placeholder = '';
-                                if($Benchmark->Attribute == 'Calories'){
+                                if($Detail->Attribute == 'Calories'){
                                     $Style='style="width:50%"';
                                     $Placeholder = 'placeholder="Calories"';
                                 }
                                 $InputAttributes = 'type="number"';
-                                $InputName = ''.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'';
-                                $Value = $Benchmark->AttributeValue;
-                                if($Benchmark->Attribute == 'Rounds'){
+                                $InputName = ''.$RoundNo.'___'.$Detail->ExerciseId.'___'.$Detail->Attribute.'';
+                                $Value = $Detail->AttributeValue;
+                                if($Detail->Attribute == 'Rounds'){
                                     $Style='style="width:50%"';
-                                    $InputAttributes .= ' id="addround"';
                                     $InputName = 'Rounds';
-                                    $Value = $_REQUEST['Rounds'] + 1 ;
                                 }
-                                if($Benchmark->Attribute == 'Reps'){
+                                if($Detail->Attribute == 'Reps'){
                                     $Style='style="float:left;width:50%;color:black;font-weight:bold;background-color:#ccff66"';
                                 }
 				$Chtml.='<div class="ui-block-c">';
@@ -240,8 +239,8 @@ class WodController extends Controller
 			}
 		
 		
-	$ThisRound = $Benchmark->RoundNo;
-	$ThisExercise = $Benchmark->Exercise;
+	$ThisRound = $Detail->RoundNo;
+	$ThisExercise = $Detail->Exercise;
 	}
 				if($Chtml != '' && $Bhtml == ''){
 					$html.='<div class="ui-block-b"></div>'.$Chtml.'';
