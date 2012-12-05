@@ -60,7 +60,7 @@ function getInputFields(routineId, exerciseId){
 
     }
     else
-        $('#exercise_'+exerciseId+'_input').html(Html)
+        $('#exercise_'+routineId+'_'+exerciseId+'_input').html(Html)
 }
 
 function AddRoutine(){
