@@ -123,21 +123,23 @@ class UploadController extends Controller
             $RoutineNumber = 'RoutineNumber';
         else
             $RoutineNumber = $DefaultRoutine;
-        $Html='<div class="exercises"id="exercise_'.$RoutineNumber.'">';
+
+        $Html='<div class="exercises" id="exercise_'.$RoutineNumber.'">';
         $Model = new UploadModel;
         $Exercises = $Model->getActivities();
 
-	foreach($Exercises AS $Exercise){
+        foreach($Exercises AS $Exercise){
             $Html.='<div style="height:42px;width:800px">';
             $Html.='<div style="float:left;width:300px">';
-            $Html.='<input data-role="none" type="checkbox" onClick="getInputFields('.$Exercise->recid.');" name="Routine'.$RoutineNumber.'exercises[]" value="'.$Exercise->recid.'"/>'.$Exercise->ActivityName.'';
-            $Html.='</div><div id="exercise_'.$Exercise->recid.'_input"></div>';
+            $Html.='<input data-role="none" type="checkbox" onClick="getInputFields('.$RoutineNumber.','.$Exercise->recid.');" name="Routine'.$RoutineNumber.'exercises[]" value="'.$Exercise->recid.'"/>'.$Exercise->ActivityName.'';
+            $Html.='</div><div id="exercise_'.$RoutineNumber.'_'.$Exercise->recid.'_input"></div>';
             $Html.='</div>';
-	}
-         $Html.='</div>';
+        }
+
+        $Html.='</div>';
         $Html .= '<div id="AddTiming_'.$RoutineNumber.'"></div>';
         $Html .= '<div id="AddNotes_'.$RoutineNumber.'"></div>';
-	return $Html;
+        return $Html;
     }   
     
     function Benchmarks()

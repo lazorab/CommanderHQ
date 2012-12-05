@@ -36,17 +36,16 @@ function addComments(){
 }
 
 function Publish(){
-
-    $.getJSON('ajax.php?module=upload&action=validateform', $("#gymform").serialize(),messagedisplay);
+    console.debug($("#gymform").serialize());
+    //$.getJSON('ajax.php?module=upload&action=validateform', $("#gymform").serialize(),messagedisplay);
 }
 
-function getInputFields(exerciseId){
-    var ThisRoutineNumber = document.getElementById('RoutineCounter').value;
-    var Html='<input type="text" name="'+ThisRoutineNumber+'_'+exerciseId+'_Rounds" value="" style="float:left;width:75px" placeholder="Rounds"/>';
-    Html+='<input type="text" name="'+ThisRoutineNumber+'_'+exerciseId+'_FWeight" value="" style="float:left;width:75px" placeholder="Weight(F)"/>';
-    Html+='<input type="text" name="'+ThisRoutineNumber+'_'+exerciseId+'_MWeight" value="" style="float:left;width:75px" placeholder="Weight(M)"/>';
-    Html+='<input type="text" name="'+ThisRoutineNumber+'_'+exerciseId+'_Reps" value="" style="float:left;width:75px" placeholder="Reps"/>';
-    $('#exercise_'+exerciseId+'_input').html(Html); 
+function getInputFields(routineId, exerciseId){
+    var Html='<input type="text" name="'+routineId+'_'+exerciseId+'_Rounds" value="" style="float:left;width:75px" placeholder="Rounds"/>';
+    Html+='<input type="text" name="'+routineId+'_'+exerciseId+'_FWeight" value="" style="float:left;width:75px" placeholder="Weight(F)"/>';
+    Html+='<input type="text" name="'+routineId+'_'+exerciseId+'_MWeight" value="" style="float:left;width:75px" placeholder="Weight(M)"/>';
+    Html+='<input type="text" name="'+routineId+'_'+exerciseId+'_Reps" value="" style="float:left;width:75px" placeholder="Reps"/>';
+    $('#exercise_'+routineId+'_'+exerciseId+'_input').html(Html); 
 }
 
 function AddRoutine(){
