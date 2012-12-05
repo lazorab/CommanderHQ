@@ -382,15 +382,7 @@ function addRound()
     //$.getJSON('ajax.php?module=benchmark', $("#benchmarkform").serialize(),display);
 }
 </script>
-<br/>
-<ul id="admin-menu">
-    <a href="#"><li>Load New</li></a>
-    <a href="#"><li>Historic</li></a>
-    <a href="#"><li>Reports</li></a>
-    <a href="#"><li>Booking</li></a>
-    <a href="#"><li>Messages</li></a>
-</ul>
-<div class="clear"></div>
+
 <br />
 <div class="actionbutton"><a href="#" onClick="addActivity();"><img alt="Add Activity" src="images/AddActivity.png"/></a></div>
 <div class="actionbutton"><a href="#" onClick="addTiming();"><img alt="Add Timing" src="images/AddTiming.png"/></a></div>

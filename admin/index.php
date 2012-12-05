@@ -41,7 +41,7 @@ include("includes/header/$Environment.php");
 <div id="header">
 <img alt="Header" src="<?php echo IMAGE_RENDER_PATH.$Banner;?>.png"/>
 </div>
-<?php if(isset($_SESSION['UID'])){
+<?php if(isset($_SESSION['GID'])){
 /*MENU*/	
 if (file_exists("includes/menu/$Environment.php"))
 include("includes/menu/$Environment.php");

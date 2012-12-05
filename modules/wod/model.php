@@ -114,7 +114,8 @@ class WodModel extends Model
             } else {
                 $AttributeValue = 'AttributeValueFemale';
             }           
-		$SQL = 'SELECT WW.WorkoutName, 
+		$SQL = 'SELECT WD.WodId,
+                        WW.WorkoutName, 
                         E.Exercise, 
                         CASE 
                             WHEN E.Acronym <> ""
@@ -122,7 +123,6 @@ class WodModel extends Model
                             ELSE E.Exercise
                         END
                         AS InputFieldName, 
-                        "'.$this->WodDescription($Id).'" AS WorkoutDescription,
                         E.recid AS ExerciseId, 
                         A.Attribute, 
                        '.$AttributeValue.' AS AttributeValue, 
@@ -135,7 +135,7 @@ class WodModel extends Model
 			LEFT JOIN Exercises E ON E.recid = WD.ExerciseId
 			LEFT JOIN Attributes A ON A.recid = WD.AttributeId
 			WHERE WD.WodId = '.$Id.'
-			ORDER BY RoundNo, Attribute';
+			ORDER BY RoundNo, Exercise, Attribute';
             }
             $db->setQuery($SQL);
             return $db->loadObjectList();
