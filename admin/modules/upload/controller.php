@@ -33,14 +33,26 @@ class UploadController extends Controller
         
     function Validate()
     {
+        $Routines = $_REQUEST['RoutineCounter'];
+        for($i=1;$i<=$Routines;$i++){ 
+            foreach($_REQUEST['Routine'.$i.'exercises'] as $ExerciseId){
+                $RoundsVal = $_REQUEST[''.$i.'_'.$ExerciseId.'_Rounds'];
+                $FWeightVal = $_REQUEST[''.$i.'_'.$ExerciseId.'_FWeight'];
+                $MWeightVal = $_REQUEST[''.$i.'_'.$ExerciseId.'_MWeight'];
+                $RepsVal = $_REQUEST[''.$i.'_'.$ExerciseId.'_Reps'];
+                $TimingVal = $_REQUEST[''.$i.'_Timing'];
+            }
+        } 
+
         $Message = '';
-        if($_REQUEST['NewExercise'] == ''){
+        if($_REQUEST['WodDate'] == ''){
+            $Message = 'Must Select Date!';
+        } elseif($_REQUEST['NewExercise'] == ''){
             $Message = 'Must Enter Exercise Name!';
-        }
-        else if(count($_REQUEST['ExerciseAttributes']) == 0){
+        } else if(count($_REQUEST['ExerciseAttributes']) == 0){
             $Message = 'Must Select at least one Attribute';
         }
-        
+
         return $Message;
     }
     
@@ -104,6 +116,7 @@ class UploadController extends Controller
     
     function MainOutput()
     {        
+        $Html = '<p>WOD Name: </p><input type="text" name="WodName" />';
         $Html .= $this->getExercises(1);
      	
 	return $Html;
@@ -131,7 +144,7 @@ class UploadController extends Controller
         foreach($Exercises AS $Exercise){
             $Html.='<div style="height:42px;width:800px">';
             $Html.='<div style="float:left;width:300px">';
-            $Html.='<input data-role="none" type="checkbox" onClick="getInputFields('.$RoutineNumber.','.$Exercise->recid.');" name="Routine'.$RoutineNumber.'exercises[]" value="'.$Exercise->recid.'"/>'.$Exercise->ActivityName.'';
+            $Html.='<input data-role="none" type="checkbox" onClick="getInputFields('.$RoutineNumber.','.$Exercise->recid.');" name="Routine'.'_'.$RoutineNumber.'_'.'exercises[]" value="'.$Exercise->recid.'"/>'.$Exercise->ActivityName.'';
             $Html.='</div><div id="exercise_'.$RoutineNumber.'_'.$Exercise->recid.'_input"></div>';
             $Html.='</div>';
         }

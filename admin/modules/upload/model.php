@@ -8,59 +8,39 @@ class UploadModel extends Model
 	
 	}
         
-        function Validate()
-        {
-            if($_REQUEST['WodDate'] == ''){
-                $this->Message = 'Must Select Date!';
-            }else{
-            $Routines = $_REQUEST['RoutineCounter'];
-            for($i=1;$i<=$Routines;$i++){ 
-                foreach($_REQUEST['Routine'.$i.'exercises'] as $ExerciseId){
-                    $RoundsVal = $_REQUEST[''.$i.'_'.$ExerciseId.'_Rounds'];
-                    $FWeightVal = $_REQUEST[''.$i.'_'.$ExerciseId.'_FWeight'];
-                    $MWeightVal = $_REQUEST[''.$i.'_'.$ExerciseId.'_MWeight'];
-                    $RepsVal = $_REQUEST[''.$i.'_'.$ExerciseId.'_Reps'];
-                    $TimingVal = $_REQUEST[''.$i.'_Timing'];
-                }
-            } 
-            }
-        }
+
     
-        function Save()
+    function Save()
 	{
-            $this->Validate();
-            if($this->Message == ''){
-            $WodTypeId = $this->getWodTypeId('My Gym');
-            
-                $Routines = $_REQUEST['RoutineCounter'];
-                for($i=1;$i<=$Routines;$i++){
-                    $TimingTypeVal = $_REQUEST[''.$i.'_TimingType'];
-                    $NotesVal = $_REQUEST[''.$i.'_Notes'];
-                
-                $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-                $SQL = 'INSERT INTO WodWorkouts(GymId, Routine, WodTypeId, WorkoutRoutineTypeId, Notes, WodDate) 
-                VALUES("'.$_SESSION['GID'].'", "'.$i.'", "'.$WodTypeId.'", "'.$TimingTypeVal.'", "'.$NotesVal.'", "'.$_REQUEST['WodDate'].'")';
-                $db->setQuery($SQL);
-                $db->Query();
-                $WodId = $db->insertid();
-                $ActivityFields = $this->getActivityFields($i);
+        $WodTypeId = $this->getWodTypeId('My Gym');
+        
+        $Routines = $_REQUEST['RoutineCounter'];
+        for($i=1;$i<=$Routines;$i++){
+            $TimingTypeVal = $_REQUEST[''.$i.'_TimingType'];
+            $NotesVal = $_REQUEST[''.$i.'_Notes'];
+        
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'INSERT INTO WodWorkouts(GymId, Routine, WodTypeId, WorkoutRoutineTypeId, Notes, WodDate) 
+            VALUES("'.$_SESSION['GID'].'", "'.$i.'", "'.$WodTypeId.'", "'.$TimingTypeVal.'", "'.$NotesVal.'", "'.$_REQUEST['WodDate'].'")';
+            $db->setQuery($SQL);
+            $db->Query();
+            $WodId = $db->insertid();
+            $ActivityFields = $this->getActivityFields($i);
             if($ActivityFields != null){
-            foreach($ActivityFields AS $ActivityField)
-            {
-                $SQL = 'INSERT INTO WodDetails(WodId, ExerciseId, AttributeId, AttributeValueMale, AttributeValueFemale) 
-                VALUES("'.$WodId.'", "'.$ActivityField->recid.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValueMale.'", "'.$ActivityField->AttributeValueFemale.'")';
-                $db->setQuery($SQL);
-                $db->Query();
-		}
-            }
+                foreach($ActivityFields AS $ActivityField)
+                {
+                    $SQL = 'INSERT INTO WodDetails(WodId, ExerciseId, AttributeId, AttributeValueMale, AttributeValueFemale) 
+                    VALUES("'.$WodId.'", "'.$ActivityField->recid.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValueMale.'", "'.$ActivityField->AttributeValueFemale.'")';
+                    $db->setQuery($SQL);
+                    $db->Query();
+                }
+
                 $this->Message = 'Success';
             }
-            
-            }
+        }
 
         return $this->Message;
-	
-        }
+    }
         
         function SaveNewExercise()
 	{
@@ -107,7 +87,7 @@ class UploadModel extends Model
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
         $this->Message = '';
         $Activities = array();
-            foreach($_REQUEST['Routine'.$RoutineNo.'exercises'] as $ExerciseId){
+            foreach($_REQUEST['Routine_'.$RoutineNo.'_exercises'] as $ExerciseId){
 
                 $Attribute = '';
                 $ExerciseName = $this->getExerciseName($ExerciseId);
