@@ -32,8 +32,8 @@ class WodController extends Controller
             $Html='';
             $Model = new WodModel;
             $WodDetails = $Model->getTopSelection();
-            //$Description = $Model->WodDescription($WodDetails->recid);
-            $Html .= ''.$WodDetails[0]->WodDate.':<br/><span style="font-size:small">'.$WodDetails[0]->WorkoutDescription.'</span>';
+            $Description = $Model->WodDescription($WodDetails[0]->WodId);
+            $Html .= ''.$WodDetails[0]->WodDate.':<br/><span style="font-size:small">'.$Description.'</span>';
             return $Html;           
         }
 	
@@ -297,7 +297,7 @@ class WodController extends Controller
             if($TimeToComplete != '00:00:0')
                 $StartStopButton = 'Stop';
         }
-	$Html ='<input type="text" id="clock" name="'.$ExerciseId.'___TimeToComplete[]" value="'.$TimeToComplete.'" readonly/>';
+	$Html ='<br/><input type="text" id="clock" name="'.$ExerciseId.'___TimeToComplete[]" value="'.$TimeToComplete.'" readonly/>';
 	$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="'.$StartStopButton.'"/>';
 	$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
         $Html.='<input class="buttongroup" type="button" onclick="wodsubmit();" value="Save"/>';

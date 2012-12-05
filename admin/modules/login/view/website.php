@@ -5,8 +5,8 @@
 <form action="index.php" name="login" method="post">
 <input type="hidden" name="module" value="login"/>
 <input type="hidden" name="action" value="Login"/>
-<input style="margin:0 3px 2px 3px;width:300px;" type="text" name="username" placeholder="Username" data-mini="true"/>
-<input style="margin:0 3px 6px 3px;width:300px;" type="password" name="password" placeholder="Password" data-mini="true"/>
+<input type="text" name="username" placeholder="Username" data-mini="true"/><br/>
+<input type="password" name="password" placeholder="Password" data-mini="true"/>
 <a href="?module=forgot">forgot password?</a>
 <br/>
 

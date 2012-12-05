@@ -9,10 +9,6 @@ function HtmlOutputs(outputType, properties)
     }
 }
 
-function addActivity(){
-    $.getJSON('ajax.php?module=upload&action=validateform', $("#uploadform").serialize(),messagedisplay);
-}
-
 function SelectTimingType(type){
     var ThisRoutineNumber = document.getElementById('RoutineCounter').value;
     var Exercises = '<?php echo $Display->getExercises(0);?>';
@@ -40,21 +36,45 @@ function Publish(){
 }
 
 function getInputFields(routineId, exerciseId){
-    var Html='<input type="text" name="'+routineId+'_'+exerciseId+'_Rounds" value="" style="float:left;width:75px" placeholder="Rounds"/>';
-    Html+='<input type="text" name="'+routineId+'_'+exerciseId+'_FWeight" value="" style="float:left;width:75px" placeholder="Weight(F)"/>';
-    Html+='<input type="text" name="'+routineId+'_'+exerciseId+'_MWeight" value="" style="float:left;width:75px" placeholder="Weight(M)"/>';
-    Html+='<input type="text" name="'+routineId+'_'+exerciseId+'_Reps" value="" style="float:left;width:75px" placeholder="Reps"/>';
-    $('#exercise_'+routineId+'_'+exerciseId+'_input').html(Html); 
+    var Html='';
+    if(document.getElementById('exercise_'+routineId+'_'+exerciseId+'_input').innerHTML == ''){
+        $.ajax({url:'ajax.php?module=upload',data:{chosenexercise:exerciseId,encode:'json'},dataType:"json",success:function(json) {
+            $.each(json, function() {  
+                if(this.Attribute == 'Height')        
+                    Html+='<input type="text" name="'+routineId+'_'+exerciseId+'_Height" value="" style="float:left;width:75px" placeholder="Height"/>';
+                
+                if(this.Attribute == 'Rounds')        
+                    Html+='<input type="text" name="'+routineId+'_'+exerciseId+'_Rounds" value="" style="float:left;width:75px" placeholder="Rounds"/>';
+                if(this.Attribute == 'Weight'){
+                    Html+='<input type="text" name="'+routineId+'_'+exerciseId+'_FWeight" value="" style="float:left;width:75px" placeholder="Weight(F)"/>';
+                    Html+='<input type="text" name="'+routineId+'_'+exerciseId+'_MWeight" value="" style="float:left;width:75px" placeholder="Weight(M)"/>';
+                }
+                if(this.Attribute == 'Reps') 
+                    Html+='<input type="text" name="'+routineId+'_'+exerciseId+'_Reps" value="" style="float:left;width:75px" placeholder="Reps"/>';
+                if(this.Attribute == 'Distance')        
+                    Html+='<input type="text" name="'+routineId+'_'+exerciseId+'_Distance" value="" style="float:left;width:75px" placeholder="Distance"/>';
+            });
+            $('#exercise_'+routineId+'_'+exerciseId+'_input').html(Html);
+        }
+        });
+
+    }
+    else
+        $('#exercise_'+exerciseId+'_input').html(Html)
 }
 
 function AddRoutine(){
+    var RoutineNumberAppend = document.getElementById('RoutineCounter').value;
     document.getElementById('RoutineCounter').value++;
-    var ThisRoutineNumber = document.getElementById('RoutineCounter').value;   
-    var RoutineNumberAppend = ThisRoutineNumber - 1;
-
-    var Exercises = '<?php echo $Display->getExercises(0);?>';
+    var ThisRoutineNumber = document.getElementById('RoutineCounter').value; 
+    var Exercises = '<div class="exercises" id="Routine_'+ThisRoutineNumber+'">';
+    Exercises+= '<h2>Routine '+ThisRoutineNumber+'</h2>';
+    Exercises+='<?php echo $Display->getExercises(0);?>';
+    Exercises+='</div>';
+    Exercises+='<div id="AddTiming_'+ThisRoutineNumber+'"></div>';
+    Exercises+='<div id="AddNotes_'+ThisRoutineNumber+'"></div>';
     var Html = Exercises.replace(/RoutineNumber/g, ThisRoutineNumber);
-    $('div#exercise_'+RoutineNumberAppend).after(Html);
+    $('div#Routine_'+RoutineNumberAppend).after(Html);
 }
 
 function getContent(selection)
@@ -77,11 +97,6 @@ function display(data)
     $('.buttongroup').button();
     $('.buttongroup').button('refresh');
     $('.textinput').textinput();
-}
-
-function addActivity(routineId, activityOrderId,activityId)
-{
-
 }
 
 function _addRoutine(routineOrderId)
@@ -134,19 +149,25 @@ function SelectionControl(type,id)
         DisplayBenchmark(id);
 }
 
-function addNewExercise()
+function addNewActivity()
 {
-    var Html ='<input class="textinput" type="text" id="NewExercise" name="NewExercise" value="" placeholder="New Exercise Name"/>';
+    var Html ='<br/><input class="textinput" type="text" id="NewExercise" name="NewExercise" value="" placeholder="New Exercise Name"/>';
+    Html += '<br/><input class="textinput" type="text" id="Acronym" name="Acronym" value="" placeholder="Acronym for Exercise?"/>';
     Html += '<br/>Applicable Attributes:<br/><br/>';
     Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Weight"/>Weight';
-    Html += ' <input type="checkbox" name="ExerciseAttributes[]" value="Height"/>Height<br/>';
+    Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Height"/>Height<br/>';
     Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Distance"/>Distance';
-    Html += ' <input type="checkbox" name="ExerciseAttributes[]" value="Reps"/>Reps<br/><br/>';
-    Html += '<input class="buttongroup" type="button" name="btnsubmit" value="Add" onclick="addnew();"/>';
+    Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Reps"/>Reps<br/><br/>';
+    Html += '<input class="buttongroup" type="button" name="btnsubmit" value="Add" onclick="addnew();"/><br/><br/>';
     $('#add_exercise').html(Html);
     $('.buttongroup').button();
     $('.buttongroup').button('refresh');
     $('.textinput').textinput();
+}
+
+function addnew()
+{
+    $.getJSON('ajax.php?module=upload&action=validateform', $("#gymform").serialize(),messagedisplay);
 }
 
 function DisplayBenchmark(id)
@@ -366,12 +387,22 @@ function RemoveFromList(RowId)
 }
 
 function messagedisplay(message)
-{
-    if(message == 'Successfully Saved!'){
-        $("#exercise option[value='none']").attr("selected","selected");
+{ 
+    var exerciseid = parseInt(message);
+    if (exerciseid == Number.NaN) {
+        alert(message);
+    }else{
+        var ThisRoutineNumber = document.getElementById('RoutineCounter').value;
+        $.ajax({url:'ajax.php?module=upload',data:{dropdown:'refresh',newexercise:exerciseid,routineno:ThisRoutineNumber},dataType:"html",success:dropdownrefresh});  
         $('#add_exercise').html('');
-    }   
-    alert(message); 
+        alert('Successfully Added');
+    }  
+}
+
+function dropdownrefresh(data)
+{
+    var ThisRoutineNumber = document.getElementById('RoutineCounter').value;  
+    $('#Routine_'+ThisRoutineNumber).html(data);
 }
 
 function addRound()
@@ -380,17 +411,9 @@ function addRound()
     //$.getJSON('ajax.php?module=benchmark', $("#benchmarkform").serialize(),display);
 }
 </script>
-<br/>
-<ul id="admin-menu">
-    <a href="#"><li>Load New</li></a>
-    <a href="#"><li>Historic</li></a>
-    <a href="#"><li>Reports</li></a>
-    <a href="#"><li>Booking</li></a>
-    <a href="#"><li>Messages</li></a>
-</ul>
-<div class="clear"></div>
+
 <br />
-<div class="actionbutton"><a href="#" onClick="addActivity();"><img alt="Add Activity" src="images/AddActivity.png"/></a></div>
+<div class="actionbutton"><a href="#" onClick="addNewActivity();"><img alt="Add Activity" src="images/AddActivity.png"/></a></div>
 <div class="actionbutton"><a href="#" onClick="addTiming();"><img alt="Add Timing" src="images/AddTiming.png"/></a></div>
 <div class="actionbutton"><a href="#" onClick="addComments();"><img alt="Add Comments" src="images/AddComments.png"/></a></div>
 <div class="clear"></div>
@@ -399,8 +422,9 @@ function addRound()
 <input type="hidden" name="form" value="submitted"/>
 <input type="hidden" name="rowcount" id="rowcounter" value="0"/>
 <input type="hidden" name="RoutineCounter" id="RoutineCounter" value="1"/>
-<input class="inputbox-required" type="text" name="WodDate" id="WodDate" maxlength="25" placeholder="Use Calendar" value=""/>
-<img src="images/calendar-blue.gif" alt="calendar" id="Start_trigger"/>
+<div id="add_exercise"></div>
+<p>WOD Date:<input class="inputbox-required" type="text" name="WodDate" id="WodDate" maxlength="25" placeholder="Use Calendar" value=""/>
+<img src="images/calendar-blue.gif" alt="calendar" id="Start_trigger"/></p>
 <script type="text/javascript">
       Calendar.setup({
         inputField : "WodDate",
@@ -408,8 +432,8 @@ function addRound()
         onSelect   : function() { this.hide() },
         dateFormat : "%Y-%m-%d"
       });
-</script>
-<div id="AjaxOutput">    
+</script> 
+<div id="AjaxOutput">  
     <?php echo $Display->Output();?>
 </div>
 <div style="width:125px;float:right">
@@ -421,7 +445,6 @@ function addRound()
 
 <div class="ui-grid-b">
 <div id="display_benchmark"></div>
-<div id="add_exercise"></div>
 <div id="new_routine"></div>
 </div>
 </form><br/>

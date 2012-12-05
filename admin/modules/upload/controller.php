@@ -117,15 +117,20 @@ class UploadController extends Controller
     function MainOutput()
     {        
         $Html = '<p>WOD Name: </p><input type="text" name="WodName" />';
+        $Html = '<div class="exercises" id="Routine_1">';
+        $Html .='<h2>Routine 1</h2>';
         $Html .= $this->getExercises(1);
-     	
+     	$Html .= '</div>';
+        $Html .= '<div id="AddTiming_1"></div>';
+        $Html .= '<div id="AddNotes_1"></div>';       
 	return $Html;
     }
     
     function getNotes()
     {
         $Html = '<div id="comments">';
-        $Html .= '<textarea name="RoutineNumber___0___Notes" rows="4" cols="50"></textarea>';
+        $Html .= 'Comments';
+        $Html .= '<textarea name="RoutineNumber___0___Notes" rows="4" cols="80"></textarea>';
         $Html .= '</div>';
         return $Html;
     }
@@ -136,8 +141,7 @@ class UploadController extends Controller
             $RoutineNumber = 'RoutineNumber';
         else
             $RoutineNumber = $DefaultRoutine;
-
-        $Html='<div class="exercises" id="exercise_'.$RoutineNumber.'">';
+        $Html='';
         $Model = new UploadModel;
         $Exercises = $Model->getActivities();
 
@@ -147,11 +151,8 @@ class UploadController extends Controller
             $Html.='<input data-role="none" type="checkbox" onClick="getInputFields('.$RoutineNumber.','.$Exercise->recid.');" name="Routine'.'_'.$RoutineNumber.'_'.'exercises[]" value="'.$Exercise->recid.'"/>'.$Exercise->ActivityName.'';
             $Html.='</div><div id="exercise_'.$RoutineNumber.'_'.$Exercise->recid.'_input"></div>';
             $Html.='</div>';
-        }
 
-        $Html.='</div>';
-        $Html .= '<div id="AddTiming_'.$RoutineNumber.'"></div>';
-        $Html .= '<div id="AddNotes_'.$RoutineNumber.'"></div>';
+        }
         return $Html;
     }   
     
@@ -182,7 +183,7 @@ class UploadController extends Controller
         $Model = new UploadModel;
         $WorkoutTypes = $Model->getWorkoutTypes();
         foreach($WorkoutTypes AS $WorkoutType){
-            $Html .= '<input type="button" onclick="SelectTimingType('.$WorkoutType->recid.');" name="TimingType_'.$WorkoutType->recid.'" value="'.$WorkoutType->ActivityType.'"/>';
+            $Html .= '<br/><input type="button" onclick="SelectTimingType('.$WorkoutType->recid.');" name="TimingType_'.$WorkoutType->recid.'" value="'.$WorkoutType->ActivityType.'"/>';
         }
         $Html.='<br/><input style="width:150px;margin-left:4px" type="text" name="RoutineNumber_Timing" id="RoutineNumber_Timing" value="" placeholder="00:00"/>';
         $Html.='</div>';
@@ -191,13 +192,11 @@ class UploadController extends Controller
 	
 	function Output()
 	{
-            if(isset($_REQUEST['activityid'])){
+            if(isset($_REQUEST['chosenexercise'])){
   		$Model = new UploadModel;
-		$html = $Model->getExerciseAttributes($_REQUEST['activityid']);              
-            }
-            else if(isset($_REQUEST['benchmarkid'])){
-  		$Model = new UploadModel;
-		$html = $Model->getBenchmarkDetails($_REQUEST['benchmarkid']);              
+		$html = $Model->getExerciseAttributes($_REQUEST['chosenexercise']);              
+            }else if($_REQUEST['dropdown'] == 'refresh'){
+                $html = $this->getExercises($_REQUEST['routineno']);
             }
             else{
                 $html = $this->MainOutput();

@@ -123,8 +123,7 @@ function messagedisplay(message)
 function dropdownrefresh(data)
 {
     $('#exercises').html(data);
-    $('.select').selectmenu();
-    $('.select').selectmenu('refresh');
+
 }
 
 function display(data)
@@ -132,10 +131,7 @@ function display(data)
     $('#AjaxOutput').html(data);
     $('#listview').listview();
     $('#listview').listview('refresh');
-    $('.select').selectmenu();
-    $('.select').selectmenu('refresh');
-    $('.buttongroup').button();
-    $('.buttongroup').button('refresh');
+
     $('.textinput').textinput();
     $('.numberinput').textinput();
 }
@@ -179,8 +175,7 @@ function addTypeParams(CustomType)
         
         if(Html != ''){
     $('#clock_input').html(Html);
-    $('.buttongroup').button();
-    $('.buttongroup').button('refresh');
+
     $('#addround').textinput();
     }
 }
@@ -205,8 +200,7 @@ function addNewExercise()
     Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Reps"/>Reps<br/><br/>';
     Html += '<input class="buttongroup" type="button" name="btnsubmit" value="Add" onclick="addnew();"/>';
     $('#add_exercise').html(Html);
-    $('.buttongroup').button();
-    $('.buttongroup').button('refresh');
+
     $('.textinput').textinput();
     $('.numberinput').textinput();
 }
@@ -230,9 +224,7 @@ function DisplayExercise(exercise)
     if($('#addround').val() == 1){
         $('#Round1Label').html('<div class="ui-block-a"></div><div class="ui-block-b" style="text-align:center">Round 1</div><div class="ui-block-c"></div>');
     }
-    if(i < 1 && document.getElementById('controls').innerHTML == ''){
-        $('#controls').html('<input class="buttongroup" type="button" onclick="customsubmit();" value="Save"/>');
-    }
+
     $.each(json, function() {
 
            if(ThisExercise != this.ActivityName){
@@ -336,8 +328,7 @@ function DisplayExercise(exercise)
         //chosenexercises += html;
         $(html).appendTo(new_exercise);
         document.getElementById('rowcounter').value = i; 
-        $('.buttongroup').button();
-        $('.buttongroup').button('refresh');
+
         $('.textinput').textinput();
         $('.numberinput').textinput();
         $("#exercise option[value='none']").attr("selected","selected");
@@ -401,38 +392,21 @@ function addRound()
     $(ThisRound).appendTo(new_exercise);
     //$(chosenexercises).appendTo(new_exercise);
 }
-    $('.buttongroup').button();
-    $('.buttongroup').button('refresh');
+
     $('.textinput').textinput();
     $('.numberinput').textinput();
 }
 
 function clockSelect(type)
 {
-    if(document.getElementById('clockType').value != type){
-    var Clock = '<input type="text" id="clock" name="63___TimeToComplete[]" value="00:00:0" readonly/>';
-    var Controls = '<div class="ui-grid-b">';
-        Controls+='<div class="ui-block-a">';
-        Controls+='<input id="startstopbutton" class="buttongroup" type="button" onClick="clockControl();" value="Start"/>';
-        Controls+='</div><div class="ui-block-b">';
-        Controls+='<input id="resetbutton" class="buttongroup" type="button" onClick="resetControl();" value="Reset"/>';
-        Controls+='</div><div class="ui-block-c">';
-        Controls+='<input class="buttongroup" type="button" onclick="customsubmit();" value="Save"/>';
-        Controls+='</div></div>';
-    $('#timerContainer').html(Clock);
-    $('#controls').html(Controls);
+    if(type == 'select'){
+        type = 'stopwatch';
+    if($('#timerContainer').hasClass('active'))
+        $('#timerContainer').removeClass('active');
+    else    
+        $('#timerContainer').addClass('active');
+    }
     document.getElementById('clockType').value = type;
-    }else{
-    $('#timerContainer').html('');
-    document.getElementById('clockType').value = ''; 
-        if(document.getElementById('rowcounter').value == 0){
-       $('#controls').html(''); 
-    }else{
-       $('#controls').html('<input class="buttongroup" type="button" onclick="customsubmit();" value="Save"/>');
-    }
-    }
-    $('.buttongroup').button();
-    $('.buttongroup').button('refresh');
 }
 
 function clockControl()

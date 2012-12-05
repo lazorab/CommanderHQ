@@ -44,7 +44,6 @@ class UploadModel extends Model
         
         function SaveNewExercise()
 	{
-            if($this->UserIsSubscribed()){
                 $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
                 $SQL = 'INSERT INTO Exercises(Exercise, Acronym) 
                     VALUES("'.$_REQUEST['NewExercise'].'", "'.$_REQUEST['Acronym'].'")';
@@ -57,10 +56,8 @@ class UploadModel extends Model
                     $db->setQuery($SQL);
                     $db->Query();              
                 }
-                $Message = 'Exercise Successfully Added!';               
-            }else{
-                $Message = 'You are not subscribed!';
-            }
+                $Message = $ExerciseId;               
+
             return $Message;  
         }
         
@@ -87,15 +84,37 @@ class UploadModel extends Model
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
         $this->Message = '';
         $Activities = array();
-            foreach($_REQUEST['Routine_'.$RoutineNo.'_exercises'] as $ExerciseId){
 
-                $Attribute = '';
-                $ExerciseName = $this->getExerciseName($ExerciseId);
+            foreach($_REQUEST['Routine_'.$RoutineNo.'_exercises'] as $ExerciseId){
+                $DistanceVal = $_REQUEST[''.$RoutineNo.'_'.$ExerciseId.'_Distance'];               
+                $HeightVal = $_REQUEST[''.$RoutineNo.'_'.$ExerciseId.'_Height'];               
                 $RoundsVal = $_REQUEST[''.$RoutineNo.'_'.$ExerciseId.'_Rounds'];
                 $FWeightVal = $_REQUEST[''.$RoutineNo.'_'.$ExerciseId.'_FWeight'];
                 $MWeightVal = $_REQUEST[''.$RoutineNo.'_'.$ExerciseId.'_MWeight'];
                 $RepsVal = $_REQUEST[''.$RoutineNo.'_'.$ExerciseId.'_Reps'];
+                $TimingTypeId = $_REQUEST[''.$RoutineNo.'_TimingType'];
+                $TimingAttribute = 'TimeToComplete';
                 $TimingVal = $_REQUEST[''.$RoutineNo.'_Timing'];
+                if($DistanceVal != ''){
+                    $SQL='SELECT recid, 
+                    (SELECT recid FROM Attributes WHERE Attribute = "Distance") AS AttributeId, 
+                    "'.$DistanceVal.'" AS AttributeValueMale, 
+                    "'.$DistanceVal.'" AS AttributeValueFemale
+                    FROM Exercises
+                    WHERE recid = "'.$ExerciseId.'"';
+                    $db->setQuery($SQL);
+                    array_push($Activities,$db->loadObject());
+                }
+                if($HeightVal != ''){
+                    $SQL='SELECT recid, 
+                    (SELECT recid FROM Attributes WHERE Attribute = "Height") AS AttributeId, 
+                    "'.$HeightVal.'" AS AttributeValueMale, 
+                    "'.$HeightVal.'" AS AttributeValueFemale
+                    FROM Exercises
+                    WHERE recid = "'.$ExerciseId.'"';
+                    $db->setQuery($SQL);
+                    array_push($Activities,$db->loadObject());
+                }                
                 if($RoundsVal != ''){
                     $SQL='SELECT recid, 
                     (SELECT recid FROM Attributes WHERE Attribute = "Rounds") AS AttributeId, 
@@ -128,7 +147,7 @@ class UploadModel extends Model
                 }
                  if($TimingVal != ''){
                     $SQL='SELECT recid, 
-                    (SELECT recid FROM Attributes WHERE Attribute = "TimeToComplete") AS AttributeId, 
+                    (SELECT recid FROM Attributes WHERE Attribute = "'.$TimingAttribute.'") AS AttributeId, 
                     "'.$TimingVal.'" AS AttributeValueMale, 
                     "'.$TimingVal.'" AS AttributeValueFemale
                     FROM Exercises

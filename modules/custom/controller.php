@@ -80,12 +80,57 @@ class CustomController extends Controller
         $Html .= '</div>';       
         
         $Html .= '<br/>';
-        
-        $Html .= '<div id="exercises">';
-        $Html .= $this->getExercises();
-        $Html .= '</div>';
 
-        $Html .= $this->getRoundCounter();
+        $Html.='<div id="timerContainer">';   
+        $Html.='<input type="text" id="clock" name="63___TimeToComplete[]" value="00:00:0" readonly/>';
+        $Html.='<input type="hidden" name="clockType" id="clockType" value=""/>';
+        $Html.='<input type="hidden" name="CountDown" id="CountDown" value=""/>';
+        $Html.='<input type="hidden" name="startstopbutton" id="startstopbutton" value=""/>';
+        $Html .= '<br/>';
+        
+        $Html.='<div id="ClockSelect">';
+        $Html.='<fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">';
+        $Html.='<input type="radio" name="radio-choice-a" onClick="clockSelect(\'timer\');" id="radio-choice-a" value="timer"/>';
+        $Html.='<label for="radio-choice-a">Countdown</label>';
+        $Html.='<input type="radio" name="radio-choice-a" checked="checked" onClick="clockSelect(\'stopwatch\');" id="radio-choice-b" value="stopwatch"/>';
+        $Html.='<label for="radio-choice-b">Stopwatch</label>';
+        $Html.='</fieldset>';
+        $Html.='</div>';        
+        
+ 
+        
+        $Html.='<div class="ui-grid-b">';
+        $Html.='<div class="ui-block-a">';
+        $Html.='<input id="resetbutton" class="buttongroup" onClick="reset();" type="button" value="Reset"/>';
+        $Html.='</div>';
+        $Html.='<div class="ui-block-b">';
+        $Html.='<input class="buttongroup" type="button" onClick="clockControl();" value="Start"/>';
+        $Html.='</div>';
+        $Html.='<div class="ui-block-c">';
+        $Html.='<input class="buttongroup" type="button" onClick="clockControl();" value="Stop"/>';
+        $Html.='</div>';
+        $Html.='</div>';
+
+        $Html.='</div>';
+
+        $Html .= '<div class="ui-grid-a">';
+        $Html .= '<div id="exercises" class="ui-block-a">';
+        //$Html .= '<div id="exercises">';
+        $Html .= $this->getExercises();
+        //$Html .= '</div>';
+        $Html .= '</div>';       
+        
+        $Html.='<div class="ui-block-b">';
+        $Html.='<input type="button" onClick="addRound();" value="+ Round"/>';
+        $Html.='</div></div>';       
+        $Html.='<div class="ui-grid-a">';
+        $Html.='<div class="ui-block-a">';
+        $Html.='<input type="button" onClick="clockSelect(\'select\');" value="Time Event"/>';
+        $Html.='</div>';
+        $Html.='<div class="ui-block-b">';
+        $Html.='<input type="button" value="Save"/>';
+        $Html.='</div>';
+        $Html.='</div>';       
         
 	if($_REQUEST['form'] == 'submitted'){
 	$Html .= '<div class="ui-grid-c">';
@@ -95,29 +140,7 @@ class CustomController extends Controller
         $Html .= '<div class="ui-block-d"><input type="text" data-role="none" style="width:80%;color:black;font-weight:bold;background-color:#ccff66" value="Reps" readonly="readonly"/></div>';
         $Html .= '</div>';
 	}
-
-    
-        $Html.='<div id="timerContainer"></div>';   
-        $Html.='<input type="hidden" name="clockType" id="clockType" value=""/>';
-        $Html.='<div id="ClockSelect">';
-    	$Html.='<fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">';
-	$Html.='<input type="radio" name="radio-choice-a" onClick="clockSelect(\'countdown\');" id="radio-choice-a" value="Countdown"/>';
-	$Html.='<label for="radio-choice-a">Countdown</label>';
-	$Html.='<input type="radio" name="radio-choice-a" onClick="clockSelect(\'timer\');" id="radio-choice-b" value="Stopwatch"/>';
-	$Html.='<label for="radio-choice-b">Stopwatch</label>';
-	$Html.='</fieldset>';
-        $Html.='</div>';
         
-        //$Html.='<div class="ui-grid-a">';
-        //$Html.='<div class="ui-block-a">';
-        //$Html.='<input class="buttongroup" type="button" onClick="countdown();" value="Timer"/>';
-        //$Html.='</div><div class="ui-block-b">';
-        //$Html.='<input class="buttongroup" type="button" onClick="stopwatch();" value="Stopwatch"/>';
-        //$Html.='</div><div class="ui-block-c">';  
-        //$Html.='<input id="tabata" class="buttongroup" type="button" value="Tabata"/>';
-        //$Html.='</div></div>'; 
-        $Html.='<div id="controls"></div>';
-
         $Html.='</form><br/>';
      	
 	return $Html;
@@ -461,9 +484,9 @@ class CustomController extends Controller
             if($TimeToComplete != '00:00:0')
                 $StartStopButton = 'Stop';
         }
-        
-	$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="clockControl()" value="'.$StartStopButton.'"/>';
-	$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
+     
+	//$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="clockControl()" value="'.$StartStopButton.'"/>';
+	//$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
 
         return $Html;
     }
@@ -503,7 +526,9 @@ class CustomController extends Controller
     
     function getRoundCounter()
     {
-        $Html='<input class="buttongroup" type="button" onclick="addRound();" value="+ Round"/>';
+        $Html='<div class="ui-block-b">';
+        $Html.='<input class="buttongroup addARound" data-role="none" type="button" onclick="addRound();" value="Add a Round"/>';
+        $Html.='</div>';
         
         return $Html;
     }
