@@ -36,8 +36,7 @@ function addComments(){
 }
 
 function Publish(){
-    console.debug($("#gymform").serialize());
-    //$.getJSON('ajax.php?module=upload&action=validateform', $("#gymform").serialize(),messagedisplay);
+    $.getJSON('ajax.php?module=upload&action=validateform', $("#gymform").serialize(),messagedisplay);
 }
 
 function getInputFields(routineId, exerciseId){
