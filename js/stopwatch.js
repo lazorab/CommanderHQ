@@ -8,6 +8,7 @@ var output;
 var clock;
 var countdown;
 var routineType = '';
+var refresh='';
 
 function save()
 {
@@ -54,6 +55,13 @@ function startstopcountdown()
 function stopcountdown()
 {
     javascript_countdown.stop();
+}
+
+function reset(){
+    if(document.getElementById("clockType").value == 'stopwatch')
+        resetclock();
+    else
+        resetcountdown(); 
 }
 
 function resetcountdown()
