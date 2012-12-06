@@ -1,3 +1,4 @@
+<script src="/js/overthrow.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	//Trigger video

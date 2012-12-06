@@ -228,21 +228,21 @@ else
     $html.='    <div id="slides">
         <div class="slides_container">
         
-            <div class="slide">
+            <div class="slide overthrow">
             <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>The Girls</li>
             </ul>
             '.$this->getWorkoutList($Girls).'
             </div>';
             
-     $html .='<div class="slide">
+     $html .='<div class="slide overthrow">
             <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>The Heros</li>
             </ul>
                 '.$this->getWorkoutList($Heros).'
             </div>';
             
-     $html .='<div class="slide">
+     $html .='<div class="slide overthrow">
             <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>Various</li>
             </ul>
@@ -256,14 +256,14 @@ else
                 
             </div>';
 */
-     $html .='<div class="slide">
+     $html .='<div class="slide overthrow">
             <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>Travel Workouts</li>
             </ul>
                 '.$this->getWorkoutList($Travel).'
             </div>';
 
-     $html .='<div class="slide">
+     $html .='<div class="slide overthrow">
             <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>My Saved WODs</li>
             </ul>
