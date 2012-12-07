@@ -72,48 +72,6 @@ class UploadController extends Controller
         return $Result;
     }
 
-    function HtmlOutputs($type, $properties = 'unclassified')
-    {
-        if ($type == 'routine')
-        {
-            if ($properties == 'unclassified')
-            {
-                $properties = array('id' => 'unclassified');
-            }
-
-            $HtmlReturn= '
-                <div class="routine" id="routine_'.$properties['id'].'">
-                    <input name="routine_name_'.$properties['id'].'" type="text" value="Name of routine" />
-                    <br />
-                    '.$this->HtmlOutputs('activities').'
-                </div>
-                <a onclick="addRoutine('.$properties['id'].')" href="#" class="add_routine">+</a>';
-        }
-        elseif ($type == 'activities')
-        {
-            if ($properties == 'unclassified')
-            {
-                $properties = array('id' => 'unclassified');
-            }
-
-            $HtmlReturn = '';
-            $Model = new UploadModel;
-            $Activities = $Model->getActivities();  
-            $HtmlReturn .= '<select class="select" name="activity" id="'.$properties['id'].'" onchange="SelectionControl(\'activity\',this.value);">
-                        <option value="none">+ Activity</option>';
-            foreach($Activities AS $Activity){
-                $HtmlReturn .= '<option id="'.$Activity->recid.'" value="'.$Activity->recid.'">'.$Activity->ActivityName.'</option>';
-            }
-            $HtmlReturn .= '</select>';   
-            
-        }
-        
-        // Remove line breaks as javascript errors otherwise
-        $HtmlReturn = str_replace(array("\r\n", "\r", "\n"), "", $HtmlReturn);
-        
-        return $HtmlReturn;
-    }
-    
     function MainOutput()
     {        
         $Html = '<p>WOD Name: </p><input type="text" name="WodName" />';
@@ -122,7 +80,7 @@ class UploadController extends Controller
         $Html .= $this->getExercises(1);
      	$Html .= '</div>';
         $Html .= '<div id="AddTiming_1"></div>';
-        $Html .= '<div id="AddNotes_1"></div>';       
+        $Html .= '<div id="AddNotes"></div>';       
 	return $Html;
     }
     

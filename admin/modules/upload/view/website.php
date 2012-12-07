@@ -1,13 +1,4 @@
 <script type='text/javascript'>
-function HtmlOutputs(outputType, properties)
-{
-    if (outputType == "routine")
-    {
-        var HtmlRoutine = '<?php echo str_replace('\'', '\\\'', $Display->HtmlOutputs('routine')) ?>';
-        HtmlRoutine = HtmlRoutine.replace(/unclassified/g, properties.id);
-        return HtmlRoutine;
-    }
-}
 
 function SelectTimingType(type){
     var ThisRoutineNumber = document.getElementById('RoutineCounter').value;
@@ -25,10 +16,8 @@ function addTiming(){
 }
 
 function addComments(){
-    var ThisRoutineNumber = document.getElementById('RoutineCounter').value;
-    var Notes = '<?php echo $Display->getNotes();?>';
-    var Html = Notes.replace(/RoutineNumber/g, ThisRoutineNumber);
-    $('#AddNotes_'+ThisRoutineNumber).html(Html);   
+    var Html = '<?php echo $Display->getNotes();?>';
+    $('#AddNotes').html(Html);   
 }
 
 function Publish(){
@@ -97,21 +86,6 @@ function display(data)
     $('.buttongroup').button();
     $('.buttongroup').button('refresh');
     $('.textinput').textinput();
-}
-
-function _addRoutine(routineOrderId)
-{
-    $('div.routine').each(function() {
-        var idNumber = $(this).attr('id').split("_")[1];
-        if (idNumber > routineOrderId)
-        {
-            $(this).attr('id', 'routine_' + (parseInt(idNumber) + 1));
-        }
-    });
-
-    var Html = HtmlOutputs('routine', {'id': routineOrderId + 1});
-    
-    $($("form#routines-form div.routine")[routineOrderId - 1]).after($(Html));
 }
 
 function addTypeParams(CustomType)
