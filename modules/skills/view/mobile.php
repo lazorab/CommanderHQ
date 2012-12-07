@@ -1,3 +1,11 @@
+<?php
+$Overthrow='';
+$Device = new DeviceManager;
+if($Device->IsGoogleAndroidDevice()) { 
+    $Overthrow=' overthrow';?>
+        <script src="/js/overthrow.js"></script>
+<?php } ?>
+
 <script type="text/javascript">	
     $(function(){
         $('#slides').slides({
@@ -29,22 +37,20 @@ function display(data)
 </script>
 
 <br/>
-
-<br/>
 <div id="AjaxOutput">
       <div id="slides">
         <div class="slides_container">
-            <div class="slide">
-                <img alt="Level1" <?php echo $RENDER->NewImage('Level 2 Hips.png');?> src="<?php echo IMAGE_RENDER_PATH;?>Level 2 Hips.png"/>
+            <div class="slide<?php echo $Overthrow;?>">
+                <img alt="Level1" <?php echo $RENDER->NewImage('AthleticLevel1.png');?> src="<?php echo IMAGE_RENDER_PATH;?>AthleticLevel1.png"/><br/><br/>
             </div>
-            <div class="slide">
-                <img alt="Level2" <?php echo $RENDER->NewImage('Level 2 Hips.png');?> src="<?php echo IMAGE_RENDER_PATH;?>Level 2 Hips.png"/>
+            <div class="slide<?php echo $Overthrow;?>">
+                <img alt="Level2" <?php echo $RENDER->NewImage('AthleticLevel2.png');?> src="<?php echo IMAGE_RENDER_PATH;?>AthleticLevel2.png"/><br/><br/>
             </div>
-            <div class="slide">
-                <img alt="Level3" <?php echo $RENDER->NewImage('Level 2 Hips.png');?> src="<?php echo IMAGE_RENDER_PATH;?>Level 2 Hips.png"/>
+            <div class="slide<?php echo $Overthrow;?>">
+                <img alt="Level3" <?php echo $RENDER->NewImage('AthleticLevel3.png');?> src="<?php echo IMAGE_RENDER_PATH;?>AthleticLevel3.png"/><br/><br/>
             </div>
-            <div class="slide">
-                <img alt="Level4" <?php echo $RENDER->NewImage('Level 2 Hips.png');?> src="<?php echo IMAGE_RENDER_PATH;?>Level 2 Hips.png"/>
+            <div class="slide<?php echo $Overthrow;?>">
+                <img alt="Level4" <?php echo $RENDER->NewImage('AthleticLevel4.png');?> src="<?php echo IMAGE_RENDER_PATH;?>AthleticLevel4.png"/><br/><br/>
             </div>       
         </div>
         <a href="#" class="prev"><img src="<?php echo IMAGE_RENDER_PATH;?>arrow-next.png" width="36" height="36" alt="Arrow Prev"></a>

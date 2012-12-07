@@ -184,6 +184,7 @@ class ReportsController extends Controller
         $NumLogs = 0;
         $TotalSeconds = 0;
         $ChartData = "<chart showLabels='0' canvasPadding='10' showYAxisValues='0' animation='0' lineColor='00008B' xAxisNamePadding='0' yAxisNamePadding='0' caption='Baseline' xAxisName='Time' yAxisName='Output' showToolTip='0' showValues= '0'>";
+        if(count($BaselineData) > 0){
         foreach($BaselineData as $Data)
         {
             if($Data->Attribute == 'TimeToComplete'){
@@ -198,7 +199,9 @@ class ReportsController extends Controller
         $ChartData .= "<trendLines>";
         $ChartData .= "<line startValue='".$Average."' color='009933' lineThickness='3' displayvalue=' ' />";
         $ChartData .= "</trendLines>";
-
+    }else{
+        $ChartData .= "<set label='' value=''/>";
+    }
         $ChartData .= "</chart>";       
         return $ChartData;
     }    

@@ -65,13 +65,13 @@ class WodController extends Controller
             }else if(isset($_REQUEST['Workout'])){
                 $WODdata = $this->WorkoutDetails();
             }else{
-                $WODdata='
+                $WODdata='<div style="padding:2%">
                 <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li><a style="font-size:large;margin-top:10px" href="#" onclick="OpenThisPage(\'?module=baseline&origin=wod&baseline=Baseline\')"><div style="height:26px;width:1px;float:left"></div>Baseline</a></li>
                 <li><a style="font-size:large;margin-top:10px" href="#" onclick="OpenThisPage(\'?module=benchmark&origin=wod\')"><div style="height:26px;width:1px;float:left"></div>Benchmarks</a></li>
                 <li><a style="font-size:large;margin-top:10px" href="#" onclick="OpenThisPage(\'?module=custom&origin=wod\')"><div style="height:26px;width:1px;float:left"></div>Custom</a></li>
                 <li><a style="font-size:large;margin-top:10px" href="#" onclick="getWOD();"><div style="height:26px;width:1px;float:left"></div>My Gym</a></li>                
-                </ul><br/>';              
+                </ul></div><br/>';              
             }	
             return $WODdata;
 	}
@@ -266,7 +266,7 @@ class WodController extends Controller
             $Model = new WodModel;
             $DataObject = $Model->getGymWodWorkouts();
             if(count($DataObject) == 0){
-                $Html='No WOD\'s Available for your gym at present';
+                $Html='No data from your gym today';
             }else{
             foreach($DataObject as $Item){
                 $Html.='<a href="#" onClick="getDetails(\''.$Item->WodId.'\',\''.$Item->WodType.'\')">Workout for '.date('d F Y',strtotime($Item->WodDate)).'</a><br/><br/>';

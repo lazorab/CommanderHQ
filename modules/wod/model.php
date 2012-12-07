@@ -68,7 +68,7 @@ class WodModel extends Model
                 LEFT JOIN MemberDetails MD ON MD.GymId = WW.GymId
                 LEFT JOIN WorkoutTypes WT ON WT.recid = WW.WodTypeId
                 WHERE MD.MemberId = "'.$_SESSION['UID'].'"
-                AND WodDate >= CURDATE()
+                AND WodDate = CURDATE()
                 ORDER BY WorkoutName';
             $db->setQuery($SQL);
             return $db->loadObjectList();	

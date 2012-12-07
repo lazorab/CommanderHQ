@@ -224,25 +224,29 @@ else
     $Heros = $Model->getBMWS('The Heros');
     $Various = $Model->getBMWS('Various');
     $Travel = $Model->getBMWS('Travel');
+    $Overthrow='';
+    $Device = new DeviceManager;
+    if($Device->IsGoogleAndroidDevice()) {
+        $Overthrow=' overthrow';
+}
     
-    $html.='    <div id="slides">
+    $html.='<div id="slides">
         <div class="slides_container">
-        
-            <div class="slide overthrow">
+            <div class="slide'.$Overthrow.'">
             <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>The Girls</li>
             </ul>
             '.$this->getWorkoutList($Girls).'
             </div>';
             
-     $html .='<div class="slide overthrow">
+     $html .='<div class="slide'.$Overthrow.'">
             <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>The Heros</li>
             </ul>
                 '.$this->getWorkoutList($Heros).'
             </div>';
             
-     $html .='<div class="slide overthrow">
+     $html .='<div class="slide'.$Overthrow.'">
             <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>Various</li>
             </ul>
@@ -256,14 +260,14 @@ else
                 
             </div>';
 */
-     $html .='<div class="slide overthrow">
+     $html .='<div class="slide'.$Overthrow.'">
             <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>Travel Workouts</li>
             </ul>
                 '.$this->getWorkoutList($Travel).'
             </div>';
 
-     $html .='<div class="slide overthrow">
+     $html .='<div class="slide'.$Overthrow.'">
             <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>My Saved WODs</li>
             </ul>

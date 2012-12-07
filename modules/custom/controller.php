@@ -80,6 +80,10 @@ class CustomController extends Controller
         $Html .= '</div>';       
         
         $Html .= '<br/>';
+        
+        $Html.='<textarea name="descr" rows="5" cols="5"></textarea>';
+        
+        $Html .= '<br/>';
 
         $Html.='<div id="timerContainer">';   
         $Html.='<input type="text" id="clock" name="63___TimeToComplete[]" value="00:00:0" readonly/>';
@@ -97,40 +101,30 @@ class CustomController extends Controller
         $Html.='</fieldset>';
         $Html.='</div>';        
         
- 
-        
         $Html.='<div class="ui-grid-b">';
         $Html.='<div class="ui-block-a">';
         $Html.='<input id="resetbutton" class="buttongroup" onClick="reset();" type="button" value="Reset"/>';
-        $Html.='</div>';
-        $Html.='<div class="ui-block-b">';
+        $Html.='</div><div class="ui-block-b">';
         $Html.='<input class="buttongroup" type="button" onClick="clockControl();" value="Start"/>';
-        $Html.='</div>';
-        $Html.='<div class="ui-block-c">';
+        $Html.='</div><div class="ui-block-c">';
         $Html.='<input class="buttongroup" type="button" onClick="clockControl();" value="Stop"/>';
-        $Html.='</div>';
-        $Html.='</div>';
+        $Html.='</div></div>';  
 
         $Html.='</div>';
 
         $Html .= '<div class="ui-grid-a">';
-        $Html .= '<div id="exercises" class="ui-block-a">';
-        //$Html .= '<div id="exercises">';
+        $Html .= '<div id="exercises" style="padding-top:2.5%" class="ui-block-a">';
         $Html .= $this->getExercises();
-        //$Html .= '</div>';
-        $Html .= '</div>';       
-        
-        $Html.='<div class="ui-block-b">';
+        $Html.='</div><div class="ui-block-b">';
         $Html.='<input type="button" onClick="addRound();" value="+ Round"/>';
-        $Html.='</div></div>';       
+        $Html.='</div></div>';  
+        
         $Html.='<div class="ui-grid-a">';
         $Html.='<div class="ui-block-a">';
         $Html.='<input type="button" onClick="clockSelect(\'select\');" value="Time Event"/>';
-        $Html.='</div>';
-        $Html.='<div class="ui-block-b">';
+        $Html.='</div><div class="ui-block-b">';
         $Html.='<input type="button" value="Save"/>';
-        $Html.='</div>';
-        $Html.='</div>';       
+        $Html.='</div></div>';   
         
 	if($_REQUEST['form'] == 'submitted'){
 	$Html .= '<div class="ui-grid-c">';
@@ -151,7 +145,7 @@ class CustomController extends Controller
         $Html='';
         $Model = new CustomModel;
         $Exercises = $Model->getExercises();
-        $Html .= '<select class="select" name="exercise" id="exercise" onChange="SelectionControl(this.value)">
+        $Html .= '<select class="select" name="exercise" onChange="SelectionControl(this.value)">
          <option value="none">+ Activity</option>';
 	foreach($Exercises AS $Exercise){
             $Html .= '<option value="'.$Exercise->ActivityName.'">'.$Exercise->ActivityName.'</option>';
