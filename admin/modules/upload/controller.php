@@ -74,7 +74,6 @@ class UploadController extends Controller
 
     function MainOutput()
     {        
-        $Html = '<p>WOD Name: </p><input type="text" name="WodName" />';
         $Html = '<div class="exercises" id="Routine_1">';
         $Html .='<h2>Routine 1</h2>';
         $Html .= $this->getExercises(1);
@@ -88,7 +87,7 @@ class UploadController extends Controller
     {
         $Html = '<div id="comments">';
         $Html .= 'Comments';
-        $Html .= '<textarea name="RoutineNumber___0___Notes" rows="4" cols="80"></textarea>';
+        $Html .= '<textarea name="Notes" rows="4" cols="80"></textarea>';
         $Html .= '</div>';
         return $Html;
     }

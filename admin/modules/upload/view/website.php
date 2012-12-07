@@ -397,7 +397,9 @@ function addRound()
 <input type="hidden" name="rowcount" id="rowcounter" value="0"/>
 <input type="hidden" name="RoutineCounter" id="RoutineCounter" value="1"/>
 <div id="add_exercise"></div>
-<p>WOD Date:<input class="inputbox-required" type="text" name="WodDate" id="WodDate" maxlength="25" placeholder="Use Calendar" value=""/>
+<p>WOD Name: <input type="text" name="WodName" />
+<br />
+WOD Date:<input class="inputbox-required" type="text" name="WodDate" id="WodDate" maxlength="25" placeholder="Use Calendar" value=""/>
 <img src="images/calendar-blue.gif" alt="calendar" id="Start_trigger"/></p>
 <script type="text/javascript">
       Calendar.setup({

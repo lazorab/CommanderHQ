@@ -13,15 +13,15 @@ class UploadModel extends Model
     function Save()
 	{
         $WodTypeId = $this->getWodTypeId('My Gym');
-        
+        $WodName = $_REQUEST['WodName'];
         $Routines = $_REQUEST['RoutineCounter'];
+        $NotesVal = $_REQUEST['Notes'];
+        
         for($i=1;$i<=$Routines;$i++){
             $TimingTypeVal = $_REQUEST[''.$i.'_TimingType'];
-            $NotesVal = $_REQUEST[''.$i.'_Notes'];
-        
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'INSERT INTO WodWorkouts(GymId, Routine, WodTypeId, WorkoutRoutineTypeId, Notes, WodDate) 
-            VALUES("'.$_SESSION['GID'].'", "'.$i.'", "'.$WodTypeId.'", "'.$TimingTypeVal.'", "'.$NotesVal.'", "'.$_REQUEST['WodDate'].'")';
+            $SQL = 'INSERT INTO WodWorkouts(GymId, Routine, WorkoutName, WodTypeId, WorkoutRoutineTypeId, Notes, WodDate) 
+            VALUES("'.$_SESSION['GID'].'", "'.$i.'", "'.$WodName.'", "'.$WodTypeId.'", "'.$TimingTypeVal.'", "'.$NotesVal.'", "'.$_REQUEST['WodDate'].'")';
             $db->setQuery($SQL);
             $db->Query();
             $WodId = $db->insertid();
@@ -36,6 +36,10 @@ class UploadModel extends Model
                 }
 
                 $this->Message = 'Success';
+            }
+            else
+            {
+                $this->Message = "There were missing exercise attributes";
             }
         }
 
