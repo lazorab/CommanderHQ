@@ -1,4 +1,13 @@
 <script type='text/javascript'>
+function HtmlOutputs(outputType, properties)
+{
+    if (outputType == "routine")
+    {
+        var HtmlRoutine = '<?php echo str_replace('\'', '\\\'', $Display->HtmlOutputs('routine')) ?>';
+        HtmlRoutine = HtmlRoutine.replace(/unclassified/g, properties.id);
+        return HtmlRoutine;
+    }
+}
 
 function SelectTimingType(type){
     var ThisRoutineNumber = document.getElementById('RoutineCounter').value;
@@ -16,8 +25,10 @@ function addTiming(){
 }
 
 function addComments(){
-    var Html = '<?php echo $Display->getNotes();?>';
-    $('#AddNotes').html(Html);   
+    var ThisRoutineNumber = document.getElementById('RoutineCounter').value;
+    var Notes = '<?php echo $Display->getNotes();?>';
+    var Html = Notes.replace(/RoutineNumber/g, ThisRoutineNumber);
+    $('#AddNotes_'+ThisRoutineNumber).html(Html);   
 }
 
 function Publish(){
@@ -86,6 +97,21 @@ function display(data)
     $('.buttongroup').button();
     $('.buttongroup').button('refresh');
     $('.textinput').textinput();
+}
+
+function _addRoutine(routineOrderId)
+{
+    $('div.routine').each(function() {
+        var idNumber = $(this).attr('id').split("_")[1];
+        if (idNumber > routineOrderId)
+        {
+            $(this).attr('id', 'routine_' + (parseInt(idNumber) + 1));
+        }
+    });
+
+    var Html = HtmlOutputs('routine', {'id': routineOrderId + 1});
+    
+    $($("form#routines-form div.routine")[routineOrderId - 1]).after($(Html));
 }
 
 function addTypeParams(CustomType)
@@ -397,9 +423,7 @@ function addRound()
 <input type="hidden" name="rowcount" id="rowcounter" value="0"/>
 <input type="hidden" name="RoutineCounter" id="RoutineCounter" value="1"/>
 <div id="add_exercise"></div>
-<p>WOD Name: <input type="text" name="WodName" />
-<br />
-WOD Date:<input class="inputbox-required" type="text" name="WodDate" id="WodDate" maxlength="25" placeholder="Use Calendar" value=""/>
+<p>WOD Date:<input class="inputbox-required" type="text" name="WodDate" id="WodDate" maxlength="25" placeholder="Use Calendar" value=""/>
 <img src="images/calendar-blue.gif" alt="calendar" id="Start_trigger"/></p>
 <script type="text/javascript">
       Calendar.setup({
