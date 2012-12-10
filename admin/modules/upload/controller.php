@@ -73,14 +73,38 @@ class UploadController extends Controller
     }
 
     function MainOutput()
-    {        
-        $Html = '<p>WOD Name: </p><input type="text" name="WodName" />';
-        $Html = '<div class="exercises" id="Routine_1">';
+    {
+        $Html = '<br />';
+        $Html .= '<div class="actionbutton"><a href="#" onClick="addNewActivity();"><img alt="Add Activity" src="images/AddActivity.png"/></a></div>';
+        $Html .= '<div class="actionbutton"><a href="#" onClick="addTiming();"><img alt="Add Timing" src="images/AddTiming.png"/></a></div>';
+        $Html .= '<div class="actionbutton"><a href="#" onClick="addComments();"><img alt="Add Comments" src="images/AddComments.png"/></a></div>';
+        $Html .= '<div class="clear"></div>';
+        $Html .= '<br />';
+        $Html .= '<form action="index.php" id="gymform" name="form">';
+        $Html .= '<input type="hidden" name="form" value="submitted"/>';
+        $Html .= '<input type="hidden" name="rowcount" id="rowcounter" value="0"/>';
+        $Html .= '<input type="hidden" name="RoutineCounter" id="RoutineCounter" value="1"/>';
+        $Html .= '<div id="add_exercise"></div>';
+        $Html .= '<p>WOD Date:<input class="inputbox-required" type="text" name="WodDate" id="WodDate" maxlength="25" placeholder="Use Calendar" value=""/>';
+        $Html .= '<img src="images/calendar-blue.gif" alt="calendar" id="Start_trigger"/></p>';
+        $Html .= '<p>WOD Name: </p><input type="text" name="WodName" />';
+        $Html .= '<div class="exercises" id="Routine_1">';
         $Html .='<h2>Routine 1</h2>';
         $Html .= $this->getExercises(1);
      	$Html .= '</div>';
         $Html .= '<div id="AddTiming_1"></div>';
         $Html .= '<div id="AddNotes_1"></div>';       
+        $Html .= '<div style="width:125px;float:right">';
+        $Html .= '<input type="button" onClick="Publish();" name="" value="Publish"/>';
+        $Html .= '<input type="button" onClick="AddRoutine()" name="" value="+"/>';
+        $Html .= '</div>';
+        $Html .= '<div class="clear"></div>';
+        $Html .= '<br/>';
+        $Html .= '<div class="ui-grid-b">';
+        $Html .= '<div id="display_benchmark"></div>';
+        $Html .= '<div id="new_routine"></div>';
+        $Html .= '</div>';
+        $Html .= '</form><br/>';
 	return $Html;
     }
     

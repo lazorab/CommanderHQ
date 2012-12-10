@@ -7,8 +7,6 @@ class UploadModel extends Model
 	{
 	
 	}
-        
-
     
     function Save()
 	{
@@ -18,10 +16,11 @@ class UploadModel extends Model
         for($i=1;$i<=$Routines;$i++){
             $TimingTypeVal = $_REQUEST[''.$i.'_TimingType'];
             $NotesVal = $_REQUEST[''.$i.'_Notes'];
+            $WorkoutName = $_REQUEST['WodName'];
         
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'INSERT INTO WodWorkouts(GymId, Routine, WodTypeId, WorkoutRoutineTypeId, Notes, WodDate) 
-            VALUES("'.$_SESSION['GID'].'", "'.$i.'", "'.$WodTypeId.'", "'.$TimingTypeVal.'", "'.$NotesVal.'", "'.$_REQUEST['WodDate'].'")';
+            $SQL = 'INSERT INTO WodWorkouts(GymId, Routine, WorkoutName, WodTypeId, WorkoutRoutineTypeId, Notes, WodDate) 
+            VALUES("'.$_SESSION['GID'].'", "'.$i.'", "'. $WorkoutName .'", "'.$WodTypeId.'", "'.$TimingTypeVal.'", "'.$NotesVal.'", "'.$_REQUEST['WodDate'].'")';
             $db->setQuery($SQL);
             $db->Query();
             $WodId = $db->insertid();

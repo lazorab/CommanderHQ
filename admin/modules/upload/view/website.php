@@ -375,14 +375,15 @@ function RemoveFromList(RowId)
 }
 
 function messagedisplay(message)
-{ 
+{
+    var Html = '<?php echo $Display->Output(); ?>';
     var exerciseid = parseInt(message);
     if (exerciseid == Number.NaN) {
         alert(message);
     }else{
         var ThisRoutineNumber = document.getElementById('RoutineCounter').value;
         $.ajax({url:'ajax.php?module=upload',data:{dropdown:'refresh',newexercise:exerciseid,routineno:ThisRoutineNumber},dataType:"html",success:dropdownrefresh});  
-        $('#add_exercise').html('');
+        $('#AjaxOutput').html(Html);
         alert('Successfully Added');
     }  
 }
@@ -400,39 +401,7 @@ function addRound()
 }
 </script>
 
-<br />
-<div class="actionbutton"><a href="#" onClick="addNewActivity();"><img alt="Add Activity" src="images/AddActivity.png"/></a></div>
-<div class="actionbutton"><a href="#" onClick="addTiming();"><img alt="Add Timing" src="images/AddTiming.png"/></a></div>
-<div class="actionbutton"><a href="#" onClick="addComments();"><img alt="Add Comments" src="images/AddComments.png"/></a></div>
-<div class="clear"></div>
-<br />
-<form action="index.php" id="gymform" name="form">
-<input type="hidden" name="form" value="submitted"/>
-<input type="hidden" name="rowcount" id="rowcounter" value="0"/>
-<input type="hidden" name="RoutineCounter" id="RoutineCounter" value="1"/>
-<div id="add_exercise"></div>
-<p>WOD Date:<input class="inputbox-required" type="text" name="WodDate" id="WodDate" maxlength="25" placeholder="Use Calendar" value=""/>
-<img src="images/calendar-blue.gif" alt="calendar" id="Start_trigger"/></p>
-<script type="text/javascript">
-      Calendar.setup({
-        inputField : "WodDate",
-        trigger    : "Start_trigger",
-        onSelect   : function() { this.hide() },
-        dateFormat : "%Y-%m-%d"
-      });
-</script> 
 <div id="AjaxOutput">  
     <?php echo $Display->Output();?>
 </div>
-<div style="width:125px;float:right">
-<input type="button" onClick="Publish();" name="" value="Publish"/>
-<input type="button" onClick="AddRoutine()" name="" value="+"/>
-</div>
-<div class="clear"></div>
-<br/>
 
-<div class="ui-grid-b">
-<div id="display_benchmark"></div>
-<div id="new_routine"></div>
-</div>
-</form><br/>
