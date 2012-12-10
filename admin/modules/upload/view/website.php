@@ -400,6 +400,14 @@ function addRound()
     //$.getJSON('ajax.php?module=benchmark', $("#benchmarkform").serialize(),display);
 }
 </script>
+<script type="text/javascript">
+      Calendar.setup({
+        inputField : "WodDate",
+        trigger    : "Start_trigger",
+        onSelect   : function() { this.hide() },
+        dateFormat : "%Y-%m-%d"
+      });
+</script> 
 
 <div id="AjaxOutput">  
     <?php echo $Display->Output();?>
