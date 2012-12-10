@@ -145,16 +145,6 @@ class UploadModel extends Model
                     $db->setQuery($SQL);
                     array_push($Activities,$db->loadObject());                   
                 }
-                 if($TimingVal != ''){
-                    $SQL='SELECT recid, 
-                    (SELECT recid FROM Attributes WHERE Attribute = "'.$TimingAttribute.'") AS AttributeId, 
-                    "'.$TimingVal.'" AS AttributeValueMale, 
-                    "'.$TimingVal.'" AS AttributeValueFemale
-                    FROM Exercises
-                    WHERE recid = "'.$ExerciseId.'"';
-                    $db->setQuery($SQL);
-                    array_push($Activities,$db->loadObject());                  
-                }               
             }
         return $Activities;
     }

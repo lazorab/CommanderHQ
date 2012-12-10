@@ -1,19 +1,7 @@
 <script type='text/javascript'>
-function HtmlOutputs(outputType, properties)
-{
-    if (outputType == "routine")
-    {
-        var HtmlRoutine = '<?php echo str_replace('\'', '\\\'', $Display->HtmlOutputs('routine')) ?>';
-        HtmlRoutine = HtmlRoutine.replace(/unclassified/g, properties.id);
-        return HtmlRoutine;
-    }
-}
 
 function SelectTimingType(type){
     var ThisRoutineNumber = document.getElementById('RoutineCounter').value;
-    var Exercises = '<?php echo $Display->getExercises(0);?>';
-    var Html = Exercises.replace(/RoutineNumber/g, ThisRoutineNumber);
-    $('#new_routine').html(Html);   
     document.getElementById(''+ThisRoutineNumber+'_TimingType').value = type;
 }
 
