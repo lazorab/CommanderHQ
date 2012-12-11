@@ -26,7 +26,7 @@ class WodModel extends Model
         
         function getTopSelection()
         {
-            $WodDetails = $this->getWODDetails($_REQUEST['topselection']);
+            $WodDetails = $this->getWODDetails();
             return $WodDetails;
         }
         
@@ -63,24 +63,25 @@ class WodModel extends Model
         function getGymWodWorkouts()
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT WW.recid AS WodId, WT.WorkoutType, WW.WodDate
+            $SQL = 'SELECT WW.recid AS WodId, WT.WODType, WW.WodDate
                 FROM WodWorkouts WW
                 LEFT JOIN MemberDetails MD ON MD.GymId = WW.GymId
-                LEFT JOIN WorkoutTypes WT ON WT.recid = WW.WodTypeId
+                LEFT JOIN WODTypes WT ON WT.recid = WW.WodTypeId
                 WHERE MD.MemberId = "'.$_SESSION['UID'].'"
                 AND WodDate = CURDATE()
-                ORDER BY WorkoutName';
+                GROUP BY WodDate';
+
             $db->setQuery($SQL);
             return $db->loadObjectList();	
         }       
         
-         function getWODDetails($Id)
+         function getWODDetails()
 	{   
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT WT.WodType, WW.WorkoutRoutineTypeId
-                    FROM WODTypes WT 
-                    LEFT JOIN WodWorkouts WW ON WW.WodTypeId = WT.recid
-                    WHERE WW.recid = '.$Id.'';
+            $SQL = 'SELECT DISTINCT WT.WodType, WW.WorkoutRoutineTypeId
+                FROM WODTypes WT 
+                LEFT JOIN WodWorkouts WW ON WW.WodTypeId = WT.recid
+                WHERE WW.WodDate = CURDATE()';
             $db->setQuery($SQL);
             $Row = $db->loadObject();
             if($Row->WodType == 'Benchmarks'){
@@ -134,7 +135,7 @@ class WodModel extends Model
 			LEFT JOIN WodWorkouts WW ON WW.recid = WD.WodId
 			LEFT JOIN Exercises E ON E.recid = WD.ExerciseId
 			LEFT JOIN Attributes A ON A.recid = WD.AttributeId
-			WHERE WD.WodId = '.$Id.'
+			WHERE WW.WodDate = CURDATE()
 			ORDER BY RoundNo, Exercise, Attribute';
             }
             $db->setQuery($SQL);

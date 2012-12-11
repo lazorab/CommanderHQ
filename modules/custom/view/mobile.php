@@ -107,7 +107,7 @@ function messagedisplay(message)
         }
         else
         {
-            resetclock();
+            reset();
         }
     }  
     else if(message.substring(0,5) == 'Error'){

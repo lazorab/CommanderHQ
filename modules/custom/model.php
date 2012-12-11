@@ -17,31 +17,15 @@ class CustomModel extends Model
             if($this->Message == ''){
                 $WorkoutTypeId = $this->getCustomTypeId();
                 $WorkoutRoutineTypeId = $this->getWorkoutRoutineTypeId($_REQUEST['workouttype']);
-                //$Attributes=$this->getAttributes();
-                //var_dump($ActivityFields);
-                /*
-            $SQL = 'INSERT INTO CustomWorkouts(MemberId, WorkoutName, WorkoutTypeId) 
-                VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['WorkoutName'].'", "'.$this->getWorkoutTypeId($_REQUEST['workouttype']).'")';
-
-            $SQL = 'SELECT recid FROM CustomWorkouts WHERE MemberId = "'.$_SESSION['UID'].'" AND DATE_FORMAT(TimeCreated, "%Y-%m-%d") = CURDATE()';
-            $Result = mysql_query($SQL);
-            $numrows = mysql_num_rows($Result);
-            if($numrows == 1){
-            $Row = mysql_fetch_assoc($Result);
-            $CustomId = $Row['recid'];
-            }
-            else{
-            $SQL = 'INSERT INTO CustomWorkouts(MemberId, WorkoutTypeId) 
-                VALUES("'.$_SESSION['UID'].'", "'.$WorkoutRoutineTypeId.'")';
-             
-            mysql_query($SQL);
-            $CustomId = mysql_insert_id();
-            }
-            */
+            $SQL = 'INSERT INTO CustomWorkouts(MemberId, WorkoutRoutineTypeId, Notes) 
+            VALUES("'.$_SESSION['UID'].'", "'.$WorkoutRoutineTypeId.'", "'.$_REQUEST['descr'].'")';
+            $db->setQuery($SQL);
+            $db->Query();
+            $CustomWorkoutId = $db->insertid();
         foreach($ActivityFields AS $ActivityField)
         {
-            $SQL = 'INSERT INTO CustomDetails(MemberId, WorkoutRoutineTypeId, ExerciseId, AttributeId, AttributeValue, RoundNo) 
-            VALUES("'.$_SESSION['UID'].'", "'.$WorkoutRoutineTypeId.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->RoundNo.'")';
+            $SQL = 'INSERT INTO CustomDetails(MemberId, CustomWorkoutId, ExerciseId, AttributeId, AttributeValue, RoundNo) 
+            VALUES("'.$_SESSION['UID'].'", "'.$CustomWorkoutId.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->RoundNo.'")';
             $db->setQuery($SQL);
             $db->Query();
             if($_REQUEST['origin'] == 'baseline'){
@@ -123,7 +107,7 @@ class CustomModel extends Model
                     $ExerciseId = $ExplodedKey[1];
                     $ExerciseName = $this->getExerciseName($ExerciseId);
                     $Attribute = $ExplodedKey[2];
-                if($Val == '' || $Val == '0' || $Val == $Attribute){
+                if($Value == '' || $Value == '0' || $Value == $Attribute){
                     if($this->Message == ''){
                         $this->Message .= "Error - \n";
                     }
@@ -134,7 +118,7 @@ class CustomModel extends Model
                 }else{
                 $SQL='SELECT recid AS ExerciseId, 
                         (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, 
-                        "'.$Val.'" AS AttributeValue, 
+                        "'.$Value.'" AS AttributeValue, 
                         "'.$RoundNo.'" AS RoundNo 
                         FROM Exercises
                         WHERE recid = "'.$ExerciseId.'"';
@@ -142,30 +126,8 @@ class CustomModel extends Model
 		
                 $Row = $db->loadObject();
                 array_push($Activities, $Row);
-                }
-            
+                }      
             }
-            /*
-            else{
-                if($val == '' || $val == $key || $val == 0){
-                    if($this->Message == ''){
-                        $this->Message .= "Error - \n";
-                    }
-                    $this->Message .= "Invalid value for ".$key."!\n";
-                }else{
-
-                $SQL = 'SELECT recid FROM Attributes WHERE Attribute = "'.$key.'"';
-                $Result = mysql_query($SQL);
-                $numrows = mysql_num_rows($Result);
-                if($numrows == 1){
-                    $Row = mysql_fetch_assoc($Result);
-                    $Attribute = $Row['recid'];
-                    array_push($Activities, new CustomObject(array('recid'=>'0','Attribute'=>''.$Attribute.'','AttributeValue'=>''.$val.'','RoundNo'=>''.$RoundNo.'')));
-                
-                    }
-                }
-            }
-            */
         }
         return $Activities;
     }

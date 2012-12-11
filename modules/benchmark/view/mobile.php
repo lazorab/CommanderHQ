@@ -83,8 +83,8 @@ function getDetails(id,origin)
 
 function getCustomDetails(id,origin)
 {
-    $.ajax({url:'ajax.php?module=benchmark',data:{WorkoutDate:id, origin:origin},dataType:"html",success:display});
-    $.ajax({url:'ajax.php?module=benchmark',data:{topselection:id, WorkoutDate:id},dataType:"html",success:topselectiondisplay});
+    $.ajax({url:'ajax.php?module=benchmark',data:{WorkoutId:id, origin:origin},dataType:"html",success:display});
+    $.ajax({url:'ajax.php?module=benchmark',data:{topselection:id, WorkoutId:id},dataType:"html",success:topselectiondisplay});
 }
 
 function topselectiondisplay(data)

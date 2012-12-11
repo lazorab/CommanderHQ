@@ -14,14 +14,9 @@ class WodController extends Controller
 	{
             $Html='';
             if(isset($_REQUEST['topselection'])){
-                if($_REQUEST['topselection'] == 'mygym'){
-                    $Gym = $this->MemberGym();
-                    $Display = $Gym->GymName;
-                }else{
-                    $Display = $this->getTopSelection();
-                }
+                $Display = $this->getTopSelection();
             }else{
-                $Display = 'Workout Of the Day';                  
+                $Display = 'Workout Of the Day';
             }
             $Html='<li>'.$Display.'</li>';
             return $Html;
@@ -32,8 +27,13 @@ class WodController extends Controller
             $Html='';
             $Model = new WodModel;
             $WodDetails = $Model->getTopSelection();
+            if(count($WodDetails) == 0){
+            $Gym = $this->MemberGym();
+            $Html = $Gym->GymName;
+            }else{
             $Description = $Model->WodDescription($WodDetails[0]->WodId);
-            $Html .= ''.$WodDetails[0]->WodDate.':<br/><span style="font-size:small">'.$Description.'</span>';
+            $Html .= 'Workout For '.date("D d M Y", strtotime($WodDetails[0]->WodDate)).':<br/><span style="font-size:small">'.$Description.'</span>';
+            }
             return $Html;           
         }
 	
@@ -57,13 +57,9 @@ class WodController extends Controller
                 $Gym = $this->MemberGym();
                 if(!$Gym){//must register gym
                     $WODdata = 'Must First Register Gym!';
-		}
-		else{//show details:
-                    //$WODdata .='<h2>Workout for '.date('d M Y').'</h2>';
-                    $WODdata = $this->MyGymWOD();
+		}else{
+                    $WODdata = $this->WorkoutDetails();
 		}	
-            }else if(isset($_REQUEST['Workout'])){
-                $WODdata = $this->WorkoutDetails();
             }else{
                 $WODdata='<div style="padding:2%">
                 <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
@@ -102,8 +98,11 @@ class WodController extends Controller
 	{
             $html='';
             $Model = new WodModel;
-            $WodDetails = $Model->getWODDetails($_REQUEST['Workout']);
-
+            $WodDetails = $Model->getWODDetails();
+            if(count($WodDetails) == 0){
+                $html='No data from your gym today';
+            }else{
+                $this->getTopSelection();
 	$Clock = '';
 	$Bhtml = '';
 	$Chtml = '';
@@ -174,10 +173,10 @@ class WodController extends Controller
 				if($Detail->Attribute == 'Distance'){
                                     $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#6f747a"';
 					if($this->SystemOfMeasure() != 'Metric'){
-						$Unit = '<span style="float:left">yd</span>';
+						$Unit = '<span style="float:left">m</span>';
                                                 $AttributeValue = round($Detail->AttributeValue * 1.09, 2);
                                         }else{
-						$Unit = '<span style="float:left">m</span>';
+						$Unit = '<span style="float:left">km</span>';
                                                 $AttributeValue = $Detail->AttributeValue;
                                         }
 				}		
@@ -255,7 +254,7 @@ class WodController extends Controller
     $html.='</div>';
     $html.=$Clock;
     $html.='</form><br/><br/>';		
-
+            }
 
             return $html;
 	}       
