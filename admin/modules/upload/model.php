@@ -14,6 +14,8 @@ class UploadModel extends Model
         
         $Routines = $_REQUEST['RoutineCounter'];
         for($i=1;$i<=$Routines;$i++){
+            $TimingAttribute = 'TimeToComplete';
+            $TimingVal = $_REQUEST[$i.'_Timing'];
             $TimingTypeVal = $_REQUEST[''.$i.'_TimingType'];
             $NotesVal = $_REQUEST[''.$i.'_Notes'];
             $WorkoutName = $_REQUEST['WodName'];
@@ -24,6 +26,15 @@ class UploadModel extends Model
             $db->setQuery($SQL);
             $db->Query();
             $WodId = $db->insertid();
+
+            if (!empty($TimingVal))
+            {
+                $SQL = 'INSERT INTO WodDetails(WodId, ExerciseId, AttributeId, AttributeValueMale, AttributeValueFemale) 
+                VALUES("'.$WodId.'", 63, (SELECT recid FROM Attributes WHERE Attribute = "'.$TimingAttribute.'"), "'.$TimingVal.'", "'.$TimingVal.'")';
+                $db->setQuery($SQL);
+                $db->Query();
+            }
+
             $ActivityFields = $this->getActivityFields($i);
             if($ActivityFields != null){
                 foreach($ActivityFields AS $ActivityField)
