@@ -28,12 +28,13 @@ class BenchmarkModel extends Model
         function getCustomMemberWorkouts()
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT DATE_FORMAT(TimeCreated, "%d %M %Y") AS WorkoutName,
-                DATE_FORMAT(TimeCreated, "%Y-%m-%d") AS TimeCreated
-                FROM CustomDetails
+            $SQL = 'SELECT recid,
+                DATE_FORMAT(TimeCreated, "%d %M %Y") AS WorkoutName,
+                TimeCreated
+                FROM CustomWorkouts
                 WHERE MemberId = "'.$_SESSION['UID'].'"
-                GROUP BY WorkoutName    
-                ORDER BY WorkoutName';
+                GROUP BY TimeCreated   
+                ORDER BY TimeCreated';
             $db->setQuery($SQL);
 		
             return $db->loadObjectList();
@@ -55,24 +56,26 @@ class BenchmarkModel extends Model
             return $db->loadObjectList();
         }
 	
-        function getCustomDescription($Date)
+        function getCustomDescription($Id)
         {
             $Filter = '';
-            if($Date != ''){
-               $Filter = ' AND TimeCreated LIKE "'.$Date.'%"'; 
+            if($Id != ''){
+               $Filter = ' AND CW.recid = "'.$Id.'"'; 
             }
-            $SQL = 'SELECT DATE_FORMAT(TimeCreated, "%d %M %Y") AS WorkoutName, E.Exercise, 
+            $SQL = 'SELECT DATE_FORMAT(CW.TimeCreated, "%d %M %Y") AS WorkoutName, E.Exercise, 
                 E.Acronym, 
                 A.Attribute, 
                 CD.AttributeValue, 
                 CD.RoundNo,
                 WT.WorkoutType,
-                CD.TimeCreated
+                CW.TimeCreated,
+                CW.Notes
                 FROM CustomDetails CD
+                LEFT JOIN CustomWorkouts CW ON CW.recid = CD.CustomWorkoutId
                 LEFT JOIN Exercises E ON E.recid = CD.ExerciseId
                 LEFT JOIN Attributes A ON A.recid = CD.AttributeId
-                LEFT JOIN WorkoutRoutineTypes WT ON WT.recid = CD.WorkoutRoutineTypeId
-                WHERE CD.MemberId = "'.$_SESSION['UID'].'"
+                LEFT JOIN WorkoutRoutineTypes WT ON WT.recid = CW.WorkoutRoutineTypeId
+                WHERE CW.MemberId = "'.$_SESSION['UID'].'"
                     '.$Filter.'
                 ORDER BY TimeCreated, RoundNo, Exercise';
             return $this->MakeDescription($SQL);
@@ -210,18 +213,27 @@ class BenchmarkModel extends Model
         function getCustomDetails($Id)
 	{   
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT DATE_FORMAT(CD.TimeCreated, "%d %M %Y") AS WorkoutName, 
+            $SQL = 'SELECT DATE_FORMAT(CW.TimeCreated, "%d %M %Y") AS WorkoutName, 
                         E.Exercise, 
-                        E.Acronym, 
+                        E.recid AS ExerciseId, 
+                        CASE 
+                            WHEN E.Acronym <> ""
+                            THEN E.Acronym
+                            ELSE E.Exercise
+                        END
+                        AS InputFieldName,
+                        CW.Notes,
                         "'.$this->getCustomDescription($Id).'" AS WorkoutDescription,
                         E.recid AS ExerciseId, 
                         A.Attribute, 
                         CD.AttributeValue,  
                         RoundNo
 			FROM CustomDetails CD
+                        LEFT JOIN CustomWorkouts CW ON CW.recid = CD.CustomWorkoutId
 			LEFT JOIN Exercises E ON E.recid = CD.ExerciseId
 			LEFT JOIN Attributes A ON A.recid = CD.AttributeId
-			WHERE CD.MemberId = "'.$_SESSION['UID'].'"
+			WHERE CW.MemberId = "'.$_SESSION['UID'].'"
+                        AND CW.recid = "'.$Id.'"
 			ORDER BY RoundNo, Attribute';
             $db->setQuery($SQL);
 		

@@ -86,7 +86,7 @@ class CustomController extends Controller
         $Html .= '<br/>';
 
         $Html.='<div id="timerContainer">';   
-        $Html.='<input type="text" id="clock" name="63___TimeToComplete[]" value="00:00:0" readonly/>';
+        $Html.='<input type="text" id="clock" name="0___63___TimeToComplete" value="00:00:0" readonly/>';
         $Html.='<input type="hidden" name="clockType" id="clockType" value=""/>';
         $Html.='<input type="hidden" name="CountDown" id="CountDown" value=""/>';
         $Html.='<input type="hidden" name="startstopbutton" id="startstopbutton" value=""/>';
@@ -123,7 +123,7 @@ class CustomController extends Controller
         $Html.='<div class="ui-block-a">';
         $Html.='<input type="button" onClick="clockSelect(\'select\');" value="Time Event"/>';
         $Html.='</div><div class="ui-block-b">';
-        $Html.='<input type="button" value="Save"/>';
+        $Html.='<input type="button" value="Save" onClick="customsubmit();"/>';
         $Html.='</div></div>';   
         
 	if($_REQUEST['form'] == 'submitted'){

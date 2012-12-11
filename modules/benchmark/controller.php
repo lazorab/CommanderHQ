@@ -21,13 +21,13 @@ class BenchmarkController extends Controller
                 $this->Origin = $_REQUEST['origin'];
 		$this->Height = floor(SCREENWIDTH * 0.717); 
 		$Model = new BenchmarkModel;
-		if(isset($_REQUEST['benchmarkId'])){
+		if(isset($_REQUEST['benchmarkId']) && $_REQUEST['benchmarkId'] > 0){
                     $this->Workout = $Model->getWorkoutDetails($_REQUEST['benchmarkId']);
                     $this->Video = $this->Workout[0]->VideoId;
                     $this->Benchmark = $this->Workout[0];
                 }
-                else if(isset($_REQUEST['WorkoutDate'])){
-                    $this->Workout = $Model->getCustomDetails($_REQUEST['WorkoutDate']);
+                else if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] > 0){
+                    $this->Workout = $Model->getCustomDetails($_REQUEST['WorkoutId']);
                     $this->Benchmark = $this->Workout[0];
                 }
 	}
@@ -59,7 +59,7 @@ class BenchmarkController extends Controller
             
             $Model = new BenchmarkModel;
 
-if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutDate']))
+if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutId']))
 {
 	$Clock = '';
 	$Bhtml = '';
@@ -67,20 +67,21 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutDate']))
 	$html.='<form name="form" id="benchmarkform" action="index.php">
             <input type="hidden" name="origin" value="'.$this->Origin.'"/>
             <input type="hidden" name="benchmarkId" value="'.$_REQUEST['benchmarkId'].'"/>
-            <input type="hidden" name="WorkoutDate" value="'.$_REQUEST['WorkoutDate'].'"/>
+            <input type="hidden" name="WorkoutId" value="'.$_REQUEST['WorkoutId'].'"/>
             <input type="hidden" name="wodtype" value="3"/>
             <input type="hidden" name="form" value="submitted"/>';       
         $html.='<input type="checkbox" name="baseline" value="yes" data-role="none"/>';
-        $html.='Make this my baseline<br/><br/>';
+        $html.='Make this my baseline';
+        $html.='<p>'.$this->Workout[0]->Notes.'</p>';
         $html.='<div class="ui-grid-b">';
         $ThisRound = '';
 		$ThisExercise = '';
 	foreach($this->Workout as $Benchmark){
 		if($Benchmark->Attribute == 'TimeToComplete'){
-			$Clock = $this->getStopWatch($Benchmark->ExerciseId);
+			$Clock = $this->getStopWatch();
 		}
 		else if($Benchmark->Attribute == 'CountDown'){
-			$Clock = $this->getCountDown($Benchmark->ExerciseId,$Benchmark->AttributeValue);
+			$Clock = $this->getCountDown($Benchmark->AttributeValue);
 		}
 		else{
 			
@@ -133,10 +134,10 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutDate']))
 				if($Benchmark->Attribute == 'Distance'){
                                     $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#6f747a"';
 					if($this->SystemOfMeasure() != 'Metric'){
-						$Unit = '<span style="float:left">yd</span>';
+						$Unit = '<span style="float:left">m</span>';
                                                 $AttributeValue = round($Benchmark->AttributeValue * 1.09, 2);
                                         }else{
-						$Unit = '<span style="float:left">m</span>';
+						$Unit = '<span style="float:left">km</span>';
                                                 $AttributeValue = $Benchmark->AttributeValue;
                                         }
 				}		
@@ -215,6 +216,7 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutDate']))
 				}	
     $html.='</div>';
     $html.=$Clock;
+    $html.='<input class="buttongroup" type="button" onClick="benchmarksubmit();" value="Save"/>';
     $html.='</form><br/>';		
 
 }
@@ -317,9 +319,9 @@ return $html;
             }else{
             $html .= '<ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
             foreach($CustomMemberWorkouts AS $Workout){
-                $Description = $Model->getCustomDescription($Workout->TimeCreated);
+                $Description = $Model->getCustomDescription($Workout->recid);
                 $html .= '<li>';
-                $html .= '<a href="" onclick="getCustomDetails('.$Workout->TimeCreated.', \''.$this->Origin.'\');">'.$Workout->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span></a>';
+                $html .= '<a href="" onclick="getCustomDetails(\''.$Workout->recid.'\', \''.$this->Origin.'\');">'.$Workout->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span></a>';
                 $html .= '</li>';
             }	
             $html .= '</ul><br/>';
@@ -337,9 +339,9 @@ return $html;
             }else{
             $html .= '<ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
             foreach($CustomPublicWorkouts AS $Workout){
-                $Description = $Model->getCustomDescription($Workout->TimeCreated);
+                $Description = $Model->getCustomDescription($Workout->recid);
                 $html .= '<li>';
-                $html .= '<a href="" onclick="getCustomDetails('.$Workout->TimeCreated.', \''.$this->Origin.'\');">'.$Workout->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span></a>';
+                $html .= '<a href="" onclick="getCustomDetails(\''.$Workout->recid.'\', \''.$this->Origin.'\');">'.$Workout->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span></a>';
                 $html .= '</li>';
             }	
             $html .= '</ul><br/>';
@@ -371,30 +373,24 @@ return $html;
             return $Html;	
 	}
 	
-    function getStopWatch($ExerciseId)
+    function getStopWatch()
     {
-	$RoundNo = 0;
-        $TimeToComplete = '00:00:0';
-        $StartStopButton = 'Start';
-        if(isset($_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'])){
-            $TimeToComplete = $_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'];
-            if($TimeToComplete != '00:00:0')
-                $StartStopButton = 'Stop';
-        }
-	$Html ='<div id="timerContainer"><input type="text" id="clock" name="'.$RoundNo.'___'.$ExerciseId.'___TimeToComplete" value="'.$TimeToComplete.'" readonly/></div>';
-        
+        //$Html ='<div id="timerContainer">'; 
+        $Html.='<br/>';
+        $Html.='<input type="text" id="clock" name="0___63___TimeToComplete" value="00:00:0" readonly/>';
+        $Html.='<input type="hidden" name="clockType" id="clockType" value=""/>';
+        $Html.='<input type="hidden" name="CountDown" id="CountDown" value=""/>';
+        $Html.='<input type="hidden" name="startstopbutton" id="startstopbutton" value=""/>';
+        $Html.='<br/>';
         $Html.='<div class="ui-grid-b">';
         $Html.='<div class="ui-block-a">';
-        $Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="'.$StartStopButton.'"/>';
+        $Html.='<input id="resetbutton" class="buttongroup" onClick="reset();" type="button" value="Reset"/>';
         $Html.='</div><div class="ui-block-b">';
-        $Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
+        $Html.='<input class="buttongroup" type="button" onClick="startstop();" value="Start"/>';
         $Html.='</div><div class="ui-block-c">';
-        $Html.='<input class="buttongroup" type="button" onClick="benchmarksubmit();" value="Save"/>';
-        $Html.='</div></div>';
-        
-	//$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="'.$StartStopButton.'"/>';
-	//$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
-	//$Html.='<input class="buttongroup" type="button" onclick="benchmarksubmit();" value="Save"/>';
+        $Html.='<input class="buttongroup" type="button" onClick="startstop();" value="Stop"/>';
+        $Html.='</div></div>'; 
+        //$Html.='</div>';      
 
         return $Html;
     }
