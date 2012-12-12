@@ -111,10 +111,10 @@ class BaselineController extends Controller
 				if($Baseline->Attribute == 'Distance'){
                                     $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#6f747a"';
 					if($this->SystemOfMeasure() != 'Metric'){
-						$Unit = '<span style="float:left">yd</span>';
+						$Unit = '<span style="float:left">m</span>';
                                                 $AttributeValue = round($Baseline->AttributeValue * 1.09, 2);
                                         }else{
-						$Unit = '<span style="float:left">m</span>';
+						$Unit = '<span style="float:left">km</span>';
                                                 $AttributeValue = $Baseline->AttributeValue;
                                         }
 				}		
@@ -198,20 +198,23 @@ class BaselineController extends Controller
     
     function getStopWatch()
     {
-        $Html='<br/>';
-        $TimeToComplete = '00:00:0';
-        $StartStopButton = 'Start';
-        if(isset($_REQUEST['TimeToComplete'])){
-            $TimeToComplete = $_REQUEST['TimeToComplete'];
-            if($TimeToComplete != '00:00:0')
-                $StartStopButton = 'Stop';            
-        }
-        $Html.='<input type="text" id="clock" name="0___63___TimeToComplete" value="'.$TimeToComplete.'"/>';
-	$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="'.$StartStopButton.'"/>';
-	$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
-	$Html.='<input class="buttongroup" type="button" onclick="baselinesubmit();" value="Save"/>';
-        $Html.='</form><br/><br/>';     
-        
+        //$Html ='<div id="timerContainer">'; 
+        $Html.='<br/>';
+        $Html.='<input type="text" id="clock" name="0___63___TimeToComplete" value="00:00:0" readonly/>';
+        $Html.='<input type="hidden" name="clockType" id="clockType" value=""/>';
+        $Html.='<input type="hidden" name="CountDown" id="CountDown" value=""/>';
+        $Html.='<input type="hidden" name="startstopbutton" id="startstopbutton" value=""/>';
+        $Html.='<br/>';
+        $Html.='<div class="ui-grid-b">';
+        $Html.='<div class="ui-block-a">';
+        $Html.='<input id="resetbutton" class="buttongroup" onClick="reset();" type="button" value="Reset"/>';
+        $Html.='</div><div class="ui-block-b">';
+        $Html.='<input class="buttongroup" type="button" onClick="startstop();" value="Start"/>';
+        $Html.='</div><div class="ui-block-c">';
+        $Html.='<input class="buttongroup" type="button" onClick="startstop();" value="Stop"/>';
+        $Html.='</div></div>'; 
+        //$Html.='</div>';      
+
         return $Html;
     }
     

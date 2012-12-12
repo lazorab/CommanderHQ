@@ -352,12 +352,12 @@ class BaselineModel extends Model
                         A.Attribute, 
                         CD.AttributeValue,  
                         RoundNo,
-                        (SELECT MAX(RoundNo) FROM CustomDetails WHERE CustomId = "'.$Id.'") AS TotalRounds
+                        (SELECT MAX(RoundNo) FROM CustomDetails WHERE CustomWorkoutId = "'.$Id.'") AS TotalRounds
 			FROM CustomDetails CD
-			LEFT JOIN CustomWorkouts CW ON CW.recid = CD.CustomId
+			LEFT JOIN CustomWorkouts CW ON CW.recid = CD.CustomWorkoutId
 			LEFT JOIN Exercises E ON E.recid = CD.ExerciseId
 			LEFT JOIN Attributes A ON A.recid = CD.AttributeId
-			WHERE CD.CustomId = '.$Id.'
+			WHERE CD.CustomWorkoutId = '.$Id.'
 			ORDER BY RoundNo, Attribute';
                 $db->setQuery($SQL);
                 return $db->loadObjectList();       
@@ -396,13 +396,13 @@ class BaselineModel extends Model
                 E.Acronym, 
                 A.Attribute, 
                 CD.AttributeValue, 
-                WT.WorkoutType 
+                WRT.WorkoutType 
                 FROM CustomDetails CD
                 LEFT JOIN Exercises E ON E.recid = CD.ExerciseId
                 LEFT JOIN Attributes A ON A.recid = CD.AttributeId
-                LEFT JOIN CustomWorkouts CW ON CW.recid = CD.CustomId
-                LEFT JOIN WorkoutTypes WT ON WT.recid = CW.WorkoutTypeId
-                WHERE CD.CustomId = "'.$Id.'"
+                LEFT JOIN CustomWorkouts CW ON CW.recid = CD.CustomWorkoutId
+                LEFT JOIN WorkoutRoutineTypes WRT ON WRT.recid = CW.WorkoutRoutineTypeId
+                WHERE CD.CustomWorkoutId = "'.$Id.'"
                 ORDER BY Exercise';
             
             $db->setQuery($SQL);

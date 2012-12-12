@@ -266,8 +266,8 @@ class BenchmarkModel extends Model
                 if($_REQUEST['benchmarkId'] != ''){
                     $ThisId = $_REQUEST['benchmarkId'];
                     $WorkoutTypeId = $this->getWorkoutTypeId('Benchmark');
-                }else if($_REQUEST['customId'] != ''){
-                    $ThisId = $_REQUEST['customId'];
+                }else if($_REQUEST['WorkoutId'] != ''){
+                    $ThisId = $_REQUEST['WorkoutId'];
                     $WorkoutTypeId = $this->getWorkoutTypeId('Custom');
                 }
                 
