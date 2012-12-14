@@ -22,6 +22,28 @@ function getDetails(ThisWorkout,ThisWodType)
     $.ajax({url:'ajax.php?module=wod',data:{topselection:ThisWorkout},dataType:"html",success:topselectiondisplay});
 }
 
+function wodsubmit()
+{
+    $.getJSON('ajax.php?module=benchmark&action=validateform', $("#wodform").serialize(),messagedisplay);
+}
+
+function messagedisplay(message)
+{
+    if(message == 'Success'){
+        var r=confirm("Successfully Saved!\nWould you like to provide us with feedback?");
+        if (r==true)
+        {
+            window.location = 'index.php?module=contact';
+        }
+        else
+        {
+            resetclock();
+        }
+    }  
+    else
+        alert(message);
+}
+
 function goBack()
 {
     $('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif");?> src="/css/images/ajax-loader.gif" />');

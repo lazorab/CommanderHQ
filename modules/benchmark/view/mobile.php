@@ -44,8 +44,6 @@ $(document).ready(function() {
     
 function benchmarksubmit()
 {
-    //console.log($("#benchmarkform").serializeArray());
-    //$.ajax({url:'ajax.php?module=benchmark&action=validateform',data:$("#benchmarkform").serializeArray(),dataType:"text",success:messagedisplay});
     $.getJSON('ajax.php?module=benchmark&action=validateform', $("#benchmarkform").serialize(),messagedisplay);
 }
 

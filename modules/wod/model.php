@@ -8,20 +8,74 @@ class WodModel extends Model
 	
 	function Log()
 	{
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT recid, Attribute FROM Attributes';
-            $db->setQuery($SQL);
-            $Rows = $db->loadObjectList();
-            foreach($Rows as $Row)
-        {
-            if(isset($_REQUEST[''.$Row->Attribute.''])){
-                $AttributeValue = $_REQUEST[''.$Row->Attribute.''];
-                $SQL = 'INSERT INTO WODLog(MemberId, ExerciseId, WODTypeId, AttributeId, AttributeValue) 
-                VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['exercise'].'", "'.$_REQUEST['wodtype'].'", "'.$Row->recid.'", "'.$AttributeValue.'")';
-                $db->setQuery($SQL);
-                $db->Query();	
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+        $SetBaseline = false;
+        if($this->UserIsSubscribed()){
+            $ActivityFields = $this->getActivityFields();
+            if($this->Message == ''){
+                if($_REQUEST['benchmarkId'] != ''){
+                    $ThisId = $_REQUEST['benchmarkId'];
+                    $WorkoutTypeId = $this->getWorkoutTypeId('Benchmark');
+                }else if($_REQUEST['WorkoutId'] != ''){
+                    $ThisId = $_REQUEST['WorkoutId'];
+                    $WorkoutTypeId = $this->getWorkoutTypeId('Custom');
+                }
+                
+                if($_REQUEST['baseline'] == 'yes'){
+                    $SetBaseline = true;
+                    $SQL = 'DELETE FROM MemberBaseline WHERE MemberId = "'.$_SESSION['UID'].'"';
+                    $db->setQuery($SQL);
+                    $db->Query();
+                }
+                foreach($ActivityFields AS $ActivityField)
+                {
+                    $AttributeValue = '';
+                    //check to see if we must convert back to metric first for data storage
+                    if($ActivityField->Attribute == 'Height' || $ActivityField->Attribute == 'Distance' || $ActivityField->Attribute == 'Weight'){
+                        if($ActivityField->Attribute == 'Distance'){
+                            if($this->getSystemOfMeasure() != 'Metric'){
+                                $AttributeValue = round($ActivityField->AttributeValue * 1.61, 2);
+                            }
+                        }		
+                        else if($ActivityField->Attribute == 'Weight'){
+                            if($this->getSystemOfMeasure() != 'Metric'){
+                                $AttributeValue = round($ActivityField->AttributeValue * 0.45, 2);
+                            }
+                        }
+                        else if($ActivityField->Attribute == 'Height'){
+                            if($this->getSystemOfMeasure() != 'Metric'){
+                                $AttributeValue = round($ActivityField->AttributeValue * 2.54, 2);
+                            }
+                        }
+                    }   
+
+                    if($AttributeValue == ''){
+                        $AttributeValue = $ActivityField->AttributeValue;
+                    }
+                    if($SetBaseline){
+                        $SQL = 'INSERT INTO MemberBaseline(MemberId, BaselineTypeId, WorkoutId, ExerciseId, AttributeId, AttributeValue) 
+                            VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$ThisId.'", "'.$ActivityField->Id.'", "'.$ActivityField->AttributeId.'", "'.$AttributeValue.'")';
+                        $db->setQuery($SQL);
+                        $db->Query();
+                    }
+                    if($_REQUEST['origin'] == 'baseline'){
+                        $SQL = 'INSERT INTO BaselineLog(MemberId, BaselineTypeId, ExerciseId, RoundNo, ActivityId, AttributeId, AttributeValue) 
+                VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$ThisId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->Id.'", "'.$ActivityField->AttributeId.'", "'.$AttributeValue.'")';
+                        $db->setQuery($SQL);
+                        $db->Query();
+                    }
+                    // ExerciseId only applies for benchmarks so we need it here!
+                    $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue, LevelAchieved) 
+            VALUES("'.$_SESSION['UID'].'", "'.$ThisId.'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->Id.'", "'.$ActivityField->AttributeId.'", "'.$AttributeValue.'", "'.$this->LevelAchieved($ActivityField).'")';
+                        $db->setQuery($SQL);
+                        $db->Query();
+                    $this->Message = 'Success';
+                }
             }
+        }else{
+            $this->Message = 'You are not subscribed!';
         }
+        return $this->Message;
 	}
         
         function getTopSelection()
@@ -59,7 +113,7 @@ class WodModel extends Model
 			}  
                 return $Row;        
         }
-        
+       
         function getGymWodWorkouts()
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
@@ -364,5 +418,41 @@ class WodModel extends Model
             }
             return $MemberGym;
 	}
+    
+    function getWorkoutDetails($Id)
+    {   
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+
+        if($this->getGender() == 'M'){
+            $AttributeValue = 'AttributeValueMale';
+        } else {
+            $AttributeValue = 'AttributeValueFemale';
+        }
+        
+        $SQL = 'SELECT WW.recid AS Id,
+                        WW.WorkoutName, 
+                        E.Exercise,
+                        E.recid AS ExerciseId, 
+                        CASE 
+                            WHEN E.Acronym <> ""
+                            THEN E.Acronym
+                            ELSE E.Exercise
+                        END
+                        AS InputFieldName,
+                        A.Attribute, 
+                        WD.'.$AttributeValue.' AS AttributeValue, 
+                        VideoId, 
+                        RoundNo,
+                        (SELECT MAX(RoundNo) FROM WodDetails WHERE WodId = "'.$Id.'") AS TotalRounds
+            FROM WodDetails WD
+            LEFT JOIN WodWorkouts WW ON WW.recid = WD.WodId
+            LEFT JOIN Exercises E ON E.recid = WD.ExerciseId
+            LEFT JOIN Attributes A ON A.recid = WD.AttributeId
+            WHERE WD.WodId = '.$Id.'
+            ORDER BY RoundNo, OrderBy, Attribute';
+            $db->setQuery($SQL);
+        
+            return $db->loadObjectList(); 
+    }
 }
 ?>
