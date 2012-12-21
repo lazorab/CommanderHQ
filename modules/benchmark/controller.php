@@ -45,12 +45,6 @@ class BenchmarkController extends Controller
             $Message = $Model->Log();
 
             return $Message;
-        }
-        
-         function Message_()
-        {
-
-            return "Message";
         }       
         
 	function Output()

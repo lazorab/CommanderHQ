@@ -298,31 +298,28 @@ class BaselineModel extends Model
     
     function getBenchmarkBaseline($Id)
     {
-        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
 
         if($this->getGender() == 'M'){
-            $DescriptionField = 'MaleWorkoutDescription';
             $AttributeValue = 'AttributeValueMale';
-            $InputFields = 'MaleInput';
         } else {
-            $DescriptionField = 'FemaleWorkoutDescription';
             $AttributeValue = 'AttributeValueFemale';
-            $InputFields = 'FemaleInput';
 		}
 		//$SQL = 'SELECT WorkoutName, '.$DescriptionField.' AS WorkoutDescription, '.$InputFields.' AS InputFields, VideoId FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
 		
-		$SQL = 'SELECT BW.WorkoutName, 
-                        E.Exercise, 
+		$SQL = 'SELECT BW.recid AS Id,
+                        BW.WorkoutName, 
+                        E.Exercise,
+                        E.recid AS ExerciseId, 
                         CASE 
                             WHEN E.Acronym <> ""
                             THEN E.Acronym
                             ELSE E.Exercise
                         END
                         AS InputFieldName,
-                        BW.'.$DescriptionField.' AS WorkoutDescription,
-                        E.recid AS ExerciseId, 
                         A.Attribute, 
-                        BD.'.$AttributeValue.' AS AttributeValue,  
+                        BD.'.$AttributeValue.' AS AttributeValue, 
+                        VideoId, 
                         RoundNo,
                         (SELECT MAX(RoundNo) FROM BenchmarkDetails WHERE BenchmarkId = "'.$Id.'") AS TotalRounds
 			FROM BenchmarkDetails BD
@@ -331,8 +328,9 @@ class BaselineModel extends Model
 			LEFT JOIN Attributes A ON A.recid = BD.AttributeId
 			WHERE BD.BenchmarkId = '.$Id.'
 			ORDER BY RoundNo, OrderBy, Attribute';
-                $db->setQuery($SQL);
-                return $db->loadObjectList();    
+            $db->setQuery($SQL);
+		
+            return $db->loadObjectList();    
     }
     
     function getCustomBaseline($Id)
@@ -390,8 +388,6 @@ class BaselineModel extends Model
     
             function getCustomDescription($Id)
         {
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);    
-            $Description = '';
             $SQL = 'SELECT E.Exercise, 
                 E.Acronym, 
                 A.Attribute, 
@@ -405,32 +401,68 @@ class BaselineModel extends Model
                 WHERE CD.CustomWorkoutId = "'.$Id.'"
                 ORDER BY Exercise';
             
+            return $this->MakeDescription($SQL);
+        }
+                function getBenchmarkDescription($Id)
+        {
+            if($this->getGender() == 'M'){
+                $AttributeValue = 'AttributeValueMale';
+            } else {
+                $AttributeValue = 'AttributeValueFemale';
+            }
+             $SQL = 'SELECT E.Exercise, 
+                 E.Acronym, 
+                 A.Attribute, 
+                 '.$AttributeValue.' AS AttributeValue, 
+                     WT.WorkoutType,
+                     (SELECT MAX(RoundNo) FROM BenchmarkDetails WHERE BenchmarkId = "'.$Id.'") AS TotalRounds,
+                     BD.RoundNo
+                FROM BenchmarkDetails BD
+                LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
+                LEFT JOIN Attributes A ON A.recid = BD.AttributeId
+                LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
+                LEFT JOIN WorkoutRoutineTypes WT ON WT.recid = BW.WorkoutTypeId
+                WHERE BD.BenchmarkId = "'.$Id.'"
+                GROUP BY Exercise
+                ORDER BY OrderBy'; 
+             return $this->MakeDescription($SQL);
+        }
+        
+        function MakeDescription($SQL)
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $db->setQuery($SQL);
-            $Rows = $db->loadObjectList();	
+            $Result = $db->loadObjectList();
+            $Description = '';
             $Exercise = '';
-            foreach($Rows AS $Row)
+            $TotalRounds = '';
+            $WorkoutType = '';
+            foreach($Result AS $Row)
             {
                 if($Exercise != $Row->Exercise){
-                    if($Description == '')
-                        $WorkoutType = $Row->WorkoutType;
-                    else
-                        $Description .= ' | ';
-                    if($Row->Exercise != 'Timed')
-                        $Description .= $Row->Exercise;
+                    if($Description == ''){
+                        if($Row->TotalRounds > 1){
+                            $TotalRounds = ''.$Row->TotalRounds.' Rounds | ';
+                        }
+                        if($Row->WorkoutType == 'Timed')
+                            $WorkoutType = 'For Time | ';    
+                        else if($Row->WorkoutType != 'AMRAP Rounds')
+                            $WorkoutType = ''.$Row->WorkoutType.' | ';
+                    }
+
                     $Exercise = $Row->Exercise;
                 }
-                if($Row->Attribute == 'Reps'){
-                    $Description .= ' ';
-                    $Description .= $Row->AttributeValue;
-                    $Description .= ' ';
-                    $Description .= $Row->Attribute;
+                if($Row->Attribute == 'Reps' && $Row->AttributeValue > 0){
+                    $Description .= ''.$Row->AttributeValue.' '.$Row->Exercise.' | ';
+                }else if($Row->Exercise != 'Timed'){
+                        $Description .= ''.$Row->Exercise.' | ';                   
                 }else if($Row->Attribute == 'Weight'){
-                    $Description .= ' ';
-                    $Description .= $Row->AttributeValue;
-                    if($this->getSystemOfMeasure() == 'Metric')
-                        $Description .= 'kg';
-                    else if($this->getSystemOfMeasure() == 'Imperial')
-                        $Description .= 'lbs';
+                    //$Description .= ' ';
+                   // $Description .= $Row->AttributeValue;
+                    //if($this->getSystemOfMeasure() == 'Metric')
+                    //    $Description .= 'kg';
+                    //else if($this->getSystemOfMeasure() == 'Imperial')
+                    //    $Description .= 'lbs';
                 }else if($Row->Attribute == 'Height'){
                     
                 }else if($Row->Attribute == 'Distance'){
@@ -443,43 +475,11 @@ class BaselineModel extends Model
                     
                 }else if($Row->Attribute == 'Calories'){
                     
-                }
+                }else if($Row->Attribute == 'TimeLimit')
+                    $WorkoutType = 'AMRAP In '.$Row->AttributeValue.' | ';                
             }
-            $Description .= $WorkoutType;
-            return $Description;           
+            //$Description .= $TotalRounds.$WorkoutType;
+            return $TotalRounds.$WorkoutType.$Description;           
         }
-}
-
-class BaselineObject
-{
-    var $ExerciseId;
-    var $WorkoutId;
-    var $WorkoutName;
-    var $BaselineType;
-    var $Exercise;
-    var $InputFieldName;   
-    var $WorkoutDescription;
-    var $Attribute;
-    var $AttributeValue;
-    var $RoundNo;
-    var $TotalRounds;
-
-    function __construct($Row)
-    {
-	$this->ExerciseId = isset($Row['ExerciseId']) ? $Row['ExerciseId'] : "";
-        $this->WorkoutId = isset($Row['WorkoutId']) ? $Row['WorkoutId'] : "";
-        $this->WorkoutName = isset($Row['WorkoutName']) ? $Row['WorkoutName'] : "";
-	$this->BaselineType = isset($Row['BaselineType']) ? $Row['BaselineType'] : "";
-        $this->Exercise = isset($Row['Exercise']) ? $Row['Exercise'] : "";
-        if(isset($Row['Acronym']) && $Row['Acronym'] != '')
-            $this->InputFieldName = $Row['Acronym'];
-        else
-            $this->InputFieldName = $this->Exercise;
-        $this->WorkoutDescription = isset($Row['WorkoutDescription']) ? $Row['WorkoutDescription'] : "";
-	$this->Attribute = isset($Row['Attribute']) ? $Row['Attribute'] : "";
-	$this->AttributeValue = isset($Row['AttributeValue']) ? $Row['AttributeValue'] : "";
-        $this->RoundNo = isset($Row['RoundNo']) ? $Row['RoundNo'] : "";
-        $this->TotalRounds = isset($Row['TotalRounds']) ? $Row['TotalRounds'] : "";
-    }
 }
 ?>

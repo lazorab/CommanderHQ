@@ -213,7 +213,8 @@ class BaselineController extends Controller
         $Html.='</div><div class="ui-block-c">';
         $Html.='<input class="buttongroup" type="button" onClick="startstop();" value="Stop"/>';
         $Html.='</div></div>'; 
-        //$Html.='</div>';      
+
+        $Html.='<input type="button" value="Save" onClick="baselinesubmit();"/>';    
 
         return $Html;
     }

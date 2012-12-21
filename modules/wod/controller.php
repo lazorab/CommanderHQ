@@ -1,36 +1,13 @@
 <?php
 class WodController extends Controller
 {
-    var $Origin;
-	var $Workout;
-	var $BMWS;
-	var $Categories;
-	var $Category;
-    var $Height;
-    var $Video;
-    var $Wod;   
-
 	function __construct()
 	{
-        parent::__construct();
-        session_start();
-        if(!isset($_SESSION['UID'])){
-            header('location: index.php?module=login');
-        }
-
-        if(isset($_REQUEST['origin']))
-            $this->Origin = $_REQUEST['origin'];
-            $this->Height = floor(SCREENWIDTH * 0.717); 
-            $Model = new WodModel;
-		if(isset($_REQUEST['wodId']) && $_REQUEST['wodId'] > 0){
-            $this->Workout = $Model->getWorkoutDetails($_REQUEST['wodId']);
-            $this->Video = $this->Workout[0]->VideoId;
-            $this->Wod = $this->Workout[0];
-        }
-        else if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] > 0){
-            $this->Workout = $Model->getCustomDetails($_REQUEST['WorkoutId']);
-            $this->Wod = $this->Workout[0];
-        }
+            parent::__construct();
+            session_start();
+            if(!isset($_SESSION['UID'])){
+                header('location: index.php?module=login');
+            }
 	}
 	
 	function TopSelection()
@@ -66,206 +43,35 @@ class WodController extends Controller
             $WOD = $Model->getWOD();
             return $WOD;
 	}
+        
+        function Message()
+        {
+            $Model = new WodModel;
+            $Message = $Model->Log();
+
+            return $Message;
+        }
 	
-    function Message()
-    {
-        $Model = new WodModel;
-        $Message = $Model->Log();
-
-        return $Message;
-    }
-
 	function Output()
 	{
-        if($_REQUEST['wod'] == 'display'){//my gym
-            //check for registered gym
-            $Gym = $this->MemberGym();
-            if(!$Gym){//must register gym
-                $WODdata = 'Must First Register Gym!';
+            if($_REQUEST['wod'] == 'display'){//my gym
+                //check for registered gym
+                $Gym = $this->MemberGym();
+                if(!$Gym){//must register gym
+                    $WODdata = 'Must First Register Gym!';
+		}else{
+                    $WODdata = $this->WorkoutDetails();
+		}	
             }else{
-                error_log("#DEBUG_CHRIS: Start...");
-
-                $html = '';
-
-                $Clock = '';
-                $Bhtml = '';
-                $Chtml = '';
-                $html.='<form name="form" id="benchmarkform" action="index.php">
-                        <input type="hidden" name="origin" value="'.$this->Origin.'"/>
-                        <input type="hidden" name="benchmarkId" value="'.$_REQUEST['benchmarkId'].'"/>
-                        <input type="hidden" name="WorkoutId" value="'.$_REQUEST['WorkoutId'].'"/>
-                        <input type="hidden" name="wodtype" value="3"/>
-                        <input type="hidden" name="form" value="submitted"/>';       
-                $html.='<input type="checkbox" name="baseline" value="yes" data-role="none"/>';
-                $html.='Make this my baseline';
-                $html.='<p>'.$this->Workout[0]->Notes.'</p>';
-                $html.='<div class="ui-grid-b">';
-                $ThisRound = '';
-                $ThisExercise = '';
-                
-                error_log("#DEBUG_CHRIS: Wokrout debug: ".  print_r($this->Workout, true ));
-                error_log("#DEBUG_CHRIS: Type: " . gettype($this->Workout));
-                foreach($this->Workout as $Benchmark){
-                    if($Benchmark->Attribute == 'TimeToComplete'){
-                        $Clock = $this->getStopWatch();
-                    }
-                    else if($Benchmark->Attribute == 'CountDown'){
-                        $Clock = $this->getCountDown($Benchmark->AttributeValue);
-                    }
-                    else{
-                        
-                        if($Benchmark->TotalRounds > 1 && $Benchmark->RoundNo > 0 && $ThisRound != $Benchmark->RoundNo){
-                        
-                            if($Chtml != '' && $Bhtml == ''){
-                                $html.='<div class="ui-block-b"></div>'.$Chtml.'';
-                                $Chtml = '';
-                                $Bhtml = '';
-                            }
-                            if($Chtml == '' && $Bhtml != ''){
-                                $html.=''.$Bhtml.'<div class="ui-block-c"></div>';
-                                $Chtml = '';
-                                $Bhtml = '';
-                            }
-
-                            $html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
-                            $html.='<div class="ui-block-a" style="padding:2px 0 2px 0">Round '.$Benchmark->RoundNo.'</div><div class="ui-block-b" style="padding:2px 0 2px 0"></div><div class="ui-block-c" style="padding:2px 0 2px 0"></div>';
-                            $html.='<div class="ui-block-a"><input class="textinput" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Benchmark->InputFieldName.'"/></div>';
-                        }
-                        else if($ThisExercise != $Benchmark->Exercise){
-                                        
-                            if(isset($_REQUEST['Rounds']))
-                                $RoundNo = $_REQUEST['Rounds'];
-                            else
-                                $RoundNo = $Benchmark->RoundNo;
-
-                            if($Chtml != '' && $Bhtml == ''){
-                                $html.='<div class="ui-block-b"></div>'.$Chtml.'';
-                                $Chtml = '';
-                                $Bhtml = '';
-                            }
-                            if($Chtml == '' && $Bhtml != ''){
-                                $html.=''.$Bhtml.'<div class="ui-block-c"></div>';
-                                $Chtml = '';
-                                $Bhtml = '';
-                            }
-                            
-                            if($Benchmark->Exercise == 'Total Rounds'){
-                                $Exercise = '<input class="buttongroup" data-inline="true" type="button" onclick="addRound();" value="+ Round"/>';
-                            }else{
-                                $Exercise = '<input class="textinput" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Benchmark->InputFieldName.'"/>';
-                            }
-                            
-                            $html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
-                            $html.='<div class="ui-block-a">'.$Exercise.'</div>';
-                        }
-                    }	
-
-                    if($Benchmark->Attribute == 'Height' || $Benchmark->Attribute == 'Distance' || $Benchmark->Attribute == 'Weight'){
-                        $AttributeValue = '';	
-                        if($Benchmark->Attribute == 'Distance'){
-                            $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#6f747a"';
-                            if($this->SystemOfMeasure() != 'Metric'){
-                                $Unit = '<span style="float:left">m</span>';
-                                $AttributeValue = round($Benchmark->AttributeValue * 1.09, 2);
-                            }else{
-                                $Unit = '<span style="float:left">km</span>';
-                                $AttributeValue = $Benchmark->AttributeValue;
-                            }
-                        }		
-                        else if($Benchmark->Attribute == 'Weight'){
-                            $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#3f2b44"';
-                            if($this->SystemOfMeasure() != 'Metric'){
-                                $AttributeValue = round($Benchmark->AttributeValue * 2.20, 2);
-                                $Unit = '<span style="float:left">lbs</span>';
-                            }else{
-                                $Unit = '<span style="float:left">kg</span>';
-                                $AttributeValue = $Benchmark->AttributeValue;
-                            }
-                        }
-                        else if($Benchmark->Attribute == 'Height'){
-                            $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#66486e"';
-                            if($this->SystemOfMeasure() != 'Metric'){
-                                $AttributeValue = round($Benchmark->AttributeValue * 0.39, 2);
-                                $Unit = '<span style="float:left">in</span>';
-                            }else{
-                                $Unit = '<span style="float:left">cm</span>';
-                                $AttributeValue = $Benchmark->AttributeValue;
-                            }
-                        }
-
-                        $Bhtml.='<div class="ui-block-b">';
-                        $Bhtml.='<input class="textinput" '.$Style.' type="number" data-inline="true" name="'.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" value="'.$AttributeValue.'"/>'.$Unit.'';
-                        $Bhtml.='</div>';		
-                        if($Chtml != ''){
-                            $html.=''.$Bhtml.''.$Chtml.'';
-                            $Chtml = '';
-                            $Bhtml = '';
-                        }
-                    }
-                    else if($Benchmark->Attribute == 'Calories' || $Benchmark->Attribute == 'Reps' || $Benchmark->Attribute == 'Rounds'){
-                        $Placeholder = '';
-                        if($Benchmark->Attribute == 'Calories'){
-                            $Style='style="width:50%"';
-                            $Placeholder = 'placeholder="Calories"';
-                        }
-
-                        $InputAttributes = 'type="number"';
-                        $InputName = ''.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'';
-                        $Value = $Benchmark->AttributeValue;
-                        if($Benchmark->Attribute == 'Rounds'){
-                            $Style='style="width:50%"';
-                            $InputAttributes .= ' id="addround"';
-                            $InputName = 'Rounds';
-                            $Value = $_REQUEST['Rounds'] + 1 ;
-                        }
-                        if($Benchmark->Attribute == 'Reps'){
-                            $Style='style="float:left;width:50%;color:black;font-weight:bold;background-color:#ccff66"';
-                        }
-                        $Chtml.='<div class="ui-block-c">';
-                        $Chtml.='<input class="textinput" '.$InputAttributes.' '.$Style.' name="'.$InputName.'" '.$Placeholder.' value="'.$Value.'"/>';
-                        $Chtml.='</div>';
-                        if($Bhtml != ''){
-                            $html.=''.$Bhtml.''.$Chtml.'';
-                            $Bhtml = '';
-                            $Chtml = '';
-                        }
-                    }
-                    
-                    
-                    $ThisRound = $Benchmark->RoundNo;
-                    $ThisExercise = $Benchmark->Exercise;
-                }
-                if($Chtml != '' && $Bhtml == ''){
-                    $html.='<div class="ui-block-b"></div>'.$Chtml.'';
-                    $Chtml = '';
-                    $Bhtml = '';
-                }
-                if($Chtml == '' && $Bhtml != ''){
-                    $html.=''.$Bhtml.'<div class="ui-block-c"></div>';
-                    $Chtml = '';
-                    $Bhtml = '';
-                }	
-                $html.='</div>';
-                $html.=$Clock;
-                $html.='<input class="buttongroup" type="button" onClick="benchmarksubmit();" value="Save"/>';
-                $html.='</form><br/>';		
-
-            }	
-
-            $WODdata = $html;
-
-        }else{
-            $WODdata='<div style="padding:2%">
+                $WODdata='<div style="padding:2%">
                 <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li><a style="font-size:large;margin-top:10px" href="#" onclick="OpenThisPage(\'?module=baseline&origin=wod&baseline=Baseline\')"><div style="height:26px;width:1px;float:left"></div>Baseline</a></li>
                 <li><a style="font-size:large;margin-top:10px" href="#" onclick="OpenThisPage(\'?module=benchmark&origin=wod\')"><div style="height:26px;width:1px;float:left"></div>Benchmarks</a></li>
                 <li><a style="font-size:large;margin-top:10px" href="#" onclick="OpenThisPage(\'?module=custom&origin=wod\')"><div style="height:26px;width:1px;float:left"></div>Custom</a></li>
                 <li><a style="font-size:large;margin-top:10px" href="#" onclick="getWOD();"><div style="height:26px;width:1px;float:left"></div>My Gym</a></li>                
                 </ul></div><br/>';              
-
-        }	
-
-        return $WODdata;
+            }	
+            return $WODdata;
 	}
     
 	function MemberGym()
@@ -303,8 +109,8 @@ class WodController extends Controller
 	$Bhtml = '';
 	$Chtml = '';
 	$html.='<form name="form" id="wodform" action="index.php">
-            <input type="hidden" name="wodtype" value="2"/>
-            <input type="hidden" name="form" value="submitted"/>';       
+            <input type="hidden" name="form" value="submitted"/>  
+            <input type="hidden" name="WorkoutId" value="'.$WodDetails[0]->WodId.'"/>'; 
         $html.='<input type="checkbox" name="baseline" value="yes" data-role="none"/>';
         $html.='Make this my baseline';
         $html.='<p>'.$WodDetails[0]->Notes.'</p>';
@@ -369,10 +175,10 @@ class WodController extends Controller
 				if($Detail->Attribute == 'Distance'){
                                     $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#6f747a"';
 					if($this->SystemOfMeasure() != 'Metric'){
-						$Unit = '<span style="float:left">m</span>';
+						$Unit = '<span style="float:left">yd</span>';
                                                 $AttributeValue = round($Detail->AttributeValue * 1.09, 2);
                                         }else{
-						$Unit = '<span style="float:left">km</span>';
+						$Unit = '<span style="float:left">m</span>';
                                                 $AttributeValue = $Detail->AttributeValue;
                                         }
 				}		
@@ -487,12 +293,12 @@ class WodController extends Controller
         $ExerciseId = 63;
         $TimeToComplete = '00:00:0';
         $StartStopButton = 'Start';
-        if(isset($_REQUEST[''.$ExerciseId.'___TimeToComplete'])){
-            $TimeToComplete = $_REQUEST[''.$ExerciseId.'___TimeToComplete'];
+        if(isset($_REQUEST['0___63___TimeToComplete'])){
+            $TimeToComplete = $_REQUEST['0___63___TimeToComplete'];
             if($TimeToComplete != '00:00:0')
                 $StartStopButton = 'Stop';
         }
-	$Html ='<br/><input type="text" id="clock" name="'.$ExerciseId.'___TimeToComplete[]" value="'.$TimeToComplete.'" readonly/>';
+	$Html ='<br/><input type="text" id="clock" name="0___63___TimeToComplete" value="'.$TimeToComplete.'" readonly/>';
 	$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="'.$StartStopButton.'"/>';
 	$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
         $Html.='<input class="buttongroup" type="button" onclick="wodsubmit();" value="Save"/>';
