@@ -364,7 +364,7 @@
 	background-image:         linear-gradient( #ffffff /*{c-bup-background-start}*/, #f1f1f1 /*{c-bup-background-end}*/);
 }
 .ui-btn-up-c a.ui-link-inherit {
-	color: 					#c83006 /*{c-bup-color}*/;
+	color: 					#333 /*{c-bup-color}*/;
 }
 .ui-btn-hover-c {
 	border: 1px solid 		#bbb /*{c-bhover-border}*/;
@@ -1666,7 +1666,7 @@ div.ui-mobile-viewport { overflow-x: hidden; }
 /* grid solo: 100 - single item fallback */
 .ui-grid-solo .ui-block-a { width: 100%; float: none; }
 /* grid a: 50/50 */
-.ui-grid-a .ui-block-a, .ui-grid-a .ui-block-b { margin:12px 0 0 2px; width: 49%; }
+.ui-grid-a .ui-block-a, .ui-grid-a .ui-block-b { margin:12px 0 0 3px; width: 49%; }
 .ui-grid-a .ui-block-a { clear: left; }
 /* grid b: 33/33/33 */
 .ui-grid-b .ui-block-a, .ui-grid-b .ui-block-b, .ui-grid-b .ui-block-c { width: 25%; }

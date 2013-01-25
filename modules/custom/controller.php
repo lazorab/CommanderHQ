@@ -70,6 +70,8 @@ class CustomController extends Controller
         <input type="hidden" name="Round1Counter" id="Round1Counter" value="0"/>
         <input type="hidden" name="Rounds" id="addround" value="1"/>';
         
+        $Html.='<textarea name="descr" ></textarea>';
+        
         $Html .= '<div class="ui-grid-b">';
         $Html .= '<div id="Round1Label"></div>';
         $Html .= '<div id="new_exercise">'.$this->ChosenExercises().'</div>';
@@ -78,12 +80,6 @@ class CustomController extends Controller
         $Html .= '<div class="ui-grid-b">';
         $Html .= '<div id="add_exercise">'.$this->AddExercise().'</div>';
         $Html .= '</div>';       
-        
-        $Html .= '<br/>';
-        
-        $Html.='<textarea name="descr" rows="5" cols="5"></textarea>';
-        
-        $Html .= '<br/>';
 
         $Html.='<div id="timerContainer">';   
         $Html.='<input type="text" id="clock" name="0___63___TimeToComplete" value="00:00:0" readonly/>';
@@ -99,31 +95,33 @@ class CustomController extends Controller
         $Html.='<input type="radio" name="radio-choice-a" checked="checked" onClick="clockSelect(\'stopwatch\');" id="radio-choice-b" value="stopwatch"/>';
         $Html.='<label for="radio-choice-b">Stopwatch</label>';
         $Html.='</fieldset>';
-        $Html.='</div>';        
+        $Html.='</div>'; 
+        
+        $Html .= '<br/>';
         
         $Html.='<div class="ui-grid-b">';
         $Html.='<div class="ui-block-a">';
         $Html.='<input id="resetbutton" class="buttongroup" onClick="reset();" type="button" value="Reset"/>';
         $Html.='</div><div class="ui-block-b">';
-        $Html.='<input class="buttongroup" type="button" onClick="clockControl();" value="Start"/>';
+        $Html.='<input class="buttongroup" type="button" onClick="Start();" value="Start"/>';
         $Html.='</div><div class="ui-block-c">';
-        $Html.='<input class="buttongroup" type="button" onClick="clockControl();" value="Stop"/>';
+        $Html.='<input class="buttongroup" type="button" onClick="Stop();" value="Stop"/>';
         $Html.='</div></div>';  
 
         $Html.='</div>';
 
         $Html .= '<div class="ui-grid-a">';
-        $Html .= '<div id="exercises" style="padding-top:2.5%" class="ui-block-a">';
+        $Html .= '<div class="ui-block-a selectParent" id="exercises">';
         $Html .= $this->getExercises();
         $Html.='</div><div class="ui-block-b">';
-        $Html.='<input type="button" onClick="addRound();" value="+ Round"/>';
+        $Html.='<input data-role="none" class="buttongroup addARound" type="button" onClick="addRound();" value="Add a Round"/>';
         $Html.='</div></div>';  
         
         $Html.='<div class="ui-grid-a">';
         $Html.='<div class="ui-block-a">';
-        $Html.='<input type="button" onClick="clockSelect(\'select\');" value="Time Event"/>';
+        $Html.='<input data-role="none" class="buttongroup timeEvent" type="button" onClick="clockSelect(\'select\');" value="Time Event"/>';
         $Html.='</div><div class="ui-block-b">';
-        $Html.='<input type="button" value="Save" onClick="customsubmit();"/>';
+        $Html.='<input data-role="none" class="buttongroup save" type="button" value="Save" onClick="customsubmit();"/>';
         $Html.='</div></div>';   
         
 	if($_REQUEST['form'] == 'submitted'){
@@ -135,7 +133,7 @@ class CustomController extends Controller
         $Html .= '</div>';
 	}
         
-        $Html.='</form><br/>';
+        $Html.='</form><div class="clear"></div><br/>';
      	
 	return $Html;
     }
@@ -145,8 +143,8 @@ class CustomController extends Controller
         $Html='';
         $Model = new CustomModel;
         $Exercises = $Model->getExercises();
-        $Html .= '<select class="select" name="exercise" onChange="SelectionControl(this.value)">
-         <option value="none">+ Activity</option>';
+        $Html .= '<select class="select buttongroup addActivity" data-role="none" name="exercise" onChange="SelectionControl(this.value)">
+         <option value="none">Add Activity</option>';
 	foreach($Exercises AS $Exercise){
             $Html .= '<option value="'.$Exercise->ActivityName.'">'.$Exercise->ActivityName.'</option>';
 	}

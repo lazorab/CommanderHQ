@@ -83,6 +83,22 @@ class BenchmarkModel extends Model
         
         function getBenchmarkDescription($Id)
         {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            if($this->getGender() == 'M'){
+                $DescriptionField = 'DescriptionMale';
+            } else {
+                $DescriptionField = 'DescriptionFemale';
+            }
+             $SQL = 'SELECT '.$DescriptionField.' AS Description
+                     FROM BenchmarkWorkouts BW
+                     WHERE BW.recid = "'.$Id.'"'; 
+            $db->setQuery($SQL);
+		
+            return $db->loadResult();
+        }       
+        
+        function _getBenchmarkDescription($Id)
+        {
             if($this->getGender() == 'M'){
                 $AttributeValue = 'AttributeValueMale';
             } else {
@@ -352,30 +368,41 @@ class BenchmarkModel extends Model
             {
                 if(isset($_REQUEST['Rounds']))
                     $RoundNo = $_REQUEST['Rounds'];
-                else
-                    $RoundNo = $ExplodedKey[0];
+                else if(isset($_REQUEST['RoundNo']))
+                    $RoundNo = $_REQUEST['RoundNo'];
+                
+                $ExerciseRoundNo = $ExplodedKey[0];
                 $ExerciseId = $ExplodedKey[1];
                 $ExerciseName = $this->getExerciseName($ExerciseId);
-                $Attribute = $ExplodedKey[2];
+                $Attribute = $ExplodedKey[2];               
+                if($ExerciseRoundNo == $RoundNo || $ExerciseName == 'Timed'){
+
                 if($val == '00:00:0')
                     $this->Message .= 'Invalid value for Stopwatch!';
                 else if($val == '' || $val == '0' || $val == $Attribute){
                     $this->Message .= 'Invalid value for '.$ExerciseName.' '.$Attribute.'!';
                 }else{
-                $SQL='SELECT recid AS Id, (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS AttributeId, "'.$val.'" AS AttributeValue, "'.$RoundNo.'" AS RoundNo 
-                FROM Exercises
-                WHERE recid = "'.$ExerciseId.'"';
+                $SQL='SELECT recid AS Id, 
+                    (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS AttributeId, 
+                    "'.$val.'" AS AttributeValue, 
+                    "'.$RoundNo.'" AS RoundNo 
+                    FROM Exercises
+                    WHERE recid = "'.$ExerciseId.'"';
                 $db->setQuery($SQL);
 		
                 $Row = $db->loadObject();
                 array_push($Activities, $Row);
+                }
                 }
             }
             else{
                  if($val == $key){
                    $this->Message .= 'Invalid value for '.$key.'!';
                 }else{
-                $SQL = 'SELECT "0" AS Id, (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS AttributeId, "'.$val.'" AS AttributeValue, "'.$RoundNo.'" AS RoundNo 
+                $SQL = 'SELECT "0" AS Id, 
+                    (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS AttributeId, 
+                    "'.$val.'" AS AttributeValue, 
+                    "'.$RoundNo.'" AS RoundNo 
                     FROM Attributes WHERE Attribute = "'.$key.'"';
                 $db->setQuery($SQL);
 		

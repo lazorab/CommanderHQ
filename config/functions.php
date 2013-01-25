@@ -1,5 +1,5 @@
 <?php
-require_once('/home/bemobile/public_html/framework/general/databasemanager.class.php');
+require_once('/Sites/framework/general/databasemanager.class.php');
 require_once('dbconfig.php');
 
 class User {

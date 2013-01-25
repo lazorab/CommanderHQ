@@ -24,14 +24,24 @@ $apiConfig = array(
     // The application_name is included in the User-Agent HTTP header.
     'application_name' => 'Commander HQ',
 
+//OAuth Consumer Key: 	www.commanderhq.net
+//OAuth Consumer Secret: 	WLNDnmUo9KNqQBjPPkfX5fC8    
+    
     // OAuth2 Settings, you can get these keys at https://code.google.com/apis/console
-    'oauth2_client_id' => '101581614086.apps.googleusercontent.com',
-    'oauth2_client_secret' => '6FSB7DJu1C0TzQxA7yAmI9TX',
-    'oauth2_redirect_uri' => 'http://crossfit.be-mobile.co.za/gplus_login.php',
-
+    // crossfit.be-mobile.co.za
+    //'oauth2_client_id' => '101581614086.apps.googleusercontent.com',
+    //'oauth2_client_secret' => '6FSB7DJu1C0TzQxA7yAmI9TX',
+    //'oauth2_redirect_uri' => 'http://crossfit.be-mobile.co.za/gplus_login.php',
+    //www.commanderhq.net
+    'oauth2_client_id' => '587935088194.apps.googleusercontent.com',
+    'oauth2_client_secret' => 'MHEbclMboMnD6QFLTTZGXGOc',
+    'oauth2_redirect_uri' => 'http://www.commanderhq.net/gplus_login.php',
+    
     // The developer key, you get this at https://code.google.com/apis/console
-    'developer_key' => 'AIzaSyBS690cMlOcTFvFMlw3N1MtHQWtdelg5Uo',
-  
+    // crossfit.be-mobile.co.za
+    //'developer_key' => 'AIzaSyBS690cMlOcTFvFMlw3N1MtHQWtdelg5Uo',
+    //www.commanderhq.net
+    'developer_key' => 'AIzaSyCnkY_-N70-68zptSgOoPap8BwSZfhygtM',
     // Site name to show in the Google's OAuth 1 authentication screen.
     'site_name' => 'Commander HQ',
 

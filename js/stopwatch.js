@@ -160,8 +160,22 @@ var javascript_countdown = function () {
 	};
 }();
 
+function Start()
+{
+		var startdate = new Date();
+		var starttime = startdate.getTime();
 
-		
+			flagclock = 1;
+			counter(starttime);  
+}
+
+function Stop()
+{
+			flagclock = 0;
+			flagstop = 1;
+			splitdate = '';
+}
+
 	function startstop()
 		{
 		var startstop = document.getElementById('startstopbutton');
@@ -180,8 +194,6 @@ var javascript_countdown = function () {
 			flagstop = 1;
 			splitdate = '';
 			}
-                    $('.buttongroup').button();
-                    $('.buttongroup').button('refresh');
 		}
 		
 	function counter(starttime)
@@ -243,14 +255,14 @@ var javascript_countdown = function () {
 			}
 		return min + ':' + sec + ':' + ds;
 		}
-		
-	function resetclock()
+                
+ 	function resetclock()
 		{
 		flagstop = 0;
 		stoptime = 0;
 		splitdate = '';
 		window.clearTimeout(refresh);
-		//output.value = '';
+		output.value = '';
 		splitcounter = 0;
 		if(flagclock == 1)
 			{
@@ -262,7 +274,7 @@ var javascript_countdown = function () {
 			{
 			clock.value = "00:00:0";
 			}
-		}
+		}               
 		
 	function splittime()
 		{

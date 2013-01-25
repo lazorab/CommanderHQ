@@ -3,19 +3,23 @@ $Device = new DeviceManager;
 if($Device->IsGoogleAndroidDevice()) { ?>
         <script src="/js/overthrow.js"></script>
 <?php } ?>
+     
 <script type="text/javascript">
+
 $(document).ready(function() {
 	//Trigger video
 	$("#menuvideo").bind('click', function(){
 		//Set vars
-            var $VideoTrigger = $('#menuvideo');
-            var $Video = $('#video');
+ 
             var codes = '<div class="ui-grid-c">';
             codes += '<div class="ui-block-a"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#3f2b44" value="Weight" readonly="readonly"/></div>';
             codes += '<div class="ui-block-b"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#66486e" value="Height" readonly="readonly"/></div>';
             codes += '<div class="ui-block-c"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#6f747a" value="Distance" readonly="readonly"/></div>';
             codes += '<div class="ui-block-d"><input type="text" data-role="none" style="width:80%;color:black;font-weight:bold;background-color:#ccff66" value="Reps" readonly="readonly"/></div>';
             codes += '</div>';
+            
+            var $VideoTrigger = $('#menuvideo');
+            var $Video = $('#video');
 		//If visible hide else show
 		if($Video.hasClass('active')) {
                     
@@ -40,17 +44,21 @@ $(document).ready(function() {
             slideSpeed: 500,
             effect: 'slide'
         });
+       
     });
     
 function benchmarksubmit()
 {
+    var currentround = document.getElementById('addround').value;
+    $("input:visible[id*='"+currentround+"___146___TimeLimit']").val($('#clock').val());
     $.getJSON('ajax.php?module=benchmark&action=validateform', $("#benchmarkform").serialize(),messagedisplay);
 }
 
 function messagedisplay(message)
 {
+    var currentround = document.getElementById('addround').value
     if(message == 'Success'){
-        var r=confirm("Successfully Saved!\nWould you like to provide us with feedback?");
+        var r=confirm("Round "+currentround+" Successfully Saved!\nWould you like to provide us with feedback?");
         if (r==true)
         {
             window.location = 'index.php?module=contact';
@@ -59,6 +67,7 @@ function messagedisplay(message)
         {
             resetclock();
         }
+        document.getElementById('addround').value++;
     }  
     else
         alert(message);
@@ -72,11 +81,15 @@ function getBenchmarks(catid)
 function getDetails(id,origin)
 {
     $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=benchmark\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
-    $('#menuvideo').html('<img id="videoselect" alt="Video" <?php echo $RENDER->NewImage('video_specific.png');?> src="<?php echo IMAGE_RENDER_PATH;?>video_specific.png"/>');
+    
+    
 
     $.ajax({url:'ajax.php?module=benchmark',data:{benchmarkId:id,origin:origin},dataType:"html",success:display});  
     $.ajax({url:'ajax.php?module=benchmark',data:{video:id,benchmarkId:id},dataType:"html",success:videodisplay}); 
     $.ajax({url:'ajax.php?module=benchmark',data:{topselection:id,benchmarkId:id},dataType:"html",success:topselectiondisplay});
+    
+    //var newround = document.getElementById('addround').value;
+    //$('[id^=1_]').attr('disabled', false);   
 }
 
 function getCustomDetails(id,origin)
@@ -100,7 +113,10 @@ function topselectiondisplay(data)
 
 function videodisplay(data)
 {
-    $('#video').html(data);
+    if(data != ''){
+        $('#video').html(data);
+        $('#menuvideo').html('<img id="videoselect" alt="Video" <?php echo $RENDER->NewImage('video_specific.png');?> src="<?php echo IMAGE_RENDER_PATH;?>video_specific.png"/>');
+    }
 }
 
 function display(data)

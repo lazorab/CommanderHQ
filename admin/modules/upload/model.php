@@ -103,6 +103,8 @@ class UploadModel extends Model
                 $MWeightVal = $_REQUEST[''.$RoutineNo.'_'.$ExerciseId.'_MWeight'];
                 $RepsVal = $_REQUEST[''.$RoutineNo.'_'.$ExerciseId.'_Reps'];
                 $TimingTypeId = $_REQUEST[''.$RoutineNo.'_TimingType'];
+                if($TimingTypeId == '' || $TimingTypeId == 0)
+                    $this->Message = 'Invalid Timing Type!';
                 $TimingAttribute = 'TimeToComplete';
                 $TimingVal = $_REQUEST[''.$RoutineNo.'_Timing'];
                 if($DistanceVal != ''){

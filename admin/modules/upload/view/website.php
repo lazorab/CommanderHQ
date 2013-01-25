@@ -1,4 +1,10 @@
+
 <script type='text/javascript'>
+
+	$(function(){
+		$('#tabs').tabs();
+
+});
 
 function SelectTimingType(type){
     var ThisRoutineNumber = document.getElementById('RoutineCounter').value;
@@ -401,19 +407,22 @@ function addRound()
 }
 </script>
 
+<div id="tabs">
+    <ul>
+        <li><a href="#tabs-1">Well rounded WOD</a></li>
+        <li><a href="#tabs-2">Advanced WOD</a></li>
+    </ul>
+    <div id="tabs-1"> 
 
-<br />
-<div class="actionbutton"><a href="#" onClick="addNewActivity();"><img alt="Add Activity" src="images/AddActivity.png"/></a></div>
-<div class="actionbutton"><a href="#" onClick="addTiming();"><img alt="Add Timing" src="images/AddTiming.png"/></a></div>
-<div class="actionbutton"><a href="#" onClick="addComments();"><img alt="Add Comments" src="images/AddComments.png"/></a></div>
-<div class="clear"></div>
-<br />
-<form action="index.php" id="gymform" name="form">
+<div id="add_exercise"></div>
+
+        <form action="index.php" id="wodform" name="form">
 <input type="hidden" name="form" value="submitted"/>
 <input type="hidden" name="rowcount" id="rowcounter" value="0"/>
 <input type="hidden" name="RoutineCounter" id="RoutineCounter" value="1"/>
-<div id="add_exercise"></div>
-<p>WOD Date:<input class="inputbox-required" type="text" name="WodDate" id="WodDate" maxlength="25" placeholder="Use Calendar" value=""/>
+
+
+<p>WOD Name:<input name="wodname" type="text"/> WOD Date:<input class="inputbox-required" type="text" name="WodDate" id="WodDate" maxlength="25" placeholder="Use Calendar" value=""/>
 <img src="images/calendar-blue.gif" alt="calendar" id="Start_trigger"/></p>
 <script type="text/javascript">
       Calendar.setup({
@@ -422,19 +431,31 @@ function addRound()
         onSelect   : function() { this.hide() },
         dateFormat : "%Y-%m-%d"
       });
-</script> 
-<div id="AjaxOutput">  
-    <?php echo $Display->Output();?>
-</div>
-<div style="width:125px;float:right">
-<input type="button" onClick="Publish();" name="" value="Publish"/>
-<input type="button" onClick="AddRoutine()" name="" value="+"/>
-</div>
-<div class="clear"></div>
-<br/>
+</script>
+        <?php echo $Display->Output();?>
+        </form><br/>
+    </div>    
+    <div id="tabs-2"> 
+        
+        <div id="add_exercise"></div>
+        
+        <form action="index.php" id="advancedform" name="form">
+<input type="hidden" name="form" value="submitted"/>
+<input type="hidden" name="rowcount" id="rowcounter" value="0"/>
+<input type="hidden" name="RoutineCounter" id="RoutineCounter" value="1"/>
 
-<div class="ui-grid-b">
-<div id="display_benchmark"></div>
-<div id="new_routine"></div>
-</div>
-</form><br/>
+<p>WOD Name:<input name="wodname" type="text"/> WOD Date:<input class="inputbox-required" type="text" name="WodDate" id="WodDate" maxlength="25" placeholder="Use Calendar" value=""/>
+<img src="images/calendar-blue.gif" alt="calendar" id="Start_trigger"/></p>
+<script type="text/javascript">
+      Calendar.setup({
+        inputField : "WodDate",
+        trigger    : "Start_trigger",
+        onSelect   : function() { this.hide() },
+        dateFormat : "%Y-%m-%d"
+      });
+</script>
+        <?php echo $Display->Output();?>
+        </form><br/>
+    </div>
+</div>    
+

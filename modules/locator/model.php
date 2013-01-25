@@ -58,10 +58,10 @@ class LocatorModel extends Model {
             Region,
             TelNo
             FROM Affiliates
-            WHERE GymName LIKE "'.$_REQUEST['keyword'].'%"
-            OR City LIKE "'.$_REQUEST['keyword'].'%"
-            OR Region LIKE "'.$_REQUEST['keyword'].'%"
-            ORDER BY GymName';
+            WHERE GymName LIKE "%'.$_REQUEST['keyword'].'%"
+            OR City LIKE "%'.$_REQUEST['keyword'].'%"
+            OR Region LIKE "%'.$_REQUEST['keyword'].'%"
+            ORDER BY Region, City, GymName';
         $db->setQuery($SQL); 
         
         return $db->loadObjectList();

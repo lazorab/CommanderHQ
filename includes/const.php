@@ -10,15 +10,11 @@ define('FORCEMOBILE',true);
 define('HOST','Remote');
 
 if(HOST == 'Remote'){
-//define("FRAMEWORK_ROOT", $_SERVER['DOCUMENT_ROOT']);
-//define("THIS_ROOT", ''.$_SERVER['DOCUMENT_ROOT'].'/crossfit');
   define('FRAMEWORK_URL','http://framework.be-mobile.co.za'); 
-  define('FRAMEWORK_PATH','/home/bemobile/public_html/framework'); 
-  define('GLOBAL_LIBRARY','/home/bemobile/public_html/global/library/2_0/'); 
+  define('FRAMEWORK_PATH','/Sites/framework'); 
 }else{
   define('FRAMEWORK_URL','http://localhost/framework/new');  
   define('FRAMEWORK_PATH',''.$_SERVER['DOCUMENT_ROOT'].'/be-mobile/framework/new'); 
-  define('GLOBAL_LIBRARY','/home/bemobile/public_html/framework/'); 
 }
 
 define('ERROR_REPORT_SITE_NAME', 'Commander HQ');
@@ -26,12 +22,12 @@ define('ERROR_REPORT_EMAIL_ADDRESS', 'support@be-mobile.co.za');
 
 if (QA) {
     define('COMMANDER_EMAIL', 'devguru@be-mobile.co.za');
-    define("THIS_DOMAIN", "crossfit.be-mobile.co.za");
-    define("THIS_ADDRESS", "http://crossfit.be-mobile.co.za/");
+    define("THIS_DOMAIN", "www.commanderhq.net");
+    define("THIS_ADDRESS", "http://www.commanderhq.net/");
 } else {
     define('COMMANDER_EMAIL', 'devguru@be-mobile.co.za');
-    define("THIS_DOMAIN", "crossfit.be-mobile.co.za");
-    define("THIS_ADDRESS", "http://crossfit.be-mobile.co.za/");
+    define("THIS_DOMAIN", "www.commanderhq.net");
+    define("THIS_ADDRESS", "http://www.commanderhq.net/");
 }
 
 /* Database Settings */

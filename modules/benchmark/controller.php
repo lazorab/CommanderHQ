@@ -34,7 +34,9 @@ class BenchmarkController extends Controller
         
         function Video()
         {
-            $Html = '<iframe marginwidth="0px" marginheight="0px" width="'.SCREENWIDTH.'" height="'.$this->Height.'" src="http://www.youtube.com/embed/'.$this->Video.'" frameborder="0">';
+            $Html = '';
+            if($this->Video != '')
+                $Html = '<iframe marginwidth="0px" marginheight="0px" width="'.SCREENWIDTH.'" height="'.$this->Height.'" src="http://www.youtube.com/embed/'.$this->Video.'" frameborder="0">';
           
             return $Html;
         }
@@ -63,24 +65,19 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutId']))
             <input type="hidden" name="benchmarkId" value="'.$_REQUEST['benchmarkId'].'"/>
             <input type="hidden" name="WorkoutId" value="'.$_REQUEST['WorkoutId'].'"/>
             <input type="hidden" name="wodtype" value="3"/>
+            <input type="hidden" id="addround" name="RoundNo" value="1"/>
             <input type="hidden" name="form" value="submitted"/>';       
         $html.='<input type="checkbox" name="baseline" value="yes" data-role="none"/>';
         $html.='Make this my baseline';
         $html.='<p>'.$this->Workout[0]->Notes.'</p>';
         $html.='<div class="ui-grid-b">';
-        $ThisRound = '';
-		$ThisExercise = '';
+        $ThisRound = 0;
+	$ThisExercise = '';
+        //var_dump($this->Workout);
 	foreach($this->Workout as $Benchmark){
-		if($Benchmark->Attribute == 'TimeToComplete'){
-			$Clock = $this->getStopWatch();
-		}
-		else if($Benchmark->Attribute == 'CountDown'){
-			$Clock = $this->getCountDown($Benchmark->AttributeValue);
-		}
-		else{
-			
-			if($Benchmark->TotalRounds > 1 && $Benchmark->RoundNo > 0 && $ThisRound != $Benchmark->RoundNo){
-			
+            $Style = '';
+			if($Benchmark->TotalRounds > 1 && $ThisRound != $Benchmark->RoundNo){
+
 				if($Chtml != '' && $Bhtml == ''){
 					$html.='<div class="ui-block-b"></div>'.$Chtml.'';
 					$Chtml = '';
@@ -93,15 +90,23 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutId']))
 				}
 				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
 				$html.='<div class="ui-block-a" style="padding:2px 0 2px 0">Round '.$Benchmark->RoundNo.'</div><div class="ui-block-b" style="padding:2px 0 2px 0"></div><div class="ui-block-c" style="padding:2px 0 2px 0"></div>';
-				$html.='<div class="ui-block-a"><input class="textinput" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Benchmark->InputFieldName.'"/></div>';
-			}
-			else if($ThisExercise != $Benchmark->Exercise){
-                            
-                                if(isset($_REQUEST['Rounds']))
-                                    $RoundNo = $_REQUEST['Rounds'];
-                                else
-                                    $RoundNo = $Benchmark->RoundNo;
+				//$html.='<div class="ui-block-a"><input class="textinput" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Benchmark->InputFieldName.'"/></div>';
+			}   
+             		if($Benchmark->Attribute == 'TimeToComplete'){
+			$Clock = $this->getStopWatch();
+		}
+		else if($Benchmark->Attribute == 'CountDown'){
+			$Clock = $this->getCountDown($Benchmark->AttributeValue);
+                }                       
+		else{
 
+                    if(isset($_REQUEST['Rounds']) && $_REQUEST['Rounds'] != '')
+                        $RoundNo = $_REQUEST['Rounds'];
+                    else
+                        $RoundNo = $Benchmark->RoundNo;               
+
+                    if($ThisExercise != $Benchmark->Exercise){
+                            
 				if($Chtml != '' && $Bhtml == ''){
 					$html.='<div class="ui-block-b"></div>'.$Chtml.'';
 					$Chtml = '';
@@ -120,10 +125,13 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutId']))
 				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
 				$html.='<div class="ui-block-a">'.$Exercise.'</div>';
 				}
-			}	
+			
 
 		
-            if($Benchmark->Attribute == 'Height' || $Benchmark->Attribute == 'Distance' || $Benchmark->Attribute == 'Weight'){
+            if($Benchmark->Attribute == 'Height' || 
+               $Benchmark->Attribute == 'Distance' || 
+               $Benchmark->Attribute == 'Weight' ||
+               $Benchmark->Attribute == 'TimeLimit'){
                             $AttributeValue = '';	
 				if($Benchmark->Attribute == 'Distance'){
                                     $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#6f747a"';
@@ -155,9 +163,14 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutId']))
                                                 $AttributeValue = $Benchmark->AttributeValue;
                                         }
 				}
+				else{
+                                    if($Benchmark->InputFieldName == 'Rest')
+                                        $Style = 'disabled';
+                                    $AttributeValue = $Benchmark->AttributeValue;
+				}                                
 
 				$Bhtml.='<div class="ui-block-b">';
-				$Bhtml.='<input class="textinput" '.$Style.' type="number" data-inline="true" name="'.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" value="'.$AttributeValue.'"/>'.$Unit.'';
+				$Bhtml.='<input class="textinput" '.$Style.' type="number" data-inline="true" id="'.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" name="'.$RoundNo.'___'.$Benchmark->ExerciseId.'___'.$Benchmark->Attribute.'" value="'.$AttributeValue.'"/>'.$Unit.'';
 				$Bhtml.='</div>';		
 				if($Chtml != ''){
 					$html.=''.$Bhtml.''.$Chtml.'';
@@ -193,7 +206,7 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutId']))
 					$Chtml = '';
 				}
 			}
-		
+                }
 		
 	$ThisRound = $Benchmark->RoundNo;
 	$ThisExercise = $Benchmark->Exercise;
@@ -211,7 +224,7 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutId']))
     $html.='</div>';
     $html.=$Clock;
     $html.='<input class="buttongroup" type="button" onClick="benchmarksubmit();" value="Save"/>';
-    $html.='</form><br/>';		
+    $html.='</form><div class="clear"></div><br/>';		
 
 }
 else
@@ -227,8 +240,9 @@ else
 }
     
     $html.='<div id="slides">
-        <div class="slides_container">
-            <div class="slide'.$Overthrow.'">
+        <div class="slides_container">';
+    /*
+    $html.='<div class="slide'.$Overthrow.'">
             <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>The Girls</li>
             </ul>
@@ -241,28 +255,43 @@ else
             </ul>
                 '.$this->getWorkoutList($Heros).'
             </div>';
-            
+     */
+    
+     $html.='<div class="slide'.$Overthrow.'">
+            <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+                <li>Benchmarks</li>
+            </ul>
+            <h1>Girls</h1>
+            '.$this->getWorkoutList($Girls).'
+            <h1>Heros</h1>    
+            '.$this->getWorkoutList($Heros).'
+            <h1>Various</h1>    
+            '.$this->getWorkoutList($Various).' 
+            <h1>Travel</h1>    
+            '.$this->getWorkoutList($Travel).'
+            </div>';
+    /*
      $html .='<div class="slide'.$Overthrow.'">
             <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>Various</li>
             </ul>
                 '.$this->getWorkoutList($Various).'
             </div>';
- /*    
+     
      $html .='<div class="slide">
             <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>Popular</li>
             </ul>
                 
             </div>';
-*/
+
      $html .='<div class="slide'.$Overthrow.'">
             <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>Travel Workouts</li>
             </ul>
                 '.$this->getWorkoutList($Travel).'
             </div>';
-
+*/
      $html .='<div class="slide'.$Overthrow.'">
             <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
                 <li>My Saved WODs</li>
@@ -375,7 +404,7 @@ return $html;
         $Html.='<input type="hidden" name="clockType" id="clockType" value=""/>';
         $Html.='<input type="hidden" name="CountDown" id="CountDown" value=""/>';
         $Html.='<input type="hidden" name="startstopbutton" id="startstopbutton" value=""/>';
-        $Html.='<br/>';
+        $Html.='<br/><br/>';
         $Html.='<div class="ui-grid-b">';
         $Html.='<div class="ui-block-a">';
         $Html.='<input id="resetbutton" class="buttongroup" onClick="reset();" type="button" value="Reset"/>';
@@ -389,21 +418,20 @@ return $html;
         return $Html;
     }
 	
-    function getCountDown($ExerciseId,$Time)
+    function getCountDown($Time)
     {
-	$RoundNo = 0;
         $TimeToComplete = $Time;
         $StartStopButton = 'Start';
-        if(isset($_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'])){
-            $TimeToComplete = $_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'];
+        if(isset($_REQUEST['0___63___CountDown'])){
+            $TimeToComplete = $_REQUEST['0___63___CountDown'];
             if($TimeToComplete != $Time)
                 $StartStopButton = 'Stop';
         }
-	$Html ='<input type="hidden" name="'.$RoundNo.'___'.$ExerciseId.'___CountDown" id="CountDown" value="'.$Time.'"/>';
+	$Html ='<input type="hidden" name="0___63___CountDown" id="CountDown" value="'.$Time.'"/>';
+        $Html.='<input type="hidden" name="clockType" id="clockType" value="timer"/>';
         $Html.='<input id="clock" name="timer" value="'.$TimeToComplete.'"/>';
         $Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstopcountdown();" value="'.$StartStopButton.'"/>';
         $Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetcountdown();" value="Reset"/>';
-        $Html.='<input class="buttongroup" type="button" onClick="benchmarksubmit();" value="Save"/>';
 		
         return $Html;
     }	

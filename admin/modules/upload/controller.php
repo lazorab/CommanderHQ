@@ -74,15 +74,16 @@ class UploadController extends Controller
 
 
     function MainOutput()
-    {        
-        $Html = '<p>WOD Name: </p><input type="text" name="WodName" />';
-        $Html .= '<div class="exercises" id="Routine_1">';
-        $Html .='<h2>Routine 1</h2>';
+    {    
+        $Html ='<h2>Routine 1</h2>';
+        $Html .= '<div id="Routine_1">';
         $Html .= $this->getExercises(1);
      	$Html .= '</div>';
-        $Html .= '<div id="AddTiming_1"></div>';
-        $Html .= '<div id="AddNotes_1"></div>';       
-	    return $Html;
+        $Html .= '<input type="button" value="Custom Activity" onClick="addNewActivity();"/>';
+        $Html .= '<br/>Comments<br/>';
+        $Html .= '<textarea name="RoutineNumber_Notes" rows="4" cols="80"></textarea>';
+      
+	return $Html;
     }
     
     function getNotes()
@@ -103,38 +104,21 @@ class UploadController extends Controller
         $Html='';
         $Model = new UploadModel;
         $Exercises = $Model->getActivities();
-
+        $Html.='<div style="height:42px;width:980px">';
+        $Html.='<select style="width:150px" name="Routine'.'_'.$RoutineNumber.'">';
+        $Html.='<option value="">Select Activity</option>';
         foreach($Exercises AS $Exercise){
-            $Html.='<div style="height:42px;width:800px">';
-            $Html.='<div style="float:left;width:300px">';
-            $Html.='<input data-role="none" type="checkbox" onClick="getInputFields('.$RoutineNumber.','.$Exercise->recid.');" name="Routine'.'_'.$RoutineNumber.'_'.'exercises[]" value="'.$Exercise->recid.'"/>'.$Exercise->ActivityName.'';
-            $Html.='</div><div id="exercise_'.$RoutineNumber.'_'.$Exercise->recid.'_input"></div>';
-            $Html.='</div>';
+
+            $Html.='<option value="'.$Exercise->recid.'">'.$Exercise->ActivityName.'</option>';
 
         }
+        $Html.='</select>';
+        $Html.='Weight(F)<input size="3" type="text" name="fweight"/>Weight(M)<input size="3" type="text" name="mweight"/>';
+        $Html.='Height(F)<input size="3" type="text" name="fheight"/>Height(M)<input size="3" type="text" name="mheight"/>';
+        $Html.='Reps<input size="3" type="text" name="reps"/>Rounds<input size="5" type="text" name="rounds"/>';
+        $Html.='</div>';
         return $Html;
     }   
-    
-    function Benchmarks()
-    {
-  	$Html = '';
-	$Model = new UploadModel;
-
-	$Benchmarks = $Model->getBenchmarks(); 
-  	$Html .= '<select class="select" name="benchmark" id="benchmark" onchange="SelectionControl(\'benchmark\',this.value);">
-                    <option value="none">Benchmark</option>';
-	foreach($Benchmarks AS $Benchmark){
-            $Html .= '<option id="'.$Benchmark->recid.'" value="'.$Benchmark->recid.'">'.$Benchmark->WorkoutName.'</option>';
-	}
-	$Html .= '</select>';   
-        
-        return $Html;       
-    }
-    
-    function Activities()
-    {
-
-    }
     
     function TimingTypes(){
         

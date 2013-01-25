@@ -24,10 +24,12 @@ $client = new Google_Client();
 $client->setApplicationName("Commander HQ");
 // Visit https://code.google.com/apis/console to generate your
 // oauth2_client_id, oauth2_client_secret, and to register your oauth2_redirect_uri.
-// $client->setClientId('insert_your_oauth2_client_id');
-// $client->setClientSecret('insert_your_oauth2_client_secret');
-// $client->setRedirectUri('insert_your_oauth2_redirect_uri');
-// $client->setDeveloperKey('insert_your_developer_key');
+//OAuth Consumer Key: 	www.commanderhq.net
+//OAuth Consumer Secret: 	WLNDnmUo9KNqQBjPPkfX5fC8 
+//$client->setClientId('insert_your_oauth2_client_id');
+//$client->setClientSecret('insert_your_oauth2_client_secret');
+//$client->setRedirectUri('insert_your_oauth2_redirect_uri');
+//$client->setDeveloperKey('insert_your_developer_key');
 $plus = new Google_PlusService($client);
 
 if (isset($_REQUEST['logout'])) {
