@@ -21,36 +21,38 @@ class UploadController extends Controller
         
        function Message()
     {
+           
         $Model = new UploadModel;
-             if(isset($_REQUEST['NewExercise'])){
+            if(isset($_REQUEST['NewExercise'])){
                 $Message = $this->SaveNewExercise();
+            }
+            else if(isset($_REQUEST['Exercise'])){
+                $Message = $Model->AddExercise();
             }
             else{
                 $Message = $Model->Save();
             }       
         return $Message;
+            
     }      
         
     function Validate()
     {
         $Routines = $_REQUEST['RoutineCounter'];
-        for($i=1;$i<=$Routines;$i++){ 
-            foreach($_REQUEST['Routine'.$i.'exercises'] as $ExerciseId){
-                $RoundsVal = $_REQUEST[''.$i.'_'.$ExerciseId.'_Rounds'];
-                $FWeightVal = $_REQUEST[''.$i.'_'.$ExerciseId.'_FWeight'];
-                $MWeightVal = $_REQUEST[''.$i.'_'.$ExerciseId.'_MWeight'];
-                $RepsVal = $_REQUEST[''.$i.'_'.$ExerciseId.'_Reps'];
-                $TimingVal = $_REQUEST[''.$i.'_Timing'];
-            }
-        } 
+        $RoundsVal = $_REQUEST['Rounds'];
+        $FWeightVal = $_REQUEST['fWeight'];
+        $MWeightVal = $_REQUEST['mWeight'];
+        $FHeightVal = $_REQUEST['fHeight'];
+        $MHeightVal = $_REQUEST['mHeight'];
+        $Distance = $_REQUEST['Distance'];
+        $RepsVal = $_REQUEST['Reps'];
 
         $Message = '';
-        if($_REQUEST['WodDate'] == ''){
-            $Message = 'Must Select Date!';
-        } elseif($_REQUEST['NewExercise'] == ''){
+        if($_REQUEST['NewExercise'] == ''){
             $Message = 'Must Enter Exercise Name!';
-        } else if(count($_REQUEST['ExerciseAttributes']) == 0){
-            $Message = 'Must Select at least one Attribute';
+        } else if($RoundsVal == '' && $FWeightVal == '' && $MWeightVal == '' && $FHeightVal == '' &&
+                $MHeightVal == '' && $Distance == '' && $RepsVal == ''){
+            $Message = 'Must Have at least one Attribute';
         }
 
         return $Message;
@@ -95,27 +97,33 @@ class UploadController extends Controller
         return $Html;
     }
     
-    function getExercises($DefaultRoutine)
+    function getExercises($type)
     {
-        if($DefaultRoutine == 0)
-            $RoutineNumber = 'RoutineNumber';
-        else
-            $RoutineNumber = $DefaultRoutine;
+
         $Html='';
         $Model = new UploadModel;
         $Exercises = $Model->getActivities();
         $Html.='<div style="height:42px;width:980px">';
-        $Html.='<select style="width:150px" name="Routine'.'_'.$RoutineNumber.'">';
-        $Html.='<option value="">Select Activity</option>';
+        $Html.='<form action="index.php" id="exerciseselect" name="exerciseselect">';
+        $Html.='<select style="width:150px" name="Exercise">';
+        $Html.='<option value="none">Select Activity</option>';
         foreach($Exercises AS $Exercise){
 
             $Html.='<option value="'.$Exercise->recid.'">'.$Exercise->ActivityName.'</option>';
 
         }
         $Html.='</select>';
-        $Html.='Weight(F)<input size="3" type="text" name="fweight"/>Weight(M)<input size="3" type="text" name="mweight"/>';
-        $Html.='Height(F)<input size="3" type="text" name="fheight"/>Height(M)<input size="3" type="text" name="mheight"/>';
-        $Html.='Reps<input size="3" type="text" name="reps"/>Rounds<input size="5" type="text" name="rounds"/>';
+        $Html .= '<input size="8" type="text" id="mWeight" name="mWeight" placeholder="Weight(M)"/>';
+        $Html .= '<input size="8" type="text" id="fWeight" name="fWeight" placeholder="Weight(F)"/>';
+        $Html .= '<input size="8" type="text" id="mHeight" name="mHeight" placeholder="Height(M)"/>';
+        $Html .= '<input size="8" type="text" id="fHeight" name="fHeight" placeholder="Height(F)"/>';
+        $Html .= '<input size="8" type="text" id="Distance" name="Distance" placeholder="Distance"/>';
+        $Html .= '<input size="4" type="text" id="Reps" name="Reps" placeholder="Reps"/>';
+        if($type == 'advanced')
+        $Html .= '<input class="buttongroup" type="button" name="btnsubmit" value="Add" onclick="addexerciseAdvanced();"/>';          
+        else    
+        $Html .= '<input class="buttongroup" type="button" name="btnsubmit" value="Add" onclick="addexercise();"/>';
+        $Html.='</form><br/>';
         $Html.='</div>';
         return $Html;
     }   

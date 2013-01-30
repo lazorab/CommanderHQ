@@ -26,25 +26,25 @@ body {
 }
 
 .addARound{
-	background: url(../images/addRoundBtn.jpg) -3px -1px;
+	background: url(../images/addRoundBtn.png) -3px -1px;
 
 }
 
 
 .addActivity{
-	background: url(../images/ActBtn.jpg) -1px -1px;
+	background: url(../images/ActBtn.png) -1px -1px;
 
 }
 
 
 .timeEvent{
-	background: url(../images/timeBtn.jpg) -3px -1px;
+	background: url(../images/timeBtn.png) -3px -1px;
 
 }
 
 
 .save{
-	background: url(../images/saveBtn.jpg) -3px -1px;
+	background: url(../images/saveBtn.png) -3px -1px;
 
 }
 

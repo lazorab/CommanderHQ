@@ -25,8 +25,12 @@ function addComments(){
     $('#AddNotes_'+ThisRoutineNumber).html(Html);   
 }
 
-function Publish(){
-    $.getJSON('ajax.php?module=upload&action=validateform', $("#gymform").serialize(),messagedisplay);
+function PublishWod(){
+    $.getJSON('ajax.php?module=upload&action=validateform', $("#wodform").serialize(),messagedisplay);
+}
+
+function PublishAdvancedWod(){
+    $.getJSON('ajax.php?module=upload&action=validateform', $("#advancedform").serialize(),messagedisplay);
 }
 
 function getInputFields(routineId, exerciseId){
@@ -58,17 +62,31 @@ function getInputFields(routineId, exerciseId){
 }
 
 function AddRoutine(){
-    var RoutineNumberAppend = document.getElementById('RoutineCounter').value;
-    document.getElementById('RoutineCounter').value++;
-    var ThisRoutineNumber = document.getElementById('RoutineCounter').value; 
-    var Exercises = '<div class="exercises" id="Routine_'+ThisRoutineNumber+'">';
+    var RoutineNumberAppend = document.getElementById('wRoutineCounter').value;
+    document.getElementById('wRoutineCounter').value++;
+    var ThisRoutineNumber = document.getElementById('wRoutineCounter').value; 
+    var Exercises = '<div id="wRoutine_'+ThisRoutineNumber+'">';
     Exercises+= '<h2>Routine '+ThisRoutineNumber+'</h2>';
-    Exercises+='<?php echo $Display->getExercises(0);?>';
+    Exercises+='<div id="w_exercises_'+ThisRoutineNumber+'"></div>';
+
+    Exercises+='<textarea name="'+ThisRoutineNumber+'_Notes" rows="4" cols="80" placeholder="Add any notes for routine '+ThisRoutineNumber+'"></textarea>';
     Exercises+='</div>';
-    Exercises+='<div id="AddTiming_'+ThisRoutineNumber+'"></div>';
-    Exercises+='<div id="AddNotes_'+ThisRoutineNumber+'"></div>';
     var Html = Exercises.replace(/RoutineNumber/g, ThisRoutineNumber);
-    $('div#Routine_'+RoutineNumberAppend).after(Html);
+    $('div#wRoutine_'+RoutineNumberAppend).after(Html);
+}
+
+function AddAdvancedRoutine(){
+    var RoutineNumberAppend = document.getElementById('aRoutineCounter').value;
+    document.getElementById('aRoutineCounter').value++;
+    var ThisRoutineNumber = document.getElementById('aRoutineCounter').value; 
+    var Exercises = '<div id="aRoutine_'+ThisRoutineNumber+'">';
+    Exercises+= '<h2>Routine '+ThisRoutineNumber+'</h2>';
+    Exercises+='<div id="a_exercises_'+ThisRoutineNumber+'"></div>';
+
+    Exercises+='<textarea name="'+ThisRoutineNumber+'_Notes" rows="4" cols="80" placeholder="Add any notes for routine '+ThisRoutineNumber+'"></textarea>';
+    Exercises+='</div>';
+    var Html = Exercises.replace(/RoutineNumber/g, ThisRoutineNumber);
+    $('div#aRoutine_'+RoutineNumberAppend).after(Html);
 }
 
 function getContent(selection)
@@ -90,7 +108,7 @@ function display(data)
     $('.select').selectmenu('refresh');
     $('.buttongroup').button();
     $('.buttongroup').button('refresh');
-    $('.textinput').textinput();
+    //$('.textinput').textinput();
 }
 
 function _addRoutine(routineOrderId)
@@ -128,7 +146,7 @@ function addTypeParams(CustomType)
     $('.buttongroup').button();
     $('.buttongroup').button('refresh');
     $('#addround').textinput();
-    $('.textinput').textinput();
+    //$('.textinput').textinput();
 }
 
 function SelectionControl(type,id)
@@ -145,47 +163,60 @@ function SelectionControl(type,id)
 
 function addNewActivity()
 {
-    var Html ='<br/><input class="textinput" type="text" id="NewExercise" name="NewExercise" value="" placeholder="New Exercise Name"/>';
-    Html += '<br/><input class="textinput" type="text" id="Acronym" name="Acronym" value="" placeholder="Acronym for Exercise?"/>';
-    Html += '<br/>Applicable Attributes:<br/><br/>';
-    Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Weight"/>Weight';
-    Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Height"/>Height<br/>';
-    Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Distance"/>Distance';
-    Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Reps"/>Reps<br/><br/>';
-    Html += '<input class="buttongroup" type="button" name="btnsubmit" value="Add" onclick="addnew();"/><br/><br/>';
+    var Html ='<form action="index.php" id="newform" name="newform">';
+    Html += '<input class="textinput" type="text" id="NewExercise" name="NewExercise" placeholder="Custom Activity"/>';
+    Html += '<input class="textinput" size="7" class="textinput" type="text" id="Acronym" name="Acronym" placeholder="Acronym"/>';
+    Html += '<input class="textinput" size="8" type="text" name="mWeight" placeholder="Weight(M)"/>';
+    Html += '<input class="textinput" size="8" type="text" name="fWeight" placeholder="Weight(F)"/>';
+    Html += '<input class="textinput" size="8" type="text" name="mHeight" placeholder="Height(M)"/>';
+    Html += '<input class="textinput" size="8" type="text" name="fHeight" placeholder="Height(F)"/>';
+    Html += '<input class="textinput" size="8" type="text" name="Distance" placeholder="Distance"/>';
+    Html += '<input class="textinput" size="4" type="text" name="Reps" placeholder="Reps"/>';
+    Html += '<input class="buttongroup" type="button" name="btnsubmit" value="Add" onclick="addnew();"/>';
+    Html +='</form>';
     $('#add_exercise').html(Html);
     $('.buttongroup').button();
     $('.buttongroup').button('refresh');
-    $('.textinput').textinput();
+    //$('.textinput').textinput();
+}
+
+function addNewActivityAdvanced()
+{
+    var Html ='<form action="index.php" id="newform" name="newform">';
+    Html += '<input class="textinput" type="text" id="NewExercise" name="NewExercise" placeholder="Custom Activity"/>';
+    Html += '<input class="textinput" size="7" class="textinput" type="text" id="Acronym" name="Acronym" placeholder="Acronym"/>';
+    Html += '<input class="textinput" size="8" type="text" name="mWeight" placeholder="Weight(M)"/>';
+    Html += '<input class="textinput" size="8" type="text" name="fWeight" placeholder="Weight(F)"/>';
+    Html += '<input class="textinput" size="8" type="text" name="mHeight" placeholder="Height(M)"/>';
+    Html += '<input class="textinput" size="8" type="text" name="fHeight" placeholder="Height(F)"/>';
+    Html += '<input class="textinput" size="8" type="text" name="Distance" placeholder="Distance"/>';
+    Html += '<input class="textinput" size="4" type="text" name="Reps" placeholder="Reps"/>';
+    Html += '<input class="buttongroup" type="button" name="btnsubmit" value="Add" onclick="addnewAdvanced();"/>';
+    Html +='</form>';
+    $('#add_advanced_exercise').html(Html);
+    $('.buttongroup').button();
+    $('.buttongroup').button('refresh');
+    //$('.textinput').textinput();
 }
 
 function addnew()
 {
-    $.getJSON('ajax.php?module=upload&action=validateform', $("#gymform").serialize(),messagedisplay);
+    $.getJSON('ajax.php?module=upload&action=validateform', $("#newform").serialize(),wresult);
 }
 
-function DisplayBenchmark(id)
+function addnewAdvanced()
 {
-    $("#exercise option[value='none']").attr("selected","selected");
-    $('#workouttypes').html('');
-    $('#add_exercise').html('');
-    $('#new_exercise').html('');
-    $('#clock_input').html('');
-    
-    document.getElementById('rowcounter').value = 0;
-    
-    $.getJSON("ajax.php?module=upload",{benchmarkid:id},function(j) {
-        $('#wodname').val('' + j.WorkoutName + '');
-        var html = '';
-        html +='<input class="benchmark_' + j.recid + '" type="hidden" name="benchmarkId" value="' + j.recid + '"/>';
-        html += '<div class="benchmark_' + j.recid + '">';
-        html += '<input onclick="RemoveFromList(\'benchmark\')" type="checkbox" name="benchmark_' + j.recid + '" checked="checked" value="' + j.WorkoutName + '"/>'; 
-        html +='' + j.WorkoutName + '</div>';  
-        $('#display_benchmark').html(html);
-    }); 
-    $('#btnsubmit').html('<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="uploadsubmit();"/>');
-    $('.buttongroup').button();
-    $('.buttongroup').button('refresh');
+    $.getJSON('ajax.php?module=upload&action=validateform', $("#newform").serialize(),aresult);
+}
+
+function addexercise()
+{
+    $.getJSON('ajax.php?module=upload&action=validateform', $("#exerciseselect").serialize(),wresult);
+}
+
+function addexerciseAdvanced()
+{
+    $.getJSON('ajax.php?module=upload&action=validateform', $("#exerciseselect").serialize(),aresult);
 }
 
 function DisplayExercise(id)
@@ -360,6 +391,12 @@ function DisplayExercise(id)
     return false;	
 }
 
+function Remove(RowId)
+{
+    $('#row_' + RowId + '').remove();
+    document.getElementById('wrowcounter').value--;  
+}
+
 function RemoveFromList(RowId)
 {
     if(RowId == 'benchmark'){
@@ -380,16 +417,65 @@ function RemoveFromList(RowId)
     }
 }
 
-function messagedisplay(message)
+function wresult(message)
 {
-    var Html = '<?php echo $Display->Output(); ?>';
+    document.getElementById('wrowcounter').value++;
+    var ThisRoutineNumber = $('#wRoutineCounter').val();
+    var ThisRowNumber = $('#wrowcounter').val();
+    var Html = message.replace(/ThisRow/g, ThisRowNumber);
+    Html = Html.replace(/ThisRoutine/g, ThisRoutineNumber);
+    var exercises = $('#w_exercises_'+ThisRoutineNumber+'');
     var exerciseid = parseInt(message);
     if (exerciseid == Number.NaN) {
         alert(message);
     }else{
-        var ThisRoutineNumber = document.getElementById('RoutineCounter').value;
-        $.ajax({url:'ajax.php?module=upload',data:{dropdown:'refresh',newexercise:exerciseid,routineno:ThisRoutineNumber},dataType:"html",success:dropdownrefresh});  
-        $('#AjaxOutput').html(Html);
+        
+        $(Html).appendTo(exercises);
+    }  
+
+    $('#add_exercise').html('');
+    $('#mWeight').val('');
+    $('#fWeight').val('');
+    $('#mHeight').val('');
+    $('#fHeight').val('');
+    $('#Distance').val('');
+    $('#Reps').val('');
+    $("#exerciseselect option[value='none']").attr("selected","selected");
+}
+
+function aresult(message)
+{
+    document.getElementById('arowcounter').value++;
+    var ThisRoutineNumber = $('#aRoutineCounter').val();
+    var ThisRowNumber = $('#arowcounter').val();
+    var Html = message.replace(/ThisRow/g, ThisRowNumber);
+    Html = Html.replace(/ThisRoutine/g, ThisRoutineNumber);
+    var exercises = $('#a_exercises_'+ThisRoutineNumber+'');
+    var exerciseid = parseInt(message);
+    if (exerciseid == Number.NaN) {
+        alert(message);
+    }else{
+        
+        $(Html).appendTo(exercises);
+    }  
+
+    $('#add_exercise').html('');
+    $('#mWeight').val('');
+    $('#fWeight').val('');
+    $('#mHeight').val('');
+    $('#fHeight').val('');
+    $('#Distance').val('');
+    $('#Reps').val('');
+    $("#exerciseselect option[value='none']").attr("selected","selected");
+}
+
+function messagedisplay(message)
+{
+    //var exerciseid = parseInt(message);
+    if (message != 'Success') {
+        alert(message);
+    }else{
+
         alert('Successfully Added');
     }  
 }
@@ -400,9 +486,15 @@ function dropdownrefresh(data)
     $('#Routine_'+ThisRoutineNumber).html(data);
 }
 
+function addAdvancedRound()
+{
+    document.getElementById('addAdvancedRound').value++; 
+    //$.getJSON('ajax.php?module=benchmark', $("#benchmarkform").serialize(),display);
+}
+
 function addRound()
 {
-    document.getElementById('addround').value++; 
+    document.getElementById('addRound').value++; 
     //$.getJSON('ajax.php?module=benchmark', $("#benchmarkform").serialize(),display);
 }
 </script>
@@ -414,15 +506,17 @@ function addRound()
     </ul>
     <div id="tabs-1"> 
 
-<div id="add_exercise"></div>
-
-        <form action="index.php" id="wodform" name="form">
+<div id="add_exercise"></div> 
+<input type="button" value="Custom Activity" onClick="addNewActivity();"/>
+<?php echo $Display->getExercises('');?>
+        
+<form action="index.php" id="wodform" name="wodform">
 <input type="hidden" name="form" value="submitted"/>
-<input type="hidden" name="rowcount" id="rowcounter" value="0"/>
-<input type="hidden" name="RoutineCounter" id="RoutineCounter" value="1"/>
+<input type="hidden" name="WodTypeId" value="2"/>
+<input type="hidden" name="rowcount" id="wrowcounter" value="0"/>
+<input type="hidden" name="RoutineCounter" id="wRoutineCounter" value="1"/>
 
-
-<p>WOD Name:<input name="wodname" type="text"/> WOD Date:<input class="inputbox-required" type="text" name="WodDate" id="WodDate" maxlength="25" placeholder="Use Calendar" value=""/>
+<p>WOD Name:<input name="WodName" type="text"/> WOD Date:<input class="inputbox-required" type="text" name="WodDate" id="WodDate" maxlength="25" placeholder="Use Calendar" value=""/>
 <img src="images/calendar-blue.gif" alt="calendar" id="Start_trigger"/></p>
 <script type="text/javascript">
       Calendar.setup({
@@ -432,29 +526,50 @@ function addRound()
         dateFormat : "%Y-%m-%d"
       });
 </script>
-        <?php echo $Display->Output();?>
+<div id="wRoutine_1">
+<h2>Routine 1</h2>
+        
+<div id="w_exercises_1"></div>       
+       
+        <textarea name="1_Notes" rows="4" cols="80" placeholder="Add any notes for routine 1"></textarea>
+    </div>
+        <input type="button" name="add" value="Add Routine" onClick="AddRoutine();"/>
+        <input type="button" name="save" value="Save WOD" onClick="PublishWod();"/>
         </form><br/>
-    </div>    
+    </div>
+    
     <div id="tabs-2"> 
         
-        <div id="add_exercise"></div>
-        
-        <form action="index.php" id="advancedform" name="form">
-<input type="hidden" name="form" value="submitted"/>
-<input type="hidden" name="rowcount" id="rowcounter" value="0"/>
-<input type="hidden" name="RoutineCounter" id="RoutineCounter" value="1"/>
+<div id="add_advanced_exercise"></div>
+       
+<input type="button" value="Custom Activity" onClick="addNewActivityAdvanced();"/>
+<?php echo $Display->getExercises('advanced');?>
 
-<p>WOD Name:<input name="wodname" type="text"/> WOD Date:<input class="inputbox-required" type="text" name="WodDate" id="WodDate" maxlength="25" placeholder="Use Calendar" value=""/>
-<img src="images/calendar-blue.gif" alt="calendar" id="Start_trigger"/></p>
+<form action="index.php" id="advancedform" name="advancedform">
+<input type="hidden" name="form" value="submitted"/>
+<input type="hidden" name="WodTypeId" value="4"/>
+<input type="hidden" name="rowcount" id="arowcounter" value="0"/>
+<input type="hidden" name="RoutineCounter" id="aRoutineCounter" value="1"/>
+
+<p>WOD Name:<input name="WodName" type="text"/> WOD Date:<input class="inputbox-required" type="text" name="WodDate" id="aWodDate" maxlength="25" placeholder="Use Calendar" value=""/>
+<img src="images/calendar-blue.gif" alt="calendar" id="aStart_trigger"/></p>
 <script type="text/javascript">
       Calendar.setup({
-        inputField : "WodDate",
-        trigger    : "Start_trigger",
+        inputField : "aWodDate",
+        trigger    : "aStart_trigger",
         onSelect   : function() { this.hide() },
         dateFormat : "%Y-%m-%d"
       });
 </script>
-        <?php echo $Display->Output();?>
+<div id="aRoutine_1">
+<h2>Routine 1</h2>
+        
+<div id="a_exercises_1"></div>       
+       
+        <textarea name="1_Notes" rows="4" cols="80" placeholder="Add any notes for routine 1"></textarea>
+    </div>
+        <input type="button" name="" value="Add Routine" onClick="AddAdvancedRoutine();"/>
+        <input type="button" name="" value="Save WOD" onClick="PublishAdvancedWod();"/>
         </form><br/>
     </div>
 </div>    

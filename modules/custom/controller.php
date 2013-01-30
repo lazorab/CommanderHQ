@@ -70,7 +70,7 @@ class CustomController extends Controller
         <input type="hidden" name="Round1Counter" id="Round1Counter" value="0"/>
         <input type="hidden" name="Rounds" id="addround" value="1"/>';
         
-        $Html.='<textarea name="descr" ></textarea>';
+        $Html.='<textarea name="descr" placeholder="Add your notes here"></textarea>';
         
         $Html .= '<div class="ui-grid-b">';
         $Html .= '<div id="Round1Label"></div>';
@@ -143,7 +143,7 @@ class CustomController extends Controller
         $Html='';
         $Model = new CustomModel;
         $Exercises = $Model->getExercises();
-        $Html .= '<select class="select buttongroup addActivity" data-role="none" name="exercise" onChange="SelectionControl(this.value)">
+        $Html .= '<select class="select buttongroup addActivity" data-role="none" id="exercise" name="exercise" onChange="SelectionControl(this.value)">
          <option value="none">Add Activity</option>';
 	foreach($Exercises AS $Exercise){
             $Html .= '<option value="'.$Exercise->ActivityName.'">'.$Exercise->ActivityName.'</option>';
