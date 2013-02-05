@@ -23,6 +23,8 @@ $Module = $_REQUEST['module'];
 
         if(isset($_REQUEST['action']) && $_REQUEST['action'] == 'validateform'){
             echo json_encode($Ajax->Message());
+        }else if(isset($_REQUEST['action']) && $_REQUEST['action'] == 'getInputFields'){
+            echo json_encode($Ajax->AddNewExercise($_REQUEST['ExerciseId']));
         }else if(isset($_REQUEST['topselection'])){
             echo $Ajax->TopSelection();
         }else if(isset($_REQUEST['video'])){

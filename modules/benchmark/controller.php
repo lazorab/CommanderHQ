@@ -136,10 +136,10 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutId']))
 				if($Benchmark->Attribute == 'Distance'){
                                     $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#6f747a"';
 					if($this->SystemOfMeasure() != 'Metric'){
-						$Unit = '<span style="float:left">m</span>';
+						$Unit = '<span style="float:left">yards</span>';
                                                 $AttributeValue = round($Benchmark->AttributeValue * 1.09, 2);
                                         }else{
-						$Unit = '<span style="float:left">km</span>';
+						$Unit = '<span style="float:left">metres</span>';
                                                 $AttributeValue = $Benchmark->AttributeValue;
                                         }
 				}		

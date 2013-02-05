@@ -9,6 +9,12 @@ body {
 	font-weight: normal;
 }
 
+table
+{
+float:right;
+border:1px solid black;
+}
+
 #buttongroup{
 	margin:0 10% 0 10%; 
 	width:80%;

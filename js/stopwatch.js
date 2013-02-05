@@ -1,3 +1,5 @@
+//http://www.timpelen.com/extra/sidebars/stopwatch/stopwatch.htm
+
 var flagclock = 0;
 var flagstop = 0;
 var stoptime = 0;
@@ -9,6 +11,7 @@ var clock;
 var countdown;
 var routineType = '';
 var refresh='';
+var resetflag;
 
 function save()
 {

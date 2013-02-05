@@ -19,11 +19,20 @@
 <link rel="apple-touch-icon" sizes="114x114" href="/images/touch-icon-iphone4.png">
 <!-- startup image for web apps (320x460) -->
 <link rel="apple-touch-startup-image" href="/images/splashscreen.png" media="screen and (max-device-width: 320px)" />
+
 <link type="text/css" rel="stylesheet" href="/css/jquery.mobile-1.1.0.css" />
 <link type="text/css" rel="stylesheet" href="/css/mobile.css" />
 <link type="text/css" rel="stylesheet" href="/css/clock.css" />
 <link rel="stylesheet" href="/css/add2home.css">
-<link rel="stylesheet" href="/css/slideshow.css">
+<!--<link rel="stylesheet" href="/css/slideshow.css">-->
+<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+<script type="text/javascript" src="/js/jquery.easing.1.3.js"></script>
+<script type="text/javascript" src="/js/jquery.nicescroll.min.js"></script>
+<script type="text/javascript" src="/js/stopwatch.js"></script>
+
+<!--<script type="text/javascript" src="/js/slides.min.jquery.js"></script>-->
+<script type="text/javascript" src="http://www.be-mobile.co.za/framework/js/device.js"></script>
+
 <style type="text/css">
 body { width: <?php echo SCREENWIDTH;?>px;}
 #header{width: <?php echo SCREENWIDTH;?>px;}
@@ -33,12 +42,6 @@ body { width: <?php echo SCREENWIDTH;?>px;}
 #footer{<?php echo $RENDER->BackgroundImage('purple.png',0,0);?>}
 </style>
 
-<script type="text/javascript" src="/js/jquery-1.7.1.min.js"></script>
-<script type="text/javascript" src="/js/jquery.easing.1.3.js"></script>
-<script type="text/javascript" src="/js/jquery.nicescroll.min.js"></script>
-<script type="text/javascript" src="/js/stopwatch.js"></script>
-<script type="text/javascript" src="/js/slides.min.jquery.js"></script>
-<script type="text/javascript" src="http://www.be-mobile.co.za/framework/js/device.js"></script>
 <script type="text/javascript">
 var deviceIsAndroid = (window.navigator.userAgent.toLowerCase().search('android') > -1);
 if (deviceIsAndroid) {

@@ -103,6 +103,24 @@ p{
 	display:block;
 }
 
+#tab1{
+    display:none;
+}
+
+#tab2{
+    display:none;
+}
+
+#tab1.active
+{ 
+	display:block;
+}
+
+#tab2.active
+{ 
+	display:block;
+}
+
 #loginback
 {
 	background-color:#252525;
