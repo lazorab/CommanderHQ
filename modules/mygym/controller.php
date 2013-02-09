@@ -63,24 +63,29 @@ class MygymController extends Controller
                 <li><a href="#" data-role="tab" onClick="Tabs(\'1\');" class="ui-btn-active">Well Rounded</a></li>
                 <li><a href="#" data-role="tab" onClick="Tabs(\'2\');">Advanced</a></li>
             </ul>
-        </div>
-                        <div id="tab1"> 
+        </div><div id="tab1"> ';
+          /*          
+        $WODdata .= '                
     <div class="ui-grid-c">
     <div class="ui-block-a"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#3f2b44" value="Weight" readonly="readonly"/></div>
     <div class="ui-block-b"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#66486e" value="Height" readonly="readonly"/></div>
     <div class="ui-block-c"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#6f747a" value="Distance" readonly="readonly"/></div>
     <div class="ui-block-d"><input type="text" data-role="none" style="width:80%;color:black;font-weight:bold;background-color:#ccff66" value="Reps" readonly="readonly"/></div>
-    </div>                              
-                                '.$this->WorkoutDetails('2').'
+    </div>'; 
+        */
+         $WODdata .= '                       '.$this->WorkoutDetails('2').'
                                 </div>   
-                                <div id="tab2"> 
+                                <div id="tab2"> ';
+         /*
+         $WODdata .= '
     <div class="ui-grid-c">
     <div class="ui-block-a"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#3f2b44" value="Weight" readonly="readonly"/></div>
     <div class="ui-block-b"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#66486e" value="Height" readonly="readonly"/></div>
     <div class="ui-block-c"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#6f747a" value="Distance" readonly="readonly"/></div>
     <div class="ui-block-d"><input type="text" data-role="none" style="width:80%;color:black;font-weight:bold;background-color:#ccff66" value="Reps" readonly="readonly"/></div>
-    </div>                                
-                                '.$this->WorkoutDetails('4').'
+    </div> ';      
+         */
+          $WODdata .= '                      '.$this->WorkoutDetails('4').'
                                 </div>';                
 		}	
 	
@@ -107,9 +112,103 @@ class MygymController extends Controller
                 $i++;
             }
             return $Html;
-	}      
+	}   
         
   	function WorkoutDetails($type)
+	{
+            $html='';
+            $Model = new MygymModel;
+            $WodDetails = $Model->getWODDetails($type);
+            if(count($WodDetails) == 0){
+                $html='No data from your gym today';
+            }else{
+                //$this->getTopSelection();
+	$Clock = '';
+        $i = 0;
+	$html.='<form name="form" id="wodform" action="index.php">
+            <input type="hidden" name="form" value="submitted"/>  
+            <input type="hidden" name="WorkoutId" value="'.$WodDetails[0]->WodId.'"/>'; 
+        //$html.='<input type="checkbox" name="baseline" value="yes" data-role="none"/>';
+        //$html.='Make this my baseline';
+        $html.='<p>'.$WodDetails[0]->Notes.'</p>';
+        $html.='<div class="ui-grid-b">';
+        $ThisRound = '';
+	$ThisExerciseId = 0;
+        //var_dump($WodDetails);
+	foreach($WodDetails as $Detail){
+            if($Detail->UnitOfMeasureId == null){
+                $UnitOfMeasureId = 0;
+            }else{
+                $UnitOfMeasureId = $Detail->UnitOfMeasureId;
+            }
+		if($Detail->Attribute == 'TimeToComplete'){
+			$Clock = $this->getStopWatch();
+		}
+		else{
+			
+			if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0 && $ThisRound != $Detail->RoundNo){
+                            if($ThisExerciseId != null && $i > 0){
+                                $html.=''.$this->getExerciseHistory($ThisExerciseId).'';
+                            }
+                            $html.='<h2>'.$Detail->RoundNo.'</h2>';
+                            $html.='<br/><br/><div onClick="OpenHistory(\''.$Detail->ExerciseId.'\');">'.$Detail->Exercise.'</div>';
+                            
+			}
+			else if($ThisExerciseId != $Detail->ExerciseId){
+                            if($ThisExerciseId != null && $i > 0){
+                                $html.=''.$this->getExerciseHistory($ThisExerciseId).'';
+                            }
+                            $html.='<br/><br/><div onClick="OpenHistory(\''.$Detail->ExerciseId.'\');">'.$Detail->Exercise.'</div>';
+                            
+                        }else{
+                            $html.=' | ';
+                        }
+                        
+                        $html.=''.$Detail->Attribute.' : '.$Detail->AttributeValue.''.$Detail->UnitOfMeasure.'';
+                        $html.='<input type="hidden" name="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_'.$UnitOfMeasureId.'" value="'.$Detail->AttributeValue.'">';
+                }
+	$ThisRound = $Detail->RoundNo;
+	$ThisExerciseId = $Detail->ExerciseId;
+        $i++;
+	}
+                            if($ThisExerciseId != null && $i > 0){
+                                $html.=''.$this->getExerciseHistory($ThisExerciseId).'';
+                            }	
+    $html.='</div>';
+    $html.=$Clock;
+    $html.='</form><br/><br/>';		
+            }
+
+            return $html;
+	}    
+        
+        function getExerciseHistory($ThisExercise)
+        {
+            $Model = new MygymModel;
+            $ExerciseHistory = $Model->getExerciseHistory($ThisExercise);
+            $i=0;
+            $TimeCreated = '';
+            $Html = '<div id="'.$ThisExercise.'" class="ExerciseHistory">';
+            foreach($ExerciseHistory as $Detail){
+                if($i > 0){
+                    if($Detail->TimeCreated != $TimeCreated)
+                        $Html.='<br/>';
+                    else
+                        $Html.=' | ';
+                }
+                $Html.=''.$Detail->Attribute.' : '.$Detail->AttributeValue.''.$Detail->UnitOfMeasure.'';
+                $i++;
+                $TimeCreated = $Detail->TimeCreated;
+            }
+            $Html .= '<div style="width:50%"><div style="float:left">Weight<input size="3" type="number" id="" name="" placeholder="kg"/></div>';
+            $Html .= '<div style="float:right">Rounds<input size="3" type="number" id="" name=""/></div></div><br/>';
+            $Html .= '<div style="width:50%"><div style="float:left">Reps<input size="3" type="number" id="" name=""/></div>';
+            $Html .= '<div style="float:right;margin:10px 0 0 0"><input type="button" id="" name="" onClick="" value="Update"/></div></div>';
+            $Html .= '</div><div class="clear"></div>';
+            return $Html;
+        }
+        
+  	function _WorkoutDetails($type)
 	{
             $html='';
             $Model = new MygymModel;
@@ -204,7 +303,7 @@ class MygymController extends Controller
 				}
 
 				$Bhtml.='<div class="ui-block-b">';
-				$Bhtml.='<input data-role="none" '.$Style.' type="number" data-inline="true" name="'.$RoundNo.'___'.$Detail->ExerciseId.'___'.$Detail->Attribute.'" value="'.$AttributeValue.'"/><span style="float:left">'.$Detail->UOM.'</span>';
+				$Bhtml.='<input data-role="none" '.$Style.' type="number" data-inline="true" name="'.$RoundNo.'___'.$Detail->ExerciseId.'___'.$Detail->Attribute.'" value="'.$AttributeValue.'"/><span style="float:left">'.$Detail->UnitOfMeasure.'</span>';
 				$Bhtml.='</div>';		
 				if($Chtml != ''){
 					$html.=''.$Bhtml.''.$Chtml.'';
@@ -286,25 +385,6 @@ class MygymController extends Controller
             }
             return $Html;
         }       
-
-	function getStopWatch()
-    {
-	$RoundNo = 0;
-        $ExerciseId = 63;
-        $TimeToComplete = '00:00:0';
-        $StartStopButton = 'Start';
-        if(isset($_REQUEST['0___63___TimeToComplete'])){
-            $TimeToComplete = $_REQUEST['0___63___TimeToComplete'];
-            if($TimeToComplete != '00:00:0')
-                $StartStopButton = 'Stop';
-        }
-	$Html ='<br/><input type="text" id="clock" name="0___63___TimeToComplete" value="'.$TimeToComplete.'" readonly/>';
-	$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="'.$StartStopButton.'"/>';
-	$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
-        $Html.='<input class="buttongroup" type="button" onclick="wodsubmit();" value="Save"/>';
-
-        return $Html;
-    }
     
     function getWeight($exerciseId)
     {
@@ -343,25 +423,6 @@ class MygymController extends Controller
         $Html='Tabata';
         
         return $Html;       
-    }
-    
-    function getCountDown($ExerciseId,$Time)
-    {
-	$RoundNo = 0;
-        $TimeToComplete = $Time;
-        $StartStopButton = 'Start';
-        if(isset($_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'])){
-            $TimeToComplete = $_REQUEST[''.$RoundNo.'___'.$ExerciseId.'___TimeToComplete'];
-            if($TimeToComplete != $Time)
-                $StartStopButton = 'Stop';
-        }
-	$Html ='<input type="hidden" name="'.$RoundNo.'___'.$ExerciseId.'___CountDown" id="CountDown" value="'.$Time.'"/>';
-        $Html.='<input id="clock" name="timer" value="'.$TimeToComplete.'"/>';
-        $Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstopcountdown();" value="'.$StartStopButton.'"/>';
-        $Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetcountdown();" value="Reset"/>';
-        $Html.='<input class="buttongroup" type="button" onClick="wodsubmit();" value="Save"/>';
-		
-        return $Html;
     }
 }
 ?>

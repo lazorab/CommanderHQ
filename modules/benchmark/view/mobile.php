@@ -47,7 +47,7 @@ $(document).ready(function() {
        
     });
     
-function benchmarksubmit()
+function Save()
 {
     var currentround = document.getElementById('addround').value;
     $("input:visible[id*='"+currentround+"___146___TimeLimit']").val($('#clock').val());

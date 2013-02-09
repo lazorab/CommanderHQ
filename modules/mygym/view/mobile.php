@@ -13,6 +13,15 @@ function Tabs(tab)
     }
 }
 
+function OpenHistory(ExerciseId)
+{
+    if($('#'+ExerciseId+'').hasClass('active')){
+        $('#'+ExerciseId+'').removeClass('active');
+    }else{
+        $('#'+ExerciseId+'').addClass('active');
+    } 
+}
+
 function getWOD()
 {    
     $('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif");?> src="/css/images/ajax-loader.gif" />');
@@ -71,8 +80,9 @@ function display(data)
     $('#AjaxLoading').html('');	
 }
 
-function wodsubmit()
+function Save()
 {
+    $("#TimeToComplete").val($('#clock').html());
     $.getJSON('ajax.php?module=mygym&action=validateform', $("#wodform").serialize(),messagedisplay);
 }
 
@@ -93,8 +103,22 @@ function messagedisplay(message)
         alert(message);
 }
 
+function editFunction(ThisId)
+{
+
+var x = document.getElementById(""+ThisId+"").innerHTML;
+
+var newvalue = prompt("Edit",x);
+
+if (newvalue!=null)
+  {
+  document.getElementById(""+ThisId+"").innerHTML=newvalue;
+  }
+}
+
 </script>
 
-
-
-        <?php echo $Display->Output();?>
+<br/>
+<div id="AjaxOutput">       
+    <?php echo $Display->Output();?>
+</div>

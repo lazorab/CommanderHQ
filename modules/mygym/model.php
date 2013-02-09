@@ -12,21 +12,31 @@ class MygymModel extends Model
 	{
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             if($this->UserIsSubscribed()){
-            $ActivityFields = $this->getActivityFields();
+                if($_REQUEST['TimeToComplete'] == "00:00:0"){
+                    $this->Message .= "Invalid value for Stopwatch\nOr\nStopwatch not Started!";
+                }else{
+                    $ActivityFields = $this->getActivityFields();
+                }
             //var_dump($ActivityFields);
             if($this->Message == ''){
-                $WorkoutTypeId = $this->getWodTypeId('My Gym');
+                $WorkoutTypeId = $this->getWorkoutTypeId('My Gym');
+                $TimeAttributeId = $this->getAttributeId('TimeToComplete');
+                //Save the time
+            $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue) 
+            VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['WorkoutId'].'", "'.$WorkoutTypeId.'", "0", "0", "'.$TimeAttributeId.'", "'.$_REQUEST['TimeToComplete'].'")';
+                $db->setQuery($SQL);
+                $db->Query();
         foreach($ActivityFields AS $ActivityField)
         {
             if($_REQUEST['origin'] == 'baseline'){
                 $SQL = 'INSERT INTO BaselineLog(MemberId, BaselineTypeId, ExerciseId, RoundNo, ActivityId, AttributeId, AttributeValue) 
-                VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$_REQUEST['WorkoutId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->recid.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
+                VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$_REQUEST['WorkoutId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
                 $db->setQuery($SQL);
                 $db->Query();
             }
             // ExerciseId only applies for benchmarks so we need it here!
-            $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue) 
-            VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['WorkoutId'].'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->recid.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
+            $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId) 
+            VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['WorkoutId'].'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'")';
                 $db->setQuery($SQL);
                 $db->Query();
             
@@ -50,54 +60,34 @@ class MygymModel extends Model
             $RoundNo = 0;
             $ExerciseId = 0;
             $Attribute = '';
-            $ExplodedKey = explode('___', $Name);
-            if(count($ExplodedKey) == 3)
+            $ExplodedKey = explode('_', $Name);
+            if(count($ExplodedKey) == 4)
             {
-                    $RoundNo = $ExplodedKey[0];
-                    $ExerciseId = $ExplodedKey[1];
-                    $ExerciseName = $this->getExerciseName($ExerciseId);
-                    $Attribute = $ExplodedKey[2];
-                if($Value == '' || $Value == '0' || $Value == '00:00:0' || $Value == $Attribute){
-                    if($this->Message == ''){
-                        $this->Message .= "Error - \n";
-                    }
-                    if($ExerciseName == 'Timed')
-                        $this->Message .= "Invalid value for Stopwatch\nOr\nStopwatch not Started!";
-                    else
-                        $this->Message .= "Invalid value for ".$ExerciseName." ".$Attribute."!\n";
+                $RoundNo = $ExplodedKey[0];
+                $ExerciseId = $ExplodedKey[1];
+                $ExerciseName = $this->getExerciseName($ExerciseId);
+                $Attribute = $ExplodedKey[2];
+                $UOM = $ExplodedKey[3];
+                if($Value == '' || $Value == '0' || $Value == $Attribute){
+                        $this->Message .= "Error - Invalid value for ".$ExerciseName." ".$Attribute."!\n";
                 }else{
-                $SQL='SELECT recid AS ExerciseId, 
+                    $SQL='SELECT recid AS ExerciseId, 
                         (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, 
-                        "'.$Value.'" AS AttributeValue, 
+                        "'.$Value.'" AS AttributeValue,
+                        "'.$UOM.'" AS UnitOfMeasureId, 
                         "'.$RoundNo.'" AS RoundNo 
                         FROM Exercises
                         WHERE recid = "'.$ExerciseId.'"';
-                $db->setQuery($SQL);
-		
-                $Row = $db->loadObject();
-                array_push($Activities, $Row);
+                    $db->setQuery($SQL);
+
+                    $Row = $db->loadObject();
+                    array_push($Activities, $Row);
                 }      
-            }
+            } 
         }
         return $Activities;
     }       
     
-        function getWodTypeId($Type)
-    {
-        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-        $SQL = 'SELECT recid FROM WorkoutTypes WHERE WorkoutType = "'.$Type.'"';
-        $db->setQuery($SQL); 
-        return $db->loadResult();
-    } 
-    
-            function getExerciseName($ExerciseId)
-        {
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT Exercise FROM Exercises WHERE recid = '.$ExerciseId.'';
-            $db->setQuery($SQL);
-            
-            return $db->loadResult();
-        }
         
         function getTopSelection()
         {
@@ -144,7 +134,8 @@ class MygymModel extends Model
                 LEFT JOIN WODTypes WT ON WT.recid = WW.WodTypeId
                 WHERE MD.MemberId = "'.$_SESSION['UID'].'"
                 AND WodDate = CURDATE()
-                GROUP BY WodDate';
+                GROUP BY WodId
+                ORDER BY WodDate';
 
             $db->setQuery($SQL);
             return $db->loadObjectList();	
@@ -204,6 +195,7 @@ class MygymModel extends Model
                         E.recid AS ExerciseId, 
                         A.Attribute, 
                        '.$AttributeValue.' AS AttributeValue,
+                        WD.UnitOfMeasureId,   
                         UOM.UnitOfMeasure,
                         UOM.ConversionFactor,
                         WW.Routine AS RoundNo,
@@ -218,6 +210,7 @@ class MygymModel extends Model
 			WHERE WW.WodDate = CURDATE() AND WW.WodTypeId = '.$WodTypeId.'
 			ORDER BY OrderBy, RoundNo, Exercise, Attribute';
             //}
+            //    var_dump($SQL);
             $db->setQuery($SQL);
             return $db->loadObjectList();
 	}      
@@ -418,31 +411,6 @@ class MygymModel extends Model
             $Description .= $WorkoutType;
             return $Description;           
         }       
-	
-	function getWODTypes()
-	{
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT recid, WODType AS ActivityType FROM WODTypes';
-            $db->setQuery($SQL);
-            return $db->loadObjectList();
-	}		
-	
-	function getMemberGym()
-	{
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT RG.AffiliateId, RG.GymName, RG.City, RG.Region, RG.URL
-		FROM Affiliates RG
-		JOIN MemberDetails MD ON MD.GymId = RG.AffiliateId
-		WHERE MD.MemberId = "'.$_SESSION['UID'].'"';
-            $db->setQuery($SQL);
-            $db->Query();
-            if($db->getNumRows() > 0){
-		$MemberGym = $db->loadObject();
-            }
-            else{
-		$MemberGym = false;
-            }
-            return $MemberGym;
-	}
+			
 }
 ?>

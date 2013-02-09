@@ -53,8 +53,8 @@ class CustomModel extends Model
 	{
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             if($this->UserIsSubscribed()){
-                $SQL = 'INSERT INTO Exercises(Exercise, Acronym) 
-                    VALUES("'.$_REQUEST['NewExercise'].'", "'.$_REQUEST['Acronym'].'")';
+                $SQL = 'INSERT INTO Exercises(Exercise, Acronym, CustomOption) 
+                    VALUES("'.$_REQUEST['NewExercise'].'", "'.$_REQUEST['Acronym'].'", "'.$_SESSION['UID'].'")';
                 $db->setQuery($SQL);
                 $db->Query();
                 $ExerciseId = $db->insertid();
@@ -71,23 +71,7 @@ class CustomModel extends Model
             return $Message;  
         }
         
-	function getAttributes()
-	{
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT recid, Attribute FROM Attributes';
-            $db->setQuery($SQL);
-		
-            return $db->loadObjectList(); 
-	}
-        
-        function getExerciseName($ExerciseId)
-        {
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT Exercise FROM Exercises WHERE recid = '.$ExerciseId.'';
-            $db->setQuery($SQL);
-            
-            return $db->loadResult();
-        }
+
     
     function getActivityFields()
     {
@@ -152,34 +136,7 @@ class CustomModel extends Model
         return $db->loadResult();
     }  
     
-    function getWorkoutTypes()
-    {
-        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-	$SQL = 'SELECT recid, WorkoutType as ActivityType 
-                FROM WorkoutRoutineTypes 
-                ORDER BY ActivityType';
-	$db->setQuery($SQL);
-		
-	return $db->loadObjectList();        
-    }
-	
-	function getWorkoutRoutineTypeId($type)
-	{
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT recid FROM WorkoutRoutineTypes WHERE WorkoutType = "'.$type.'"';
-            $db->setQuery($SQL);
-            
-            return $db->loadResult();
-	}
-	
-	function getAttributeId($attribute)
-	{
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT recid FROM Attributes WHERE Attribute = "'.$attribute.'"';
-            $db->setQuery($SQL);
-            
-            return $db->loadResult();	
-	}  
+ 
     
     function getMemberActivities()
     {
@@ -198,43 +155,5 @@ class CustomModel extends Model
 		
 	return $db->loadObjectList();
     }
-	
-	function getExercises()
-	{
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-
-        $SQL = 'SELECT DISTINCT E.recid AS ExerciseId, 
-            E.Exercise AS ActivityName,
-            E.Acronym
-            FROM Exercises E
-            LEFT JOIN ExerciseAttributes EA ON EA.ExerciseId = E.recid
-            ORDER BY ActivityName';
-            $db->setQuery($SQL);
-		
-            return $db->loadObjectList();	
-	}    
-
-	function getExerciseAttributes($Exercise)
-	{
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-
-            $SQL = 'SELECT DISTINCT E.recid AS ExerciseId, 
-			E.Exercise AS ActivityName,
-                        CASE 
-                            WHEN E.Acronym <> ""
-                            THEN E.Acronym
-                            ELSE E.Exercise
-                        END
-                        AS InputFieldName,
-			A.Attribute
-			FROM ExerciseAttributes EA
-			LEFT JOIN Attributes A ON EA.AttributeId = A.recid
-			LEFT JOIN Exercises E ON EA.ExerciseId = E.recid
-			WHERE E.Exercise = "'.$Exercise.'"
-			ORDER BY ActivityName, Attribute';
-            $db->setQuery($SQL);
-		
-            return $db->loadObjectList();	
-	}	
 }
 ?>

@@ -221,9 +221,8 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutId']))
 					$Chtml = '';
 					$Bhtml = '';
 				}	
-    $html.='</div>';
+    $html.='</div><br/><br/>';
     $html.=$Clock;
-    $html.='<input class="buttongroup" type="button" onClick="benchmarksubmit();" value="Save"/>';
     $html.='</form><div class="clear"></div><br/>';		
 
 }
@@ -394,46 +393,6 @@ return $html;
             $Html .= ''.$this->Benchmark->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span>';
             $Html .= '</li>';
             return $Html;	
-	}
-	
-    function getStopWatch()
-    {
-        //$Html ='<div id="timerContainer">'; 
-        $Html.='<br/>';
-        $Html.='<input type="text" id="clock" name="0___63___TimeToComplete" value="00:00:0" readonly/>';
-        $Html.='<input type="hidden" name="clockType" id="clockType" value=""/>';
-        $Html.='<input type="hidden" name="CountDown" id="CountDown" value=""/>';
-        $Html.='<input type="hidden" name="startstopbutton" id="startstopbutton" value=""/>';
-        $Html.='<br/><br/>';
-        $Html.='<div class="ui-grid-b">';
-        $Html.='<div class="ui-block-a">';
-        $Html.='<input id="resetbutton" class="buttongroup" onClick="reset();" type="button" value="Reset"/>';
-        $Html.='</div><div class="ui-block-b">';
-        $Html.='<input class="buttongroup" type="button" onClick="startstop();" value="Start"/>';
-        $Html.='</div><div class="ui-block-c">';
-        $Html.='<input class="buttongroup" type="button" onClick="startstop();" value="Stop"/>';
-        $Html.='</div></div>'; 
-        //$Html.='</div>';      
-
-        return $Html;
-    }
-	
-    function getCountDown($Time)
-    {
-        $TimeToComplete = $Time;
-        $StartStopButton = 'Start';
-        if(isset($_REQUEST['0___63___CountDown'])){
-            $TimeToComplete = $_REQUEST['0___63___CountDown'];
-            if($TimeToComplete != $Time)
-                $StartStopButton = 'Stop';
-        }
-	$Html ='<input type="hidden" name="0___63___CountDown" id="CountDown" value="'.$Time.'"/>';
-        $Html.='<input type="hidden" name="clockType" id="clockType" value="timer"/>';
-        $Html.='<input id="clock" name="timer" value="'.$TimeToComplete.'"/>';
-        $Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstopcountdown();" value="'.$StartStopButton.'"/>';
-        $Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetcountdown();" value="Reset"/>';
-		
-        return $Html;
-    }	
+	}	
 }
 ?>

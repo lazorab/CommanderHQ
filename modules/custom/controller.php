@@ -466,41 +466,6 @@ class CustomController extends Controller
         return $Html;
     }
     
-    function getStopWatch()
-    {
-        $ExerciseId = 63;
-        $TimeToComplete = '00:00:0';
-        $StartStopButton = 'Start';
-        if(isset($_REQUEST[''.$ExerciseId.'___TimeToComplete'])){
-            $TimeToComplete = $_REQUEST[''.$ExerciseId.'___TimeToComplete'];
-            if($TimeToComplete != '00:00:0')
-                $StartStopButton = 'Stop';
-        }
-     
-	//$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="clockControl()" value="'.$StartStopButton.'"/>';
-	//$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
-
-        return $Html;
-    }
-    
-	function getStopWatch_old()
-    {
-	$RoundNo = 0;
-        $ExerciseId = 63;
-        $TimeToComplete = '00:00:0';
-        $StartStopButton = 'Start';
-        if(isset($_REQUEST[''.$ExerciseId.'___TimeToComplete'])){
-            $TimeToComplete = $_REQUEST[''.$ExerciseId.'___TimeToComplete'];
-            if($TimeToComplete != '00:00:0')
-                $StartStopButton = 'Stop';
-        }
-	$Html ='<input type="text" id="clock" name="'.$ExerciseId.'___TimeToComplete[]" value="'.$TimeToComplete.'" readonly/>';
-	$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="'.$StartStopButton.'"/>';
-	$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
-
-        return $Html;
-    }
-    
     function getWeight($exerciseId)
     {
 		$RENDER = new Image();

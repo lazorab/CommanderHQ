@@ -82,7 +82,7 @@ class UploadModel extends Model
                             <input type="hidden" name="ThisRoutine___'.$ExerciseId.'___HUOM" value="'.$_REQUEST['HUOM'].'"/></td>';//HeightUnitOfMeasure
                 }
                 if(isset($_REQUEST['Distance'])){
-                    $Message .= '<td>Distance:'.$_REQUEST['Distance'].''.$_REQUEST['DUOM'].'<input type="hidden" name="ThisRoutine___'.$ExerciseId.'___Distance" value="'.$_REQUEST['Distance'].'"/>
+                    $Message .= '<td>Distance:'.$_REQUEST['Distance'].'<input type="hidden" name="ThisRoutine___'.$ExerciseId.'___Distance" value="'.$_REQUEST['Distance'].'"/>
                         '.$this->getUnitOfMeasure($_REQUEST['DUOM']).'<input type="hidden" name="ThisRoutine___'.$ExerciseId.'___DUOM" value="'.$_REQUEST['DUOM'].'"/></td>';//DistanceUnitOfMeasure
                 }
                 if(isset($_REQUEST['Reps'])){

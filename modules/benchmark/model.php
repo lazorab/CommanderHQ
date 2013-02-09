@@ -7,15 +7,6 @@ class BenchmarkModel extends Model
             parent::__construct();	
 	}
 	
-        function getExerciseName($ExerciseId)
-        {
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT Exercise FROM Exercises WHERE recid = '.$ExerciseId.'';
-            $db->setQuery($SQL);
-            
-            return $db->loadResult();
-        }
-	
 	function getCategory($Id)
 	{
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
@@ -254,22 +245,7 @@ class BenchmarkModel extends Model
             $db->setQuery($SQL);
 		
             return $db->loadObjectList();
-	}	
-	
-	function getExerciseAttributes()
-	{
-        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-        $SQL = 'SELECT E.recid AS Id, 
-		E.Exercise AS WorkoutName,
-                E.Acronym, 
-		A.Attribute
-		FROM Attributes A
-		JOIN ExerciseAttributes EA ON EA.AttributeId = A.recid
-		JOIN Exercises E ON EA.ExerciseId = E.recid';
-            $db->setQuery($SQL);
-		
-            return $db->loadObjectList();	
-	}	
+	}		
 	
     function Log()
 	{
@@ -346,14 +322,6 @@ class BenchmarkModel extends Model
             return $this->Message;
 	}
 	
-	function getAttributes()
-	{
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT recid AS Id, Attribute FROM Attributes';	
-            $db->setQuery($SQL);
-		
-            return $db->loadObjectList(); 
-	}
     
     function getActivityFields()
     {
@@ -442,15 +410,7 @@ class BenchmarkModel extends Model
                 }
             }
         }
-
-    function getWorkoutTypeId($Type)
-    {
-        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-        $SQL = 'SELECT recid FROM WorkoutTypes WHERE WorkoutType = "'.$Type.'"';
-        $db->setQuery($SQL);
-            
-        return $db->loadResult();
-    }		
+		
 
 	function OverallLevelAchieved()
 	{

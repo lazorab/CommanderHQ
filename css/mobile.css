@@ -288,23 +288,32 @@ font-size:medium;
 	font-size:medium;
 }
 
-#timerContainer{
-    margin:6% auto 6% auto;
-    width:88%;
+.StopwatchButton{
+    background-color: #EEEEEE;
+    width:32%;
+    float:left;
 }
 
 #clock{
-	background-color: #EEEEEE;
+    background-color: #EEEEEE;
     font-size: 30px;
     font-weight: bold;
-    padding: 1%;
+
     text-align: center;
     width: 96%;
-	text-align:center;
-	font-weight:bold;
-	border-radius: 10px; 
-	-moz-border-radius: 10px; 
-	-webkit-border-radius: 10px;
+    text-align:center;
+    font-weight:bold;
+    
+}
+
+.ExerciseHistory{
+    color:red;
+    display:none;
+}
+
+.ExerciseHistory.active{
+    color:red;
+    display:block;
 }
 
 #resetbutton{

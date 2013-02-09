@@ -147,6 +147,51 @@ class UploadController extends Controller
 
             return $Message;  
         }
+        
+        function AddNewAdvancedExercise($ExerciseId)
+	{
+            $Model = new UploadModel;
+            if(isset($_REQUEST['NewExercise']) && $ExerciseId > 0)
+                $ExerciseName = $_REQUEST['NewExercise'];
+ 
+            $Attributes = $Model->getExerciseAttributes($ExerciseId);
+                $Message = '<input type="hidden" id="aExercise" name="Exercise" value="'.$ExerciseId.'"/>';
+                foreach($Attributes as $Attribute){
+                    $UnitsOfMeasure = $Model->getUnitsOfMeasure($Attribute->recid);
+                if($Attribute->Attribute == 'Weight'){
+                    $Message .= '<input placeholder="Weight(M)" size="8" type="text" id="amWeight" name="mWeight" value="'.$_REQUEST['mWeight'].'"/> 
+                                <input placeholder="Weight(F)" size="8" type="text" id="afWeight" name="fWeight" value="'.$_REQUEST['fWeight'].'"/>';
+                    $Message .= '<select name="WUOM" id="aWUOM">';
+                    foreach($UnitsOfMeasure as $Unit){
+                    $Message .= '<option value="'.$Unit->recid.'">'.$Unit->UnitDescription.'</option>'; 
+                    }
+                    $Message .= '</select>';                   
+                }
+                if($Attribute->Attribute == 'Height'){
+                    $Message .= '<input placeholder="Height(M)" size="8" type="text" id="amHeight" name="mHeight" value="'.$_REQUEST['mHeight'].'"/> 
+                                <input placeholder="Height(M)" size="8" type="text" id="afHeight" name="fHeight" value="'.$_REQUEST['fHeight'].'"/>';
+                    $Message .= '<select name="HUOM" id="aHUOM">';
+                    foreach($UnitsOfMeasure as $Unit){
+                    $Message .= '<option value="'.$Unit->recid.'">'.$Unit->UnitDescription.'</option>'; 
+                    }   
+                    $Message .= '</select>';                   
+                }
+                if($Attribute->Attribute == 'Distance'){
+                    $Message .= '<input placeholder="Distance" size="8" type="text" id="aDistance" name="Distance" value="'.$_REQUEST['Distance'].'"/>';
+                    $Message .= '<select name="DUOM" id="aDUOM">';
+                    foreach($UnitsOfMeasure as $Unit){
+                    $Message .= '<option value="'.$Unit->recid.'">'.$Unit->UnitDescription.'</option>'; 
+                    }
+                    $Message .= '</select>';
+                }
+                if($Attribute->Attribute == 'Reps'){
+                    $Message .= '<input placeholder="Reps" size="3" type="text" id="aReps" name="Reps" value="'.$_REQUEST['Reps'].'"/>';
+                } 
+                }
+                $Message .= '<input class="buttongroup" type="button" name="btnsubmit" value="Add" onClick="addexerciseAdvanced();"/>';
+
+            return $Message;  
+        }
     
     function getExercises()
     {

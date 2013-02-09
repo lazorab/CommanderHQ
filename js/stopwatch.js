@@ -201,7 +201,7 @@ function Stop()
 		
 	function counter(starttime)
 		{
-		output = document.getElementById('output');
+		//output = document.getElementById('output');
 		clock = document.getElementById('clock');
 		currenttime = new Date();
 		var timediff = currenttime.getTime() - starttime;
@@ -211,7 +211,7 @@ function Stop()
 			}
 		if(flagclock == 1)
 			{
-			clock.value = formattime(timediff,'');
+			clock.innerHTML = formattime(timediff,'');
 			refresh = setTimeout('counter(' + starttime + ');',10);
 			}
 		else
@@ -265,7 +265,7 @@ function Stop()
 		stoptime = 0;
 		splitdate = '';
 		window.clearTimeout(refresh);
-		output.value = '';
+		//output.value = '';
 		splitcounter = 0;
 		if(flagclock == 1)
 			{
@@ -275,7 +275,7 @@ function Stop()
 			}
 		else
 			{
-			clock.value = "00:00:0";
+			clock.innerHTML = "00:00:0";
 			}
 		}               
 		

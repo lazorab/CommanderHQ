@@ -362,7 +362,7 @@ function RemoveFromList(RowId,RoundNo)
     }
 }
 
-function customsubmit()
+function Save()
 {
     if(document.getElementById('rowcounter').value == 0){
         alert('No Exercises selected!');

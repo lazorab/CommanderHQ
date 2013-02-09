@@ -19,7 +19,7 @@ function getInputFields(exerciseId){
 }
 
 function getAdvancedInputFields(exerciseId){
-    $.getJSON('ajax.php?module=upload&action=getInputFields', {ExerciseId:exerciseId},ainputdisplay);
+    $.getJSON('ajax.php?module=upload&action=getAdvancedInputFields', {ExerciseId:exerciseId},ainputdisplay);
 }
 
 function inputdisplay(data){
@@ -181,27 +181,27 @@ function addexercise()
     var MHeight = $('#mHeight').val();
     var FHeight = $('#fHeight').val();
     var Huom = $('#HUOM').val();
-    var dist = $('#Dist').val();
+    var dist = $('#Distance').val();
     var Duom = $('#DUOM').val();
     var reps = $('#Reps').val();
     
-    $.getJSON('ajax.php?module=upload&action=validateform', {Exercise:exercise, mWeight:MWeight, fWeight:FWeight, WUOM:Wuom, fHeight:FHeight, HUOM:Huom, mHeight:MHeight, Dist:dist, DUOM:Duom, Reps:reps},wresult);
+    $.getJSON('ajax.php?module=upload&action=validateform', {Exercise:exercise, mWeight:MWeight, fWeight:FWeight, WUOM:Wuom, fHeight:FHeight, HUOM:Huom, mHeight:MHeight, Distance:dist, DUOM:Duom, Reps:reps},wresult);
 }
 
 function addexerciseAdvanced()
 {
-    var exercise = $('#aexerciseselect').val();
+    var exercise = $('#aExercise').val();
     var MWeight = $('#amWeight').val();
     var FWeight = $('#afWeight').val();
     var Wuom = $('#aWUOM').val();
     var MHeight = $('#amHeight').val();
     var FHeight = $('#afHeight').val();
     var Huom = $('#aHUOM').val();
-    var dist = $('#aDist').val();
+    var dist = $('#aDistance').val();
     var Duom = $('#aDUOM').val();
     var reps = $('#aReps').val();
     
-    $.getJSON('ajax.php?module=upload&action=validateform', {Exercise:exercise, mWeight:MWeight, fWeight:FWeight, WUOM:Wuom, fHeight:FHeight, HUOM:Huom, mHeight:MHeight, Dist:dist, DUOM:Duom, Reps:reps},aresult);
+    $.getJSON('ajax.php?module=upload&action=validateform', {Exercise:exercise, mWeight:MWeight, fWeight:FWeight, WUOM:Wuom, fHeight:FHeight, HUOM:Huom, mHeight:MHeight, Distance:dist, DUOM:Duom, Reps:reps},aresult);
 }
 
 function Remove(RowId)
@@ -373,6 +373,7 @@ function addRound()
 <div class="select_exercise">
 <form action="index.php" id="advancedform" name="advancedform">
 <input type="hidden" name="form" value="submitted"/>
+<input type="hidden" name="module" value="upload"/>
 <input type="hidden" name="WodTypeId" value="4"/>
 <input type="hidden" name="rowcount" id="arowcounter" value="0"/>
 <input type="hidden" name="RoutineCounter" id="aRoutineCounter" value="1"/>
