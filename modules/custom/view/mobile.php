@@ -186,7 +186,7 @@ function SelectionControl(exercise)
     if(exercise == 'Add New')
         addNewExercise();
     else
-        DisplayExercise(exercise);
+        ExerciseInputs(exercise);
 }
 
 function addNewExercise()
@@ -205,7 +205,73 @@ function addNewExercise()
     $('.numberinput').textinput();
 }
 
-function DisplayExercise(exercise)
+function addactivity(data)
+{
+    $('#ExerciseInputs').html('');
+    $('#activity_list').append(data);
+    $("#exercise option[value='none']").attr("selected","selected");
+}
+
+function OpenHistory(ExerciseId)
+{
+    if($('#'+ExerciseId+'').hasClass('active')){
+        $('#'+ExerciseId+'').removeClass('active');
+    }else{
+        $('#'+ExerciseId+'').addClass('active');
+    } 
+}
+
+function ExerciseInputs(exercise)
+{
+     /*
+    Returned Values:
+    ExerciseId
+    ActivityName
+    InputFieldName
+    Attribute     
+    */
+    $.ajax({url:'ajax.php?module=custom',data:{chosenexercise:exercise,encode:'json'},dataType:"json",success:function(json) { 
+        var Html = '<div style="width:50%"><form id="activityform" name="activityform"><input type="hidden" name="thisform" value="addactivity"/>';  
+        var i = document.getElementById('rowcounter').value;
+        var RoundNo = document.getElementById('addround').value;     
+        $.each(json, function() { 
+         Html += '';
+          
+         if(this.UOMId > 0){ 
+            Html += '<div style="float:left">'+this.Attribute+'<input size="3" type="number" id="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___'+this.UOMId+'" name="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___'+this.UOMId+'"  placeholder="'+this.UOM+'"/></div>';                
+         }else{
+            Html += '<div style="float:left">'+this.Attribute+'<input size="3" type="number" id="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___0" name="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___0"/></div>';             
+         }
+         
+        if(this.Attribute == 'Distance'){
+            Html += '<div style="float:left">';
+            Html += '<select name="'+RoundNo+'_'+this.ExerciseId+'_Distance_UOM">';
+            if('<?php echo $Display->SystemOfMeasure();?>' == 'Metric'){
+                Html += '<option value="2">Metres</option>';
+                Html += '<option value="1">Kilometres</option>';
+                Html += '</select>';               
+            }else{
+                Html += '<option value="3">Miles</option>';
+                Html += '<option value="4">Yards</option>';
+                Html += '</select>';                
+            } 
+            Html += '</div>';
+        }        
+      });
+      Html += '<div style="float:right;margin:10px 0 0 0"><input type="button" id="" name="" onClick="AddActivity();" value="Add Activity"/></div></form></div>';
+        $('#ExerciseInputs').html(Html);
+    }});  
+    return false;   
+}
+
+function AddActivity()
+{
+    $.getJSON('ajax.php?module=custom&action=validateform', $("#activityform").serialize(),addactivity);     
+}
+
+
+
+function _DisplayExercise(exercise)
 {
     //$.getJSON("ajax.php?module=custom",{chosenexercise:exercise},function(json) {
     $.ajax({url:'ajax.php?module=custom',data:{chosenexercise:exercise,encode:'json'},dataType:"json",success:function(json) { 
@@ -331,7 +397,6 @@ function DisplayExercise(exercise)
 
         $('.textinput').textinput();
         $('.numberinput').textinput();
-        $("#exercise option[value='none']").attr("selected","selected");
     }}); 
         
     $("#exercise option[value='none']").attr("selected","selected");
@@ -407,6 +472,14 @@ function clockSelect(type)
         $('#timerContainer').addClass('active');
     }
     document.getElementById('clockType').value = type;
+}
+
+function ShowHideClock()
+{
+    if($('#timerContainer').hasClass('active'))
+        $('#timerContainer').removeClass('active');
+    else    
+        $('#timerContainer').addClass('active');
 }
 
 function clockControl()

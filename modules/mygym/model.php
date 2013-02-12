@@ -30,13 +30,13 @@ class MygymModel extends Model
         {
             if($_REQUEST['origin'] == 'baseline'){
                 $SQL = 'INSERT INTO BaselineLog(MemberId, BaselineTypeId, ExerciseId, RoundNo, ActivityId, AttributeId, AttributeValue) 
-                VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$_REQUEST['WorkoutId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
+                VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$_REQUEST['WorkoutId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'")';
                 $db->setQuery($SQL);
                 $db->Query();
             }
             // ExerciseId only applies for benchmarks so we need it here!
             $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId) 
-            VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['WorkoutId'].'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'")';
+            VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['WorkoutId'].'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'")';
                 $db->setQuery($SQL);
                 $db->Query();
             
@@ -72,7 +72,7 @@ class MygymModel extends Model
                         $this->Message .= "Error - Invalid value for ".$ExerciseName." ".$Attribute."!\n";
                 }else{
                     $SQL='SELECT recid AS ExerciseId, 
-                        (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, 
+                        (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS AttributeId, 
                         "'.$Value.'" AS AttributeValue,
                         "'.$UOM.'" AS UnitOfMeasureId, 
                         "'.$RoundNo.'" AS RoundNo 

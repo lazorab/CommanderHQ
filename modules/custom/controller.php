@@ -23,13 +23,49 @@ class CustomController extends Controller
         $Model = new CustomModel;
         if(isset($_REQUEST['NewExercise'])){
             $Message = $this->SaveNewExercise();
-        }
-        else{
+        }else if($_REQUEST['thisform'] == 'addactivity'){
+            $Message = $this->AddActivity();
+        }else{
             $Message = $Model->Save();
         }       
         return $Message;
     }      
         
+    function AddActivity(){
+        /*
+        ExerciseId
+        Exercise
+        Attribute
+        AttributeValue
+        RoundNo        
+         */
+        $Html='';
+        $Model = new CustomModel;
+        $ActivityFields = $Model->getActivityFields();
+        $ExerciseId='';
+        $i=0;
+        foreach($ActivityFields as $Activity){
+            if($ExerciseId != $Activity->ExerciseId){ 
+                if($ExerciseId != null && $i > 0){
+                    $Html.=''.$this->getExerciseHistory($ExerciseId).'';
+                }               
+                $Html.='<br/><div onClick="OpenHistory(\''.$Activity->ExerciseId.'\');">'.$Activity->Exercise.'</div>';
+
+            }
+            if($i > 0)
+                $Html.= ' | ';
+            $Html.= ''.$Activity->Attribute.' : '.$Activity->AttributeValue.''.$Activity->UnitOfMeasure.'';
+            $ExerciseId = $Activity->ExerciseId;
+            $i++;
+        }
+        if($ExerciseId != null){
+            $Html.=''.$this->getExerciseHistory($ExerciseId).'';
+        }
+        $Html.='<br/>';
+        
+        return $Html;
+    }
+    
     function Validate()
     {
         $Message = '';
@@ -62,78 +98,61 @@ class CustomController extends Controller
     function MainOutput()
     {
 	$Html = '';
-	
         $Html .= '<form action="index.php" id="customform" name="form">
         <input type="hidden" name="form" value="submitted"/>
         <input type="hidden" name="origin" value="'.$this->Origin.'"/>
         <input type="hidden" name="rowcount" id="rowcounter" value="0"/>
         <input type="hidden" name="Round1Counter" id="Round1Counter" value="0"/>
-        <input type="hidden" name="Rounds" id="addround" value="1"/>';
-        
-        $Html.='<textarea name="descr" placeholder="Add your notes here"></textarea>';
-        
+        <input type="hidden" name="Rounds" id="addround" value="1"/>
+        <input type="text" name="CustomName" id="CustomName" placeholder="Name for WOD" value=""/>';
         $Html .= '<div class="ui-grid-b">';
         $Html .= '<div id="Round1Label"></div>';
-        $Html .= '<div id="new_exercise">'.$this->ChosenExercises().'</div>';
+        $Html .= '<textarea name="descr" placeholder="Describe your wod"></textarea>';       
+        $Html .= '<div id="activity_list">'.$this->ChosenExercises().'</div>';
         $Html .= '</div>';
         
         $Html .= '<div class="ui-grid-b">';
         $Html .= '<div id="add_exercise">'.$this->AddExercise().'</div>';
         $Html .= '</div>';       
 
-        $Html.='<div id="timerContainer">';   
-        $Html.='<input type="text" id="clock" name="0___63___TimeToComplete" value="00:00:0" readonly/>';
-        $Html.='<input type="hidden" name="clockType" id="clockType" value=""/>';
-        $Html.='<input type="hidden" name="CountDown" id="CountDown" value=""/>';
-        $Html.='<input type="hidden" name="startstopbutton" id="startstopbutton" value=""/>';
-        $Html .= '<br/>';
+        $Html .= '<div id="timerContainer">';   
+        $Html .= $this->getStopWatch();
         
-        $Html.='<div id="ClockSelect">';
-        $Html.='<fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">';
-        $Html.='<input type="radio" name="radio-choice-a" onClick="clockSelect(\'timer\');" id="radio-choice-a" value="timer"/>';
-        $Html.='<label for="radio-choice-a">Countdown</label>';
-        $Html.='<input type="radio" name="radio-choice-a" checked="checked" onClick="clockSelect(\'stopwatch\');" id="radio-choice-b" value="stopwatch"/>';
-        $Html.='<label for="radio-choice-b">Stopwatch</label>';
-        $Html.='</fieldset>';
-        $Html.='</div>'; 
-        
-        $Html .= '<br/>';
-        
-        $Html.='<div class="ui-grid-b">';
-        $Html.='<div class="ui-block-a">';
-        $Html.='<input id="resetbutton" class="buttongroup" onClick="reset();" type="button" value="Reset"/>';
-        $Html.='</div><div class="ui-block-b">';
-        $Html.='<input class="buttongroup" type="button" onClick="Start();" value="Start"/>';
-        $Html.='</div><div class="ui-block-c">';
-        $Html.='<input class="buttongroup" type="button" onClick="Stop();" value="Stop"/>';
-        $Html.='</div></div>';  
+        //$Html.='<div id="ClockSelect">';
+        //$Html.='<fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">';
+        //$Html.='<input type="radio" name="radio-choice-a" onClick="clockSelect(\'timer\');" id="radio-choice-a" value="timer"/>';
+        //$Html.='<label for="radio-choice-a">Countdown</label>';
+        //$Html.='<input type="radio" name="radio-choice-a" checked="checked" onClick="clockSelect(\'stopwatch\');" id="radio-choice-b" value="stopwatch"/>';
+        //$Html.='<label for="radio-choice-b">Stopwatch</label>';
+        //$Html.='</fieldset>';
+        //$Html.='</div>';  
 
-        $Html.='</div>';
+        $Html .= '</div>';
 
         $Html .= '<div class="ui-grid-a">';
         $Html .= '<div class="ui-block-a selectParent" id="exercises">';
         $Html .= $this->getExercises();
-        $Html.='</div><div class="ui-block-b">';
-        $Html.='<input data-role="none" class="buttongroup addARound" type="button" onClick="addRound();" value="Add a Round"/>';
-        $Html.='</div></div>';  
+        $Html .= '</div><div class="ui-block-b">';
+        $Html .= '<input class="buttongroup" type="button" onClick="addRound();" value="Add a Round"/>';
+        $Html .= '</div></div>';  
         
-        $Html.='<div class="ui-grid-a">';
-        $Html.='<div class="ui-block-a">';
-        $Html.='<input data-role="none" class="buttongroup timeEvent" type="button" onClick="clockSelect(\'select\');" value="Time Event"/>';
-        $Html.='</div><div class="ui-block-b">';
-        $Html.='<input data-role="none" class="buttongroup save" type="button" value="Save" onClick="customsubmit();"/>';
-        $Html.='</div></div>';   
+        $Html .= '<div class="ui-grid-a">';
+        $Html .= '<div class="ui-block-a">';
+        $Html .= '<input class="buttongroup" type="button" onClick="ShowHideClock();" value="Time Event"/>';
+        $Html .= '</div><div class="ui-block-b">';
+        $Html .= '<input class="buttongroup" type="button" value="Save" onClick="Save();"/>';
+        $Html .= '</div></div>';   
         
-	if($_REQUEST['form'] == 'submitted'){
-	$Html .= '<div class="ui-grid-c">';
-        $Html .= '<div class="ui-block-a"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#3f2b44" value="Weight" readonly="readonly"/></div>';
-        $Html .= '<div class="ui-block-b"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#66486e" value="Height" readonly="readonly"/></div>';
-        $Html .= '<div class="ui-block-c"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#6f747a" value="Distance" readonly="readonly"/></div>';
-        $Html .= '<div class="ui-block-d"><input type="text" data-role="none" style="width:80%;color:black;font-weight:bold;background-color:#ccff66" value="Reps" readonly="readonly"/></div>';
-        $Html .= '</div>';
-	}
+	//if($_REQUEST['form'] == 'submitted'){
+	//$Html .= '<div class="ui-grid-c">';
+        //$Html .= '<div class="ui-block-a"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#3f2b44" value="Weight" readonly="readonly"/></div>';
+        //$Html .= '<div class="ui-block-b"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#66486e" value="Height" readonly="readonly"/></div>';
+       // $Html .= '<div class="ui-block-c"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#6f747a" value="Distance" readonly="readonly"/></div>';
+        //$Html .= '<div class="ui-block-d"><input type="text" data-role="none" style="width:80%;color:black;font-weight:bold;background-color:#ccff66" value="Reps" readonly="readonly"/></div>';
+        //$Html .= '</div>';
+	//}
         
-        $Html.='</form><div class="clear"></div><br/>';
+        $Html .= '</form><div class="clear"></div><br/>';
      	
 	return $Html;
     }
@@ -148,9 +167,40 @@ class CustomController extends Controller
 	foreach($Exercises AS $Exercise){
             $Html .= '<option value="'.$Exercise->ActivityName.'">'.$Exercise->ActivityName.'</option>';
 	}
-        $Html .= '</select>';
+        $Html .= '</select><div id="ExerciseInputs"></div>';
 	return $Html;
     }
+    
+     function getExerciseHistory($ThisExercise)
+        {
+            $Model = new CustomModel;
+            $ExerciseHistory = $Model->getExerciseHistory($ThisExercise);
+            $i=0;
+            $TimeCreated = '';
+            $Attributes = array();
+            $Html = '<div id="'.$ThisExercise.'" class="ExerciseHistory">';
+            foreach($ExerciseHistory as $Detail){
+                if($i < 3){
+                if($i > 0){
+                    if($Detail->TimeCreated != $TimeCreated)
+                        $Html.='<br/>';
+                    else
+                        $Html.=' | ';
+                }
+                $Html.=''.$Detail->Attribute.' : '.$Detail->AttributeValue.''.$Detail->UnitOfMeasure.'';
+                $i++;
+                }
+                if(!in_array($Detail->Attribute,$Attributes)){array_push($Attributes,$Detail->Attribute);};
+                $TimeCreated = $Detail->TimeCreated;
+            }
+            $Html .= '<div style="width:50%">';
+            foreach($Attributes as $key=>$val){
+                $Html .= '<div style="float:right">'.$val.'<input size="3" type="number" id="" name=""/></div>';
+            }
+            $Html .= '<div style="float:right;margin:10px 0 0 0"><input type="button" id="" name="" onClick="" value="Update"/></div>';
+            $Html .= '</div><div class="clear"></div>';
+            return $Html;
+        }    
     
     function WorkoutTypes($Type){
         $Html='';

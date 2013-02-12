@@ -54,6 +54,15 @@ class Model
             return $db->loadResult();
         }
         
+        function getUnitOfMeasure($Id)
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT UnitOfMeasure FROM UnitsOfMeasure WHERE recid = "'.$Id.'"';
+            $db->setQuery($SQL);
+            
+            return $db->loadResult();
+        }        
+        
         function UserIsSubscribed()
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
@@ -172,17 +181,29 @@ class Model
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $SQL = 'SELECT DISTINCT E.recid AS ExerciseId, 
 			E.Exercise AS ActivityName,
-                        CASE 
-                            WHEN E.Acronym <> ""
-                            THEN E.Acronym
-                            ELSE E.Exercise
+                        CASE WHEN E.Acronym <> ""
+                        THEN E.Acronym
+                        ELSE E.Exercise
                         END
                         AS InputFieldName,
-			A.Attribute
+			A.Attribute,
+			CASE WHEN "'.$this->getSystemOfMeasure().'" = "Metric"
+			THEN (SELECT recid FROM UnitsOfMeasure WHERE A.recid = AttributeId AND Metric = 1 HAVING COUNT(recid) = 1)
+			ELSE (SELECT recid FROM UnitsOfMeasure WHERE A.recid = AttributeId AND Metric = 0 HAVING COUNT(recid) = 1)
+			END
+			AS UOMId,
+			CASE WHEN "'.$this->getSystemOfMeasure().'" = "Metric"
+			THEN (SELECT UnitOfMeasure FROM UnitsOfMeasure WHERE A.recid = AttributeId AND Metric = 1 HAVING COUNT(UnitOfMeasure) = 1)
+			ELSE (SELECT UnitOfMeasure FROM UnitsOfMeasure WHERE A.recid = AttributeId AND Metric = 0 HAVING COUNT(UnitOfMeasure) = 1)
+			END
+			AS UOM
 			FROM ExerciseAttributes EA
 			LEFT JOIN Attributes A ON EA.AttributeId = A.recid
 			LEFT JOIN Exercises E ON EA.ExerciseId = E.recid
 			WHERE E.Exercise = "'.$Exercise.'"
+                        AND A.Attribute <> "TimeToComplete"
+                        AND A.Attribute <> "Rounds"
+                        AND A.Attribute <> "Calories"
 			ORDER BY ActivityName, Attribute';
             $db->setQuery($SQL);
             return $db->loadObjectList();	
@@ -198,7 +219,7 @@ class Model
                 LEFT JOIN Exercises E ON E.recid = WL.ExerciseId
                 WHERE WL.ExerciseId = '.$Id.'
                 AND MemberId = "'.$_SESSION['UID'].'"
-                ORDER BY TimeCreated LIMIT 3';
+                ORDER BY TimeCreated DESC';
             //var_dump($SQL);
             $db->setQuery($SQL);
             return $db->loadObjectList();

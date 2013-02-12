@@ -12,7 +12,11 @@ class CustomModel extends Model
 	{
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             if($this->UserIsSubscribed()){
-            $ActivityFields = $this->getActivityFields();
+                if($_REQUEST['TimeToComplete'] == "00:00:0"){
+                    $this->Message .= "Invalid value for Stopwatch\nOr\nStopwatch not Started!";
+                }else{
+                    $ActivityFields = $this->getActivityFields();
+                }
             //var_dump($ActivityFields);
             if($this->Message == ''){
                 $WorkoutTypeId = $this->getCustomTypeId();
@@ -24,19 +28,19 @@ class CustomModel extends Model
             $CustomWorkoutId = $db->insertid();
         foreach($ActivityFields AS $ActivityField)
         {
-            $SQL = 'INSERT INTO CustomDetails(MemberId, CustomWorkoutId, ExerciseId, AttributeId, AttributeValue, RoundNo) 
-            VALUES("'.$_SESSION['UID'].'", "'.$CustomWorkoutId.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->RoundNo.'")';
+            $SQL = 'INSERT INTO CustomDetails(MemberId, CustomWorkoutId, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId, RoundNo) 
+            VALUES("'.$_SESSION['UID'].'", "'.$CustomWorkoutId.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'", "'.$ActivityField->RoundNo.'")';
             $db->setQuery($SQL);
             $db->Query();
             if($_REQUEST['origin'] == 'baseline'){
-                $SQL = 'INSERT INTO BaselineLog(MemberId, BaselineTypeId, ExerciseId, RoundNo, ActivityId, AttributeId, AttributeValue) 
-                VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$_REQUEST['benchmarkId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
+                $SQL = 'INSERT INTO BaselineLog(MemberId, BaselineTypeId, ExerciseId, RoundNo, ActivityId, AttributeId, UnitOfMeasureId, AttributeValue) 
+                VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$_REQUEST['benchmarkId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'")';
                 $db->setQuery($SQL);
                 $db->Query();
             }
             // ExerciseId only applies for benchmarks so we need it here!
-            $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue) 
-            VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
+            $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId) 
+            VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'")';
                 $db->setQuery($SQL);
                 $db->Query();
             
@@ -85,24 +89,27 @@ class CustomModel extends Model
             $ExerciseId = 0;
             $Attribute = '';
             $ExplodedKey = explode('___', $Name);
-            if(count($ExplodedKey) == 3)
+            if(count($ExplodedKey) == 4)
             {
                     $RoundNo = $ExplodedKey[0];
                     $ExerciseId = $ExplodedKey[1];
                     $ExerciseName = $this->getExerciseName($ExerciseId);
                     $Attribute = $ExplodedKey[2];
+                    $UOMId = $ExplodedKey[3];
+                    if($UOMId == 0)
+                        $UOMId = $_REQUEST[''.$RoundNo.'_'.$ExerciseId.'_Distance_UOM'];
+                    $UOM = $this->getUnitOfMeasure($UOMId);
                 if($Value == '' || $Value == '0' || $Value == $Attribute){
-                    if($this->Message == ''){
-                        $this->Message .= "Error - \n";
-                    }
-                    if($ExerciseName == 'Timed')
-                        $this->Message .= "Invalid value for Stopwatch\nOr\nStopwatch not Started!";
-                    else
-                        $this->Message .= "Invalid value for ".$ExerciseName." ".$Attribute."!\n";
-                }else{
-                $SQL='SELECT recid AS ExerciseId, 
-                        (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, 
+                        $Value = 'max';
+                }
+                //else{
+                $SQL='SELECT recid AS ExerciseId,
+                        "'.$ExerciseName.'" AS Exercise,
+                        (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS AttributeId,
+                        "'.$Attribute.'" AS Attribute,    
                         "'.$Value.'" AS AttributeValue, 
+                        "'.$UOMId.'" AS UnitOfMeasureId,
+                        "'.$UOM.'" AS UnitOfMeasure,    
                         "'.$RoundNo.'" AS RoundNo 
                         FROM Exercises
                         WHERE recid = "'.$ExerciseId.'"';
@@ -110,7 +117,7 @@ class CustomModel extends Model
 		
                 $Row = $db->loadObject();
                 array_push($Activities, $Row);
-                }      
+                //}      
             }
         }
         return $Activities;
