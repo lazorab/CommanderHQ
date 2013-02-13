@@ -131,7 +131,8 @@ class MygymController extends Controller
         //$html.='<input type="checkbox" name="baseline" value="yes" data-role="none"/>';
         //$html.='Make this my baseline';
         $html.='<p>'.$WodDetails[0]->Notes.'</p>';
-        $html.='<div class="ui-grid-b">';
+        //$html.='<div class="ui-grid-b">';
+        $html = '<div data-role="collapsible-set" data-iconpos="right">';
         $ThisRound = '';
 	$ThisExerciseId = 0;
         //var_dump($WodDetails);
@@ -147,23 +148,33 @@ class MygymController extends Controller
 		else{
 			
 			if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0 && $ThisRound != $Detail->RoundNo){
-                            if($ThisExerciseId != null && $i > 0){
-                                $html.=''.$this->getExerciseHistory($ThisExerciseId).'';
+                            if($i > 0){
+                                //$html.= '</span></div>';
                             }
-                            $html.='<h2>'.$Detail->RoundNo.'</h2>';
-                            $html.='<br/><br/><div onClick="OpenHistory(\''.$Detail->ExerciseId.'\');">'.$Detail->Exercise.'</div>';
+                            if($ThisExerciseId != null && $i > 0){
+                                $html.='</span>'.$this->getExerciseHistory($ThisExerciseId).'</div>';
+                            }
+                            	
+                            //$html.= '</span></div>';
+                            $html.= '<h2>'.$Detail->RoundNo.'</h2>';
+                            $html.= '<div data-role="collapsible">';
+                            $html.= '<h2>'.$Detail->Exercise.'</h2><span style="font-size:small">';
+                            //$html = '<ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
+                            //$html.= '<li><a href="" onClick="OpenHistory(\''.$Detail->ExerciseId.'\');">'.$Detail->Exercise.'</a><li>';
                             
 			}
 			else if($ThisExerciseId != $Detail->ExerciseId){
+
                             if($ThisExerciseId != null && $i > 0){
-                                $html.=''.$this->getExerciseHistory($ThisExerciseId).'';
-                            }
-                            $html.='<br/><br/><div onClick="OpenHistory(\''.$Detail->ExerciseId.'\');">'.$Detail->Exercise.'</div>';
+                                $html.='</h2><p>'.$this->getExerciseHistory($ThisExerciseId).'</p></div>';
+                            }       
+                            $html.= '<div data-role="collapsible">';
+                            $html.= '<h2>'.$Detail->Exercise.'<br/>';
+                            //$html.= '<li data-icon="plus"><a href="" onClick="OpenHistory(\''.$Detail->ExerciseId.'\');">'.$Detail->Exercise.'<br/><span style="font-size:small">';
                             
                         }else{
                             $html.=' | ';
                         }
-                        
                         $html.=''.$Detail->Attribute.' : '.$Detail->AttributeValue.''.$Detail->UnitOfMeasure.'';
                         $html.='<input type="hidden" name="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_'.$UnitOfMeasureId.'" value="'.$Detail->AttributeValue.'">';
                 }
@@ -172,8 +183,9 @@ class MygymController extends Controller
         $i++;
 	}
                             if($ThisExerciseId != null && $i > 0){
-                                $html.=''.$this->getExerciseHistory($ThisExerciseId).'';
-                            }	
+                                $html.='</h2><p>'.$this->getExerciseHistory($ThisExerciseId).'</p></div>';
+                            }
+               //$html.= '</span></div>';             
     $html.='</div>';
     $html.=$Clock;
     $html.='</form><br/><br/>';		
@@ -184,12 +196,18 @@ class MygymController extends Controller
         
         function getExerciseHistory($ThisExercise)
         {
+            $Html='';
             $Model = new MygymModel;
             $ExerciseHistory = $Model->getExerciseHistory($ThisExercise);
+            if(count($ExerciseHistory) == 0){
+                $Html.='No History for activity';
+            }
             $i=0;
             $TimeCreated = '';
-            $Html = '<div id="'.$ThisExercise.'" class="ExerciseHistory">';
+            $Attributes = $Model->getExerciseIdAttributes($ThisExercise);
+            //$Html = '<div id="'.$ThisExercise.'" class="ExerciseHistory">';
             foreach($ExerciseHistory as $Detail){
+                if($i < 3){
                 if($i > 0){
                     if($Detail->TimeCreated != $TimeCreated)
                         $Html.='<br/>';
@@ -198,13 +216,16 @@ class MygymController extends Controller
                 }
                 $Html.=''.$Detail->Attribute.' : '.$Detail->AttributeValue.''.$Detail->UnitOfMeasure.'';
                 $i++;
+                }
                 $TimeCreated = $Detail->TimeCreated;
             }
-            $Html .= '<div style="width:50%"><div style="float:left">Weight<input size="3" type="number" id="" name="" placeholder="kg"/></div>';
-            $Html .= '<div style="float:right">Rounds<input size="3" type="number" id="" name=""/></div></div><br/>';
-            $Html .= '<div style="width:50%"><div style="float:left">Reps<input size="3" type="number" id="" name=""/></div>';
-            $Html .= '<div style="float:right;margin:10px 0 0 0"><input type="button" id="" name="" onClick="" value="Update"/></div></div>';
+            $Html .= '<div>';
+            foreach($Attributes as $Attribute){
+                $Html .= '<div style="float:left;margin:0 10px 0 10px"">'.$Attribute->Attribute.'<input size="9" type="number" id="" name="" placeholder="'.$Attribute->UOM.'"/></div>';
+            }
+            $Html .= '<div style="float:right;margin:10px 20px 0 0"><input type="button" id="" name="" onClick="" value="Update"/></div>';
             $Html .= '</div><div class="clear"></div>';
+            
             return $Html;
         }
         

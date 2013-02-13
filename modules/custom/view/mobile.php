@@ -231,21 +231,35 @@ function ExerciseInputs(exercise)
     Attribute     
     */
     $.ajax({url:'ajax.php?module=custom',data:{chosenexercise:exercise,encode:'json'},dataType:"json",success:function(json) { 
-        var Html = '<div style="width:50%"><form id="activityform" name="activityform"><input type="hidden" name="thisform" value="addactivity"/>';  
+        var Html = '<form id="activityform" name="activityform"><input type="hidden" name="thisform" value="addactivity"/>';      
+        Html += '<div class="ui-grid-b">';  
         var i = document.getElementById('rowcounter').value;
-        var RoundNo = document.getElementById('addround').value;     
+        var RoundNo = document.getElementById('addround').value; 
+        Ahtml='';
+        Bhtml='';
         $.each(json, function() { 
-         Html += '';
-          
-         if(this.UOMId > 0){ 
-            Html += '<div style="float:left">'+this.Attribute+'<input size="3" type="number" id="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___'+this.UOMId+'" name="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___'+this.UOMId+'"  placeholder="'+this.UOM+'"/></div>';                
-         }else{
-            Html += '<div style="float:left">'+this.Attribute+'<input size="3" type="number" id="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___0" name="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___0"/></div>';             
-         }
          
-        if(this.Attribute == 'Distance'){
-            Html += '<div style="float:left">';
-            Html += '<select name="'+RoundNo+'_'+this.ExerciseId+'_Distance_UOM">';
+        if(this.Attribute == 'Reps' || this.Attribute == 'Rounds'){
+            if(Ahtml == '' && Bhtml != ''){
+                Bhtml += '<div class="ui-block-a"></div>';
+            }else{
+                Bhtml += Ahtml;
+                Ahtml = '';
+            }
+            Bhtml += '<div class="ui-block-b">'+this.Attribute+'<input size="5" type="number" id="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___0" name="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___0"/></div>';             
+        }  
+        else if(this.Attribute == 'Height' || this.Attribute == 'Weight'){
+            if(Bhtml=='' && Ahtml != ''){
+                Ahtml += '<div class="ui-block-b"></div>';
+            }else{
+                Ahtml += Bhtml;
+                Bhtml = '';
+            }   
+            Ahtml += '<div class="ui-block-a">'+this.Attribute+'<input size="5" type="number" id="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___'+this.UOMId+'" name="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___'+this.UOMId+'"  placeholder="'+this.UOM+'"/></div>';                       
+        }              
+        else if(this.Attribute == 'Distance'){           
+            Html += '<div class="ui-block-a">'+this.Attribute+'<input size="5" type="number" id="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___0" name="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___0"/></div>';
+            Html += '<div class="ui-block-b">Units<select name="'+RoundNo+'_'+this.ExerciseId+'_Distance_UOM">';
             if('<?php echo $Display->SystemOfMeasure();?>' == 'Metric'){
                 Html += '<option value="2">Metres</option>';
                 Html += '<option value="1">Kilometres</option>';
@@ -258,7 +272,8 @@ function ExerciseInputs(exercise)
             Html += '</div>';
         }        
       });
-      Html += '<div style="float:right;margin:10px 0 0 0"><input type="button" id="" name="" onClick="AddActivity();" value="Add Activity"/></div></form></div>';
+
+      Html += Ahtml+Bhtml+'<div class="ui-block-a"></div><div class="ui-block-b"><input type="button" id="" name="" onClick="AddActivity();" value="Add Activity"/></div></div></form>';
         $('#ExerciseInputs').html(Html);
     }});  
     return false;   

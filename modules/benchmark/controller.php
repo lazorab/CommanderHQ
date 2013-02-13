@@ -223,97 +223,42 @@ if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutId']))
 				}	
     $html.='</div><br/><br/>';
     $html.=$Clock;
-    $html.='</form><div class="clear"></div><br/>';		
+    $html.='</form>';		
 
 }
-else
+else if(isset($_REQUEST['cat']) && $_REQUEST['cat'] != '')
 {
-    $Girls = $Model->getBMWS('The Girls');
-    $Heros = $Model->getBMWS('The Heros');
-    $Various = $Model->getBMWS('Various');
-    $Travel = $Model->getBMWS('Travel');
+    /*
+    Categories:
+    Girls
+    Heros
+    Various 
+    Travel
+    */
+    $Workouts = $Model->getBMWS($_REQUEST['cat']);
     $Overthrow='';
     $Device = new DeviceManager;
     if($Device->IsGoogleAndroidDevice()) {
-        $Overthrow=' overthrow';
+        $Overthrow='class="overthrow"';
 }
     
-    $html.='<div id="slides">
-        <div class="slides_container">';
-    /*
-    $html.='<div class="slide'.$Overthrow.'">
-            <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-                <li>The Girls</li>
-            </ul>
-            '.$this->getWorkoutList($Girls).'
-            </div>';
-            
-     $html .='<div class="slide'.$Overthrow.'">
-            <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-                <li>The Heros</li>
-            </ul>
-                '.$this->getWorkoutList($Heros).'
-            </div>';
-     */
-    
-     $html.='<div class="slide'.$Overthrow.'">
-            <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-                <li>Benchmarks</li>
-            </ul>
-            <h1>Girls</h1>
-            '.$this->getWorkoutList($Girls).'
-            <h1>Heros</h1>    
-            '.$this->getWorkoutList($Heros).'
-            <h1>Various</h1>    
-            '.$this->getWorkoutList($Various).' 
-            <h1>Travel</h1>    
-            '.$this->getWorkoutList($Travel).'
-            </div>';
-    /*
-     $html .='<div class="slide'.$Overthrow.'">
-            <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-                <li>Various</li>
-            </ul>
-                '.$this->getWorkoutList($Various).'
-            </div>';
-     
-     $html .='<div class="slide">
-            <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-                <li>Popular</li>
-            </ul>
-                
+     $html.='<div '.$Overthrow.'>
+            <h2>'.$_REQUEST['cat'].'</h2>
+            '.$this->getWorkoutList($Workouts).'
             </div>';
 
-     $html .='<div class="slide'.$Overthrow.'">
-            <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-                <li>Travel Workouts</li>
-            </ul>
-                '.$this->getWorkoutList($Travel).'
-            </div>';
-*/
-     $html .='<div class="slide'.$Overthrow.'">
-            <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-                <li>My Saved WODs</li>
-            </ul>
-                '.$this->getCustomMemberWorkouts().'
-            </div>';
-  /*   
-     $html .='<div class="slide">
+}else{
+    //OpenThisPage(\'?module=benchmark&cat=Girls\')
+    $html.='<div style="padding:2%">
             <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-                <li>Custom Workouts from Others</li>
+            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getBenchmarks(\'Girls\');"><div style="height:26px;width:1px;float:left"></div>Girls<br/><span style="font-size:small"></span></a></li>             
+            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getBenchmarks(\'Heros\');"><div style="height:26px;width:1px;float:left"></div>Heros<br/><span style="font-size:small"></span></a></li>
+            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getBenchmarks(\'Various\');"><div style="height:26px;width:1px;float:left"></div>Various<br/><span style="font-size:small"></span></a></li>
+            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getBenchmarks(\'Travel\');"><div style="height:26px;width:1px;float:left"></div>Travel<br/><span style="font-size:small"></span></a></li>
             </ul>
-                '.$this->getCustomPublicWorkouts().'
-            </div>';
-  */   
-     $html.='           
-        </div>
-        <a href="#" class="prev"><img src="'.IMAGE_RENDER_PATH.'arrow-next.png" width="36" height="36" alt="Arrow Prev"></a>
-        <a href="#" class="next"><img src="'.IMAGE_RENDER_PATH.'arrow-prev.png" width="36" height="36" alt="Arrow Next"></a>
-    </div>';
-	
-
+            </div>';  
 }
-
+$html.='<div class="clear"></div><br/>';
 return $html;
 	}
         
@@ -324,10 +269,10 @@ return $html;
             foreach($Category AS $Workout){
                 $Description = $Model->getBenchmarkDescription($Workout->Id);
                 $html .= '<li>';
-                $html .= '<a href="" onclick="getDetails('.$Workout->Id.', \''.$this->Origin.'\');">'.$Workout->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span></a>';
+                $html .= '<a href="" onclick="getDetails('.$Workout->Id.', \''.$Workout->Category.'\');">'.$Workout->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span></a>';
                 $html .= '</li>';
             }	
-            $html .= '</ul><br/>';
+            $html .= '</ul><div class="clear"></div><br/>';
             return $html;
         }
         

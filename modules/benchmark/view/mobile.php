@@ -35,17 +35,6 @@ $(document).ready(function() {
 	    }
 	});      
 });	
-
-    $(function(){
-        $('#slides').slides({
-            preload: true,
-            preloadImage: 'images/ajax-loader.gif',
-            generatePagination: true,
-            slideSpeed: 500,
-            effect: 'slide'
-        });
-       
-    });
     
 function Save()
 {
@@ -73,18 +62,18 @@ function messagedisplay(message)
         alert(message);
 }
 
-function getBenchmarks(catid)
+function getBenchmarks(cat)
 {
-    $.ajax({url:'ajax.php?module=benchmark',data:{catid:catid},dataType:"html",success:display});
+    $('.toplist').html('');
+    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=benchmark\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
+    $.ajax({url:'ajax.php?module=benchmark',data:{cat:cat},dataType:"html",success:display});
 }
 
-function getDetails(id,origin)
+function getDetails(id,cat)
 {
-    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=benchmark\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
+    $('#back').html('<img alt="Back" onclick="getBenchmarks(\''+cat+'\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
     
-    
-
-    $.ajax({url:'ajax.php?module=benchmark',data:{benchmarkId:id,origin:origin},dataType:"html",success:display});  
+    $.ajax({url:'ajax.php?module=benchmark',data:{benchmarkId:id,cat:cat},dataType:"html",success:display});  
     $.ajax({url:'ajax.php?module=benchmark',data:{video:id,benchmarkId:id},dataType:"html",success:videodisplay}); 
     $.ajax({url:'ajax.php?module=benchmark',data:{topselection:id,benchmarkId:id},dataType:"html",success:topselectiondisplay});
     
@@ -142,7 +131,6 @@ function addRound()
 
 <div id="topselection">
     <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d"></ul>
-    <div id="colorcodes"></div>
 </div> 
 
 <div id="video"></div>

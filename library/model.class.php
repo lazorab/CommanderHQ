@@ -174,7 +174,40 @@ class Model
             $db->setQuery($SQL);
 		
             return $db->loadObjectList();	
-	}    
+	}  
+        
+ 	function getExerciseIdAttributes($Id)
+	{
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT DISTINCT E.recid AS ExerciseId, 
+			E.Exercise AS ActivityName,
+                        CASE WHEN E.Acronym <> ""
+                        THEN E.Acronym
+                        ELSE E.Exercise
+                        END
+                        AS InputFieldName,
+			A.Attribute,
+			CASE WHEN "'.$this->getSystemOfMeasure().'" = "Metric"
+			THEN (SELECT recid FROM UnitsOfMeasure WHERE A.recid = AttributeId AND Metric = 1 HAVING COUNT(recid) = 1)
+			ELSE (SELECT recid FROM UnitsOfMeasure WHERE A.recid = AttributeId AND Metric = 0 HAVING COUNT(recid) = 1)
+			END
+			AS UOMId,
+			CASE WHEN "'.$this->getSystemOfMeasure().'" = "Metric"
+			THEN (SELECT UnitOfMeasure FROM UnitsOfMeasure WHERE A.recid = AttributeId AND Metric = 1 HAVING COUNT(UnitOfMeasure) = 1)
+			ELSE (SELECT UnitOfMeasure FROM UnitsOfMeasure WHERE A.recid = AttributeId AND Metric = 0 HAVING COUNT(UnitOfMeasure) = 1)
+			END
+			AS UOM
+			FROM ExerciseAttributes EA
+			LEFT JOIN Attributes A ON EA.AttributeId = A.recid
+			LEFT JOIN Exercises E ON EA.ExerciseId = E.recid
+			WHERE E.recid = "'.$Id.'"
+                        AND A.Attribute <> "TimeToComplete"
+                        AND A.Attribute <> "Rounds"
+                        AND A.Attribute <> "Calories"
+			ORDER BY ActivityName, Attribute';
+            $db->setQuery($SQL);
+            return $db->loadObjectList();	
+	}       
 
 	function getExerciseAttributes($Exercise)
 	{

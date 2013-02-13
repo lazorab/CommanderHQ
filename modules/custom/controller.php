@@ -128,10 +128,10 @@ class CustomController extends Controller
         //$Html.='</div>';  
 
         $Html .= '</div>';
-
+$Html .= $this->getExercises();
         $Html .= '<div class="ui-grid-a">';
         $Html .= '<div class="ui-block-a selectParent" id="exercises">';
-        $Html .= $this->getExercises();
+        //$Html .= $this->getExercises();
         $Html .= '</div><div class="ui-block-b">';
         $Html .= '<input class="buttongroup" type="button" onClick="addRound();" value="Add a Round"/>';
         $Html .= '</div></div>';  

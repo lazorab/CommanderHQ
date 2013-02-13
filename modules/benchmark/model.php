@@ -170,7 +170,7 @@ class BenchmarkModel extends Model
 	function getBMWS($Category)
 	{
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-		$SQL = 'SELECT BW.recid AS Id, BW.WorkoutName, BW.VideoId 
+		$SQL = 'SELECT BW.recid AS Id, BW.WorkoutName, BW.VideoId, BC.Category 
                     FROM BenchmarkWorkouts BW
                     JOIN BenchmarkCategories BC ON BC.recid = BW.CategoryId
                     WHERE BC.Category = "'.$Category.'"
