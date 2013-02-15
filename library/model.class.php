@@ -187,15 +187,9 @@ class Model
                         END
                         AS InputFieldName,
 			A.Attribute,
-			CASE WHEN "'.$this->getSystemOfMeasure().'" = "Metric"
-			THEN (SELECT recid FROM UnitsOfMeasure WHERE A.recid = AttributeId AND Metric = 1 HAVING COUNT(recid) = 1)
-			ELSE (SELECT recid FROM UnitsOfMeasure WHERE A.recid = AttributeId AND Metric = 0 HAVING COUNT(recid) = 1)
-			END
+			(SELECT recid FROM UnitsOfMeasure WHERE A.recid = AttributeId AND SystemOfMeasure = "'.$this->getSystemOfMeasure().'" LIMIT 1)
 			AS UOMId,
-			CASE WHEN "'.$this->getSystemOfMeasure().'" = "Metric"
-			THEN (SELECT UnitOfMeasure FROM UnitsOfMeasure WHERE A.recid = AttributeId AND Metric = 1 HAVING COUNT(UnitOfMeasure) = 1)
-			ELSE (SELECT UnitOfMeasure FROM UnitsOfMeasure WHERE A.recid = AttributeId AND Metric = 0 HAVING COUNT(UnitOfMeasure) = 1)
-			END
+			(SELECT UnitOfMeasure FROM UnitsOfMeasure WHERE A.recid = AttributeId AND SystemOfMeasure = "'.$this->getSystemOfMeasure().'" LIMIT 1)
 			AS UOM
 			FROM ExerciseAttributes EA
 			LEFT JOIN Attributes A ON EA.AttributeId = A.recid
@@ -220,15 +214,9 @@ class Model
                         END
                         AS InputFieldName,
 			A.Attribute,
-			CASE WHEN "'.$this->getSystemOfMeasure().'" = "Metric"
-			THEN (SELECT recid FROM UnitsOfMeasure WHERE A.recid = AttributeId AND Metric = 1 HAVING COUNT(recid) = 1)
-			ELSE (SELECT recid FROM UnitsOfMeasure WHERE A.recid = AttributeId AND Metric = 0 HAVING COUNT(recid) = 1)
-			END
+			(SELECT recid FROM UnitsOfMeasure WHERE A.recid = AttributeId AND SystemOfMeasure = "'.$this->getSystemOfMeasure().'" LIMIT 1)
 			AS UOMId,
-			CASE WHEN "'.$this->getSystemOfMeasure().'" = "Metric"
-			THEN (SELECT UnitOfMeasure FROM UnitsOfMeasure WHERE A.recid = AttributeId AND Metric = 1 HAVING COUNT(UnitOfMeasure) = 1)
-			ELSE (SELECT UnitOfMeasure FROM UnitsOfMeasure WHERE A.recid = AttributeId AND Metric = 0 HAVING COUNT(UnitOfMeasure) = 1)
-			END
+			(SELECT UnitOfMeasure FROM UnitsOfMeasure WHERE A.recid = AttributeId AND SystemOfMeasure = "'.$this->getSystemOfMeasure().'" LIMIT 1)
 			AS UOM
 			FROM ExerciseAttributes EA
 			LEFT JOIN Attributes A ON EA.AttributeId = A.recid

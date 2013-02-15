@@ -210,6 +210,8 @@ function addactivity(data)
     $('#ExerciseInputs').html('');
     $('#activity_list').append(data);
     $("#exercise option[value='none']").attr("selected","selected");
+    var el = $('#AjaxOutput');
+    el.find('div[data-role=collapsible]').collapsible({theme:'c',refresh:true}); 
 }
 
 function OpenHistory(ExerciseId)
@@ -282,140 +284,6 @@ function ExerciseInputs(exercise)
 function AddActivity()
 {
     $.getJSON('ajax.php?module=custom&action=validateform', $("#activityform").serialize(),addactivity);     
-}
-
-
-
-function _DisplayExercise(exercise)
-{
-    //$.getJSON("ajax.php?module=custom",{chosenexercise:exercise},function(json) {
-    $.ajax({url:'ajax.php?module=custom',data:{chosenexercise:exercise,encode:'json'},dataType:"json",success:function(json) { 
-
-    var attributecount = 0;
-    $.each(json, function() {attributecount++;});
-    var new_exercise = $('#new_exercise');
-    var i = document.getElementById('rowcounter').value;
-    var RoundNo = document.getElementById('addround').value;
-    var j = 0;
-    var html = '';
-    var Bhtml = '';
-    var Chtml = '';
-    var ThisExercise = '';
-    var Unit = '';
-    if($('#addround').val() == 1){
-        $('#Round1Label').html('<div class="ui-block-a"></div><div class="ui-block-b" style="text-align:center">Round 1</div><div class="ui-block-c"></div>');
-    }
-
-    $.each(json, function() {
-
-           if(ThisExercise != this.ActivityName){
-
-                if(Chtml != '' && Bhtml == ''){
-                    html +='<div class="ui-block-b"></div>' + Chtml + '';
-                    Chtml = '';
-                    Bhtml = '';
-                }
-                if(Chtml == '' && Bhtml != ''){
-                    html +='' + Bhtml + '<div class="ui-block-c"></div>';
-                    Chtml = '';
-                    Bhtml = '';
-                }
-           
-                i++;
-                document.getElementById('Round' + RoundNo + 'Counter').value++;
-                
-                html +='</div><div id="row_' + i + '">';
-                html +='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
-                html +='<div class="ui-block-a" style="font-size:small">';
-
-                //html+='<input class="buttongroup" data-icon="delete" name="exercise_' + i + '" type="button" onClick="RemoveFromList(' + i + ')" value="';
-                //html += '<input onclick="RemoveFromList(' + i + ')" type="checkbox" name="exercise_' + i + '" checked="checked" value="/>';
-                html +='<input id="' + this.InputFieldName + '" onclick="RemoveFromList(' + i + ', ' + RoundNo + ')" class="textinput" data-inline="true" type="text" style="width:75%;" name="" value="' + this.InputFieldName + '"/>';
-                  //  html +='"/>';
-                //html += '<div class="swipeleft">' + this.InputFieldName + '</div>';
-                //html +='' + this.InputFieldName + '';
-                html += '<div class="clear"></div>';
-                html +='</div>';
-           }
-           	
-           if(this.Attribute == 'Distance' || this.Attribute == 'Weight' || this.Attribute == 'Height'){
-                Bhtml +='<div class="ui-block-b">';
-                Bhtml +='<input data-corners="false" class="numberinput" ';		   
-                if(this.Attribute == 'Distance'){
-                    Bhtml +='style="width:75%;color:white;font-weight:bold;background-color:#6f747a" ';
-                    if('<?php echo $Display->SystemOfMeasure();?>' == 'imperial')
-                        Unit = 'yards';
-                    else
-                        Unit = 'metres';
-                }		
-                else if(this.Attribute == 'Weight'){
-					Bhtml +='style="width:75%;color:white;font-weight:bold;background-color:#3f2b44" ';
-                    if('<?php $Display->SystemOfMeasure();?>' == 'imperial')
-                        Unit = 'lbs';
-                    else
-                        Unit = 'kg';
-                }
-                else if(this.Attribute == 'Height'){
-                    Bhtml +='style="width:75%;color:white;font-weight:bold;background-color:#66486e" ';
-                    if('<?php $Display->SystemOfMeasure();?>' == 'imperial')
-                        Unit = 'inches';
-                    else
-                        Unit = 'cm';
-                }				
-           
-                Bhtml +='type="number" data-inline="true" name="' + RoundNo + '___' + this.ExerciseId + '___' + this.Attribute + '"';
-                Bhtml +=' value=""';
-                Bhtml +=' placeholder="' + this.Attribute + '"/>'+Unit+'';
-                Bhtml +='</div>';		
-                if(Chtml != ''){
-                    html +='' + Bhtml + '' + Chtml + '';
-                    Chtml = '';
-                    Bhtml = '';
-                }
-           }
-           else if(this.Attribute == 'Reps'){
-		Chtml +='<div class="ui-block-c">';
-                Chtml +='<input data-corners="false" class="numberinput" ';
-		Chtml +='style="width:75%;color:black;font-weight:bold;background-color:#ccff66" ';
-		Chtml +='type="number" data-inline="true" name="'+ RoundNo + '___' + this.ExerciseId + '___' + this.Attribute + '"';
-                Chtml +=' value=""';
-                Chtml +=' placeholder="' + this.Attribute + '"/>';
-                Chtml +='</div>';
-                if(Bhtml != ''){
-                    html +='' + Bhtml + '' + Chtml + '';
-                    Bhtml = '';
-                    Chtml = '';
-                }
-           }
-           //}
-
-           j++;
-          
-           ThisExercise = this.ActivityName;           
-        }); 
-     
-        if(Chtml != '' && Bhtml == ''){
-           html+='<div class="ui-block-b"></div>' + Chtml + '';
-           Chtml = '';
-           Bhtml = '';
-        }
-        if(Chtml == '' && Bhtml != ''){
-           html+='' + Bhtml + '<div class="ui-block-c"></div>';
-           Chtml = '';
-           Bhtml = '';
-        }
-        html +='</div>';
-        //alert(html);
-        //chosenexercises += html;
-        $(html).appendTo(new_exercise);
-        document.getElementById('rowcounter').value = i; 
-
-        $('.textinput').textinput();
-        $('.numberinput').textinput();
-    }}); 
-        
-    $("#exercise option[value='none']").attr("selected","selected");
-    return false;	       
 }
 
 function RemoveFromList(RowId,RoundNo)

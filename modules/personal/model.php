@@ -1,51 +1,11 @@
 <?php
-class BenchmarkModel extends Model
+class PersonalModel extends Model
 {
     var $Message;
 	function __construct()
 	{
             parent::__construct();	
 	}
-	
-	function getCategory($Id)
-	{
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT Category FROM BenchmarkCategories WHERE recid = '.$Id.'';
-            $db->setQuery($SQL);
-            
-            return $db->loadResult();
-	}	
-        
-        function getCustomMemberWorkouts()
-        {
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT recid,
-                DATE_FORMAT(TimeCreated, "%d %M %Y") AS WorkoutName,
-                TimeCreated
-                FROM CustomWorkouts
-                WHERE MemberId = "'.$_SESSION['UID'].'"
-                GROUP BY TimeCreated   
-                ORDER BY TimeCreated';
-            $db->setQuery($SQL);
-		
-            return $db->loadObjectList();
-        }
-        
-        function getCustomPublicWorkouts()
-        {
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT DATE_FORMAT(CD.TimeCreated, "%d %M %Y") AS CD.WorkoutName,
-                DATE_FORMAT(CD.TimeCreated, "%Y-%m-%d") AS CD.TimeCreated
-                FROM CustomDetails CD
-                LEFT JOIN MemberDetails MD ON MD.MemberId = CD.MemberId
-                WHERE MD.CustomWorkouts = "Public"
-                AND CD.MemberId <> "'.$_SESSION['UID'].'"
-                GROUP BY WorkoutName    
-                ORDER BY WorkoutName';
-            $db->setQuery($SQL);
-		
-            return $db->loadObjectList();
-        }
 	
         function getCustomDescription($Id)
         {
@@ -72,7 +32,7 @@ class BenchmarkModel extends Model
             return $this->MakeDescription($SQL);
         }
         
-        function getBenchmarkDescription($Id)
+        function getPersonalDescription($Id)
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             if($this->getGender() == 'M'){
@@ -81,37 +41,12 @@ class BenchmarkModel extends Model
                 $DescriptionField = 'DescriptionFemale';
             }
              $SQL = 'SELECT '.$DescriptionField.' AS Description
-                     FROM BenchmarkWorkouts BW
+                     FROM CustomWorkouts BW
                      WHERE BW.recid = "'.$Id.'"'; 
             $db->setQuery($SQL);
 		
             return $db->loadResult();
         }       
-        
-        function _getBenchmarkDescription($Id)
-        {
-            if($this->getGender() == 'M'){
-                $AttributeValue = 'AttributeValueMale';
-            } else {
-                $AttributeValue = 'AttributeValueFemale';
-            }
-             $SQL = 'SELECT E.Exercise, 
-                 E.Acronym, 
-                 A.Attribute, 
-                 '.$AttributeValue.' AS AttributeValue, 
-                     WT.WorkoutType,
-                     (SELECT MAX(RoundNo) FROM BenchmarkDetails WHERE BenchmarkId = "'.$Id.'") AS TotalRounds,
-                     BD.RoundNo
-                FROM BenchmarkDetails BD
-                LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
-                LEFT JOIN Attributes A ON A.recid = BD.AttributeId
-                LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
-                LEFT JOIN WorkoutRoutineTypes WT ON WT.recid = BW.WorkoutTypeId
-                WHERE BD.BenchmarkId = "'.$Id.'"
-                GROUP BY Exercise
-                ORDER BY OrderBy'; 
-             return $this->MakeDescription($SQL);
-        }
         
         function MakeDescription($SQL)
         {
@@ -142,12 +77,7 @@ class BenchmarkModel extends Model
                 }else if($Row->Exercise != 'Timed'){
                         $Description .= ''.$Row->Exercise.' | ';                   
                 }else if($Row->Attribute == 'Weight'){
-                    //$Description .= ' ';
-                   // $Description .= $Row->AttributeValue;
-                    //if($this->getSystemOfMeasure() == 'Metric')
-                    //    $Description .= 'kg';
-                    //else if($this->getSystemOfMeasure() == 'Imperial')
-                    //    $Description .= 'lbs';
+
                 }else if($Row->Attribute == 'Height'){
                     
                 }else if($Row->Attribute == 'Distance'){
@@ -167,13 +97,13 @@ class BenchmarkModel extends Model
             return $TotalRounds.$WorkoutType.$Description;           
         }
         
-	function getBMWS($Category)
+	function getPersonalWorkouts()
 	{
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-		$SQL = 'SELECT BW.recid AS Id, BW.WorkoutName, BW.VideoId, BC.Category 
-                    FROM BenchmarkWorkouts BW
-                    JOIN BenchmarkCategories BC ON BC.recid = BW.CategoryId
-                    WHERE BC.Category = "'.$Category.'"
+		$SQL = 'SELECT recid AS Id, 
+                    WorkoutName
+                    FROM CustomWorkouts
+                    WHERE MemberId = "'.$_SESSION['UID'].'"
                     ORDER BY WorkoutName';
             $db->setQuery($SQL);
 		
@@ -207,13 +137,13 @@ class BenchmarkModel extends Model
                         UOM.ConversionFactor,    
                         VideoId, 
                         RoundNo,
-                        (SELECT MAX(RoundNo) FROM BenchmarkDetails WHERE BenchmarkId = "'.$Id.'") AS TotalRounds
-			FROM BenchmarkDetails BD
-			LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
+                        (SELECT MAX(RoundNo) FROM CustomDetails WHERE CustomWorkoutId = "'.$Id.'") AS TotalRounds
+			FROM CustomDetails BD
+			LEFT JOIN CustomWorkouts BW ON BW.recid = BD.CustomWorkoutId
 			LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
 			LEFT JOIN Attributes A ON A.recid = BD.AttributeId
                         LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND BD.UnitOfMeasureId = UOM.recid
-			WHERE BD.BenchmarkId = '.$Id.'
+			WHERE BD.CustomWorkoutId = '.$Id.'
                         AND (Attribute = "Reps" OR SystemOfMeasure = "Metric")    
 			ORDER BY RoundNo, OrderBy, Exercise, Attribute';
             $db->setQuery($SQL);
@@ -447,11 +377,11 @@ class BenchmarkModel extends Model
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $SQL = 'SELECT B.recid, B.WorkoutName, A.Attribute, L.AttributeValue, L.TimeCreated 
 		FROM WODLog L 
-                LEFT JOIN BenchmarkWorkouts B ON B.recid = L.ExerciseId 
+                LEFT JOIN CustomWorkouts B ON B.recid = L.ExerciseId 
                 LEFT JOIN Attributes A ON A.recid = L.AttributeId
                 LEFT JOIN WorkoutTypes ET ON ET.recid = L.WODTypeId
                 WHERE L.MemberId = '.$_SESSION['UID'].' 
-                AND ET.WorkoutType = "Benchmark"
+                AND ET.WorkoutType = "Custom"
                 AND A.Attribute = "TimeToComplete"
                 ORDER BY TimeCreated';
             $db->setQuery($SQL);

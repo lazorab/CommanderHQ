@@ -13,6 +13,15 @@ function Tabs(tab)
     }
 }
 
+function UpdateActivity(ActivityId, Attributes)
+{
+    var AttributesArray = Attributes.split('_');
+    for(i=0; i < AttributesArray.length;i++){
+        $("#"+ActivityId+"_"+AttributesArray[i]+"_html").html($("#"+AttributesArray[i]+"").val());
+        $("#"+ActivityId+"_"+AttributesArray[i]+"").val($("#"+AttributesArray[i]+"").val());
+    }  
+}
+
 function OpenHistory(ExerciseId)
 {
     if($('#'+ExerciseId+'').hasClass('active')){
