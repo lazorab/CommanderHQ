@@ -34,18 +34,29 @@ $(document).ready(function() {
 	    	$Video.addClass('active');
 	    }
 	});      
-});	
+});
+
+function UpdateActivity(ActivityId, Attributes)
+{
+    var AttributesArray = Attributes.split('_');
+    for(i=0; i < AttributesArray.length;i++){
+        $("#"+ActivityId+"_"+AttributesArray[i]+"_html").html($("#"+AttributesArray[i]+"").val());
+        $("#"+ActivityId+"_"+AttributesArray[i]+"").val($("#"+AttributesArray[i]+"").val());
+    }  
+}
     
 function Save()
 {
-    var currentround = document.getElementById('addround').value;
-    $("input:visible[id*='"+currentround+"___146___TimeLimit']").val($('#clock').val());
-    $.getJSON('ajax.php?module=benchmark&action=validateform', $("#benchmarkform").serialize(),messagedisplay);
+    //var currentround = document.getElementById('addround').value;
+    //var currentround = $('#addround').val();
+    //$("input:visible[id*='"+currentround+"___146___TimeLimit']").val($('#clock').val());
+    $("#TimeToComplete").val($('#clock').html());
+    $.getJSON('ajax.php?module=benchmark&action=validateform', $(":checkbox, :hidden").serialize(),messagedisplay);
 }
 
 function messagedisplay(message)
 {
-    var currentround = document.getElementById('addround').value
+    var currentround = $('#addround').val();
     if(message == 'Success'){
         var r=confirm("Round "+currentround+" Successfully Saved!\nWould you like to provide us with feedback?");
         if (r==true)

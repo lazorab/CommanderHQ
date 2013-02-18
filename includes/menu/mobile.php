@@ -42,10 +42,9 @@ if(isset($_REQUEST['wodtype']) || (isset($_REQUEST['origin'])) || isset($_REQUES
 
 <div>
 <form action="index.php" method="post" name="searchform">
-<input type="hidden" name="module" value="videos"/>
-<input type="hidden" name="formsubmitted" value="yes"/>
-<div style="padding:2%;float:left;width:70%;"><input type="search" results="5" placeholder="Search" name="keyword"/></div>
-<div style="float:left;"><input type="button" name="btnSubmit" value="Go" data-inline="true" onclick="this.form.submit();"/></div>
+
+<div style="padding:2%;float:left;width:70%;"><input type="search" results="5" placeholder="Search" name="keyword" id="keyword"/></div>
+<div style="float:left;"><input type="button" name="btnSubmit" value="Go" data-inline="true" onclick="OpenThisPage('?module=videos&keyword='+keyword.value+'');"/></div>
 </form>
 </div>
 

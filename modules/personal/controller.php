@@ -8,7 +8,6 @@ class PersonalController extends Controller
 	var $Category;
         var $Height;
         var $Video;
-        var $Benchmark;
 	
 	function __construct()
 	{
@@ -21,14 +20,11 @@ class PersonalController extends Controller
                 $this->Origin = $_REQUEST['origin'];
 		$this->Height = floor(SCREENWIDTH * 0.717); 
 		$Model = new PersonalModel;
-		if(isset($_REQUEST['customId']) && $_REQUEST['customId'] > 0){
-                    $this->Workout = $Model->getWorkoutDetails($_REQUEST['customId']);
-                    $this->Video = $this->Workout[0]->VideoId;
-                    $this->Benchmark = $this->Workout[0];
-                }
-                else if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] > 0){
+
+                if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] > 0){
                     $this->Workout = $Model->getCustomDetails($_REQUEST['WorkoutId']);
-                    $this->Benchmark = $this->Workout[0];
+                    //var_dump($WorkoutDetails);
+                    //$this->Workout = $WorkoutDetails[0];
                 }
 	}
         
@@ -46,14 +42,11 @@ class PersonalController extends Controller
             
             $Model = new PersonalModel;
 
-if(isset($_REQUEST['customId']) || isset($_REQUEST['WorkoutId']))
+if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
 {
 	$Clock = '';
-	$Bhtml = '';
-	$Chtml = '';
 	$html.='<form name="form" id="personalform" action="index.php">
             <input type="hidden" name="origin" value="'.$this->Origin.'"/>
-            <input type="hidden" name="customId" value="'.$_REQUEST['customId'].'"/>
             <input type="hidden" name="WorkoutId" value="'.$_REQUEST['WorkoutId'].'"/>
             <input type="hidden" name="wodtype" value="3"/>
             <input type="hidden" id="addround" name="RoundNo" value="1"/>
@@ -111,6 +104,17 @@ if(isset($_REQUEST['customId']) || isset($_REQUEST['WorkoutId']))
     $html.=$this->getStopWatch();
     $html.='</form><br/><br/>';            
 
+}else{
+    $Overthrow='';
+    $Device = new DeviceManager;
+    if($Device->IsGoogleAndroidDevice()) {
+        $Overthrow='class="overthrow"';
+    }
+    $Workouts = $Model->getPersonalWorkouts();
+     $html.='<div '.$Overthrow.'>
+            <h2>Your Personal Workouts</h2>
+            '.$this->getWorkoutList($Workouts).'
+            </div>';    
 }
 $html.='<div class="clear"></div><br/>';
 return $html;
@@ -163,14 +167,14 @@ return $html;
             return $Html;
         }        
         
-        function getWorkoutList($Category)
+        function getWorkoutList($Workouts)
         {
             $Model = new PersonalModel;
             $html = '<ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
-            foreach($Category AS $Workout){
-                $Description = $Model->getBenchmarkDescription($Workout->Id);
+            foreach($Workouts AS $Workout){
+                $Description = $Model->getDescription($Workout->Id);
                 $html .= '<li>';
-                $html .= '<a href="" onclick="getDetails('.$Workout->Id.', \''.$Workout->Category.'\');">'.$Workout->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span></a>';
+                $html .= '<a href="" onclick="getDetails('.$Workout->Id.');">'.$Workout->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span></a>';
                 $html .= '</li>';
             }	
             $html .= '</ul><div class="clear"></div><br/>';
@@ -234,9 +238,9 @@ return $html;
 	function TopSelection()
 	{
             $Model = new PersonalModel;
-            $Description = $Model->getBenchmarkDescription($this->Benchmark->Id);
+            $Description = $Model->getDescription($_REQUEST['topselection']);
             $Html .= '<li>';
-            $Html .= ''.$this->Benchmark->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span>';
+            $Html .= ''.$this->Workout[0]->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span>';
             $Html .= '</li>';
             return $Html;	
 	}	

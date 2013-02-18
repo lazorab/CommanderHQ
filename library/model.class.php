@@ -1,6 +1,8 @@
 <?php
 class Model
-{
+{  
+    var $Message;
+    
 	function __construct()
 	{
 	
@@ -201,7 +203,54 @@ class Model
 			ORDER BY ActivityName, Attribute';
             $db->setQuery($SQL);
             return $db->loadObjectList();	
-	}       
+	}   
+        
+     function getActivityFields()
+    {
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+        $Activities = array();
+        //var_dump($_REQUEST);
+        foreach($_REQUEST AS $Name=>$Value)
+        {
+            $RoundNo = 0;
+            $ExerciseId = 0;
+            $Attribute = '';
+            $ExplodedKey = explode('_', $Name);
+            if(count($ExplodedKey) > 3)
+            {
+                    $RoundNo = $ExplodedKey[0];
+                    $ExerciseId = $ExplodedKey[1];
+                    $ExerciseName = $this->getExerciseName($ExerciseId);
+                    $Attribute = $ExplodedKey[2];
+                    $UOMId = $ExplodedKey[3];
+                    $OrderBy = $ExplodedKey[4];
+                    if($UOMId == 0)
+                        $UOMId = $_REQUEST[''.$RoundNo.'_'.$ExerciseId.'_Distance_UOM'];
+                    $UOM = $this->getUnitOfMeasure($UOMId);
+                if($Value == '' || $Value == '0' || $Value == $Attribute){
+                        $Value = 'max';
+                }
+                //else{
+                $SQL='SELECT recid AS ExerciseId,
+                        "'.$ExerciseName.'" AS Exercise,
+                        (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS AttributeId,
+                        "'.$Attribute.'" AS Attribute,    
+                        "'.$Value.'" AS AttributeValue, 
+                        "'.$UOMId.'" AS UnitOfMeasureId,
+                        "'.$UOM.'" AS UnitOfMeasure,    
+                        "'.$RoundNo.'" AS RoundNo,
+                        "'.$OrderBy.'" AS OrderBy     
+                        FROM Exercises
+                        WHERE recid = "'.$ExerciseId.'"';
+                $db->setQuery($SQL);
+		
+                $Row = $db->loadObject();
+                array_push($Activities, $Row);
+                //}      
+            }
+        }
+        return $Activities;
+    }       
 
 	function getExerciseAttributes($Exercise)
 	{

@@ -1,8 +1,6 @@
 <?php
 class MygymModel extends Model
-{
-    var $Message;
-    
+{ 
 	function __construct()
 	{
 	
@@ -48,47 +46,7 @@ class MygymModel extends Model
             }
         return $this->Message;
 	}
-        
-    function getActivityFields()
-    {
-        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-        $this->Message = '';
-        $Activities = array();
-        
-        foreach($_REQUEST AS $Name=>$Value)
-        {
-            $RoundNo = 0;
-            $ExerciseId = 0;
-            $Attribute = '';
-            $ExplodedKey = explode('_', $Name);
-            if(count($ExplodedKey) == 4)
-            {
-                $RoundNo = $ExplodedKey[0];
-                $ExerciseId = $ExplodedKey[1];
-                $ExerciseName = $this->getExerciseName($ExerciseId);
-                $Attribute = $ExplodedKey[2];
-                $UOM = $ExplodedKey[3];
-                if($Value == '' || $Value == '0' || $Value == $Attribute){
-                        $this->Message .= "Error - Invalid value for ".$ExerciseName." ".$Attribute."!\n";
-                }else{
-                    $SQL='SELECT recid AS ExerciseId, 
-                        (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS AttributeId, 
-                        "'.$Value.'" AS AttributeValue,
-                        "'.$UOM.'" AS UnitOfMeasureId, 
-                        "'.$RoundNo.'" AS RoundNo 
-                        FROM Exercises
-                        WHERE recid = "'.$ExerciseId.'"';
-                    $db->setQuery($SQL);
-
-                    $Row = $db->loadObject();
-                    array_push($Activities, $Row);
-                }      
-            } 
-        }
-        return $Activities;
-    }       
-    
-        
+             
         function getTopSelection()
         {
             $WodDetails = $this->getWODDetails();

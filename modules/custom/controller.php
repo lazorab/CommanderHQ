@@ -39,7 +39,8 @@ class CustomController extends Controller
         AttributeValue
         UnitOfMeasureId
         UnitOfMeasure
-        RoundNo        
+        RoundNo 
+        OrderBy       
          */
         $Model = new CustomModel;
         $ActivityFields = $Model->getActivityFields();
@@ -63,7 +64,7 @@ class CustomController extends Controller
                             $html.=' | ';
                         }
                         $html.=''.$Activity->Attribute.' : <span id="'.$Activity->RoundNo.'_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_html">'.$Activity->AttributeValue.'</span>'.$Activity->UnitOfMeasure.'';
-                        $html.='<input type="hidden" id="'.$RoundNo.'_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'" name="'.$Activity->RoundNo.'_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_'.$UnitOfMeasureId.'" value="'.$Activity->AttributeValue.'">';
+                        $html.='<input type="hidden" id="'.$RoundNo.'_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'" name="'.$Activity->RoundNo.'_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_'.$UnitOfMeasureId.'_'.$Activity->OrderBy.'" value="'.$Activity->AttributeValue.'">';
 
             $ExerciseId = $Activity->ExerciseId;
             $i++;
@@ -114,6 +115,7 @@ class CustomController extends Controller
         <input type="hidden" name="rowcount" id="rowcounter" value="0"/>
         <input type="hidden" name="Round1Counter" id="Round1Counter" value="0"/>
         <input type="hidden" name="Rounds" id="addround" value="1"/>
+        <input type="date" name="WodDate" value="'.date('Y-m-d h:i:s').'"/>
         <input type="text" name="CustomName" id="CustomName" placeholder="Name for WOD" value=""/>';
         $Html .= '<div class="ui-grid-b">';
         $Html .= '<div id="Round1Label"></div>';
@@ -124,26 +126,15 @@ class CustomController extends Controller
         $Html .= '<div class="ui-grid-b">';
         $Html .= '<div id="add_exercise">'.$this->AddExercise().'</div>';
         $Html .= '</div>';       
-
-        $Html .= '<div id="timerContainer">';   
-        $Html .= $this->getStopWatch(); 
-
-        $Html .= '</div>';
+        
         $Html .= $this->getExercises();
-        $Html .= '<div class="ui-grid-a">';
-        $Html .= '<div class="ui-block-a selectParent" id="exercises">';
-        //$Html .= $this->getExercises();
-        $Html .= '</div><div class="ui-block-b">';
+        
+        $Html .= '<div>';
+        $Html .= '<div style="float:left">';
         $Html .= '<input class="buttongroup" type="button" onClick="addRound();" value="Add a Round"/>';
-        $Html .= '</div></div>';  
-        
-        $Html .= '<div class="ui-grid-a">';
-        $Html .= '<div class="ui-block-a">';
-        $Html .= '<input class="buttongroup" type="button" onClick="ShowHideClock();" value="Time Event"/>';
-        $Html .= '</div><div class="ui-block-b">';
-        $Html .= '<input class="buttongroup" type="button" value="Save" onClick="Save();"/>';
-        $Html .= '</div></div>';   
-        
+        $Html .= '</div><div style="float:right">';   
+        $Html .= '<input class="buttongroup" type="button" value="Save Wod" onClick="Save();"/>';
+        $Html .= '</div></div>';        
         
         $Html .= '</form><div class="clear"></div><br/>';
      	

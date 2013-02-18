@@ -1,25 +1,26 @@
 <?php
 class PersonalModel extends Model
 {
-    var $Message;
 	function __construct()
 	{
             parent::__construct();	
 	}
 	
-        function getCustomDescription($Id)
+        function getDescription($Id)
         {
-            $Filter = '';
-            if($Id != ''){
-               $Filter = ' AND CW.recid = "'.$Id.'"'; 
-            }
-            $SQL = 'SELECT DATE_FORMAT(CW.TimeCreated, "%d %M %Y") AS WorkoutName, E.Exercise, 
+            //$Filter = '';
+            //if($Id != ''){
+            //   $Filter = ' AND CW.recid = "'.$Id.'"'; 
+            //}
+            $SQL = 'SELECT CW.WorkoutName, 
+                E.Exercise, 
                 E.Acronym, 
                 A.Attribute, 
                 CD.AttributeValue, 
                 CD.RoundNo,
+                CD.OrderBy,
+                (SELECT MAX(RoundNo) FROM CustomDetails WHERE CustomWorkoutId = "'.$Id.'") AS TotalRounds,
                 WT.WorkoutType,
-                CW.TimeCreated,
                 CW.Notes
                 FROM CustomDetails CD
                 LEFT JOIN CustomWorkouts CW ON CW.recid = CD.CustomWorkoutId
@@ -27,32 +28,17 @@ class PersonalModel extends Model
                 LEFT JOIN Attributes A ON A.recid = CD.AttributeId
                 LEFT JOIN WorkoutRoutineTypes WT ON WT.recid = CW.WorkoutRoutineTypeId
                 WHERE CW.MemberId = "'.$_SESSION['UID'].'"
-                    '.$Filter.'
-                ORDER BY TimeCreated, RoundNo, Exercise';
+                AND CW.recid = "'.$Id.'"
+                ORDER BY RoundNo, OrderBy, Exercise, Attribute';
             return $this->MakeDescription($SQL);
-        }
-        
-        function getPersonalDescription($Id)
-        {
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            if($this->getGender() == 'M'){
-                $DescriptionField = 'DescriptionMale';
-            } else {
-                $DescriptionField = 'DescriptionFemale';
-            }
-             $SQL = 'SELECT '.$DescriptionField.' AS Description
-                     FROM CustomWorkouts BW
-                     WHERE BW.recid = "'.$Id.'"'; 
-            $db->setQuery($SQL);
-		
-            return $db->loadResult();
-        }       
+        }      
         
         function MakeDescription($SQL)
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $db->setQuery($SQL);
             $Result = $db->loadObjectList();
+            //var_dump($SQL);
             $Description = '';
             $Exercise = '';
             $TotalRounds = '';
@@ -154,7 +140,7 @@ class PersonalModel extends Model
         function getCustomDetails($Id)
 	{   
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT DATE_FORMAT(CW.TimeCreated, "%d %M %Y") AS WorkoutName, 
+            $SQL = 'SELECT CW.WorkoutName, 
                         E.Exercise, 
                         E.recid AS ExerciseId, 
                         CASE 
@@ -164,18 +150,19 @@ class PersonalModel extends Model
                         END
                         AS InputFieldName,
                         CW.Notes,
-                        "'.$this->getCustomDescription($Id).'" AS WorkoutDescription,
                         E.recid AS ExerciseId, 
                         A.Attribute, 
                         CD.AttributeValue,  
-                        RoundNo
+                        CD.RoundNo,
+                        CD.OrderBy,
+                        (SELECT MAX(RoundNo) FROM CustomDetails WHERE CustomWorkoutId = "'.$Id.'") AS TotalRounds
 			FROM CustomDetails CD
                         LEFT JOIN CustomWorkouts CW ON CW.recid = CD.CustomWorkoutId
 			LEFT JOIN Exercises E ON E.recid = CD.ExerciseId
 			LEFT JOIN Attributes A ON A.recid = CD.AttributeId
 			WHERE CW.MemberId = "'.$_SESSION['UID'].'"
                         AND CW.recid = "'.$Id.'"
-			ORDER BY RoundNo, Attribute';
+			ORDER BY RoundNo, OrderBy, Exercise, Attribute';
             $db->setQuery($SQL);
 		
             return $db->loadObjectList();

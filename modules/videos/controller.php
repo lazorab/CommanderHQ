@@ -9,8 +9,6 @@ class VideosController extends Controller
 		if(!isset($_SESSION['UID']))
 			header('location: index.php?module=login');		
 			
-if($_REQUEST['formsubmitted'] == 'yes')
-{
 	$i=1;
 	$keyword = $_REQUEST['keyword'];
 	$Model = new VideosModel;
@@ -57,8 +55,7 @@ $this->Html.='
 </center>';
 
 	}
-}	
-	}
+     }
 	
 	function Html()
 	{

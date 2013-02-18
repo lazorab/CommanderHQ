@@ -109,14 +109,13 @@ class MygymController extends Controller
                 //$this->getTopSelection();
 	$Clock = '';
         $i = 0;
-	$html.='<form name="form" id="wodform" action="index.php">
-            <input type="hidden" name="form" value="submitted"/>  
+	$html.='<form name="form" id="wodform" action="index.php">  
             <input type="hidden" name="WorkoutId" value="'.$WodDetails[0]->WodId.'"/>'; 
         //$html.='<input type="checkbox" name="baseline" value="yes" data-role="none"/>';
         //$html.='Make this my baseline';
         $html.='<p>'.$WodDetails[0]->Notes.'</p>';
         //$html.='<div class="ui-grid-b">';
-        $html = '<div data-role="collapsible-set" data-iconpos="right">';
+        $html .= '<div data-role="collapsible-set" data-iconpos="right">';
         $ThisRound = '';
 	$ThisExerciseId = 0;
         //var_dump($WodDetails);

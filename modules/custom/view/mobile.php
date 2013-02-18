@@ -205,8 +205,11 @@ function addNewExercise()
     $('.numberinput').textinput();
 }
 
-function addactivity(data)
+function addactivitydisplay(data)
 {
+    var RoundNo = document.getElementById('addround').value;
+    document.getElementById('rowcounter').value++;
+    document.getElementById('Round' + RoundNo + 'Counter').value++;
     $('#ExerciseInputs').html('');
     $('#activity_list').append(data);
     $("#exercise option[value='none']").attr("selected","selected");
@@ -236,7 +239,8 @@ function ExerciseInputs(exercise)
         var Html = '<form id="activityform" name="activityform"><input type="hidden" name="thisform" value="addactivity"/>';      
         Html += '<div class="ui-grid-b">';  
         var i = document.getElementById('rowcounter').value;
-        var RoundNo = document.getElementById('addround').value; 
+        var RoundNo = document.getElementById('addround').value;
+        var OrderBy = document.getElementById('Round' + RoundNo + 'Counter').value;
         Ahtml='';
         Bhtml='';
         $.each(json, function() { 
@@ -248,7 +252,7 @@ function ExerciseInputs(exercise)
                 Bhtml += Ahtml;
                 Ahtml = '';
             }
-            Bhtml += '<div class="ui-block-b">'+this.Attribute+'<input size="5" type="number" id="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___0" name="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___0"/></div>';             
+            Bhtml += '<div class="ui-block-b">'+this.Attribute+'<input size="5" type="number" id="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0" name="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'"/></div>';             
         }  
         else if(this.Attribute == 'Height' || this.Attribute == 'Weight'){
             if(Bhtml=='' && Ahtml != ''){
@@ -257,10 +261,10 @@ function ExerciseInputs(exercise)
                 Ahtml += Bhtml;
                 Bhtml = '';
             }   
-            Ahtml += '<div class="ui-block-a">'+this.Attribute+'<input size="5" type="number" id="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___'+this.UOMId+'" name="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___'+this.UOMId+'"  placeholder="'+this.UOM+'"/></div>';                       
+            Ahtml += '<div class="ui-block-a">'+this.Attribute+'<input size="5" type="number" id="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_'+this.UOMId+'" name="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_'+this.UOMId+'_'+OrderBy+'"  placeholder="'+this.UOM+'"/></div>';                       
         }              
         else if(this.Attribute == 'Distance'){           
-            Html += '<div class="ui-block-a">'+this.Attribute+'<input size="5" type="number" id="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___0" name="'+RoundNo+'___'+this.ExerciseId+'___'+this.Attribute+'___0"/></div>';
+            Html += '<div class="ui-block-a">'+this.Attribute+'<input size="5" type="number" id="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0" name="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'"/></div>';
             Html += '<div class="ui-block-b">Units<select name="'+RoundNo+'_'+this.ExerciseId+'_Distance_UOM">';
             if('<?php echo $Display->SystemOfMeasure();?>' == 'Metric'){
                 Html += '<option value="2">Metres</option>';
@@ -283,7 +287,7 @@ function ExerciseInputs(exercise)
 
 function AddActivity()
 {
-    $.getJSON('ajax.php?module=custom&action=validateform', $("#activityform").serialize(),addactivity);     
+    $.getJSON('ajax.php?module=custom&action=validateform', $("#activityform").serialize(),addactivitydisplay);     
 }
 
 function RemoveFromList(RowId,RoundNo)
@@ -335,9 +339,9 @@ function addRound()
 
     document.getElementById('addround').value++;
     var RoundNo = document.getElementById('addround').value;
-    var ThisRound ='<div class="RoundLabel" id="Round' + RoundNo + 'Label"><div class="ui-block-a"></div><div class="ui-block-b" style="text-align:center"><br/>Round ' + RoundNo + '</div><div class="ui-block-c"></div></div>';
+    var ThisRound ='<div class="RoundLabel" id="Round' + RoundNo + 'Label"><br/>Round ' + RoundNo + '</div>';
     ThisRound+='<input type="hidden" name="Round' + RoundNo + 'Counter" id="Round' + RoundNo + 'Counter" value="0"/>';
-    $(ThisRound).appendTo(new_exercise);
+    $(ThisRound).appendTo($('#activity_list'));
     //$(chosenexercises).appendTo(new_exercise);
 }
 

@@ -55,23 +55,18 @@ class BenchmarkController extends Controller
             
             $Model = new BenchmarkModel;
 
-if(isset($_REQUEST['benchmarkId']) || isset($_REQUEST['WorkoutId']))
+if(isset($_REQUEST['benchmarkId']) && $_REQUEST['benchmarkId'] > 0)
 {
 	$Clock = '';
-	$Bhtml = '';
-	$Chtml = '';
 	$html.='<form name="form" id="benchmarkform" action="index.php">
-            <input type="hidden" name="origin" value="'.$this->Origin.'"/>
-            <input type="hidden" name="benchmarkId" value="'.$_REQUEST['benchmarkId'].'"/>
-            <input type="hidden" name="WorkoutId" value="'.$_REQUEST['WorkoutId'].'"/>
-            <input type="hidden" name="wodtype" value="3"/>
-            <input type="hidden" id="addround" name="RoundNo" value="1"/>
-            <input type="hidden" name="form" value="submitted"/>';       
+            <input type="hidden" id="origin" name="origin" value="'.$this->Origin.'"/>
+            <input type="hidden" id="benchmarkId" name="benchmarkId" value="'.$_REQUEST['benchmarkId'].'"/>
+            <input type="hidden" id="addround" name="RoundNo" value="1"/>';       
         $html.='<input type="checkbox" name="baseline" value="yes" data-role="none"/>';
         $html.='Make this my baseline';
         $html.='<p>'.$this->Workout[0]->Notes.'</p>';
         //$html.='<div class="ui-grid-b">';
-        $html = '<div data-role="collapsible-set" data-iconpos="right">';
+        $html .= '<div data-role="collapsible-set" data-iconpos="right">';
         $ThisRound = '';
 	$ThisExerciseId = 0;
         //var_dump($this->Workout);

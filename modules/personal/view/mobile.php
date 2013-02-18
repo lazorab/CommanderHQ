@@ -40,7 +40,7 @@ function Save()
 {
     var currentround = document.getElementById('addround').value;
     $("input:visible[id*='"+currentround+"___146___TimeLimit']").val($('#clock').val());
-    $.getJSON('ajax.php?module=benchmark&action=validateform', $("#benchmarkform").serialize(),messagedisplay);
+    $.getJSON('ajax.php?module=personal&action=validateform', $("#benchmarkform").serialize(),messagedisplay);
 }
 
 function messagedisplay(message)
@@ -65,17 +65,16 @@ function messagedisplay(message)
 function getBenchmarks(cat)
 {
     $('.toplist').html('');
-    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=benchmark\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
-    $.ajax({url:'ajax.php?module=benchmark',data:{cat:cat},dataType:"html",success:display});
+    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=personal\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
+    $.ajax({url:'ajax.php?module=personal',data:{cat:cat},dataType:"html",success:display});
 }
 
 function getDetails(id,cat)
 {
-    $('#back').html('<img alt="Back" onclick="getBenchmarks(\''+cat+'\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
+    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=personal\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
     
-    $.ajax({url:'ajax.php?module=benchmark',data:{benchmarkId:id,cat:cat},dataType:"html",success:display});  
-    $.ajax({url:'ajax.php?module=benchmark',data:{video:id,benchmarkId:id},dataType:"html",success:videodisplay}); 
-    $.ajax({url:'ajax.php?module=benchmark',data:{topselection:id,benchmarkId:id},dataType:"html",success:topselectiondisplay});
+    $.ajax({url:'ajax.php?module=personal',data:{WorkoutId:id},dataType:"html",success:display});   
+    $.ajax({url:'ajax.php?module=personal',data:{topselection:id,WorkoutId:id},dataType:"html",success:topselectiondisplay});
     
     //var newround = document.getElementById('addround').value;
     //$('[id^=1_]').attr('disabled', false);   
@@ -83,8 +82,8 @@ function getDetails(id,cat)
 
 function getCustomDetails(id,origin)
 {
-    $.ajax({url:'ajax.php?module=benchmark',data:{WorkoutId:id, origin:origin},dataType:"html",success:display});
-    $.ajax({url:'ajax.php?module=benchmark',data:{topselection:id, WorkoutId:id},dataType:"html",success:topselectiondisplay});
+    $.ajax({url:'ajax.php?module=personal',data:{WorkoutId:id, origin:origin},dataType:"html",success:display});
+    $.ajax({url:'ajax.php?module=personal',data:{topselection:id, WorkoutId:id},dataType:"html",success:topselectiondisplay});
 }
 
 function topselectiondisplay(data)
@@ -126,7 +125,7 @@ function display(data)
 function addRound()
 {
     //var rounds = document.getElementById('addround').value; 
-    $.getJSON('ajax.php?module=benchmark', $("#benchmarkform").serialize(),display);
+    $.getJSON('ajax.php?module=personal', $("#benchmarkform").serialize(),display);
 }
 </script>
 <br/>
