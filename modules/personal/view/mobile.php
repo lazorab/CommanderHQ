@@ -38,16 +38,14 @@ $(document).ready(function() {
     
 function Save()
 {
-    var currentround = document.getElementById('addround').value;
-    $("input:visible[id*='"+currentround+"___146___TimeLimit']").val($('#clock').val());
-    $.getJSON('ajax.php?module=personal&action=validateform', $("#benchmarkform").serialize(),messagedisplay);
+    $("#TimeToComplete").val($('#clock').html());
+    $.getJSON('ajax.php?module=personal&action=validateform', $(":checkbox, :hidden").serialize(),messagedisplay);
 }
 
 function messagedisplay(message)
 {
-    var currentround = document.getElementById('addround').value
     if(message == 'Success'){
-        var r=confirm("Round "+currentround+" Successfully Saved!\nWould you like to provide us with feedback?");
+        var r=confirm("Successfully Saved!\nWould you like to provide us with feedback?");
         if (r==true)
         {
             window.location = 'index.php?module=contact';
@@ -56,7 +54,6 @@ function messagedisplay(message)
         {
             resetclock();
         }
-        document.getElementById('addround').value++;
     }  
     else
         alert(message);

@@ -224,11 +224,11 @@ class Model
                     $Attribute = $ExplodedKey[2];
                     $UOMId = $ExplodedKey[3];
                     $OrderBy = $ExplodedKey[4];
-                    if($UOMId == 0)
+                    if($UOMId == 0 && $Attribute == 'Distance')
                         $UOMId = $_REQUEST[''.$RoundNo.'_'.$ExerciseId.'_Distance_UOM'];
                     $UOM = $this->getUnitOfMeasure($UOMId);
                 if($Value == '' || $Value == '0' || $Value == $Attribute){
-                        $Value = 'max';
+                        $Value = 'max ';
                 }
                 //else{
                 $SQL='SELECT recid AS ExerciseId,
@@ -282,14 +282,19 @@ class Model
         function getExerciseHistory($Id)
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL='SELECT E.Exercise, A.Attribute, WL.AttributeValue, UOM.UnitOfMeasure, TimeCreated
+            $SQL='SELECT E.Exercise, 
+                A.Attribute, 
+                WL.AttributeValue, 
+                UOM.UnitOfMeasure,
+                WL.RoundNo,
+                TimeCreated
                 FROM WODLog WL 
                 LEFT JOIN Attributes A ON A.recid = WL.AttributeId
                 LEFT JOIN UnitsOfMeasure UOM ON WL.UnitOfMeasureId = UOM.recid
                 LEFT JOIN Exercises E ON E.recid = WL.ExerciseId
                 WHERE WL.ExerciseId = '.$Id.'
                 AND MemberId = "'.$_SESSION['UID'].'"
-                ORDER BY TimeCreated DESC';
+                ORDER BY TimeCreated DESC, RoundNo';
             //var_dump($SQL);
             $db->setQuery($SQL);
             return $db->loadObjectList();

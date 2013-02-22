@@ -26,17 +26,13 @@ class BenchmarkController extends Controller
                     $this->Video = $this->Workout[0]->VideoId;
                     $this->Benchmark = $this->Workout[0];
                 }
-                else if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] > 0){
-                    $this->Workout = $Model->getCustomDetails($_REQUEST['WorkoutId']);
-                    $this->Benchmark = $this->Workout[0];
-                }
 	}
         
         function Video()
         {
             $Html = '';
             if($this->Video != '')
-                $Html = '<iframe marginwidth="0px" marginheight="0px" width="'.SCREENWIDTH.'" height="'.$this->Height.'" src="http://www.youtube.com/embed/'.$this->Video.'" frameborder="0">';
+                $Html = '<iframe marginwidth="0px" marginheight="0px" width="'.SCREENWIDTH.'" height="'.$this->Height.'" src="http://www.youtube.com/embed/'.$this->Video.'" frameborder="0"></iframe> ';
           
             return $Html;
         }
@@ -78,6 +74,11 @@ if(isset($_REQUEST['benchmarkId']) && $_REQUEST['benchmarkId'] > 0)
                 $UnitOfMeasureId = $Detail->UnitOfMeasureId;
                 $ConversionFactor = $Detail->ConversionFactor;
             }
+            if($Detail->AttributeValue == ''){
+                $AttributeValue = 'Max ';
+            }else{
+                $AttributeValue = $Detail->AttributeValue * $ConversionFactor;
+            }
 		if($Detail->Attribute == 'TimeToComplete'){
 			$Clock = $this->getStopWatch();
 		}
@@ -85,7 +86,7 @@ if(isset($_REQUEST['benchmarkId']) && $_REQUEST['benchmarkId'] > 0)
 			
 			if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0 && $ThisRound != $Detail->RoundNo){
                             if($ThisExerciseId != null && $i > 0){
-                                $html.='</h2><p style="color:red">'.$this->getExerciseHistory("".$Detail->RoundNo."_".$ThisExerciseId."").'</p></div><br/><br/>';
+                                $html.='</h2><p style="color:red">'.$this->getExerciseHistory("".$ThisRound."_".$ThisExerciseId."").'</p></div><br/><br/>';
                             }                           	
                             $html.= '<h2>Round '.$Detail->RoundNo.'</h2>';
                             $html.= '<div data-role="collapsible">';
@@ -94,22 +95,22 @@ if(isset($_REQUEST['benchmarkId']) && $_REQUEST['benchmarkId'] > 0)
 			else if($ThisExerciseId != $Detail->ExerciseId){
 
                             if($ThisExerciseId != null && $i > 0){
-                                $html.='</h2><p style="color:red">'.$this->getExerciseHistory("".$Detail->RoundNo."_".$ThisExerciseId."").'</p></div>';
+                                $html.='</h2><p style="color:red">'.$this->getExerciseHistory("".$ThisRound."_".$ThisExerciseId."").'</p></div>';
                             }       
                             $html.= '<div data-role="collapsible">';
                             $html.= '<h2>'.$Detail->Exercise.'<br/>';                           
                         }else{
                             $html.=' | ';
                         }
-                        $html.=''.$Detail->Attribute.' : <span id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_html">'.$Detail->AttributeValue * $ConversionFactor.'</span>'.$Detail->UnitOfMeasure.'';
-                        $html.='<input type="hidden" id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'" name="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_'.$UnitOfMeasureId.'" value="'.$Detail->AttributeValue.'">';
+                        $html.=''.$Detail->Attribute.' : <span id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_html">'.$AttributeValue.'</span>'.$Detail->UnitOfMeasure.'';
+                        $html.='<input type="hidden" id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'" name="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_'.$UnitOfMeasureId.'_'.$Detail->OrderBy.'" value="'.$Detail->AttributeValue.'">';
                 }
 	$ThisRound = $Detail->RoundNo;
 	$ThisExerciseId = $Detail->ExerciseId;
         $i++;
 	}
                             if($ThisExerciseId != null && $i > 0){
-                                $html.='</h2><p style="color:red">'.$this->getExerciseHistory("".$Detail->RoundNo."_".$ThisExerciseId."").'</p></div>';
+                                $html.='</h2><p style="color:red">'.$this->getExerciseHistory("".$ThisRound."_".$ThisExerciseId."").'</p></div>';
                             }             
     $html.='</div>';
     $html.=$this->getStopWatch();
@@ -164,31 +165,30 @@ return $html;
                 $Html.='No History for activity';
             }
             $i=0;
-            $TimeCreated = '';
+            $j=0;
             $TheseAttributes='';
             $Attributes = $Model->getExerciseIdAttributes($ThisExerciseId);
-            //var_dump(json_encode($Attributes));
-            //$Html = '<div id="'.$ThisExercise.'" class="ExerciseHistory">';
+            $NumAttributes = count($Attributes);
             foreach($ExerciseHistory as $Detail){
                 if($i < 3){
-                if($i > 0){
-                    if($Detail->TimeCreated != $TimeCreated)
+                    $Html.=''.$Detail->Attribute.' : '.$Detail->AttributeValue.''.$Detail->UnitOfMeasure.'';
+                    $j++;
+                    if($j == $NumAttributes){
                         $Html.='<br/>';
-                    else
+                        $j = 0;
+                        $i++;
+                    }else{
                         $Html.=' | ';
+                    }
                 }
-                $Html.=''.$Detail->Attribute.' : '.$Detail->AttributeValue.''.$Detail->UnitOfMeasure.'';
-                $i++;
-                }
-                $TimeCreated = $Detail->TimeCreated;
             }
             $i=0;
-            $Html .= '<div>';
+            $Html .= '<div class="ActivityAttributes">';
             foreach($Attributes as $Attribute){
                 if($i > 0)
                     $TheseAttributes.='_';
                 $TheseAttributes.=$Attribute->Attribute;
-                $Html .= '<div style="float:left;margin:0 10px 0 10px"">'.$Attribute->Attribute.'<input size="9" type="number" id="'.$Attribute->Attribute.'" name="" placeholder="'.$Attribute->UOM.'"/></div>';
+                $Html .= '<div style="float:left;margin:0 10px 0 10px"">'.$Attribute->Attribute.'<input size="9" type="number" id="'.$ThisExercise.'_'.$Attribute->Attribute.'_new" name="" placeholder="'.$Attribute->UOM.'"/></div>';
                 $i++;
             }
 

@@ -156,6 +156,7 @@ class MygymModel extends Model
                         WD.UnitOfMeasureId,   
                         UOM.UnitOfMeasure,
                         UOM.ConversionFactor,
+                        WD.OrderBy,
                         WW.Routine AS RoundNo,
                         WW.WorkoutRoutineTypeId,
                         WW.WodDate,

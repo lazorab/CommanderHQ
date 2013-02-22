@@ -85,13 +85,12 @@ $('#AjaxLoading').html('');
 
 function EnterTime()
 {
-var time=prompt("Please enter time","00:00:0");
-
-if (time!='00:00:0')
-  {
-    document.getElementById("clock").innerHTML=time;
-    document.getElementById("TimeToComplete").value=time;
-  }   
+    var time=prompt("Please enter time","00:00:0");
+    if(time){
+        
+        $('#clock').html(time);
+        $('#TimeToComplete').val(time); 
+    }
 }
 
 function OpenThisPage(page)

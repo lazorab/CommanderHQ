@@ -12,7 +12,7 @@ class CustomModel extends Model
             if($this->UserIsSubscribed()){
                 if($_REQUEST['TimeToComplete'] == "00:00:0"){
                     $this->Message .= "Error - Invalid value for Stopwatch\nOr\nStopwatch not Started!";
-                }else if($_REQUEST['CustomName'] == ''){
+                }else if(isset($_REQUEST['CustomName']) && $_REQUEST['CustomName'] == ''){
                     $this->Message .= "Error - Name for WOD required!";
                 }else{
                     $ActivityFields = $this->getActivityFields();

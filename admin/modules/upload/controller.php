@@ -124,7 +124,7 @@ class UploadController extends Controller
                 }
                 if($Attribute->Attribute == 'Height'){
                     $Message .= '<input placeholder="Height(M)" size="8" type="text" id="mHeight" name="mHeight" value="'.$_REQUEST['mHeight'].'"/> 
-                                <input placeholder="Height(M)" size="8" type="text" id="fHeight" name="fHeight" value="'.$_REQUEST['fHeight'].'"/>';
+                                <input placeholder="Height(F)" size="8" type="text" id="fHeight" name="fHeight" value="'.$_REQUEST['fHeight'].'"/>';
                     $Message .= '<select name="HUOM" id="HUOM">';
                     foreach($UnitsOfMeasure as $Unit){
                     $Message .= '<option value="'.$Unit->recid.'">'.$Unit->UnitDescription.'</option>'; 

@@ -207,14 +207,22 @@ function addNewExercise()
 
 function addactivitydisplay(data)
 {
-    var RoundNo = document.getElementById('addround').value;
+    var RoundNo = $('#addround').val();
     document.getElementById('rowcounter').value++;
     document.getElementById('Round' + RoundNo + 'Counter').value++;
+    var RowNo = $('#rowcounter').val();
+    var Html = data.replace(/RowNo/g, RowNo);
+
     $('#ExerciseInputs').html('');
-    $('#activity_list').append(data);
+    if(RoundNo == 1)
+        chosenexercises += Html;
+    Html = Html.replace(/RoundNo/g, RoundNo);
+    $('#activity_list').append(Html);
     $("#exercise option[value='none']").attr("selected","selected");
     var el = $('#AjaxOutput');
-    el.find('div[data-role=collapsible]').collapsible({theme:'c',refresh:true}); 
+    el.find('div[data-role=collapsible]').collapsible({theme:'c',refresh:true});
+    $('.listview').listview();
+    $('.listview').listview('refresh');
 }
 
 function OpenHistory(ExerciseId)
@@ -236,36 +244,25 @@ function ExerciseInputs(exercise)
     Attribute     
     */
     $.ajax({url:'ajax.php?module=custom',data:{chosenexercise:exercise,encode:'json'},dataType:"json",success:function(json) { 
-        var Html = '<form id="activityform" name="activityform"><input type="hidden" name="thisform" value="addactivity"/>';      
-        Html += '<div class="ui-grid-b">';  
-        var i = document.getElementById('rowcounter').value;
-        var RoundNo = document.getElementById('addround').value;
-        var OrderBy = document.getElementById('Round' + RoundNo + 'Counter').value;
-        Ahtml='';
-        Bhtml='';
-        $.each(json, function() { 
-         
-        if(this.Attribute == 'Reps' || this.Attribute == 'Rounds'){
-            if(Ahtml == '' && Bhtml != ''){
-                Bhtml += '<div class="ui-block-a"></div>';
-            }else{
-                Bhtml += Ahtml;
-                Ahtml = '';
-            }
-            Bhtml += '<div class="ui-block-b">'+this.Attribute+'<input size="5" type="number" id="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0" name="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'"/></div>';             
-        }  
-        else if(this.Attribute == 'Height' || this.Attribute == 'Weight'){
-            if(Bhtml=='' && Ahtml != ''){
-                Ahtml += '<div class="ui-block-b"></div>';
-            }else{
-                Ahtml += Bhtml;
-                Bhtml = '';
-            }   
-            Ahtml += '<div class="ui-block-a">'+this.Attribute+'<input size="5" type="number" id="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_'+this.UOMId+'" name="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_'+this.UOMId+'_'+OrderBy+'"  placeholder="'+this.UOM+'"/></div>';                       
-        }              
-        else if(this.Attribute == 'Distance'){           
-            Html += '<div class="ui-block-a">'+this.Attribute+'<input size="5" type="number" id="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0" name="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'"/></div>';
-            Html += '<div class="ui-block-b">Units<select name="'+RoundNo+'_'+this.ExerciseId+'_Distance_UOM">';
+        var Html = '<div class="ActivityAttributes">';    
+        Html += '<form id="activityform" name="activityform">';
+        //var i = document.getElementById('rowcounter').value;
+        var RoundNo = $('#addround').val();
+        var OrderBy = $('#Round' + RoundNo + 'Counter').val();
+        var Elements = new Array();   
+            $.each(json, function() {
+                if(this.UOM == null){
+                    UOM = '';
+                    UOMId = 0;
+                }else{
+                    UOM = this.UOM;
+                    UOMId = this.UOMId;                   
+                }
+                if(this.Attribute == 'Distance'){ 
+                    Elements.push(''+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'');
+                    Html += '<div style="float:left;margin:0 10px 0 10px"">'+this.Attribute+'<br/><input size="9" type="number" id="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'" name="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'"/></div>';
+                    Elements.push(''+RoundNo+'_'+this.ExerciseId+'_Distance_UOM');
+                    Html += '<div style="float:left;margin:0 10px 0 10px"">Units<select id="'+RoundNo+'_'+this.ExerciseId+'_Distance_UOM" name="'+RoundNo+'_'+this.ExerciseId+'_Distance_UOM">';
             if('<?php echo $Display->SystemOfMeasure();?>' == 'Metric'){
                 Html += '<option value="2">Metres</option>';
                 Html += '<option value="1">Kilometres</option>';
@@ -276,41 +273,52 @@ function ExerciseInputs(exercise)
                 Html += '</select>';                
             } 
             Html += '</div>';
-        }        
-      });
+        }else{
+                Elements.push(''+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_'+UOMId+'_'+OrderBy+'');
+                Html += '<div style="float:left;margin:0 10px 0 10px"">'+this.Attribute+'<br/><input size="9" type="number" id="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_'+UOMId+'_'+OrderBy+'"  placeholder="'+UOM+'" name="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_'+UOMId+'_'+OrderBy+'"  placeholder="'+UOM+'"/></div>';
+               }
+            });
 
-      Html += Ahtml+Bhtml+'<div class="ui-block-a"></div><div class="ui-block-b"><input type="button" id="" name="" onClick="AddActivity();" value="Add Activity"/></div></div></form>';
+            Html += '<div style="float:right;margin:10px 20px 0 0"><input type="button" id="" name="btn" onClick="AddActivity(\''+Elements+'\');" value="Add Activity"/></div>';
+            Html += '</div></form><div class="clear"></div>';       
+
         $('#ExerciseInputs').html(Html);
     }});  
     return false;   
 }
 
-function AddActivity()
+function AddActivity(Elements)
 {
-    $.getJSON('ajax.php?module=custom&action=validateform', $("#activityform").serialize(),addactivitydisplay);     
+    var arr = Elements.split(',');
+    var Data = '';
+    for (var i = 0; i < arr.length; i++) {
+        if(i > 0)
+            Data += '&';
+        Data += arr[i];
+        Data += '=';
+        Data += $('#'+arr[i]+'').val();
+    }
+
+    $.ajax({url:'ajax.php?module=custom&action=formsubmit&thisform=addactivity&'+Data+'',data:"",dataType:"html",success:addactivitydisplay});      
 }
 
-function RemoveFromList(RowId,RoundNo)
+function RemoveFromList(ThisItem)
 {
     var r=confirm("Remove item?");
     if (r==true)
     {
-    $('#row_' + RowId + '').remove();
-    document.getElementById('rowcounter').value--;
-    document.getElementById('Round' + RoundNo + 'Counter').value--;
+        var Explode = ThisItem.split('_');
+        var RoundNo = Explode[0];
+        var RowNo = Explode[1]; 
+        $('#' + ThisItem + '').remove();
+        
+        document.getElementById('rowcounter').value--;
+        document.getElementById('Round' + RoundNo + 'Counter').value--;
 
-    if(document.getElementById('Round' + RoundNo + 'Counter').value == 0){
-        $('#Round' + RoundNo + 'Label').html('');
-    }
-
-    if(document.getElementById('rowcounter').value == 0){
-        //$('#new_exercise').html('');
-        $('#Round1Label').html('');
-        $('.RoundLabel').html('');
-        $('#controls').html('');
-        document.getElementById('addround').value = 1;
-        //chosenexercises = '';
-    }
+        if($('#Round' + RoundNo + 'Counter').val() == 0){
+            chosenexercises = '';
+            $('#Round' + RoundNo + 'Label').html('');
+        }
     }
 }
 
@@ -319,7 +327,7 @@ function Save()
     if(document.getElementById('rowcounter').value == 0){
         alert('No Exercises selected!');
     }else{
-    $.getJSON('ajax.php?module=custom&action=validateform', $("#customform").serialize(),messagedisplay);
+        $.getJSON('ajax.php?module=custom&action=validateform', $("#customform").serialize(),messagedisplay);
     }
 }
 
@@ -330,23 +338,31 @@ function addnew()
 
 function addRound()
 {  
-    var PrevRoundNo = document.getElementById('addround').value;
-    if(document.getElementById('rowcounter').value == 0){
+    var RoundCouter = $('#rowcounter').val();
+    var PrevRoundNo = $('#addround').val();
+    var RowNo = $('#rowcounter').val();
+    if(RowNo == 0){
         alert('No Exercises selected!');
-    }else if(document.getElementById('Round' + PrevRoundNo + 'Counter').value == 0){
+    }else if($('#Round' + PrevRoundNo + 'Counter').val() == 0){
         alert('No Exercises selected for round ' + PrevRoundNo + '!');
     }else{
+        if($('#Round1Label').html() == '')
+            $('#Round1Label').html('Round 1');
+        document.getElementById('addround').value++;
+        var RoundNo = $('#addround').val();
+        var ThisRound ='<br/><div class="RoundLabel" id="Round' + RoundNo + 'Label">Round ' + RoundNo + '</div>';
+        ThisRound+= '<input type="hidden" name="Round' + RoundNo + 'Counter" id="Round' + RoundNo + 'Counter" value="'+RoundCouter+'"/>';
+        ThisRound+=chosenexercises.replace(/RoundNo/g, RoundNo);
+        ThisRound=ThisRound.replace(/RowNo/g, RowNo);
+        ThisRound=ThisRound.replace(/undefined/g, '');
 
-    document.getElementById('addround').value++;
-    var RoundNo = document.getElementById('addround').value;
-    var ThisRound ='<div class="RoundLabel" id="Round' + RoundNo + 'Label"><br/>Round ' + RoundNo + '</div>';
-    ThisRound+='<input type="hidden" name="Round' + RoundNo + 'Counter" id="Round' + RoundNo + 'Counter" value="0"/>';
-    $(ThisRound).appendTo($('#activity_list'));
-    //$(chosenexercises).appendTo(new_exercise);
-}
+        $(ThisRound).appendTo($('#activity_list'));
+    }
 
     $('.textinput').textinput();
     $('.numberinput').textinput();
+    $('.listview').listview();
+    $('.listview').listview('refresh');    
 }
 
 function clockSelect(type)
@@ -393,7 +409,14 @@ function resetControl()
         alert('First choose Clock Type!');
 }
 
-
+function UpdateActivity(ActivityId, Attributes)
+{
+    var AttributesArray = Attributes.split('_');
+    for(i=0; i < AttributesArray.length;i++){
+        $("#"+ActivityId+"_"+AttributesArray[i]+"_html").html($("#"+ActivityId+"_"+AttributesArray[i]+"_new").val());
+        $("#"+ActivityId+"_"+AttributesArray[i]+"").val($("#"+ActivityId+"_"+AttributesArray[i]+"_new").val());
+    }  
+}
 </script>
 <br/>
 

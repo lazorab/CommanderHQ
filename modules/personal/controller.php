@@ -57,10 +57,11 @@ if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
         //$html.='<div class="ui-grid-b">';
         $html = '<div data-role="collapsible-set" data-iconpos="right">';
         $ThisRound = '';
+        $OrderBy = '';
 	$ThisExerciseId = 0;
         //var_dump($this->Workout);
 	foreach($this->Workout as $Detail){
-            if($Detail->UnitOfMeasureId == null){
+            if($Detail->UnitOfMeasureId == null || $Detail->UnitOfMeasureId == 0){
                 $UnitOfMeasureId = 0;
                 $ConversionFactor = 1;
             }else{
@@ -80,7 +81,7 @@ if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
                             $html.= '<div data-role="collapsible">';
                             $html.= '<h2>'.$Detail->Exercise.'<br/>';             
 			}
-			else if($ThisExerciseId != $Detail->ExerciseId){
+			else if($ThisExerciseId != $Detail->ExerciseId || $OrderBy != $Detail->OrderBy){
 
                             if($ThisExerciseId != null && $i > 0){
                                 $html.='</h2><p style="color:red">'.$this->getExerciseHistory("".$Detail->RoundNo."_".$ThisExerciseId."").'</p></div>';
@@ -91,9 +92,10 @@ if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
                             $html.=' | ';
                         }
                         $html.=''.$Detail->Attribute.' : <span id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_html">'.$Detail->AttributeValue * $ConversionFactor.'</span>'.$Detail->UnitOfMeasure.'';
-                        $html.='<input type="hidden" id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'" name="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_'.$UnitOfMeasureId.'" value="'.$Detail->AttributeValue.'">';
+                        $html.='<input type="hidden" id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'" name="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_'.$UnitOfMeasureId.'_'.$Detail->OrderBy.'" value="'.$Detail->AttributeValue.'">';
                 }
 	$ThisRound = $Detail->RoundNo;
+        $OrderBy = $Detail->OrderBy;
 	$ThisExerciseId = $Detail->ExerciseId;
         $i++;
 	}
@@ -133,31 +135,30 @@ return $html;
                 $Html.='No History for activity';
             }
             $i=0;
-            $TimeCreated = '';
+            $j=0;
             $TheseAttributes='';
             $Attributes = $Model->getExerciseIdAttributes($ThisExerciseId);
-            //var_dump(json_encode($Attributes));
-            //$Html = '<div id="'.$ThisExercise.'" class="ExerciseHistory">';
+            $NumAttributes = count($Attributes);
             foreach($ExerciseHistory as $Detail){
                 if($i < 3){
-                if($i > 0){
-                    if($Detail->TimeCreated != $TimeCreated)
+                    $Html.=''.$Detail->Attribute.' : '.$Detail->AttributeValue.''.$Detail->UnitOfMeasure.'';
+                    $j++;
+                    if($j == $NumAttributes){
                         $Html.='<br/>';
-                    else
+                        $j = 0;
+                        $i++;
+                    }else{
                         $Html.=' | ';
+                    }
                 }
-                $Html.=''.$Detail->Attribute.' : '.$Detail->AttributeValue.''.$Detail->UnitOfMeasure.'';
-                $i++;
-                }
-                $TimeCreated = $Detail->TimeCreated;
             }
             $i=0;
-            $Html .= '<div>';
+            $Html .= '<div class="ActivityAttributes">';
             foreach($Attributes as $Attribute){
                 if($i > 0)
                     $TheseAttributes.='_';
                 $TheseAttributes.=$Attribute->Attribute;
-                $Html .= '<div style="float:left;margin:0 10px 0 10px"">'.$Attribute->Attribute.'<input size="9" type="number" id="'.$Attribute->Attribute.'" name="" placeholder="'.$Attribute->UOM.'"/></div>';
+                $Html .= '<div style="float:left;margin:0 10px 0 10px"">'.$Attribute->Attribute.'<br/><input size="9" type="number" id="'.$ThisExercise.'_'.$Attribute->Attribute.'_new" name="" placeholder="'.$Attribute->UOM.'"/></div>';
                 $i++;
             }
 
@@ -238,9 +239,10 @@ return $html;
 	function TopSelection()
 	{
             $Model = new PersonalModel;
-            $Description = $Model->getDescription($_REQUEST['topselection']);
+            //$Description = $Model->getDescription($_REQUEST['topselection']);
             $Html .= '<li>';
-            $Html .= ''.$this->Workout[0]->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span>';
+            $Html .= ''.$this->Workout[0]->WorkoutName.'';
+            //$Html .= ':<br/><span style="font-size:small">'.$Description.'</span>';
             $Html .= '</li>';
             return $Html;	
 	}	

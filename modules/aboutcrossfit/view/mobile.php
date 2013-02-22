@@ -1,3 +1,4 @@
+<iframe marginwidth="0px" marginheight="0px" width="<?php echo SCREENWIDTH;?>" height="<?php echo floor(SCREENWIDTH * 0.717);?>" src="http://www.youtube.com/embed/tzD9BkXGJ1M" frameborder="0"></iframe> 
 <div id="bodytext">
 <p>
 CrossFit is a training method that is  currently one of the most efficient and effective exercise programs out there.

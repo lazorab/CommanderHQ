@@ -238,6 +238,23 @@ input
 	-webkit-border-radius: 5px; 
 }
 
+.ActivityAttributes{
+    height:60px;
+    padding:5px 0 5px 0;
+    background-color: #EEE;
+    border-radius: 5px; 
+    -moz-border-radius: 5px; 
+    -webkit-border-radius: 5px;   
+}
+
+#SelectActivities{
+    padding:5px 0 5px 0;
+    background-color: #EEE;
+    border-radius: 5px; 
+    -moz-border-radius: 5px; 
+    -webkit-border-radius: 5px;   
+}
+
 .benchmark
 {
 	width:70%;
@@ -289,13 +306,13 @@ font-size:medium;
 }
 
 .StopwatchButton{
-    background-color: #EEEEEE;
+    background-color: #EEE;
     width:32%;
     float:left;
 }
 
 #clock{
-    background-color: #EEEEEE;
+    background-color: #EEE;
     font-size: 30px;
     font-weight: bold;
 

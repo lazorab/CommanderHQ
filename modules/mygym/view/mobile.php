@@ -1,24 +1,37 @@
 <script type="text/javascript">
     $(function(){
-    $('#tab1').addClass('active');
+        $('#tab1').addClass('active');
+        $('#details1').html('<?php echo $Display->WorkoutDetails("2"); echo $Display->getStopWatch();?>');
+        $('.buttongroup').button();
+        $('.buttongroup').button('refresh');
+        var el = $('#AjaxOutput');
+        el.find('div[data-role=collapsible]').collapsible({theme:'c',refresh:true});       
     });
 function Tabs(tab)
 {
     if(tab == 1){
         $('#tab2').removeClass('active');
         $('#tab1').addClass('active');
+        $('#details1').html('<?php echo $Display->WorkoutDetails("2"); echo $Display->getStopWatch();?>');
+        $('#details2').html('');
     }else{
         $('#tab1').removeClass('active');
         $('#tab2').addClass('active');
+        $('#details1').html('');
+        $('#details2').html('<?php echo $Display->WorkoutDetails("4"); echo $Display->getStopWatch();?>');
     }
+    $('.buttongroup').button();
+    $('.buttongroup').button('refresh');
+    var el = $('#AjaxOutput');
+    el.find('div[data-role=collapsible]').collapsible({theme:'c',refresh:true});
 }
 
 function UpdateActivity(ActivityId, Attributes)
 {
     var AttributesArray = Attributes.split('_');
     for(i=0; i < AttributesArray.length;i++){
-        $("#"+ActivityId+"_"+AttributesArray[i]+"_html").html($("#"+AttributesArray[i]+"").val());
-        $("#"+ActivityId+"_"+AttributesArray[i]+"").val($("#"+AttributesArray[i]+"").val());
+        $("#"+ActivityId+"_"+AttributesArray[i]+"_html").html($("#"+ActivityId+"_"+AttributesArray[i]+"_new").val());
+        $("#"+ActivityId+"_"+AttributesArray[i]+"").val($("#"+ActivityId+"_"+AttributesArray[i]+"_new").val());
     }  
 }
 
@@ -69,15 +82,14 @@ function topdisplay(data)
 
 function display(data)
 {
+
     if(data == 'Must First Register Gym!'){
         alert('Must First Register Gym!\nYou will be redirected now');
         window.location = 'index.php?module=profile';
     }
     else{
-       
-        //$( "#tabs" ).tabs( "refresh" );
+ 
 	$('#AjaxOutput').html(data);
-        $('#tabs').tabs(); 
     }
     $('#listview').listview();
     $('#listview').listview('refresh');
@@ -92,7 +104,8 @@ function display(data)
 function Save()
 {
     $("#TimeToComplete").val($('#clock').html());
-    $.getJSON('ajax.php?module=mygym&action=validateform', $("#wodform").serialize(),messagedisplay);
+    var timeval = $("#TimeToComplete").val();
+    $.getJSON('ajax.php?module=mygym&action=validateform&TimeToComplete='+timeval+'', $("#wodform").serialize(),messagedisplay);
 }
 
 function messagedisplay(message)

@@ -31,7 +31,9 @@ $Module = $_REQUEST['module'];
 	
 	$Ajax = new $ControllerClass;
 
-        if(isset($_REQUEST['action']) && $_REQUEST['action'] == 'validateform'){
+        if(isset($_REQUEST['action']) && $_REQUEST['action'] == 'formsubmit'){
+            echo $Ajax->Message();
+        }else if(isset($_REQUEST['action']) && $_REQUEST['action'] == 'validateform'){
             echo json_encode($Ajax->Message());
         }else if(isset($_REQUEST['topselection'])){
             echo $Ajax->TopSelection();

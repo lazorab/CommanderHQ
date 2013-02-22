@@ -206,6 +206,7 @@ class BenchmarkModel extends Model
                         UOM.ConversionFactor,    
                         VideoId, 
                         RoundNo,
+                        OrderBy,
                         (SELECT MAX(RoundNo) FROM BenchmarkDetails WHERE BenchmarkId = "'.$Id.'") AS TotalRounds
 			FROM BenchmarkDetails BD
 			LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
