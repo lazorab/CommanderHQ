@@ -152,28 +152,35 @@ class ChallengeModel extends Model
             } else {
                 $AttributeValue = 'AttributeValueFemale';
             }           
-		$SQL = 'SELECT WD.ChallengeId,
-                        WW.ChallengeName, 
+		$SQL = 'SELECT WD.ChallengeId AS Id,
+                        WW.ChallengeName AS WorkoutName, 
                         E.Exercise, 
+                        E.recid AS ExerciseId, 
                         CASE 
                             WHEN E.Acronym <> ""
                             THEN E.Acronym
                             ELSE E.Exercise
                         END
-                        AS InputFieldName, 
-                        E.recid AS ExerciseId, 
+                        AS InputFieldName,  
                         A.Attribute, 
-                       '.$AttributeValue.' AS AttributeValue, 
-                        WW.Routine AS RoundNo,
+                       '.$AttributeValue.' AS AttributeValue,
+                        WD.UnitOfMeasureId,    
+                        UOM.UnitOfMeasure,
+                        UOM.ConversionFactor,    
+                        WD.RoundNo,
+                        WD.OrderBy,                           
                         WW.WorkoutRoutineTypeId,
                         WW.ChallengeDate,
-                        WW.Notes
+                        WW.Notes,
+                        (SELECT MAX(RoundNo) FROM ChallengesDetails WHERE ChallengeId = "26") AS TotalRounds
 			FROM ChallengesDetails WD
 			LEFT JOIN Challenges WW ON WW.recid = WD.ChallengeId
 			LEFT JOIN Exercises E ON E.recid = WD.ExerciseId
 			LEFT JOIN Attributes A ON A.recid = WD.AttributeId
-			WHERE WW.ChallengeDate = CURDATE()
-			ORDER BY RoundNo, Exercise, Attribute';
+                        LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND WD.UnitOfMeasureId = UOM.recid';
+		$SQL .= ' WHERE (Attribute = "Reps" OR SystemOfMeasure = "Metric")';  
+              //$SQL .= ' AND WW.ChallengeDate = CURDATE()';
+		$SQL .= ' ORDER BY RoundNo, OrderBy, Exercise, Attribute';
             
             $db->setQuery($SQL);
             return $db->loadObjectList();

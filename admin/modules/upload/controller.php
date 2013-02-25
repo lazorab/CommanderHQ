@@ -59,7 +59,6 @@ class UploadController extends Controller
         $FHeightVal = $_REQUEST['fHeight'];
         $MHeightVal = $_REQUEST['mHeight'];
         $Distance = $_REQUEST['Distance'];
-        $RepsVal = $_REQUEST['Reps'];
 
         $Message = '';
         if(isset($_REQUEST['NewExercise']) && $_REQUEST['NewExercise'] == ''){
@@ -67,7 +66,7 @@ class UploadController extends Controller
         }else if(isset($_REQUEST['Exercise']) && $_REQUEST['Exercise'] == 'none'){
             $Message = 3;//'Must Select Exercise!';            
         }else if($RoundsVal == '' && $FWeightVal == '' && $MWeightVal == '' && $FHeightVal == '' &&
-                $MHeightVal == '' && $Distance == '' && $RepsVal == ''){
+                $MHeightVal == '' && $Distance == ''){
             $Message = 2;//'Must Have at least one Attribute';
         }
         return $Message;

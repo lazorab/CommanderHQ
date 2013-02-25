@@ -10,6 +10,7 @@ function messagedisplay(message)
     if(message != 'Success'){
         alert(message);
     }else{
+        alert('Sent Successfully - Thank you.');
         window.location = 'index.php?module=memberhome';
     }   
 }

@@ -227,10 +227,9 @@ class Model
                     if($UOMId == 0 && $Attribute == 'Distance')
                         $UOMId = $_REQUEST[''.$RoundNo.'_'.$ExerciseId.'_Distance_UOM'];
                     $UOM = $this->getUnitOfMeasure($UOMId);
-                if($Value == '' || $Value == '0' || $Value == $Attribute){
-                        $Value = 'max ';
-                }
-                //else{
+                if($Value == '' || $Value == '0' || $Value == $Attribute || $Value == 'Max '){
+                        $this->Message = 'Error - Invalid Value for '.$Attribute.'!';
+                }else{
                 $SQL='SELECT recid AS ExerciseId,
                         "'.$ExerciseName.'" AS Exercise,
                         (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS AttributeId,
@@ -246,7 +245,7 @@ class Model
 		
                 $Row = $db->loadObject();
                 array_push($Activities, $Row);
-                //}      
+                }      
             }
         }
         return $Activities;

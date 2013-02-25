@@ -92,163 +92,122 @@ class ChallengeController extends Controller
             $html='';
             $Model = new ChallengeModel;
             $ChallengeDetails = $Model->getChallengeDetails();
+            
             if(count($ChallengeDetails) == 0){
                 $html='No challenges at present';
             }else{
-                $this->getTopSelection();
-	$Clock = '';
-	$Bhtml = '';
-	$Chtml = '';
-	$html.='<form name="form" id="challengeform" action="index.php">
-            <input type="hidden" name="form" value="submitted"/>  
-            <input type="hidden" name="ChallengeId" value="'.$ChallengeDetails[0]->ChallengeId.'"/>'; 
+                //$this->getTopSelection();
+            //var_dump($ChallengeDetails);
+	$html='<form name="form" id="challengeform" action="index.php">';
+        $html.='<input type="hidden" name="form" value="submitted"/>';
+        $html.='<input type="hidden" name="ChallengeId" value="'.$ChallengeDetails[0]->Id.'"/>'; 
         $html.='<p>'.$ChallengeDetails[0]->Notes.'</p>';
-        $html.='<div class="ui-grid-b">';
+        $html .= '<div data-role="collapsible-set" data-iconpos="right">';
+        $i = 0;
         $ThisRound = '';
-		$ThisExercise = '';
+	$ThisExerciseId = 0;
+        //var_dump($this->Workout);
 	foreach($ChallengeDetails as $Detail){
-		if($Detail->Attribute == 'TimeToComplete'){
-			$Clock = $this->getStopWatch();
-		}
-		else if($Detail->Attribute == 'CountDown'){
-			$Clock = $this->getCountDown($Detail->ExerciseId,$Detail->AttributeValue);
-		}
-		else{
+            if($Detail->UnitOfMeasureId == null){
+                $UnitOfMeasureId = 0;
+                $ConversionFactor = 1;
+            }else{
+                $UnitOfMeasureId = $Detail->UnitOfMeasureId;
+                $ConversionFactor = $Detail->ConversionFactor;
+            }
+            if($Detail->AttributeValue == ''){
+                $AttributeValue = 'Max ';
+            }else{
+                $AttributeValue = $Detail->AttributeValue * $ConversionFactor;
+            }
+		if($Detail->Attribute != 'TimeToComplete'){
 			
 			if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0 && $ThisRound != $Detail->RoundNo){
-			
-				if($Chtml != '' && $Bhtml == ''){
-					$html.='<div class="ui-block-b"></div>'.$Chtml.'';
-					$Chtml = '';
-					$Bhtml = '';
-				}
-				if($Chtml == '' && $Bhtml != ''){
-					$html.=''.$Bhtml.'<div class="ui-block-c"></div>';
-					$Chtml = '';
-					$Bhtml = '';
-				}
-				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
-				$html.='<div class="ui-block-a" style="padding:2px 0 2px 0">Round '.$Detail->RoundNo.'</div><div class="ui-block-b" style="padding:2px 0 2px 0"></div><div class="ui-block-c" style="padding:2px 0 2px 0"></div>';
-				$html.='<div class="ui-block-a"><input data-role="none" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Detail->InputFieldName.'"/></div>';
+                            if($ThisExerciseId != null && $i > 0){
+                                $html.='</h2><p style="color:red">'.$this->getExerciseHistory("".$ThisRound."_".$ThisExerciseId."").'</p></div><br/><br/>';
+                            }                           	
+                            $html.= '<h2>Round '.$Detail->RoundNo.'</h2>';
+                            $html.= '<div data-role="collapsible">';
+                            $html.= '<h2>'.$Detail->Exercise.'<br/>';             
 			}
-			else if($ThisExercise != $Detail->Exercise){
-                            
-                                if(isset($_REQUEST['Rounds']))
-                                    $RoundNo = $_REQUEST['Rounds'];
-                                else
-                                    $RoundNo = $Detail->RoundNo;
+			else if($ThisExerciseId != $Detail->ExerciseId){
 
-				if($Chtml != '' && $Bhtml == ''){
-					$html.='<div class="ui-block-b"></div>'.$Chtml.'';
-					$Chtml = '';
-					$Bhtml = '';
-				}
-				if($Chtml == '' && $Bhtml != ''){
-					$html.=''.$Bhtml.'<div class="ui-block-c"></div>';
-					$Chtml = '';
-					$Bhtml = '';
-				}
-                                if($Detail->Exercise == 'Total Rounds'){
-                                    $Exercise = '<input class="buttongroup" data-inline="true" type="button" onclick="addRound();" value="+ Round"/>';
-                                }else{
-                                    $Exercise = '<input data-role="none" style="width:75%" readonly="readonly" type="text" data-inline="true" name="" value="'.$Detail->InputFieldName.'"/>';
-                                }
-				$html.='<div class="ui-block-a"></div><div class="ui-block-b"></div><div class="ui-block-c"></div>';
-				$html.='<div class="ui-block-a">'.$Exercise.'</div>';
-				}
-			}	
-
-		
-            if($Detail->Attribute == 'Height' || $Detail->Attribute == 'Distance' || $Detail->Attribute == 'Weight'){
-                            $AttributeValue = '';	
-				if($Detail->Attribute == 'Distance'){
-                                    $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#6f747a"';
-					if($this->SystemOfMeasure() != 'Metric'){
-						$Unit = '<span style="float:left">yd</span>';
-                                                $AttributeValue = round($Detail->AttributeValue * 1.09, 2);
-                                        }else{
-						$Unit = '<span style="float:left">m</span>';
-                                                $AttributeValue = $Detail->AttributeValue;
-                                        }
-				}		
-				else if($Detail->Attribute == 'Weight'){
-                                    $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#3f2b44"';
-					if($this->SystemOfMeasure() != 'Metric'){
-                                            $AttributeValue = round($Detail->AttributeValue * 2.20, 2);
-						$Unit = '<span style="float:left">lbs</span>';
-                                        }else{
-						$Unit = '<span style="float:left">kg</span>';
-                                                $AttributeValue = $Detail->AttributeValue;
-                                        }
-				}
-				else if($Detail->Attribute == 'Height'){
-                                    $Style='style="float:left;width:50%;color:white;font-weight:bold;background-color:#66486e"';
-					if($this->SystemOfMeasure() != 'Metric'){
-                                            $AttributeValue = round($Detail->AttributeValue * 0.39, 2);
-						$Unit = '<span style="float:left">in</span>';
-                                        }else{
-						$Unit = '<span style="float:left">cm</span>';
-                                                $AttributeValue = $Detail->AttributeValue;
-                                        }
-				}
-
-				$Bhtml.='<div class="ui-block-b">';
-				$Bhtml.='<input data-role="none" '.$Style.' type="number" data-inline="true" name="'.$RoundNo.'___'.$Detail->ExerciseId.'___'.$Detail->Attribute.'" value="'.$AttributeValue.'"/>'.$Unit.'';
-				$Bhtml.='</div>';		
-				if($Chtml != ''){
-					$html.=''.$Bhtml.''.$Chtml.'';
-					$Chtml = '';
-					$Bhtml = '';
-				}
-			}
-                        
-            else if($Detail->Attribute == 'Calories' || $Detail->Attribute == 'Reps' || $Detail->Attribute == 'Rounds'){
-                                $Placeholder = '';
-                                if($Detail->Attribute == 'Calories'){
-                                    $Style='style="width:50%"';
-                                    $Placeholder = 'placeholder="Calories"';
-                                }
-                                $InputAttributes = 'type="number"';
-                                $InputName = ''.$RoundNo.'___'.$Detail->ExerciseId.'___'.$Detail->Attribute.'';
-                                $Value = $Detail->AttributeValue;
-                                if($Detail->Attribute == 'Rounds'){
-                                    $Style='style="width:50%"';
-                                    $InputName = 'Rounds';
-                                }
-                                if($Detail->Attribute == 'Reps'){
-                                    $Style='style="float:left;width:50%;color:black;font-weight:bold;background-color:#ccff66"';
-                                }
-				$Chtml.='<div class="ui-block-c">';
-				$Chtml.='<input data-role="none" '.$InputAttributes.' '.$Style.' name="'.$InputName.'" '.$Placeholder.' value="'.$Value.'"/>';
-				$Chtml.='</div>';
-				if($Bhtml != ''){
-					$html.=''.$Bhtml.''.$Chtml.'';
-					$Bhtml = '';
-					$Chtml = '';
-				}
-			}
-		
-		
+                            if($ThisExerciseId != null && $i > 0){
+                                $html.='</h2><p style="color:red">'.$this->getExerciseHistory("".$ThisRound."_".$ThisExerciseId."").'</p></div>';
+                            }       
+                            $html.= '<div data-role="collapsible">';
+                            $html.= '<h2>'.$Detail->Exercise.'<br/>';                           
+                        }else{
+                            $html.=' | ';
+                        }
+                        $html.=''.$Detail->Attribute.' : <span id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_html">'.$AttributeValue.'</span>'.$Detail->UnitOfMeasure.'';
+                        $html.='<input type="hidden" id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'" name="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_'.$UnitOfMeasureId.'_'.$Detail->OrderBy.'"';
+                        if($AttributeValue == 'Max '){
+                            $html.='placeholder="'.$AttributeValue.'" value="">';
+                        }else{
+                            $html.='value="'.$AttributeValue.'">';
+                        }                       
+                }
 	$ThisRound = $Detail->RoundNo;
-	$ThisExercise = $Detail->Exercise;
+	$ThisExerciseId = $Detail->ExerciseId;
+        $i++;
 	}
-				if($Chtml != '' && $Bhtml == ''){
-					$html.='<div class="ui-block-b"></div>'.$Chtml.'';
-					$Chtml = '';
-					$Bhtml = '';
-				}
-				if($Chtml == '' && $Bhtml != ''){
-					$html.=''.$Bhtml.'<div class="ui-block-c"></div>';
-					$Chtml = '';
-					$Bhtml = '';
-				}	
+                            if($ThisExerciseId != null && $i > 0){
+                                $html.='</h2><p style="color:red">'.$this->getExerciseHistory("".$ThisRound."_".$ThisExerciseId."").'</p></div>';
+                            }             
     $html.='</div>';
-    $html.=$Clock;
-    $html.='</form><br/><br/>';		
+    $html.=$this->getStopWatch();
+    $html.='</form><br/><br/>'; 	
+            }
+$html.='<div class="clear"></div><br/>';
+            return $html;
+	}  
+        
+         function getExerciseHistory($ThisExercise)
+        {
+            $Html='';
+            $ExplodedExercise = explode('_',$ThisExercise);
+            $ThisRoundNo = $ExplodedExercise[0];
+            $ThisExerciseId = $ExplodedExercise[1];
+            $Model = new ChallengeModel;
+            $ExerciseHistory = $Model->getExerciseHistory($ThisExerciseId);
+            //var_dump($ExerciseHistory);
+            if(count($ExerciseHistory) == 0){
+                $Html.='No History for activity';
+            }
+            $i=0;
+            $j=0;
+            $TheseAttributes='';
+            $Attributes = $Model->getExerciseIdAttributes($ThisExerciseId);
+            $NumAttributes = count($Attributes);
+            foreach($ExerciseHistory as $Detail){
+                if($i < 3){
+                    $Html.=''.$Detail->Attribute.' : '.$Detail->AttributeValue.''.$Detail->UnitOfMeasure.'';
+                    $j++;
+                    if($j == $NumAttributes){
+                        $Html.='<br/>';
+                        $j = 0;
+                        $i++;
+                    }else{
+                        $Html.=' | ';
+                    }
+                }
+            }
+            $i=0;
+            $Html .= '<div class="ActivityAttributes">';
+            foreach($Attributes as $Attribute){
+                if($i > 0)
+                    $TheseAttributes.='_';
+                $TheseAttributes.=$Attribute->Attribute;
+                $Html .= '<div style="float:left;margin:0 10px 0 10px"">'.$Attribute->Attribute.'<input size="9" type="number" id="'.$ThisExercise.'_'.$Attribute->Attribute.'_new" name="" placeholder="'.$Attribute->UOM.'"/></div>';
+                $i++;
             }
 
-            return $html;
-	}       
+            $Html .= '<div style="float:right;margin:10px 20px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="UpdateActivity(\''.$ThisExercise.'\', \''.$TheseAttributes.'\');" value="Update"/></div>';
+            $Html .= '</div><div class="clear"></div>';
+            
+            return $Html;
+        }         
         
         function MyGymChallenge()
         {
@@ -275,25 +234,6 @@ class ChallengeController extends Controller
             }
             return $Html;
         }       
-
-	function getStopWatch()
-    {
-	$RoundNo = 0;
-        $ExerciseId = 63;
-        $TimeToComplete = '00:00:0';
-        $StartStopButton = 'Start';
-        if(isset($_REQUEST['0___63___TimeToComplete'])){
-            $TimeToComplete = $_REQUEST['0___63___TimeToComplete'];
-            if($TimeToComplete != '00:00:0')
-                $StartStopButton = 'Stop';
-        }
-	$Html ='<br/><input type="text" id="clock" name="0___63___TimeToComplete" value="'.$TimeToComplete.'" readonly/>';
-	$Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstop();" value="'.$StartStopButton.'"/>';
-	$Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetclock();" value="Reset"/>';
-        $Html.='<input class="buttongroup" type="button" onclick="challengesubmit();" value="Save"/>';
-
-        return $Html;
-    }
     
     function getWeight($exerciseId)
     {

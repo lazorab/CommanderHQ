@@ -113,17 +113,23 @@ return $html;
         function Output()
 	{
             $html='';
+            $Overthrow='';
+            $Device = new DeviceManager;
+            if($Device->IsGoogleAndroidDevice()) {
+                $Overthrow='class="overthrow"';
+            }
             if(isset($_REQUEST['keyword'])){
                 $Model = new LocatorModel;
                 $Affiliates=$Model->getAffiliatesFromSearch();
                 if(count($Affiliates) > 0){
+                    $html.='<div '.$Overthrow.'>';
                     $html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';               
                     foreach($Affiliates AS $Affiliate){
                         $html .= '<li>';
                         $html .= '<a href="" onclick="getDetails('.$Affiliate->AffiliateId.');">'.$Affiliate->GymName.':<br/><span style="font-size:small">'.$Affiliate->Region.'</span></a>';
                         $html .= '</li>';
                     }
-                    $html .= '</ul><br/>';
+                    $html .= '</ul><div class="clear"></div><br/></div>';
                 }
                 else{
                     $html='No Affiliate Gyms match your search';
@@ -140,16 +146,18 @@ return $html;
                         $html = 'Cannot determine your present location';
                     }
                     else{
+        
                 $Model = new LocatorModel;
                 $Affiliates=$Model->getAffiliates();
                 if(count($Affiliates) > 0){
+                    $html.='<div '.$Overthrow.'>';
                     $html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';               
                     foreach($Affiliates AS $Affiliate){
                         $html .= '<li>';
                         $html .= '<a href="" onclick="getDetails('.$Affiliate->AffiliateId.');">'.$Affiliate->GymName.':<br/><span style="font-size:small">'.$Affiliate->Region.'</span></a>';
                         $html .= '</li>';
                     }
-                    $html .= '</ul><br/>';
+                    $html .= '</ul><div class="clear"></div><br/></div>';
                 }
                 else{
                     $html='No Affiliate Gyms near your present location';

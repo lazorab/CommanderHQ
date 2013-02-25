@@ -68,6 +68,11 @@ if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
                 $UnitOfMeasureId = $Detail->UnitOfMeasureId;
                 $ConversionFactor = $Detail->ConversionFactor;
             }
+            if($Detail->AttributeValue == ''){
+                $AttributeValue = 'Max ';
+            }else{
+                $AttributeValue = $Detail->AttributeValue * $ConversionFactor;
+            }            
 		if($Detail->Attribute == 'TimeToComplete'){
 			$Clock = $this->getStopWatch();
 		}
@@ -91,8 +96,13 @@ if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
                         }else{
                             $html.=' | ';
                         }
-                        $html.=''.$Detail->Attribute.' : <span id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_html">'.$Detail->AttributeValue * $ConversionFactor.'</span>'.$Detail->UnitOfMeasure.'';
-                        $html.='<input type="hidden" id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'" name="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_'.$UnitOfMeasureId.'_'.$Detail->OrderBy.'" value="'.$Detail->AttributeValue.'">';
+                        $html.=''.$Detail->Attribute.' : <span id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_html">'.$AttributeValue.'</span>'.$Detail->UnitOfMeasure.'';
+                        $html.='<input type="hidden" id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'" name="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_'.$UnitOfMeasureId.'_'.$Detail->OrderBy.'"';
+                        if($AttributeValue == 'Max'){
+                            $html.='placeholder="'.$AttributeValue.'" value="">';
+                        }else{
+                            $html.='value="'.$AttributeValue.'">';
+                        }                        
                 }
 	$ThisRound = $Detail->RoundNo;
         $OrderBy = $Detail->OrderBy;

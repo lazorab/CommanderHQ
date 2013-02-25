@@ -12,7 +12,7 @@ CrossFit is suitable for any level of fitness - from novice to Pro athlete.
 Fitness is a state of mind. 
 Have the courage to set goals and the motivation to achieve them.
 </p><p>
-We highly recommend you connect with your closest affiliate as it it critical to your own safety that you ate taught the correct techniques that need ti be applied to ensuring efficient, effective and safe health and fitness training. 
+We highly recommend you connect with your closest affiliate as it is critical to your own safety that you are taught the correct techniques that need to be applied to ensuring efficient, effective and safe health and fitness training. 
 </p><p>
 Have fun, enjoy the journey...    
 </p>

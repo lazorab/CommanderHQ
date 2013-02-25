@@ -88,13 +88,11 @@ var chosenexercises;
 function getContent(selection)
 {  
     $.ajax({url:'ajax.php?module=custom',data:{baseline:selection},dataType:"html",success:display});  
-    //$.getJSON("ajax.php?module=custom",{baseline:selection},display);
 }
 
 function getCustomExercise(id)
 {
     $.ajax({url:'ajax.php?module=custom',data:{customexercise:id},dataType:"html",success:display});  
-    //$.getJSON("ajax.php?module=custom",{customexercise:id},display);
 }
 
 function messagedisplay(message)
@@ -116,7 +114,7 @@ function messagedisplay(message)
      else{
         var exercise = message;
         SelectionControl(exercise);
-        $.getJSON("ajax.php?module=custom",{dropdown:'refresh'},dropdownrefresh);
+        $.ajax({url:'ajax.php?module=custom',data:{dropdown:'refresh',selectedexercise:exercise},dataType:"html",success:dropdownrefresh});  
     }   
 }
 
@@ -183,7 +181,7 @@ function addTypeParams(CustomType)
 function SelectionControl(exercise)
 {
     $('#add_exercise').html('');
-    if(exercise == 'Add New')
+    if(exercise == 'Add New Activity')
         addNewExercise();
     else
         ExerciseInputs(exercise);
@@ -198,7 +196,7 @@ function addNewExercise()
     Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Height"/>Height<br/>';
     Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Distance"/>Distance';
     Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Reps"/>Reps<br/><br/>';
-    Html += '<input class="buttongroup" type="button" name="btnsubmit" value="Add" onclick="addnew();"/>';
+    Html += '<input class="buttongroup" type="button" name="btnsubmit" value="Add" onclick="addnew();"/><br/><br/>';
     $('#add_exercise').html(Html);
 
     $('.textinput').textinput();
@@ -218,7 +216,7 @@ function addactivitydisplay(data)
         chosenexercises += Html;
     Html = Html.replace(/RoundNo/g, RoundNo);
     $('#activity_list').append(Html);
-    $("#exercise option[value='none']").attr("selected","selected");
+    $("#exercises option[value='none']").attr("selected","selected");
     var el = $('#AjaxOutput');
     el.find('div[data-role=collapsible]').collapsible({theme:'c',refresh:true});
     $('.listview').listview();
@@ -279,7 +277,7 @@ function ExerciseInputs(exercise)
                }
             });
 
-            Html += '<div style="float:right;margin:10px 20px 0 0"><input type="button" id="" name="btn" onClick="AddActivity(\''+Elements+'\');" value="Add Activity"/></div>';
+            Html += '<div style="float:right;margin:10px 20px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="AddActivity(\''+Elements+'\');" value="Add Activity"/></div>';
             Html += '</div></form><div class="clear"></div>';       
 
         $('#ExerciseInputs').html(Html);

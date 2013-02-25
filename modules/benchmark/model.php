@@ -202,6 +202,7 @@ class BenchmarkModel extends Model
                         AS InputFieldName,
                         A.Attribute, 
                         BD.'.$AttributeValue.' AS AttributeValue, 
+                        BD.UnitOfMeasureId,    
                         UOM.UnitOfMeasure,
                         UOM.ConversionFactor,    
                         VideoId, 

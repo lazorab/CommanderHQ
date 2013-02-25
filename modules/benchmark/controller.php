@@ -65,6 +65,7 @@ if(isset($_REQUEST['benchmarkId']) && $_REQUEST['benchmarkId'] > 0)
         $html .= '<div data-role="collapsible-set" data-iconpos="right">';
         $ThisRound = '';
 	$ThisExerciseId = 0;
+        $i = 0;
         //var_dump($this->Workout);
 	foreach($this->Workout as $Detail){
             if($Detail->UnitOfMeasureId == null){
@@ -103,7 +104,12 @@ if(isset($_REQUEST['benchmarkId']) && $_REQUEST['benchmarkId'] > 0)
                             $html.=' | ';
                         }
                         $html.=''.$Detail->Attribute.' : <span id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_html">'.$AttributeValue.'</span>'.$Detail->UnitOfMeasure.'';
-                        $html.='<input type="hidden" id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'" name="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_'.$UnitOfMeasureId.'_'.$Detail->OrderBy.'" value="'.$Detail->AttributeValue.'">';
+                        $html.='<input type="hidden" id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'" name="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_'.$UnitOfMeasureId.'_'.$Detail->OrderBy.'"';
+                        if($AttributeValue == 'Max '){
+                            $html.='placeholder="'.$AttributeValue.'" value="">';
+                        }else{
+                            $html.='value="'.$AttributeValue.'">';
+                        }                       
                 }
 	$ThisRound = $Detail->RoundNo;
 	$ThisExerciseId = $Detail->ExerciseId;
@@ -192,7 +198,7 @@ return $html;
                 $i++;
             }
 
-            $Html .= '<div style="float:right;margin:10px 20px 0 0"><input type="button" id="" name="" onClick="UpdateActivity(\''.$ThisExercise.'\', \''.$TheseAttributes.'\');" value="Update"/></div>';
+            $Html .= '<div style="float:right;margin:10px 20px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="UpdateActivity(\''.$ThisExercise.'\', \''.$TheseAttributes.'\');" value="Update"/></div>';
             $Html .= '</div><div class="clear"></div>';
             
             return $Html;

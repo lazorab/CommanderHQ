@@ -86,7 +86,11 @@ class UploadModel extends Model
                         '.$this->getUnitOfMeasure($_REQUEST['DUOM']).'<input type="hidden" name="ThisRoutine___'.$ExerciseId.'___DUOM" value="'.$_REQUEST['DUOM'].'"/></td>';//DistanceUnitOfMeasure
                 }
                 if(isset($_REQUEST['Reps'])){
-                    $Message .= '<td>Reps:'.$_REQUEST['Reps'].'<input type="hidden" name="ThisRoutine___'.$ExerciseId.'___Reps" value="'.$_REQUEST['Reps'].'"/></td>';
+                    if($_REQUEST['Reps'] == '')
+                        $Reps = 'Max';
+                    else
+                        $Reps = $_REQUEST['Reps'];
+                    $Message .= '<td>Reps:'.$Reps.'<input type="hidden" name="ThisRoutine___'.$ExerciseId.'___Reps" value="'.$_REQUEST['Reps'].'"/></td>';
                 } 
                 
                 $Message .= '<td><input type="button" value="Remove" onClick="Remove(\'ThisRow\');"/></td></tr>';

@@ -33,11 +33,125 @@ class ConverterController extends Controller
             $html='';
             if(isset($_REQUEST['metric'])){
                 $html.= '<input type="number" name="convert" value="'.$Model->getImperialValue().'"/>';
-            }
-            else if(isset($_REQUEST['imperial'])){
+            }else if(isset($_REQUEST['imperial'])){
                 $html.= '<input type="number" name="convert" value="'.$Model->getMetricValue().'"/>';
+            }else if($_REQUEST['converter'] == 'Weight'){
+                $html.=$this->getWeight();
+            }else if($_REQUEST['converter'] == 'Height'){
+                $html.=$this->getHeight();
+            }else if($_REQUEST['converter'] == 'Volume'){
+                $html.=$this->getVolume();
+            }else if($_REQUEST['converter'] == 'Distance'){    
+                $html.=$this->getDistance();
+            }else{    
+            $html.='<div style="padding:2%">
+            <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getConverter(\'Weight\');"><div style="height:26px;width:1px;float:left"></div>Weight<br/><span style="font-size:small"></span></a></li>             
+            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getConverter(\'Height\');"><div style="height:26px;width:1px;float:left"></div>Height<br/><span style="font-size:small"></span></a></li>
+            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getConverter(\'Volume\');"><div style="height:26px;width:1px;float:left"></div>Volume<br/><span style="font-size:small"></span></a></li>
+            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getConverter(\'Distance\');"><div style="height:26px;width:1px;float:left"></div>Distance<br/><span style="font-size:small"></span></a></li>
+            </ul>
+            </div>';  
+
+        $html.='<div class="clear"></div><br/>';                
             }
             return $html;
+        }
+        
+        function getWeight()
+        {
+            $Html='<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+                    <li>Weight Conversion</li>
+                </ul> <br/>
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                    <input data-role="none" style="padding:5%;margin:5%;width:80%" type="number" id="metric_weight_input" name="metric_weight" value="" placeholder="Weight in kg"/>
+                    </div>
+                    <div class="ui-block-b">
+                <input data-role="none" style="padding:5%;margin:5%;width:80%" type="text" id="imperial_weight" name="imperial_weight_answer" value="" placeholder="lbs equivalent" readonly="readonly"/>
+                    </div>
+                    <div class="ui-block-a">
+                <input data-role="none" style="padding:5%;margin:5%;width:80%" type="number" id="imperial_weight_input" name="imperial_weight" value="" placeholder="Weight in lbs"/>
+               </div>
+                    <div class="ui-block-b">
+                <input data-role="none" style="padding:5%;margin:5%;width:80%" type="text" id="metric_weight" name="metric_weight_answer" value="" placeholder="kg equivalent" readonly="readonly"/>
+                    </div>
+                </div><br/>
+                <input class="buttongroup" type="button" name="asubmit" value="Convert" onClick="getConversionValues(\'weight\');"/>';
+            
+            return $Html;            
+        }
+        
+        function getHeight()
+        {
+            $Html='<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+                    <li>Height Conversion</li>
+		</ul><br/>
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                    <input data-role="none" style="padding:5%;margin:5%;width:80%" type="number" id="metric_height_input" name="metric_height" value="" placeholder="Height in cm"/>
+                    </div>
+                    <div class="ui-block-b">
+                <input data-role="none" style="padding:5%;margin:5%;width:80%" type="text" id="imperial_height" name="imperial_height_answer" value="" placeholder="inch equivalent" readonly="readonly"/>
+                    </div>
+                    <div class="ui-block-a">
+                <input data-role="none" style="padding:5%;margin:5%;width:80%" type="number" id="imperial_height_input" name="imperial_height" value="" placeholder="Height in inches"/>
+               </div>
+                    <div class="ui-block-b">
+                <input data-role="none" style="padding:5%;margin:5%;width:80%" type="text" id="metric_height" name="metric_height_answer" value="" placeholder="cm equivalent" readonly="readonly"/>
+                    </div>
+                </div>	<br/>			
+                <input class="buttongroup" type="button" name="bsubmit" value="Convert" onClick="getConversionValues(\'height\');"/>';
+            
+            return $Html;            
+        }
+        
+        function getVolume()
+        {
+            $Html='<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+                    <li>Volume Conversion</li>
+                </ul><br/>
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                    <input data-role="none" style="padding:5%;margin:5%;width:80%" type="number" id="metric_volume_input" name="metric_volume" value="" placeholder="Volume in Litres"/>
+                    </div>
+                    <div class="ui-block-b">
+                <input data-role="none" style="padding:5%;margin:5%;width:80%" type="text" id="imperial_volume" name="imperial_volume_answer" value="" placeholder="Oz equivalent" readonly="readonly"/>
+                    </div>
+                    <div class="ui-block-a">
+                <input data-role="none" style="padding:5%;margin:5%;width:80%" type="number" id="imperial_volume_input" name="imperial_volume" value="" placeholder="Volume in Oz"/>
+               </div>
+                    <div class="ui-block-b">
+                <input data-role="none" style="padding:5%;margin:5%;width:80%" type="text" id="metric_volume" name="metric_volume_answer" value="" placeholder="Litre equivalent" readonly="readonly"/>
+                    </div>
+                </div>	<br/>			
+                <input class="buttongroup" type="button" name="dsubmit" value="Convert" onClick="getConversionValues(\'volume\');"/>';
+            
+            return $Html;           
+        }
+        
+        function getDistance()
+        {
+            $Html='<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+			<li>Distance Conversion</li>
+		</ul><br/>
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                    <input data-role="none" style="padding:5%;margin:5%;width:80%" type="number" id="metric_distance_input" name="metric_distance" value="" placeholder="Distance in km"/>
+                    </div>
+                    <div class="ui-block-b">
+                <input data-role="none" style="padding:5%;margin:5%;width:80%" type="text" id="imperial_distance" name="imperial_distance_answer" value="" placeholder="mile equivalent" readonly="readonly"/>
+                    </div>
+                    <div class="ui-block-a">
+                <input data-role="none" style="padding:5%;margin:5%;width:80%" type="number" id="imperial_distance_input" name="imperial_distance" value="" placeholder="Distance in miles"/>
+               </div>
+                    <div class="ui-block-b">
+                <input data-role="none" style="padding:5%;margin:5%;width:80%" type="text" id="metric_distance" name="metric_distance_answer" value="" placeholder="km equivalent" readonly="readonly"/>
+                    </div>
+                </div>	<br/>			
+                <input class="buttongroup" type="button" name="csubmit" value="Convert" onClick="getConversionValues(\'distance\');"/>';
+            
+            return $Html;
         }
 }
 ?>

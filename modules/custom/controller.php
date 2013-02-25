@@ -42,68 +42,28 @@ class CustomController extends Controller
         foreach($ActivityFields as $Activity){
             if($Activity->UnitOfMeasureId == null){
                 $UnitOfMeasureId = 0;
+                $ConversionFactor = 1;
             }else{
                 $UnitOfMeasureId = $Activity->UnitOfMeasureId;
+                $ConversionFactor = $Activity->ConversionFactor;
+            }
+            if($Activity->AttributeValue == ''){
+                $AttributeValue = 'Max ';
+            }else{
+                $AttributeValue = $Activity->AttributeValue * $ConversionFactor;
             }
             if($ExerciseId != $Activity->ExerciseId){ 
                 $html.= ''.$Activity->Exercise.'<input type="button" id="" name="" onClick="RemoveFromList(\'RoundNo_RowNo\');" value="Delete"/><br/>';                           
             }else{
                 $html.=' | ';
             }
-            $html.=''.$Activity->Attribute.' : <span id="RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_html">'.$Activity->AttributeValue.'</span>'.$Activity->UnitOfMeasure.'';
-            $html.='<input type="hidden" id="RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'" name="RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_'.$UnitOfMeasureId.'_'.$Activity->OrderBy.'" value="'.$Activity->AttributeValue.'">';
+            $html.=''.$Activity->Attribute.' : <span id="RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_html">'.$AttributeValue.'</span>'.$Activity->UnitOfMeasure.'';
+            $html.='<input type="hidden" id="RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'" name="RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_'.$UnitOfMeasureId.'_'.$Activity->OrderBy.'" value="'.$AttributeValue.'">';          
 
             $ExerciseId = $Activity->ExerciseId;
             $i++;
         }   
         $html.='</li></ul>';
-        return $html;
-    }
-        
-    function _AddActivity(){
-        /*
-        ExerciseId
-        Exercise
-        Attribute
-        AttributeValue
-        UnitOfMeasureId
-        UnitOfMeasure
-        RoundNo 
-        OrderBy       
-         */
-        $Model = new CustomModel;
-        $ActivityFields = $Model->getActivityFields();
-        $RoundNo = 1;
-	$ExerciseId = 0;
-        $i=0;
-        //$html = var_dump($_REQUEST);
-        $html = '<div data-role="collapsible-set" data-iconpos="right">';
-        foreach($ActivityFields as $Activity){
-            if($Activity->UnitOfMeasureId == null){
-                $UnitOfMeasureId = 0;
-            }else{
-                $UnitOfMeasureId = $Activity->UnitOfMeasureId;
-            }
-            if($ExerciseId != $Activity->ExerciseId){ 
-                            if($ExerciseId != null && $i > 0){
-                                $html.='</h2><p style="color:red">'.$this->getExerciseHistory("".$RoundNo."_".$ExerciseId."").'</p></div>';
-                            }       
-                            $html.= '<div data-role="collapsible">';
-                            $html.= '<h2>'.$Activity->Exercise.'<input type="button" id="" name="" onClick="RemoveFromList(RowId,RoundNo);" value="Delete"/><br/>';                           
-                        }else{
-                            $html.=' | ';
-                        }
-                        $html.=''.$Activity->Attribute.' : <span id="'.$Activity->RoundNo.'_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_html">'.$Activity->AttributeValue.'</span>'.$Activity->UnitOfMeasure.'';
-                        $html.='<input type="hidden" id="'.$RoundNo.'_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'" name="'.$Activity->RoundNo.'_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_'.$UnitOfMeasureId.'_'.$Activity->OrderBy.'" value="'.$Activity->AttributeValue.'">';
-
-            $ExerciseId = $Activity->ExerciseId;
-            $i++;
-        }
-        if($ExerciseId != null){
-            $html.='</h2><p style="color:red">'.$this->getExerciseHistory("".$RoundNo."_".$ExerciseId."").'</p></div>';
-        }
-        $html.='</div><br/>';
-        
         return $html;
     }
     
@@ -161,7 +121,7 @@ class CustomController extends Controller
         
         $Html .= '<div id="SelectActivities">';
         
-        $Html .= $this->getExercises();
+        $Html .= $this->getExercises('');
         
         $Html .= '<div style="float:left">';
         $Html .= '<input class="buttongroup" type="button" onClick="addRound();" value="Add a Round"/>';
@@ -174,15 +134,20 @@ class CustomController extends Controller
 	return $Html;
     }
     
-    function getExercises()
+    function getExercises($SelectedExercise)
     {
         $Html='';
         $Model = new CustomModel;
         $Exercises = $Model->getExercises();
-        $Html .= '<br/><select class="select buttongroup" data-role="none" id="exercise" name="exercise" onChange="SelectionControl(this.value)">
+        $Selected='';
+        $Html .= '<br/><select class="select buttongroup" data-role="none" id="exercises" name="exercise" onChange="SelectionControl(this.value)">
          <option value="none">Add Activity</option>';
 	foreach($Exercises AS $Exercise){
-            $Html .= '<option value="'.$Exercise->ActivityName.'">'.$Exercise->ActivityName.'</option>';
+            if($Exercise->ActivityName == $SelectedExercise)
+                $Selected='selected="selected"';
+            else
+                $Selected='';
+            $Html .= '<option value="'.$Exercise->ActivityName.'" '.$Selected.'>'.$Exercise->ActivityName.'</option>';
 	}
         $Html .= '</select><br/><div id="ExerciseInputs"></div>';
 	return $Html;
@@ -260,7 +225,7 @@ class CustomController extends Controller
 		$html = $Model->getExerciseAttributes($_REQUEST['chosenexercise']);              
             }
             else if($_REQUEST['dropdown'] == 'refresh'){
-                $html = $this->getExercises();
+                $html = $this->getExercises($_REQUEST['selectedexercise']);
             }
             else{
                 $html = $this->MainOutput();

@@ -213,7 +213,7 @@ class ReportsModel extends Model
 		return $PendingExercises;
 	}	
 	
-	function getExercises()
+	private function getExercises()
 	{
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $SQL = 'SELECT recid as ExerciseId, Exercise FROM Exercises';

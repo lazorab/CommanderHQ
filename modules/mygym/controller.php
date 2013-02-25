@@ -122,13 +122,18 @@ class MygymController extends Controller
 	foreach($WodDetails as $Detail){
             if($Detail->UnitOfMeasureId == null){
                 $UnitOfMeasureId = 0;
+                $ConversionFactor = 1;
             }else{
                 $UnitOfMeasureId = $Detail->UnitOfMeasureId;
+                $ConversionFactor = $Detail->ConversionFactor;
             }
+            if($Detail->AttributeValue == ''){
+                $AttributeValue = 'Max ';
+            }else{
+                $AttributeValue = $Detail->AttributeValue * $ConversionFactor;
+            }            
 		if($Detail->Attribute != 'TimeToComplete'){
 
-
-			
 			if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0 && $ThisRound != $Detail->RoundNo){
                             if($ThisExerciseId != null && $i > 0){
                                 $html.='</h2><p style="color:red">'.$this->getExerciseHistory("".$Detail->RoundNo."_".$ThisExerciseId."").'</p></div>';
@@ -147,8 +152,13 @@ class MygymController extends Controller
                         }else{
                             $html.=' | ';
                         }
-                        $html.=''.$Detail->Attribute.' : <span id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_html">'.$Detail->AttributeValue.'</span>'.$Detail->UnitOfMeasure.'';
-                        $html.='<input type="hidden" id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'" name="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_'.$UnitOfMeasureId.'_'.$Detail->OrderBy.'" value="'.$Detail->AttributeValue.'">';
+                        $html.=''.$Detail->Attribute.' : <span id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_html">'.$AttributeValue.'</span>'.$Detail->UnitOfMeasure.'';
+                        $html.='<input type="hidden" id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'" name="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_'.$UnitOfMeasureId.'_'.$Detail->OrderBy.'"';
+                        if($AttributeValue == 'Max '){
+                            $html.='placeholder="'.$AttributeValue.'" value="">';
+                        }else{
+                            $html.='value="'.$AttributeValue.'">';
+                        }
                 }
 	$ThisRound = $Detail->RoundNo;
 	$ThisExerciseId = $Detail->ExerciseId;
@@ -205,8 +215,8 @@ class MygymController extends Controller
                 $i++;
             }
 
-            $Html .= '<div style="float:right;margin:10px 20px 0 0">';
-            $Html .= '<input type="button" id="" name="" onClick="UpdateActivity(\\\''.$ThisExercise.'\\\', \\\''.$TheseAttributes.'\\\');" value="Update"/>';
+            $Html .= '<div style="float:right;margin:10px 20px 10px 0">';
+            $Html .= '<input class="buttongroup" type="button" id="" name="btn" onClick="UpdateActivity(\\\''.$ThisExercise.'\\\', \\\''.$TheseAttributes.'\\\');" value="Update"/>';
             $Html .= '</div>';
             $Html .= '</div><div class="clear"></div>';
             

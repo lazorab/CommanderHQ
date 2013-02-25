@@ -107,7 +107,7 @@ function topselectiondisplay(data)
     codes += '<div class="ui-block-d"><input type="text" data-role="none" style="width:80%;color:black;font-weight:bold;background-color:#ccff66" value="Reps" readonly="readonly"/></div>';
     codes += '</div>';
     $('.toplist').html(data);
-    $('.toplist').listview('refresh'); 
+    
     $('#colorcodes').html(codes);
 }
 
@@ -124,7 +124,7 @@ function display(data)
     var el = $('#AjaxOutput');
     $('#AjaxOutput').html(data);
     $('.listview').listview();
-    $('.listview').listview('refresh');
+    $('.listview').listview('refresh'); 
     $('.controlbutton').button();
     $('.controlbutton').button('refresh');
     $('.buttongroup').button();
