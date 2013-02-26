@@ -33,41 +33,59 @@ class ReportsController extends Controller
     
     function Output()
     {        
+        $html='';
 	if(isset($_REQUEST['report']))
 	{
             if($_REQUEST['report'] == 'Pending')
             {
-                return $this->PendingExercises();
+                $html .= $this->PendingExercises();
             }
             else if($_REQUEST['report'] == 'Performance')
             {
-                return $this->CompletedExercises();	
+                $html .= $this->CompletedExercises();	
             }
             else if($_REQUEST['report'] == 'WOD')
             {
-                return $this->WODExercises();	
+                $html .= $this->getWODs();	
             }
             else if($_REQUEST['report'] == 'Benchmarks')
             {
-                return $this->BenchmarkHistory2();	
+                $html .= $this->getBenchmarks();	
             }
             else if($_REQUEST['report'] == 'Baseline')
             {
-                return $this->BaselineExercises();	
+                $html .= $this->BaselineHistory();	
             }
+            else if($_REQUEST['report'] == 'Exercises')
+            {
+                $html .= $this->getCompletedExercises();	
+            }            
             else if($_REQUEST['report'] == 'Weight')
             {
-                return $this->WeightHistory($this->MemberDetails->SystemOfMeasure);	
+                $html .= $this->WeightHistory($this->MemberDetails->SystemOfMeasure);	
             }
 	}
-	else if(isset($_REQUEST['PerformanceId']))
-            return $this->PerformanceHistory();
-        else if(isset($_REQUEST['WODId']))
-            return $this->WODHistory();
-        else if(isset($_REQUEST['BenchmarkId']))
-            return $this->BenchmarkHistory();
-        else if(isset($_REQUEST['BaselineId']))
-            return $this->BaselineHistory();    
+	else if(isset($_REQUEST['PerformanceId'])){
+            $html .= $this->PerformanceHistory();
+        }else if(isset($_REQUEST['WodId'])){
+            $html .= $this->WODChart($_REQUEST['WodId'], $_REQUEST['WodTypeId']);
+        }else if(isset($_REQUEST['BenchmarkId'])){
+            $html .= $this->BenchmarkChart($_REQUEST['BenchmarkId']);
+        }else if(isset($_REQUEST['BaselineId'])){
+            $html .= $this->BaselineChart($_REQUEST['BaselineId']); 
+        }else if(isset($_REQUEST['ExerciseId'])){
+            $html .= $this->ExerciseChart($_REQUEST['ExerciseId']);           
+        }else{    
+            $html.='<div style="padding:2%">
+            <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getReport(\'WOD\');"><div style="height:26px;width:1px;float:left"></div>WOD<br/><span style="font-size:small"></span></a></li>             
+            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getReport(\'Benchmarks\');"><div style="height:26px;width:1px;float:left"></div>Benchmarks<br/><span style="font-size:small"></span></a></li>
+            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getBaselineReport();"><div style="height:26px;width:1px;float:left"></div>Baseline<br/><span style="font-size:small"></span></a></li>            
+            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getReport(\'Exercises\')"><div style="height:26px;width:1px;float:left"></div>Activities<br/><span style="font-size:small"></span></a></li>          
+            </ul></div>';  
+            $html.='<div class="clear"></div><br/>';                
+            }
+            return $html;
     }
     
 	
@@ -77,115 +95,74 @@ class ReportsController extends Controller
         $Details=$Model->getDetails();
 	return $Details;
     }
-	
-    function CompletedExercises()
+    
+    function getCompletedExercises()
     {
         $Model=new ReportsModel();
 	$ExerciseItems = $Model->getCompletedExercises();
-	$Html='Completed Exercises:';
-	foreach($ExerciseItems AS $Exercise) { 
-            $Html.='<br/><a href="index.php?module=reports&id='.$Exercise->Id.'">'.$Exercise->Exercise.'</a>';
-	}
-	return $Html;	
-    }
-    
-    function WODExercises()
-    {
-        $Model=new ReportsModel();
-	$ExerciseItems = $Model->getWODExercises();
-	$Html='<select name="WODId" id="Exercises" class="select" onchange="getWODReport(this.value);">';
-        $Html.='<option value=" ">Select Exercise</option>';
-	foreach($ExerciseItems AS $Exercise) { 
-            $Html.='<option value="'.$Exercise->ExerciseId.'">'.$Exercise->Exercise.'</option>';
-	}
-        $Html.='</select><br/><br/>';
-	return $Html;	
-    }
-    
-    function WODBenchmarks()
-    {
-        $Model=new ReportsModel();
-	$BenchmarkItems = $Model->getBenchmarks();
-	$Html='<select name="WODId" id="Benchmarks" class="select" onchange="getBenchmarkReport(this.value);">';
-        $Html.='<option value=" ">Select Benchmark</option>';
-	foreach($BenchmarkItems AS $Exercise) { 
-            $Html.='<option value="'.$Exercise->ExerciseId.'">'.$Exercise->WorkoutName.'</option>';
-	}
-        $Html.='</select><br/><br/>';
-	return $Html;	
-    }
-    
-    function WODHistory()
-    {
-        $Model=new ReportsModel();
-        $WODData = $Model->getWODHistory();
-        /*
-        $Html='';
-        foreach($WODData as $Data)
-        {
-            $Html.=''.$Data->TimeCreated.' - '.$Data->Exercise.' : '.$Data->Attribute.' - '.$Data->AttributeValue.' -<br/>';
-        }
-        return $Html;
-        */
-       return $WODData;
-    }
-    
-        function BenchmarkHistory()
-    {
-        $Model=new ReportsModel();
-        $BenchmarkData = $Model->getBenchmarkHistory();
-        return $BenchmarkData;
-    }
-    
-    function BenchmarkExercises()
-    {
-        $Model=new ReportsModel();
-	$ExerciseItems = $Model->getBenchmarkHistory();
 	$Html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
 	
         foreach($ExerciseItems AS $Exercise){
-            $Html .= '<li><a href="" onclick="getBenchmarkReport(\''.$Exercise->ExerciseId.'\',\'\');">'.$Exercise->Exercise.'</a></li>';
+            if($Exercise->ExerciseId > 0)
+            $Html .= '<li><a style="font-size:large;margin-top:5px" href="#" onclick="getExerciseReport(\''.$Exercise->ExerciseId.'\');">'.$Exercise->Exercise.'</a></li>';
+        }	
+				
+	$Html .= '</ul>';
+        $Html.='<div class="clear"></div><br/>';  
+	return $Html;	
+    }    
+    
+    function getBenchmarks()
+    {
+        $Model=new ReportsModel();
+	$ExerciseItems = $Model->getBenchmarks();
+	$Html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
+	
+        foreach($ExerciseItems AS $Exercise){
+            if($Exercise->ExerciseId > 0)
+            $Html .= '<li><a style="font-size:large;margin-top:5px" href="#" onclick="getBenchmarkReport(\''.$Exercise->ExerciseId.'\');">'.$Exercise->WorkoutName.'</a></li>';
+        }	
+	$Html.='<div class="clear"></div><br/>';  			
+	$Html .= '</ul>';
+
+	return $Html;	
+    }   
+    
+    function getWODs()
+    {
+        $Model=new ReportsModel();
+	$WODs = $Model->getWODs();
+	$Html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
+	
+        foreach($WODs AS $WOD){
+            if($WOD->WodId > 0)
+            $Html .= '<li><a style="font-size:large;margin-top:5px" href="#" onclick="getWODReport(\''.$WOD->WodId.'\', \''.$WOD->WodTypeId.'\');">'.$WOD->WorkoutName.'</a></li>';
+        }	
+	$Html.='<div class="clear"></div><br/>';  			
+	$Html .= '</ul>';
+
+	return $Html;	
+    }    
+    
+    function getBaseline()
+    {
+        $Model=new ReportsModel();
+	$ExerciseItems = $Model->getBaselineExercises();
+	$Html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
+	
+        foreach($ExerciseItems AS $Exercise){
+            $Html .= '<li><a href="" onclick="getBaselineReport(\''.$Exercise->ExerciseId.'\');">'.$Exercise->Exercise.'</a></li>';
         }	
 				
 	$Html .= '</ul>';
 
 	return $Html;	
-    }
-    
-    function BenchmarkHistory2()
-    {
-        $Model=new ReportsModel();
-        $BenchmarkData = $Model->getBenchmarkHistory();
-        $Html='';
-        foreach($BenchmarkData as $Data)
-        {
-            $Html.=''.$Data->TimeCreated.' - '.$Data->TimeToComplete.'<br/>';
-        }
-        return $Html;
     }    
-    
-    function BaselineExercises()
-	{
-        $Model=new ReportsModel();
-		$ExerciseItems = $Model->getBaselineExercises();
-		$Html='<select name="BaselineId" id="BaselineId" class="select" onchange="getBaselineReport(this.value, reportform.datetime.value);">';
-        $Html.='<option value="">Baseline Exercises</option>';
-		foreach($ExerciseItems AS $Exercise) { 
-			$Html.='<option value="'.$Exercise->ExerciseId.'">'.$Exercise->Exercise.'</option>';
-		}
-        $Html.='</select><br/><br/>';
-		return $Html;	
-	}
-    
-    function BaselineHistory()
+        
+    private function getChartData($ThisData)
     {
-        $Model=new ReportsModel();
-        $BaselineData = $Model->getBaselineHistory();
-        $NumLogs = 0;
-        $TotalSeconds = 0;
-        $ChartData = "<chart showLabels='0' canvasPadding='10' showYAxisValues='0' animation='0' lineColor='00008B' xAxisNamePadding='0' yAxisNamePadding='0' caption='Baseline' xAxisName='Time' yAxisName='Output' showToolTip='0' showValues= '0'>";
-        if(count($BaselineData) > 0){
-        foreach($BaselineData as $Data)
+        $NumLogs=0;
+        foreach($ThisData as $Data)
         {
             if($Data->Attribute == 'TimeToComplete'){
                 $ExplodedTime = explode(':', $Data->AttributeValue);
@@ -197,13 +174,49 @@ class ReportsController extends Controller
         }
         $Average = floor($TotalSeconds / $NumLogs);
         $ChartData .= "<trendLines>";
-        $ChartData .= "<line startValue='".$Average."' color='009933' lineThickness='3' displayvalue=' ' />";
+        $ChartData .= "<line startValue='".$Average."' color='009933' lineThickness='3' displayvalue=' '/>";
         $ChartData .= "</trendLines>";
-    }else{
-        $ChartData .= "<set label='' value=''/>";
+           
+        return $ChartData;        
     }
-        $ChartData .= "</chart>";       
+    
+    function BaselineChart()
+    {
+        $Model=new ReportsModel();
+        $Data = $Model->getBaselineHistory();
+
+        $ChartData = "<chart showLabels='0' canvasPadding='10' showYAxisValues='0' animation='0' lineColor='00008B' xAxisNamePadding='0' yAxisNamePadding='0' caption='Baseline' xAxisName='Time' yAxisName='Output' showToolTip='0' showValues= '0'>";
+
+        if(count($Data) > 0){
+            $ChartData .= $this->getChartData($Data);
+        }
+        $ChartData .= "</chart>"; 
+           
         return $ChartData;
+    }  
+    
+    function BenchmarkChart($Id)
+    {
+        $Model=new ReportsModel();
+        $Data = $Model->getBenchmarkHistory($Id);
+           
+        return json_encode($Data);
+    }    
+    
+    function WODChart($Id, $Type)
+    {
+        $Model=new ReportsModel();
+        $Data = $Model->getWODHistory($Id, $Type);
+           
+        return json_encode($Data);
+    }    
+    
+    function ExerciseChart($Id)
+    {
+        $Model=new ReportsModel();
+        $Data = $Model->getExerciseHistory($Id);
+           
+        return json_encode($Data);
     }    
 	
 	function PerformanceHistory($Id)

@@ -72,7 +72,8 @@ class Controller
             $Html.='<div class="StopwatchButton"><input class="buttongroup" type="button" onClick="Start();" value="Start"/></div>';
             $Html.='<div class="StopwatchButton"><input class="buttongroup" type="button" onClick="Stop();" value="Stop"/></div>';
             $Html.='<input class="buttongroup" type="button" onClick="Save();" value="Save"/>';   
-
+            $Html.='<div class="clear"></div>';
+            
             return $Html;
         }      
 }

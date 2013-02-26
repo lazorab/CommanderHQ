@@ -19,19 +19,6 @@ class ReportsModel extends Model
 		
             return $db->loadObject();
 	}
-
-	function getCompletedExercises()
-	{
-		$db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-		$SQL = 'SELECT E.recid, E.Exercise, MAX(L.LevelAchieved) 
-			FROM WODLog L 
-                        JOIN Exercises E ON E.recid = L.ExerciseId
-			WHERE L.MemberId = '.$_SESSION['UID'].' 
-			GROUP BY ExerciseId';
-            $db->setQuery($SQL);
-		
-            return $db->loadObjectList();
-	}
 	
 	function getPerformanceHistory($ExerciseId)
 	{
@@ -54,7 +41,7 @@ class ReportsModel extends Model
             return $db->loadObjectList();	
 	}
     
-    function getWODExercises()
+    function getCompletedExercises()
     {
 	$db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
 	$SQL = 'SELECT DISTINCT E.recid AS ExerciseId,
@@ -84,33 +71,49 @@ class ReportsModel extends Model
         return $db->loadObjectList();        
     }
     
-    function getWODHistory()
+    function getWODs()
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-	$SQL = 'SELECT WT.WorkoutType,
-            CASE WHEN WorkoutType = "Custom" 
-            THEN (SELECT WorkoutName FROM CustomWorkouts WHERE recid = L.ExerciseId)
-            WHEN WorkoutType = "Benchmark"
-            THEN (SELECT WorkoutName FROM BenchmarkWorkouts WHERE recid = L.ExerciseId)
+	$SQL = 'SELECT DISTINCT B.recid AS WodId,
+        B.WodTypeId, 
+        B.WorkoutName
+        FROM WODLog L
+        LEFT JOIN WodWorkouts B ON B.recid = L.WorkoutId
+        LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
+        WHERE L.MemberId = '.$_SESSION['UID'].'
+        AND WT.WorkoutType <> "Benchmark"
+        ORDER BY WorkoutName';
+        $db->setQuery($SQL);
+		
+        return $db->loadObjectList();        
+    }
+    
+    function getWODHistory($WorkoutId, $WorkoutTypeId)
+    {
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+	$SQL = 'SELECT WT.WODType,
+            CASE WHEN WODType = "Custom" 
+            THEN (SELECT WorkoutName FROM CustomWorkouts WHERE recid = L.WorkoutId)           
             ELSE
-            E.Exercise 
+            (SELECT WorkoutName FROM WodWorkouts WHERE recid = L.WorkoutId) 
             END
             AS WorkoutName,
             E.Exercise, 
             A.Attribute AS Attribute, L.AttributeValue AS AttributeValue, L.TimeCreated 
             FROM WODLog L 
-            LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
+            LEFT JOIN WODTypes WT ON WT.recid = L.WODTypeId
             LEFT JOIN Exercises E ON E.recid = L.ExerciseId
             LEFT JOIN Attributes A ON A.recid = L.AttributeId
             WHERE L.MemberId = '.$_SESSION['UID'].'
-            AND L.ExerciseId = '.$_REQUEST['WODId'].'
+            AND L.WorkoutId = '.$WorkoutId.'
+            AND L.WODTypeId = '.$WorkoutTypeId.'  
             ORDER BY TimeCreated';// AND L.ExerciseId = '.$_REQUEST['WODId'].'';
         $db->setQuery($SQL);
 		
         return $db->loadObjectList();       
     }
     
-        function getBenchmarkHistory()
+        function getBenchmarkHistory($Id)
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
 	$SQL = 'SELECT WT.WorkoutType,
@@ -122,7 +125,7 @@ class ReportsModel extends Model
             LEFT JOIN Attributes A ON A.recid = L.AttributeId
             WHERE L.MemberId = '.$_SESSION['UID'].'
             AND WorkoutType = "Benchmark"
-            AND L.WorkoutId = '.$_REQUEST['BenchmarkId'].'
+            AND L.WorkoutId = '.$Id.'
             ORDER BY TimeCreated';// AND L.ExerciseId = '.$_REQUEST['WODId'].'';
         $db->setQuery($SQL);
 		
@@ -212,15 +215,6 @@ class ReportsModel extends Model
 		}
 		return $PendingExercises;
 	}	
-	
-	function getExercises()
-	{
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT recid as ExerciseId, Exercise FROM Exercises';
-            $db->setQuery($SQL);
-		
-            return $db->loadObjectList();
-	}
 }
 
 ?>

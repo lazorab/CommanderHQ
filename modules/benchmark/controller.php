@@ -68,22 +68,23 @@ if(isset($_REQUEST['benchmarkId']) && $_REQUEST['benchmarkId'] > 0)
         $i = 0;
         //var_dump($this->Workout);
 	foreach($this->Workout as $Detail){
-            if($Detail->UnitOfMeasureId == null){
+            if($Detail->UnitOfMeasureId == null || $Detail->UnitOfMeasureId == 0){
                 $UnitOfMeasureId = 0;
                 $ConversionFactor = 1;
             }else{
                 $UnitOfMeasureId = $Detail->UnitOfMeasureId;
-                $ConversionFactor = $Detail->ConversionFactor;
+                if($Detail->ConversionFactor == null || $Detail->ConversionFactor == 0){
+                    $ConversionFactor = 1;
+                }else{
+                    $ConversionFactor = $Detail->ConversionFactor;
+                }
             }
             if($Detail->AttributeValue == ''){
                 $AttributeValue = 'Max ';
             }else{
                 $AttributeValue = $Detail->AttributeValue * $ConversionFactor;
-            }
-		if($Detail->Attribute == 'TimeToComplete'){
-			$Clock = $this->getStopWatch();
-		}
-		else{
+            }            
+		if($Detail->Attribute != 'TimeToComplete'){
 			
 			if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0 && $ThisRound != $Detail->RoundNo){
                             if($ThisExerciseId != null && $i > 0){
@@ -194,11 +195,11 @@ return $html;
                 if($i > 0)
                     $TheseAttributes.='_';
                 $TheseAttributes.=$Attribute->Attribute;
-                $Html .= '<div style="float:left;margin:0 10px 0 10px"">'.$Attribute->Attribute.'<input size="9" type="number" id="'.$ThisExercise.'_'.$Attribute->Attribute.'_new" name="" placeholder="'.$Attribute->UOM.'"/></div>';
+                $Html .= '<div style="float:left;margin:0 25px 0 25px"">'.$Attribute->Attribute.'<br/><input style="width:80px" type="number" id="'.$ThisExercise.'_'.$Attribute->Attribute.'_new" name="" placeholder="'.$Attribute->UOM.'"/></div>';
                 $i++;
             }
 
-            $Html .= '<div style="float:right;margin:10px 20px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="UpdateActivity(\''.$ThisExercise.'\', \''.$TheseAttributes.'\');" value="Update"/></div>';
+            $Html .= '<div style="float:right;margin:10px 30px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="UpdateActivity(\''.$ThisExercise.'\', \''.$TheseAttributes.'\');" value="Update"/></div>';
             $Html .= '</div><div class="clear"></div>';
             
             return $Html;

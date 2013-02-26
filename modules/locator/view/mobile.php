@@ -64,7 +64,7 @@ function display(data)
     <div>
      <form action="#" method="post" name="searchform" id="searchform">
         <div style="padding:2%;float:left;width:70%;"><input type="search" results="5" placeholder="Search" name="keyword"/></div>
-        <div style="float:left;"><input type="button" name="btnSubmit" value="Go" data-inline="true" onclick="GymSearch();"/></div>
+        <div style="float:left;margin:8px 0 0 0"><input type="button" name="btnSubmit" value="Go" data-inline="true" onclick="GymSearch();"/></div>
     </form>  
     </div> 
 <div class="clear"></div>

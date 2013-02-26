@@ -124,6 +124,15 @@ function addRound()
     //var rounds = document.getElementById('addround').value; 
     $.getJSON('ajax.php?module=personal', $("#benchmarkform").serialize(),display);
 }
+
+function UpdateActivity(ActivityId, Attributes)
+{
+    var AttributesArray = Attributes.split('_');
+    for(i=0; i < AttributesArray.length;i++){
+        $("#"+ActivityId+"_"+AttributesArray[i]+"_html").html($("#"+ActivityId+"_"+AttributesArray[i]+"_new").val());
+        $("#"+ActivityId+"_"+AttributesArray[i]+"").val($("#"+ActivityId+"_"+AttributesArray[i]+"_new").val());
+    }  
+}
 </script>
 <br/>
 

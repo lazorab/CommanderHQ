@@ -1,7 +1,7 @@
 <script type="text/javascript">
     $(function(){
         $('#tab1').addClass('active');
-        $('#details1').html('<?php echo $Display->WorkoutDetails("2"); echo $Display->getStopWatch();?>');
+        $('#details1').html('<?php echo $Display->WorkoutDetails("2");?>');
         $('.buttongroup').button();
         $('.buttongroup').button('refresh');
         var el = $('#AjaxOutput');
@@ -12,13 +12,13 @@ function Tabs(tab)
     if(tab == 1){
         $('#tab2').removeClass('active');
         $('#tab1').addClass('active');
-        $('#details1').html('<?php echo $Display->WorkoutDetails("2"); echo $Display->getStopWatch();?>');
+        $('#details1').html('<?php echo $Display->WorkoutDetails("2");?>');
         $('#details2').html('');
     }else{
         $('#tab1').removeClass('active');
         $('#tab2').addClass('active');
         $('#details1').html('');
-        $('#details2').html('<?php echo $Display->WorkoutDetails("4"); echo $Display->getStopWatch();?>');
+        $('#details2').html('<?php echo $Display->WorkoutDetails("4");?>');
     }
     $('.buttongroup').button();
     $('.buttongroup').button('refresh');

@@ -40,12 +40,16 @@ class CustomController extends Controller
         $html = '<ul id="RoundNo_RowNo" class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d"><li>';
         
         foreach($ActivityFields as $Activity){
-            if($Activity->UnitOfMeasureId == null){
+            if($Activity->UnitOfMeasureId == null || $Activity->UnitOfMeasureId == 0){
                 $UnitOfMeasureId = 0;
                 $ConversionFactor = 1;
             }else{
                 $UnitOfMeasureId = $Activity->UnitOfMeasureId;
-                $ConversionFactor = $Activity->ConversionFactor;
+                if($Activity->ConversionFactor == null || $Activity->ConversionFactor == 0){
+                    $ConversionFactor = 1;
+                }else{
+                    $ConversionFactor = $Activity->ConversionFactor;
+                }
             }
             if($Activity->AttributeValue == ''){
                 $AttributeValue = 'Max ';
@@ -190,11 +194,11 @@ class CustomController extends Controller
                 if($i > 0)
                     $TheseAttributes.='_';
                 $TheseAttributes.=$Attribute->Attribute;
-                $Html .= '<div style="float:left;margin:0 10px 0 10px"">'.$Attribute->Attribute.'<br/><input size="9" type="number" id="'.$ThisExercise.'_'.$Attribute->Attribute.'_new" name="" placeholder="'.$Attribute->UOM.'"/></div>';
+                $Html .= '<div style="float:left;margin:0 25px 0 25px"">'.$Attribute->Attribute.'<br/><input style="width:80px" type="number" id="'.$ThisExercise.'_'.$Attribute->Attribute.'_new" name="" placeholder="'.$Attribute->UOM.'"/></div>';
                 $i++;
             }
 
-            $Html .= '<div style="float:right;margin:10px 20px 0 0"><input type="button" id="" name="" onClick="UpdateActivity(\''.$ThisExercise.'\', \''.$TheseAttributes.'\');" value="Update"/></div>';
+            $Html .= '<div style="float:right;margin:10px 30px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="UpdateActivity(\''.$ThisExercise.'\', \''.$TheseAttributes.'\');" value="Update"/></div>';
             $Html .= '</div><div class="clear"></div>';
             
             return $Html;

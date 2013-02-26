@@ -72,12 +72,15 @@ class ConverterController extends Controller
                     </div>
                     <div class="ui-block-a">
                 <input data-role="none" style="padding:5%;margin:5%;width:80%" type="number" id="imperial_weight_input" name="imperial_weight" value="" placeholder="Weight in lbs"/>
-               </div>
+                <br/><br/><br/>
+                </div>
                     <div class="ui-block-b">
                 <input data-role="none" style="padding:5%;margin:5%;width:80%" type="text" id="metric_weight" name="metric_weight_answer" value="" placeholder="kg equivalent" readonly="readonly"/>
-                    </div>
-                </div><br/>
-                <input class="buttongroup" type="button" name="asubmit" value="Convert" onClick="getConversionValues(\'weight\');"/>';
+                <br/><br/><br/>
+                </div>
+                </div>
+                <div style="margin:20px 0 0 15px">
+                <input class="buttongroup" type="button" name="asubmit" value="Convert" onClick="getConversionValues(\'weight\');"/></div>';
             
             return $Html;            
         }
@@ -96,12 +99,15 @@ class ConverterController extends Controller
                     </div>
                     <div class="ui-block-a">
                 <input data-role="none" style="padding:5%;margin:5%;width:80%" type="number" id="imperial_height_input" name="imperial_height" value="" placeholder="Height in inches"/>
-               </div>
+                <br/><br/><br/>
+                </div>
                     <div class="ui-block-b">
                 <input data-role="none" style="padding:5%;margin:5%;width:80%" type="text" id="metric_height" name="metric_height_answer" value="" placeholder="cm equivalent" readonly="readonly"/>
-                    </div>
-                </div>	<br/>			
-                <input class="buttongroup" type="button" name="bsubmit" value="Convert" onClick="getConversionValues(\'height\');"/>';
+                <br/><br/><br/>
+                </div>
+                </div>	
+                <div style="margin:20px 0 0 15px">
+                <input class="buttongroup" type="button" name="bsubmit" value="Convert" onClick="getConversionValues(\'height\');"/></div>';
             
             return $Html;            
         }
@@ -120,12 +126,15 @@ class ConverterController extends Controller
                     </div>
                     <div class="ui-block-a">
                 <input data-role="none" style="padding:5%;margin:5%;width:80%" type="number" id="imperial_volume_input" name="imperial_volume" value="" placeholder="Volume in Oz"/>
-               </div>
+                <br/><br/><br/>
+                </div>
                     <div class="ui-block-b">
                 <input data-role="none" style="padding:5%;margin:5%;width:80%" type="text" id="metric_volume" name="metric_volume_answer" value="" placeholder="Litre equivalent" readonly="readonly"/>
-                    </div>
-                </div>	<br/>			
-                <input class="buttongroup" type="button" name="dsubmit" value="Convert" onClick="getConversionValues(\'volume\');"/>';
+                <br/><br/><br/>
+                </div>
+                </div>	
+                <div style="margin:20px 0 0 15px">
+                <input class="buttongroup" type="button" name="dsubmit" value="Convert" onClick="getConversionValues(\'volume\');"/></div>';
             
             return $Html;           
         }
@@ -144,12 +153,15 @@ class ConverterController extends Controller
                     </div>
                     <div class="ui-block-a">
                 <input data-role="none" style="padding:5%;margin:5%;width:80%" type="number" id="imperial_distance_input" name="imperial_distance" value="" placeholder="Distance in miles"/>
-               </div>
+                <br/><br/><br/>
+                </div>
                     <div class="ui-block-b">
                 <input data-role="none" style="padding:5%;margin:5%;width:80%" type="text" id="metric_distance" name="metric_distance_answer" value="" placeholder="km equivalent" readonly="readonly"/>
-                    </div>
-                </div>	<br/>			
-                <input class="buttongroup" type="button" name="csubmit" value="Convert" onClick="getConversionValues(\'distance\');"/>';
+                <br/><br/><br/>
+                </div>
+                </div>	
+                <div style="margin:20px 0 0 15px">
+                <input class="buttongroup" type="button" name="csubmit" value="Convert" onClick="getConversionValues(\'distance\');"/></div>';
             
             return $Html;
         }

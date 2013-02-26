@@ -94,54 +94,6 @@ class BaselineModel extends Model
             return $db->loadResult();;
         }    
     
-    function getActivityFields()
-    {
-        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-        $Activities = array();
-        foreach($_REQUEST AS $key=>$val)
-        {
-            $ExerciseId = 0;
-            $Attribute = '';
-            $ExplodedKey = explode('___', $key);
-            if(sizeof($ExplodedKey) > 1)
-            {
-                if(isset($_REQUEST['Rounds']))
-                    $RoundNo = $_REQUEST['Rounds'];
-                else
-                    $RoundNo = $ExplodedKey[0];
-                $ExerciseId = $ExplodedKey[1];
-                $ExerciseName = $this->getExerciseName($ExerciseId);
-                $Attribute = $ExplodedKey[2];
-                if($val == '00:00:0')
-                    $this->Message .= 'Invalid value for Stopwatch!';
-                else if($val == '' || $val == '0' || $val == $Attribute){
-                    $this->Message .= 'Invalid value for '.$ExerciseName.' '.$Attribute.'!';
-                }else{
-                $SQL='SELECT recid AS ExerciseId, (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS Attribute, "'.$val.'" AS AttributeValue, "'.$RoundNo.'" AS RoundNo
-                FROM Exercises
-                WHERE recid = "'.$ExerciseId.'"';
-                $db->setQuery($SQL);
-                $Row = $db->loadObject();
-                array_push($Activities, $Row);
-                }
-            }
-            else{
-                   if($val == '00:00:0' || $val == $key){
-                        $this->Message .= 'Invalid value for '.$key.'!';
-                }else{
-                $SQL = 'SELECT recid FROM Attributes WHERE Attribute = "'.$key.'"';
-                $db->setQuery($SQL);
-		$db->Query();
-                if($db->getNumRows() > 0){
-                    $Attribute = $db->loadResult();
-                    array_push($Activities, array('ExerciseId'=>'0','Attribute'=>''.$Attribute.'','AttributeValue'=>''.$val.'','RoundNo'=>''.$RoundNo.''));
-                }
-                }
-            }
-        }
-        return $Activities;
-    }
-    
     function MemberBaselineExists()
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
@@ -319,13 +271,18 @@ class BaselineModel extends Model
                         AS InputFieldName,
                         A.Attribute, 
                         BD.'.$AttributeValue.' AS AttributeValue, 
+                        BD.UnitOfMeasureId,    
+                        UOM.UnitOfMeasure,
+                        UOM.ConversionFactor,    
                         VideoId, 
                         RoundNo,
+                        OrderBy,
                         (SELECT MAX(RoundNo) FROM BenchmarkDetails WHERE BenchmarkId = "'.$Id.'") AS TotalRounds
 			FROM BenchmarkDetails BD
 			LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
 			LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
 			LEFT JOIN Attributes A ON A.recid = BD.AttributeId
+                        LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND BD.UnitOfMeasureId = UOM.recid
 			WHERE BD.BenchmarkId = '.$Id.'
 			ORDER BY RoundNo, OrderBy, Attribute';
             $db->setQuery($SQL);
@@ -349,12 +306,17 @@ class BaselineModel extends Model
                         E.recid AS ExerciseId, 
                         A.Attribute, 
                         CD.AttributeValue,  
+                        CD.UnitOfMeasureId,    
+                        UOM.UnitOfMeasure,
+                        UOM.ConversionFactor,    
                         RoundNo,
+                        OrderBy,
                         (SELECT MAX(RoundNo) FROM CustomDetails WHERE CustomWorkoutId = "'.$Id.'") AS TotalRounds
 			FROM CustomDetails CD
 			LEFT JOIN CustomWorkouts CW ON CW.recid = CD.CustomWorkoutId
 			LEFT JOIN Exercises E ON E.recid = CD.ExerciseId
 			LEFT JOIN Attributes A ON A.recid = CD.AttributeId
+                        LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND CD.UnitOfMeasureId = UOM.recid                        
 			WHERE CD.CustomWorkoutId = '.$Id.'
 			ORDER BY RoundNo, Attribute';
                 $db->setQuery($SQL);
@@ -377,10 +339,16 @@ class BaselineModel extends Model
             END
             AS InputFieldName,
             A.Attribute, MB.AttributeValue,
+            MB.UnitOfMeasureId,    
+            UOM.UnitOfMeasure,
+            UOM.ConversionFactor,    
+            RoundNo,
+            OrderBy,           
             "1" AS TotalRounds
             FROM MemberBaseline MB
-            JOIN Exercises E ON E.recid = MB.ExerciseId
-            JOIN Attributes A ON A.recid = MB.AttributeId
+            LEFT JOIN Exercises E ON E.recid = MB.ExerciseId
+            LEFT JOIN Attributes A ON A.recid = MB.AttributeId
+            LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND MB.UnitOfMeasureId = UOM.recid
             WHERE MB.MemberId = "'.$_SESSION['UID'].'"';
         $db->setQuery($SQL);
         return $db->loadObjectList();

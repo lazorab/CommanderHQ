@@ -293,7 +293,7 @@ class Model
                 LEFT JOIN Exercises E ON E.recid = WL.ExerciseId
                 WHERE WL.ExerciseId = '.$Id.'
                 AND MemberId = "'.$_SESSION['UID'].'"
-                ORDER BY TimeCreated DESC, RoundNo';
+                ORDER BY TimeCreated DESC, RoundNo, Attribute';
             //var_dump($SQL);
             $db->setQuery($SQL);
             return $db->loadObjectList();
