@@ -10,43 +10,59 @@ class CustomModel extends Model
 	{
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             if($this->UserIsSubscribed()){
-                if($_REQUEST['TimeToComplete'] == "00:00:0"){
-                    $this->Message .= "Error - Invalid value for Stopwatch\nOr\nStopwatch not Started!";
-                }else if(isset($_REQUEST['CustomName']) && $_REQUEST['CustomName'] == ''){
+                if(isset($_REQUEST['CustomName']) && $_REQUEST['CustomName'] == ''){
                     $this->Message .= "Error - Name for WOD required!";
                 }else{
-                    $ActivityFields = $this->getActivityFields();
-                }
-            //var_dump($ActivityFields);
-            if($this->Message == ''){
+                $ActivityFields = $this->getActivityFields();
+                if($this->Message == ''){
                 $WorkoutTypeId = $this->getCustomTypeId();
                 $WorkoutRoutineTypeId = $this->getWorkoutRoutineTypeId($_REQUEST['workouttype']);
-            $SQL = 'INSERT INTO CustomWorkouts(MemberId, WorkoutName, WorkoutRoutineTypeId, Notes, WorkoutDateTime) 
-            VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['CustomName'].'", "'.$WorkoutRoutineTypeId.'", "'.$_REQUEST['descr'].'", "'.$_REQUEST['WodDate'].'")';
-            $db->setQuery($SQL);
-            $db->Query();
-            $CustomWorkoutId = $db->insertid();
+                $CustomWorkoutId = 0;
+                if(isset($_REQUEST['TimeToComplete'])){
+                    $SQL = 'INSERT INTO CustomWorkouts(MemberId, WorkoutName, WorkoutRoutineTypeId, Notes, WorkoutDateTime) 
+                    VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['CustomName'].'", "'.$WorkoutRoutineTypeId.'", "'.$_REQUEST['descr'].'", "'.$_REQUEST['WodDate'].'")';
+                    $db->setQuery($SQL);
+                    $db->Query();
+                    $CustomWorkoutId = $db->insertid();
+                    $TimeAttributeId = $this->getAttributeId('TimeToComplete');
+                    //Save the time
+                    $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue) 
+                    VALUES("'.$_SESSION['UID'].'", "'.$CustomWorkoutId.'", "'.$WorkoutTypeId.'", "0", "0", "'.$TimeAttributeId.'", "'.$_REQUEST['TimeToComplete'].'")';
+                    $db->setQuery($SQL);
+                    $db->Query();                 
+                }
+
+                if($CustomWorkoutId == 0){
+                     $SQL = 'INSERT INTO CustomWorkouts(MemberId, WorkoutName, WorkoutRoutineTypeId, Notes, WorkoutDateTime) 
+                    VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['CustomName'].'", "'.$WorkoutRoutineTypeId.'", "'.$_REQUEST['descr'].'", "'.$_REQUEST['WodDate'].'")';
+                    $db->setQuery($SQL);
+                    $db->Query();
+                    $CustomWorkoutId = $db->insertid();                   
+                }
+            
         foreach($ActivityFields AS $ActivityField)
         {
-            $SQL = 'INSERT INTO CustomDetails(MemberId, CustomWorkoutId, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId, RoundNo, OrderBy) 
-            VALUES("'.$_SESSION['UID'].'", "'.$CustomWorkoutId.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->OrderBy.'")';
+            $SQL = 'INSERT INTO CustomDetails(CustomWorkoutId, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId, RoundNo, OrderBy) 
+            VALUES("'.$CustomWorkoutId.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->DetailsAttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->OrderBy.'")';
             $db->setQuery($SQL);
             $db->Query();
+
             if($_REQUEST['origin'] == 'baseline'){
-                $SQL = 'INSERT INTO BaselineLog(MemberId, BaselineTypeId, ExerciseId, RoundNo, ActivityId, AttributeId, UnitOfMeasureId, AttributeValue) 
-                VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$_REQUEST['benchmarkId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'")';
+                $SQL = 'INSERT INTO BaselineLog(MemberId, BaselineTypeId, ExerciseId, RoundNo, ActivityId, AttributeId, AttributeValue, UnitOfMeasureId) 
+                VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$CustomWorkoutId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'")';
                 $db->setQuery($SQL);
                 $db->Query();
             }
-            // ExerciseId only applies for benchmarks so we need it here!
+            if($ActivityField->AttributeValue != 'Max'){
             $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId) 
-            VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'")';
+            VALUES("'.$_SESSION['UID'].'", "'.$CustomWorkoutId.'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'")';
                 $db->setQuery($SQL);
                 $db->Query();
-            
+            }
 		}
                 $this->Message = 'Success';
             }
+                }
             }else{
                 $this->Message = 'Error - You are not subscribed!';
             }
@@ -62,13 +78,32 @@ class CustomModel extends Model
                 $db->setQuery($SQL);
                 $db->Query();
                 $ExerciseId = $db->insertid();
-                foreach($_REQUEST['ExerciseAttributes'] AS $Attribute){
+
+                if($_REQUEST['NewActivityWeight'] > 0){
                     $SQL = 'INSERT INTO ExerciseAttributes(ExerciseId, AttributeId) 
-                        VALUES("'.$ExerciseId.'","'.$this->getAttributeId($Attribute).'")';
-                $db->setQuery($SQL);
-                $db->Query();               
+                        VALUES("'.$ExerciseId.'","'.$this->getAttributeId('Weight').'")';
+                    $db->setQuery($SQL);
+                    $db->Query();                   
                 }
-                $Message = ''.$_REQUEST['NewExercise'].'';               
+                 if($_REQUEST['NewActivityHeight'] > 0){
+                    $SQL = 'INSERT INTO ExerciseAttributes(ExerciseId, AttributeId) 
+                        VALUES("'.$ExerciseId.'","'.$this->getAttributeId('Height').'")';
+                    $db->setQuery($SQL);
+                    $db->Query();                   
+                }
+                if($_REQUEST['NewActivityDistance'] > 0){
+                    $SQL = 'INSERT INTO ExerciseAttributes(ExerciseId, AttributeId) 
+                        VALUES("'.$ExerciseId.'","'.$this->getAttributeId('Distance').'")';
+                    $db->setQuery($SQL);
+                    $db->Query();                   
+                }
+                if($_REQUEST['NewActivityReps'] > 0){
+                    $SQL = 'INSERT INTO ExerciseAttributes(ExerciseId, AttributeId) 
+                        VALUES("'.$ExerciseId.'","'.$this->getAttributeId('Reps').'")';
+                    $db->setQuery($SQL);
+                    $db->Query();                   
+                }                
+                $Message = $ExerciseId;               
             }else{
                 $Message = 'Error - You are not subscribed!';
             }

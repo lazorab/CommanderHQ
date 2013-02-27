@@ -121,7 +121,6 @@ function messagedisplay(message)
 function dropdownrefresh(data)
 {
     $('#exercises').html(data);
-
 }
 
 function display(data)
@@ -134,69 +133,43 @@ function display(data)
     $('.numberinput').textinput();
 }
 
-function addTypeParams(CustomType)
-{
-    var Html='';
-    
-        if(CustomType == 'Total Reps'){
-            Html +='<input type="number" name="Reps" value="" placeholder="Total Reps"/>';
-            Html+='<?php echo $Display->getStopWatch();?>';
-            Html+='<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>';
-        }
-        else if(CustomType == 'AMRAP Rounds'){
-        $('#RoundLabel').html('<div class="ui-block-a">Round 1</div><div class="ui-block-b"></div><div class="ui-block-c"></div>');
-        Html+='<?php echo $Display->getRoundCounter();?>';
-	Html+='<input type="hidden" name="63___CountDown[]" id="CountDown" value=""/>';
-        Html+='<input id="clock" type="text" name="timer" value="" placeholder="mm:ss"/>';
-        Html+='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstopcountdown();" value="Start"/>';
-        Html+='<input id="resetbutton" class="buttongroup" type="button" onClick="resetcountdown();" value="Reset"/>';
-        Html+='<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>';
-        }  
-        else if(CustomType == 'AMRAP Reps'){
-	Html+='<input type="hidden" name="63___CountDown[]" id="CountDown" value=""/>';
-        Html+='<input id="clock" type="text" name="timer" value="" placeholder="mm:ss"/>';
-        Html+='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstopcountdown();" value="Start"/>';
-        Html+='<input id="resetbutton" class="buttongroup" type="button" onClick="resetcountdown();" value="Reset"/>';
-        Html+='<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>';
-        }
-         else if(CustomType == 'EMOM'){
-	Html+='<input type="hidden" name="63___CountDown[]" id="CountDown" value=""/>';
-        Html+='<input id="clock" type="text" name="timer" value="" placeholder="mm:ss"/>';
-        Html+='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstopcountdown();" value="Start"/>';
-        Html+='<input id="resetbutton" class="buttongroup" type="button" onClick="resetcountdown();" value="Reset"/>';
-        Html+='<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>';
-        }       
-        else if(CustomType == 'Timed'){
-            Html+='<?php echo $Display->getStopWatch();?>';
-            Html+='<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>';
-        }
-        
-        if(Html != ''){
-    $('#clock_input').html(Html);
-
-    $('#addround').textinput();
-    }
-}
-
 function SelectionControl(exercise)
 {
     $('#add_exercise').html('');
     if(exercise == 'Add New Activity')
         addNewExercise();
     else
-        ExerciseInputs(exercise);
+        ExerciseInputs(exercise); 
 }
 
 function addNewExercise()
 {
-    var Html ='<br/><input class="textinput" type="text" id="NewExercise" name="NewExercise" value="" placeholder="New Exercise Name"/>';
-    Html += '<br/><input class="textinput" type="text" id="Acronym" name="Acronym" value="" placeholder="Acronym for Exercise?"/>';
-    Html += '<br/>Applicable Attributes:<br/><br/>';
-    Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Weight"/>Weight';
-    Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Height"/>Height<br/>';
-    Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Distance"/>Distance';
-    Html += '<input type="checkbox" name="ExerciseAttributes[]" value="Reps"/>Reps<br/><br/>';
-    Html += '<input class="buttongroup" type="button" name="btnsubmit" value="Add" onclick="addnew();"/><br/><br/>';
+    var RoundNo = $('#addround').val();
+    var OrderBy = $('#Round' + RoundNo + 'Counter').val();
+    var Html ='<div class="AddNewActivityAttributes">';
+    Html += '<h2>New Activity</h2>';
+    Html += '<div style="float:left;margin:0 0 0 0"><input style="width:225px" type="text" id="NewExercise" name="NewExercise" value="" placeholder="Activity Name"/></div>';
+    Html += '<div style="float:left;margin:20px 0 0"><input style="width:225px" type="text" id="Acronym" name="Acronym" value="" placeholder="Acronym for Activity?"/></div>';
+    Html += '<div style="float:left;margin:20px 30px 0 0"><input style="width:80px" placeholder="Weight in <?php echo $Display->UserUnitOfMeasure('Weight');?>" type="number" id="NewActivityWeight" name="NewActivityWeight"/></div>';
+    Html += '<div style="float:left;margin:20px 0 0 25px"><input style="width:80px" placeholder="Height in <?php echo $Display->UserUnitOfMeasure('Height');?>" type="number" id="NewActivityHeight" name="NewActivityHeight"/></div>';
+    Html += '<div style="float:left;margin:20px 30px 0 0"><input style="width:80px" placeholder="Distance" type="number" id="NewActivityDistance" name="NewActivityDistance"/></div>';
+    Html += '<div style="float:left;margin:20px 0 0 25px"><select style="width:90px" id="NewActivityDistanceUOM" name="NewActivityDistanceUOM">';
+    if('<?php echo $Display->SystemOfMeasure();?>' == 'Metric'){
+        Html += '<option value="2">Metres</option>';
+        Html += '<option value="1">Kilometres</option>';
+        Html += '</select>';               
+    }else{
+        Html += '<option value="3">Miles</option>';
+        Html += '<option value="4">Yards</option>';
+        Html += '</select>';                
+    } 
+    Html += '</div><div class="clear"></div>';
+
+    Html += '<div style="float:left;margin:20px 25px 0 0"><input style="width:80px" type="number" id="NewActivityReps" placeholder="Reps" name="NewActivityReps"/></div>';
+
+    Html += '<div style="float:right;margin:20px 5px 0 0"><input class="buttongroup" type="button" id="" name="btn" onClick="addnew(\''+RoundNo+'\', \''+OrderBy+'\');" value="Add Activity"/></div>';
+    Html += '</div><div class="clear"></div>';
+
     $('#add_exercise').html(Html);
 
     $('.textinput').textinput();
@@ -205,12 +178,16 @@ function addNewExercise()
 
 function addactivitydisplay(data)
 {
+if(data.substring(0,5) == 'Error'){
+        alert(data); 
+    }
+     else{    
     var RoundNo = $('#addround').val();
     document.getElementById('rowcounter').value++;
     document.getElementById('Round' + RoundNo + 'Counter').value++;
     var RowNo = $('#rowcounter').val();
     var Html = data.replace(/RowNo/g, RowNo);
-
+    $('#add_exercise').html('');
     $('#ExerciseInputs').html('');
     if(RoundNo == 1)
         chosenexercises += Html;
@@ -221,6 +198,7 @@ function addactivitydisplay(data)
     el.find('div[data-role=collapsible]').collapsible({theme:'c',refresh:true});
     $('.listview').listview();
     $('.listview').listview('refresh');
+     }
 }
 
 function OpenHistory(ExerciseId)
@@ -258,9 +236,9 @@ function ExerciseInputs(exercise)
                 }
                 if(this.Attribute == 'Distance'){ 
                     Elements.push(''+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'');
-                    Html += '<div style="float:left;margin:0 10px 0 10px"">'+this.Attribute+'<br/><input size="9" type="number" id="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'" name="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'"/></div>';
+                    Html += '<div style="float:left;margin:10px 25px 10px 25px"><input placeholder="'+this.Attribute+'" style="width:80px" type="number" id="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'" name="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'"/></div>';
                     Elements.push(''+RoundNo+'_'+this.ExerciseId+'_Distance_UOM');
-                    Html += '<div style="float:left;margin:0 10px 0 10px"">Units<select id="'+RoundNo+'_'+this.ExerciseId+'_Distance_UOM" name="'+RoundNo+'_'+this.ExerciseId+'_Distance_UOM">';
+                    Html += '<div style="float:left;margin:10px 25px 10px 25px"><select id="'+RoundNo+'_'+this.ExerciseId+'_Distance_UOM" name="'+RoundNo+'_'+this.ExerciseId+'_Distance_UOM">';
             if('<?php echo $Display->SystemOfMeasure();?>' == 'Metric'){
                 Html += '<option value="2">Metres</option>';
                 Html += '<option value="1">Kilometres</option>';
@@ -273,11 +251,11 @@ function ExerciseInputs(exercise)
             Html += '</div>';
         }else{
                 Elements.push(''+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_'+UOMId+'_'+OrderBy+'');
-                Html += '<div style="float:left;margin:0 10px 0 10px"">'+this.Attribute+'<br/><input size="9" type="number" id="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_'+UOMId+'_'+OrderBy+'"  placeholder="'+UOM+'" name="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_'+UOMId+'_'+OrderBy+'"  placeholder="'+UOM+'"/></div>';
+                Html += '<div style="float:left;margin:10px 25px 10px 25px"><input placeholder="'+this.Attribute+' '+UOM+'" style="width:80px" type="number" id="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_'+UOMId+'_'+OrderBy+'" name="'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_'+UOMId+'_'+OrderBy+'"/></div>';
                }
             });
 
-            Html += '<div style="float:right;margin:10px 20px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="AddActivity(\''+Elements+'\');" value="Add Activity"/></div>';
+            Html += '<div style="float:right;margin:10px 35px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="AddActivity(\''+Elements+'\');" value="Add Activity"/></div>';
             Html += '</div></form><div class="clear"></div>';       
 
         $('#ExerciseInputs').html(Html);
@@ -307,7 +285,6 @@ function RemoveFromList(ThisItem)
     {
         var Explode = ThisItem.split('_');
         var RoundNo = Explode[0];
-        var RowNo = Explode[1]; 
         $('#' + ThisItem + '').remove();
         
         document.getElementById('rowcounter').value--;
@@ -322,16 +299,22 @@ function RemoveFromList(ThisItem)
 
 function Save()
 {
-    if(document.getElementById('rowcounter').value == 0){
+    if($('#rowcounter').val() == 0){
         alert('No Exercises selected!');
     }else{
+        if($('#timerContainer').hasClass('active')){
+            $("#TimeToComplete").val($('#clock').html())
+        }else{
+            $('#timerContainer').html('');
+        }
         $.getJSON('ajax.php?module=custom&action=validateform', $("#customform").serialize(),messagedisplay);
     }
 }
 
-function addnew()
+function addnew(RoundNo, OrderBy)
 {
-    $.getJSON('ajax.php?module=custom&action=validateform', $("#customform").serialize(),messagedisplay);
+    $.ajax({url:'ajax.php?module=custom&action=formsubmit&RoundNo='+RoundNo+'&OrderBy='+OrderBy+'',data:$("#customform").serialize(),dataType:"html",success:addactivitydisplay});          
+    $.ajax({url:'ajax.php?module=custom',data:{dropdown:'refresh'},dataType:"html",success:dropdownrefresh});  
 }
 
 function addRound()
@@ -372,24 +355,25 @@ function clockSelect(type)
     else    
         $('#timerContainer').addClass('active');
     }
-    document.getElementById('clockType').value = type;
+    $('#clockType').val(type)
 }
 
-function ShowHideClock()
+function ShowHideStopwatch()
 {
-    if($('#timerContainer').hasClass('active'))
+    if($('#timerContainer').hasClass('active')){
         $('#timerContainer').removeClass('active');
-    else    
+    }else{      
         $('#timerContainer').addClass('active');
+    }
 }
 
 function clockControl()
 {
-    if(document.getElementById('clockType').value == 'timer')
+    if($('#clockType').val() == 'timer')
         startstopcountdown();
-    else if(document.getElementById('clockType').value == 'stopwatch')
+    else if($('#clockType').val() == 'stopwatch')
         startstop();
-    else if(document.getElementById('clockType').value == 'tabata')
+    else if($('#clockType').val() == 'tabata')
         alert('tabata');
     else
         alert('First choose Clock Type!');
@@ -397,11 +381,11 @@ function clockControl()
 
 function resetControl()
 {
-    if(document.getElementById('clockType').value == 'timer')
+    if($('#clockType').val() == 'timer')
         resetcountdown();
-    else if(document.getElementById('clockType').value == 'stopwatch')
+    else if($('#clockType').val() == 'stopwatch')
         reset();
-    else if(document.getElementById('clockType').value == 'tabata')
+    else if($('#clockType').val() == 'tabata')
         alert('tabata');
     else
         alert('First choose Clock Type!');

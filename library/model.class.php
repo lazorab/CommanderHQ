@@ -63,6 +63,32 @@ class Model
             $db->setQuery($SQL);
             
             return $db->loadResult();
+        }      
+        
+        function getUnitOfMeasureId($Unit)
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);  
+                
+            $SQL = 'SELECT UM.recid 
+                FROM UnitsOfMeasure UM JOIN Attributes A ON A.recid = UM.AttributeId
+                WHERE Attribute = "'.$Unit.'" 
+                AND SystemOfMeasure = "'.$this->getSystemOfMeasure().'"';
+            $db->setQuery($SQL);
+            
+            return $db->loadResult();
+        }         
+        
+        function getUserUnitOfMeasure($Unit)
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);  
+                
+            $SQL = 'SELECT UM.UnitOfMeasure 
+                FROM UnitsOfMeasure UM JOIN Attributes A ON A.recid = UM.AttributeId
+                WHERE Attribute = "'.$Unit.'" 
+                AND SystemOfMeasure = "'.$this->getSystemOfMeasure().'"';
+            $db->setQuery($SQL);
+            
+            return $db->loadResult();
         }        
         
         function UserIsSubscribed()
@@ -205,8 +231,12 @@ class Model
             return $db->loadObjectList();	
 	}   
         
-     function getActivityFields()
+     function getActivityFields($ValidateReps = true)
     {
+        if(isset($_REQUEST['TimeToComplete']) && $_REQUEST['TimeToComplete'] == '00:00:0'){
+                $this->Message = 'Error - Invalid Value for Stopwatch!';  
+        }
+        if($this->Message == ''){
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
         $Activities = array();
         //var_dump($_REQUEST);
@@ -224,17 +254,23 @@ class Model
                     $Attribute = $ExplodedKey[2];
                     $UOMId = $ExplodedKey[3];
                     $OrderBy = $ExplodedKey[4];
+                    $DetailsValue=$Value;
+                    if(array_key_exists('5', $ExplodedKey))
+                        $DetailsValue='Max';
                     if($UOMId == 0 && $Attribute == 'Distance')
                         $UOMId = $_REQUEST[''.$RoundNo.'_'.$ExerciseId.'_Distance_UOM'];
                     $UOM = $this->getUnitOfMeasure($UOMId);
-                if($Value == '' || $Value == '0' || $Value == $Attribute || $Value == 'Max '){
-                        $this->Message = 'Error - Invalid Value for '.$Attribute.'!';
-                }else{
+                if($Value == '' || $Value == '0' || $Value == $Attribute){
+                        if($Attribute == 'Reps' && $ValidateReps == true)
+                            $this->Message = 'Error - Invalid Value for '.$Attribute.'!';
+                }
+                if($this->Message == ''){
                 $SQL='SELECT recid AS ExerciseId,
                         "'.$ExerciseName.'" AS Exercise,
                         (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS AttributeId,
                         "'.$Attribute.'" AS Attribute,    
-                        "'.$Value.'" AS AttributeValue, 
+                        "'.$Value.'" AS AttributeValue,  
+                        "'.$DetailsValue.'" AS DetailsAttributeValue,     
                         "'.$UOMId.'" AS UnitOfMeasureId,
                         "'.$UOM.'" AS UnitOfMeasure,    
                         "'.$RoundNo.'" AS RoundNo,
@@ -249,6 +285,7 @@ class Model
             }
         }
         return $Activities;
+        }
     }       
 
 	function getExerciseAttributes($Exercise)

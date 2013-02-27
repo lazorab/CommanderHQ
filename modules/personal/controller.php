@@ -72,7 +72,7 @@ if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
                     $ConversionFactor = $Detail->ConversionFactor;
                 }
             }
-            if($Detail->AttributeValue == ''){
+            if($Detail->AttributeValue == '' || $Detail->AttributeValue == 0){
                 $AttributeValue = 'Max ';
             }else{
                 $AttributeValue = $Detail->AttributeValue * $ConversionFactor;
