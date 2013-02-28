@@ -181,7 +181,9 @@ function addactivitydisplay(data)
 if(data.substring(0,5) == 'Error'){
         alert(data); 
     }
-     else{    
+     else{  
+         
+    var RoutineNo = $('#RoutineCounter').val();   
     var RoundNo = $('#addround').val();
     document.getElementById('rowcounter').value++;
     document.getElementById('Round' + RoundNo + 'Counter').value++;
@@ -192,7 +194,7 @@ if(data.substring(0,5) == 'Error'){
     if(RoundNo == 1)
         chosenexercises += Html;
     Html = Html.replace(/RoundNo/g, RoundNo);
-    $('#activity_list').append(Html);
+    $('#activity'+RoutineNo+'list').append(Html);
     $("#exercises option[value='none']").attr("selected","selected");
     var el = $('#AjaxOutput');
     el.find('div[data-role=collapsible]').collapsible({theme:'c',refresh:true});
@@ -319,7 +321,7 @@ function addnew(RoundNo, OrderBy)
 
 function addRound()
 {  
-    var RoundCouter = $('#rowcounter').val();
+    var RoutineNo = $('#RoutineCounter').val();
     var PrevRoundNo = $('#addround').val();
     var RowNo = $('#rowcounter').val();
     if(RowNo == 0){
@@ -332,12 +334,38 @@ function addRound()
         document.getElementById('addround').value++;
         var RoundNo = $('#addround').val();
         var ThisRound ='<br/><div class="RoundLabel" id="Round' + RoundNo + 'Label">Round ' + RoundNo + '</div>';
-        ThisRound+= '<input type="hidden" name="Round' + RoundNo + 'Counter" id="Round' + RoundNo + 'Counter" value="'+RoundCouter+'"/>';
+        ThisRound+= '<input type="hidden" name="Round' + RoundNo + 'Counter" id="Round' + RoundNo + 'Counter" value="'+RowNo+'"/>';
         ThisRound+=chosenexercises.replace(/RoundNo/g, RoundNo);
         ThisRound=ThisRound.replace(/RowNo/g, RowNo);
         ThisRound=ThisRound.replace(/undefined/g, '');
 
-        $(ThisRound).appendTo($('#activity_list'));
+        $(ThisRound).appendTo($('#activity'+RoutineNo+'list'));
+    }
+
+    $('.textinput').textinput();
+    $('.numberinput').textinput();
+    $('.listview').listview();
+    $('.listview').listview('refresh');    
+}
+
+function addRoutine()
+{
+    var PrevRoutineNo = $('#RoutineCounter').val();
+    var RowNo = $('#rowcounter').val();
+    if(RowNo == 0){
+        alert('Routine empty!');
+    }else if($('#Routine' + PrevRoutineNo + 'Counter').val() == 0){
+        alert('No Exercises selected for routine ' + PrevRoutineNo + '!');
+    }else{
+        if($('#Routine1Label').html() == '')
+            $('#Routine1Label').html('Routine 1');
+        document.getElementById('RoutineCounter').value++;
+        var RoutineNo = $('#RoutineCounter').val();
+        var ThisRoutine ='<br/><div class="RoutineLabel" id="Routine' + RoutineNo + 'Label">Routine ' + RoutineNo + '</div>';
+        ThisRoutine+= '<input type="hidden" name="Routine' + RoutineNo + 'Counter" id="Routine' + RoutineNo + 'Counter" value="'+RoutineNo+'"/>';
+        ThisRoutine+= '<div id="activity'+RoutineNo+'list"></div>';
+
+        $(ThisRoutine).appendTo($('#Routines'));
     }
 
     $('.textinput').textinput();

@@ -231,7 +231,7 @@ class Model
             return $db->loadObjectList();	
 	}   
         
-     function getActivityFields($ValidateReps = true)
+     function getActivityFields($Validate = true)
     {
         if(isset($_REQUEST['TimeToComplete']) && $_REQUEST['TimeToComplete'] == '00:00:0'){
                 $this->Message = 'Error - Invalid Value for Stopwatch!';  
@@ -246,23 +246,23 @@ class Model
             $ExerciseId = 0;
             $Attribute = '';
             $ExplodedKey = explode('_', $Name);
-            if(count($ExplodedKey) > 3)
+            if(count($ExplodedKey) > 4)
             {
-                    $RoundNo = $ExplodedKey[0];
-                    $ExerciseId = $ExplodedKey[1];
-                    $ExerciseName = $this->getExerciseName($ExerciseId);
-                    $Attribute = $ExplodedKey[2];
-                    $UOMId = $ExplodedKey[3];
-                    $OrderBy = $ExplodedKey[4];
-                    $DetailsValue=$Value;
-                    if(array_key_exists('5', $ExplodedKey))
-                        $DetailsValue='Max';
-                    if($UOMId == 0 && $Attribute == 'Distance')
+                $RoundNo = $ExplodedKey[0];
+                $ExerciseId = $ExplodedKey[1];
+                $ExerciseName = $this->getExerciseName($ExerciseId);
+                $Attribute = $ExplodedKey[2];
+                $UOMId = $ExplodedKey[3];
+                $OrderBy = $ExplodedKey[4];
+                $DetailsValue=$Value;
+                if(array_key_exists('5', $ExplodedKey))
+                    $DetailsValue='Max';
+                if($UOMId == 0 && $Attribute == 'Distance')
                         $UOMId = $_REQUEST[''.$RoundNo.'_'.$ExerciseId.'_Distance_UOM'];
                     $UOM = $this->getUnitOfMeasure($UOMId);
-                if($Value == '' || $Value == '0' || $Value == $Attribute){
-                        if($Attribute == 'Reps' && $ValidateReps == true)
-                            $this->Message = 'Error - Invalid Value for '.$Attribute.'!';
+                if($Value == '' || $Value == '0' || $Value == $Attribute || $Value == 'Max'){
+                    if($Validate == true)
+                        $this->Message = 'Error - Invalid Value for '.$Attribute.'!';
                 }
                 if($this->Message == ''){
                 $SQL='SELECT recid AS ExerciseId,

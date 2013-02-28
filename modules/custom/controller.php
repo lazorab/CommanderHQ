@@ -29,9 +29,64 @@ class CustomController extends Controller
             $Message = $Model->Save();
         }       
         return $Message;
-    }      
+    }  
     
     function AddActivity(){
+        $Model = new CustomModel;
+        $ActivityFields = $Model->getActivityFields(false);
+        $Attributes = $Model->getExerciseIdAttributes($ActivityFields[0]->ExerciseId);
+        $i=0;
+        //var_dump($ActivityFields);
+        $html .= '<div data-role="collapsible-set" data-iconpos="right">'; 
+        $html .= '<div data-role="collapsible">';
+        $html .= '<h2>'.$ActivityFields[0]->Exercise.'<br/>';
+        foreach($ActivityFields as $Activity){
+            
+            if($Activity->UnitOfMeasureId == null || $Activity->UnitOfMeasureId == 0){
+                $UnitOfMeasureId = 0;
+                $ConversionFactor = 1;
+            }else{
+                $UnitOfMeasureId = $Activity->UnitOfMeasureId;
+                if($Activity->ConversionFactor == null || $Activity->ConversionFactor == 0){
+                    $ConversionFactor = 1;
+                }else{
+                    $ConversionFactor = $Activity->ConversionFactor;
+                }
+            }
+            if($Activity->AttributeValue == ''){
+                $AttributeValue = 'Max';
+            }else{
+                $AttributeValue = $Activity->AttributeValue * $ConversionFactor;
+            }            
+                                  
+            if($i > 0)
+                $html.=' | ';
+
+            $html.=''.$Activity->Attribute.' : <span id="RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_html">'.$AttributeValue.'</span>';
+
+            if($AttributeValue != 'Max'){
+                $html.=''.$Activity->UnitOfMeasure.'';
+            }
+            $i++;
+        }  
+        $i=0;
+        $html .= '</h2><div class="clear"></div><div class="ActivityAttributes">';
+        $TheseAttributes='';
+        foreach($Attributes as $Attribute){
+            if($i > 0)
+                $TheseAttributes.='_';
+            $TheseAttributes.=$Attribute->Attribute;
+            $html .= '<div style="float:left;margin:0 25px 0 25px"">'.$Attribute->Attribute.'<br/><input style="width:80px" type="number" id="RoundNo_'.$Activity->ExerciseId.'_'.$Attribute->Attribute.'_new" name="RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_'.$UnitOfMeasureId.'_'.$Activity->OrderBy.'" placeholder="'.$Attribute->UOM.'"/></div>';    
+            $i++;
+        }
+        $html .= '<div style="float:right;margin:10px 30px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="UpdateActivity(\'RoundNo_'.$Activity->ExerciseId.'\', \''.$TheseAttributes.'\');" value="Update"/></div>';
+        $html .= '</div><div class="clear"></div>';
+        $html .= '</div>';
+        $html .= '</div>';
+        return $html;
+    }    
+    
+    function _AddActivity(){
         $Model = new CustomModel;
         $ActivityFields = $Model->getActivityFields(false);
         //var_dump($ActivityFields);
@@ -63,17 +118,19 @@ class CustomController extends Controller
             $html.=''.$Activity->Attribute.' : <span id="RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_html">';
             
             if($Activity->AttributeValue == '' || $Activity->AttributeValue == 0){
-                $html .= '<input style="width:50px" type="number" id="RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'" name="RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_'.$UnitOfMeasureId.'_'.$Activity->OrderBy.'_Max" placeholder="Max" value=""/></span>';
+                $AttributeValue = 'Max';
+                //$html .= '<input style="width:50px" type="number" id="RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'" name="RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_'.$UnitOfMeasureId.'_'.$Activity->OrderBy.'_Max" placeholder="Max" value=""/></span>';
             }else{
-                $html.= $Activity->AttributeValue * $ConversionFactor;
-                $html.='</span>'.$Activity->UnitOfMeasure.'';
-                $html.='<input type="hidden" id="RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'" name="RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_'.$UnitOfMeasureId.'_'.$Activity->OrderBy.'" value="'.$Activity->AttributeValue * $ConversionFactor.'">';          
-            }           
+                $AttributeValue = $Activity->AttributeValue * $ConversionFactor;
+            }
+                $html.= $AttributeValue;
+                $html.='</span>';
+                if($AttributeValue != 'Max'){        
+                    $html.=''.$Activity->UnitOfMeasure.'';
+                }
+                $html.='<input type="hidden" id="RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'" name="RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_'.$UnitOfMeasureId.'_'.$Activity->OrderBy.'" value="'.$AttributeValue.'">';          
+                       
             
-            
-            
-            
-
             $ExerciseId = $Activity->ExerciseId;
             $i++;
         }   
@@ -144,15 +201,17 @@ class CustomController extends Controller
         <input type="hidden" name="rowcount" id="rowcounter" value="0"/>
         <input type="hidden" name="Round1Counter" id="Round1Counter" value="0"/>
         <input type="hidden" name="Rounds" id="addround" value="1"/>
+        <input type="hidden" name="RoutineCounter" id="RoutineCounter" value="1"/>
         <input class="textinput" type="date" name="WodDate" id="WodDate" placeholder="WOD Date" value="'.date('Y-m-d').'"/><br/>
             
         <input class="textinput" type="text" name="CustomName" id="CustomName" placeholder="Name for WOD" value=""/><br/>
         
         <textarea name="descr" placeholder="Describe your wod"></textarea><br/>';
-        //$Html .= '<div class="ui-grid-b">';
+        $Html .= '<div id="Routine1Label"></div>';
         $Html .= '<div id="Round1Label"></div>';       
-        $Html .= '<div id="activity_list">'.$this->ChosenExercises().'</div>';
-        //$Html .= '</div>';
+        $Html .= '<div id="activity1list">'.$this->ChosenExercises().'</div>';
+        
+        $Html .= '<div id="Routines"></div>';
         
         $Html .= '<div class="ui-grid-b">';
         $Html .= '<div id="add_exercise">'.$this->AddExercise().'</div>';
@@ -174,7 +233,9 @@ class CustomController extends Controller
         $Html .= '</div>';
         $Html .= '<div class="StopwatchButton">';
         $Html .= '<input class="buttongroup" type="button" onClick="addRound();" value="Add a Round"/>';
-        $Html .= '</div><div class="StopwatchButton">';   
+        $Html .= '</div><div class="StopwatchButton">';  
+        $Html .= '<input class="buttongroup" type="button" onClick="addRoutine();" value="Add a Routine"/>';
+        $Html .= '</div><div class="StopwatchButton">';
         $Html .= '<input id="ShowHideClock" class="buttongroup" type="button" value="Time Workout" onClick="ShowHideStopwatch();"/>';
         $Html .= '</div><div class="StopwatchButton">';   
         $Html .= '<input class="buttongroup" type="button" value="Save Wod" onClick="Save();"/>';       
