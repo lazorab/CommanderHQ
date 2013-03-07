@@ -185,7 +185,7 @@ class Model
             $db->setQuery($SQL);
             
             return $db->loadResult();	
-	}         
+	}    
         
         function getExercises()
 	{
@@ -198,6 +198,7 @@ class Model
             LEFT JOIN ExerciseAttributes EA ON EA.ExerciseId = E.recid
             WHERE CustomOption = 0
             OR CustomOption = "'.$_SESSION['UID'].'"
+            OR GymOption = "'.$this->getMemberGym()->AffiliateId.'"
             ORDER BY ActivityName';
             $db->setQuery($SQL);
 		
@@ -246,8 +247,45 @@ class Model
             $ExerciseId = 0;
             $Attribute = '';
             $ExplodedKey = explode('_', $Name);
-            if(count($ExplodedKey) > 4)
+            if(count($ExplodedKey) > 5)
             {
+                $RoutineNo = $ExplodedKey[0];
+                $RoundNo = $ExplodedKey[1];
+                $ExerciseId = $ExplodedKey[2];
+                $ExerciseName = $this->getExerciseName($ExerciseId);
+                $Attribute = $ExplodedKey[3];
+                $UOMId = $ExplodedKey[4];
+                $OrderBy = $ExplodedKey[5];
+                $DetailsValue=$Value;
+                if(array_key_exists('6', $ExplodedKey))
+                    $DetailsValue='Max';
+                if($Attribute == 'Distance' || $Attribute == 'Height')
+                    $UOMId = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_'.$Attribute.'_UOM'];
+                $UOM = $this->getUnitOfMeasure($UOMId);
+                if($Value == '' || $Value == '0' || $Value == $Attribute || $Value == 'Max'){
+                    if($Validate == true)
+                        $this->Message = 'Error - Invalid Value for '.$Attribute.'!';
+                }
+                if($this->Message == ''){
+                $SQL='SELECT recid AS ExerciseId,
+                        "'.$ExerciseName.'" AS Exercise,
+                        (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS AttributeId,
+                        "'.$Attribute.'" AS Attribute,    
+                        "'.$Value.'" AS AttributeValue,  
+                        "'.$DetailsValue.'" AS DetailsAttributeValue,     
+                        "'.$UOMId.'" AS UnitOfMeasureId,
+                        "'.$UOM.'" AS UnitOfMeasure, 
+                        "'.$RoutineNo.'" AS RoutineNo,    
+                        "'.$RoundNo.'" AS RoundNo,
+                        "'.$OrderBy.'" AS OrderBy     
+                        FROM Exercises
+                        WHERE recid = "'.$ExerciseId.'"';
+                $db->setQuery($SQL);
+                $Row = $db->loadObject();
+                if(is_object($Row))
+                    array_push($Activities, $Row);
+                }      
+            }else if(count($ExplodedKey) > 4){
                 $RoundNo = $ExplodedKey[0];
                 $ExerciseId = $ExplodedKey[1];
                 $ExerciseName = $this->getExerciseName($ExerciseId);
@@ -257,9 +295,9 @@ class Model
                 $DetailsValue=$Value;
                 if(array_key_exists('5', $ExplodedKey))
                     $DetailsValue='Max';
-                if($UOMId == 0 && $Attribute == 'Distance')
-                        $UOMId = $_REQUEST[''.$RoundNo.'_'.$ExerciseId.'_Distance_UOM'];
-                    $UOM = $this->getUnitOfMeasure($UOMId);
+                if($Attribute == 'Distance' || $Attribute == 'Height')
+                    $UOMId = $_REQUEST[''.$RoundNo.'_'.$ExerciseId.'_'.$Attribute.'_UOM'];
+                $UOM = $this->getUnitOfMeasure($UOMId);
                 if($Value == '' || $Value == '0' || $Value == $Attribute || $Value == 'Max'){
                     if($Validate == true)
                         $this->Message = 'Error - Invalid Value for '.$Attribute.'!';
@@ -278,11 +316,11 @@ class Model
                         FROM Exercises
                         WHERE recid = "'.$ExerciseId.'"';
                 $db->setQuery($SQL);
-		
                 $Row = $db->loadObject();
-                array_push($Activities, $Row);
-                }      
-            }
+                if(is_object($Row))
+                    array_push($Activities, $Row);
+                }                
+            } 
         }
         return $Activities;
         }
@@ -335,5 +373,63 @@ class Model
             $db->setQuery($SQL);
             return $db->loadObjectList();
         }
+        
+	function getBenchmarks()
+	{
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT BW.recid AS Id, 
+                    BW.WorkoutName, 
+                    BW.VideoId, 
+                    BC.Category 
+                    FROM BenchmarkWorkouts BW
+                    JOIN BenchmarkCategories BC ON BC.recid = BW.CategoryId
+                    ORDER BY Category, WorkoutName';
+            $db->setQuery($SQL);
+		
+            return $db->loadObjectList();
+	}  
+        
+	function getBenchmarkDetails($Id)
+	{   
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+
+        if($this->getGender() == 'M'){
+            $AttributeValue = 'AttributeValueMale';
+        } else {
+            $AttributeValue = 'AttributeValueFemale';
+		}
+		//$SQL = 'SELECT WorkoutName, '.$DescriptionField.' AS WorkoutDescription, '.$InputFields.' AS InputFields, VideoId FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
+		
+		$SQL = 'SELECT BW.recid AS Id,
+                        BW.WorkoutName, 
+                        E.Exercise,
+                        E.recid AS ExerciseId, 
+                        CASE 
+                            WHEN E.Acronym <> ""
+                            THEN E.Acronym
+                            ELSE E.Exercise
+                        END
+                        AS InputFieldName,
+                        A.Attribute, 
+                        BD.'.$AttributeValue.' AS AttributeValue, 
+                        BD.UnitOfMeasureId,    
+                        UOM.UnitOfMeasure,
+                        UOM.ConversionFactor,    
+                        VideoId, 
+                        RoundNo,
+                        OrderBy,
+                        (SELECT MAX(RoundNo) FROM BenchmarkDetails WHERE BenchmarkId = "'.$Id.'") AS TotalRounds
+			FROM BenchmarkDetails BD
+			LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
+			LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
+			LEFT JOIN Attributes A ON A.recid = BD.AttributeId
+                        LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND BD.UnitOfMeasureId = UOM.recid
+			WHERE BD.BenchmarkId = '.$Id.'
+                        AND (Attribute = "Reps" OR SystemOfMeasure = "Metric")    
+			ORDER BY RoundNo, OrderBy, Exercise, Attribute';
+            $db->setQuery($SQL);
+		
+            return $db->loadObjectList(); 
+	}        
 }
 ?>

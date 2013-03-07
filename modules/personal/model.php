@@ -91,6 +91,36 @@ class PersonalModel extends Model
                     FROM CustomWorkouts
                     WHERE MemberId = "'.$_SESSION['UID'].'"
                     ORDER BY WorkoutdateTime DESC';
+             /*   
+                $SQL="SELECT DISTINCT CW.recid AS WodId, 
+CW.WorkoutName AS WodName,
+'Custom' AS WodType,
+WL.TimeCreated
+FROM WODLog WL
+JOIN CustomWorkouts CW ON CW.recid = WL.WorkoutId
+JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
+WHERE WL.MemberId = 1 AND WT.WorkoutType = 'Custom'
+UNION
+SELECT DISTINCT BW.recid AS WodId, 
+BW.WorkoutName AS WodName,
+'Benchmark' AS WodType,
+WL.TimeCreated
+FROM WODLog WL
+JOIN BenchmarkWorkouts BW ON BW.recid = WL.WorkoutId
+JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
+WHERE WL.MemberId = 1 AND WT.WorkoutType = 'Benchmark'
+UNION
+SELECT DISTINCT WW.recid AS WodId, 
+WW.WorkoutName AS WodName,
+'My Gym' AS WodType,
+WL.TimeCreated
+FROM WODLog WL
+JOIN WodWorkouts WW ON WW.recid = WL.WorkoutId
+JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
+WHERE WL.MemberId = 1 AND WT.WorkoutType = 'My Gym'
+ORDER BY TimeCreated DESC LIMIT 30";
+              * */
+              */
             $db->setQuery($SQL);
 		
             return $db->loadObjectList();
@@ -156,6 +186,7 @@ class PersonalModel extends Model
                         CD.UnitOfMeasureId,
                         UOM.UnitOfMeasure,
                         UOM.ConversionFactor,
+                        CD.RoutineNo,
                         CD.RoundNo,
                         CD.OrderBy,
                         (SELECT MAX(RoundNo) FROM CustomDetails WHERE CustomWorkoutId = "'.$Id.'") AS TotalRounds
@@ -166,7 +197,7 @@ class PersonalModel extends Model
                         LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND CD.UnitOfMeasureId = UOM.recid
 			WHERE CW.MemberId = "'.$_SESSION['UID'].'"
                         AND CW.recid = "'.$Id.'"
-			ORDER BY RoundNo, OrderBy, Exercise, Attribute';
+			ORDER BY RoutineNo, RoundNo, OrderBy, Exercise, Attribute';
             $db->setQuery($SQL);
 		
             return $db->loadObjectList();

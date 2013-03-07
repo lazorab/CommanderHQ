@@ -17,26 +17,49 @@ class UploadController extends Controller
             $this->SaveMessage = '';
             if(!isset($_REQUEST['form']) && !isset($_REQUEST['NewExercise']))
                 $this->ChosenExercises = array();
-            if($_REQUEST['form'] == "submitted" && $_REQUEST['btnsubmit'] == 'Save WOD'){
-                $Model = new UploadModel;
-                $Model->Save();               
-            }
 	}
         
-       function Message()
+    function ValidateSave()
     {
-            if(isset($_REQUEST['NewExercise'])){
-                $Message = $this->SaveNewExercise();
+        if($_REQUEST['WodName'] == ''){
+            $Result = 'No name given!';
+        }else if($_REQUEST['WodDate'] == ''){
+            $Result = 'Must select date!';
+        }else if($_REQUEST['rowcount'] == 0){
+            $Result = 'No data!';            
+        }else{
+            $Model = new UploadModel;
+            $Result = $Model->Save();        
+        }
+        return $Result;
+    }
+        
+    function Message()
+    {        
+        if($_REQUEST['form'] == "submitted"){     
+            $Message = $this->ValidateSave();
+        }else if(isset($_REQUEST['benchmarkId'])){
+            $Message = $this->getBenchmarkDetails();
+        }else if(isset($_REQUEST['NewExercise'])){
+            $Message = $this->SaveNewExercise();
+        }else if(isset($_REQUEST['Exercise'])){
+            $Message = $this->Validate();
+            if($Message == ''){
+                $Message = $this->AddThisExercise();
             }
-            else if(isset($_REQUEST['Exercise'])){
-                $Message = $this->Validate();
-                if($Message == ''){
-                    $Model = new UploadModel;
-                    $Message = $Model->AddExercise();
-                }
-            }      
+        }      
         return $Message; 
     } 
+    
+    function getBenchmarkDetails()
+    {
+        $Model = new UploadModel;
+        $Details = $Model->getBenchmarkDetails($_REQUEST['benchmarkId']);  
+        $Html = '<table><tr id="row_ThisRow"><td>'.$Details->BenchmarkName.'<input type="hidden" name="ThisRoutine_Benchmark" value="'.$Details->BenchmarkId.'"/></td>';
+        $Html .= '<td><input type="button" value="Remove" onClick="Remove(\'ThisRow\');"/></td></tr></table>';       
+        
+        return $Html;    
+    }
     
     function ValidateNew(){
         $Message = '';
@@ -65,10 +88,8 @@ class UploadController extends Controller
             $Message = 1;//'Must Enter Exercise Name!';
         }else if(isset($_REQUEST['Exercise']) && $_REQUEST['Exercise'] == 'none'){
             $Message = 3;//'Must Select Exercise!';            
-        }else if($RoundsVal == '' && $FWeightVal == '' && $MWeightVal == '' && $FHeightVal == '' &&
-                $MHeightVal == '' && $Distance == ''){
-            $Message = 2;//'Must Have at least one Attribute';
         }
+        
         return $Message;
     }
     
@@ -198,57 +219,55 @@ class UploadController extends Controller
         $Html='';
         $Model = new UploadModel;
         $Exercises = $Model->getActivities();
-        //$Html.='<div style="height:42px;width:980px">';
-        //$Html.='<form action="index.php" id="exerciseselect" name="exerciseselect">';
-        $Html.='<select style="width:150px" name="Exercise" id="Exercise" onChange="getInputFields(this.value);">';
+
+        $Html.='<select style="width:250px" name="Exercise" id="Exercise" onChange="getInputFields(this.value);">';
         $Html.='<option value="none">Select Activity</option>';
         foreach($Exercises AS $Exercise){
             $Html.='<option value="'.$Exercise->recid.'">'.$Exercise->ActivityName.'</option>';
         }
         $Html.='</select>';
-        /*
-        $Html .= '<input size="8" type="text" id="mWeight" name="mWeight" placeholder="Weight(M)"/>';
-        $Html .= '<input size="8" type="text" id="fWeight" name="fWeight" placeholder="Weight(F)"/>';
-        
-        $Html .= '<input size="8" type="text" id="mHeight" name="mHeight" placeholder="Height(M)"/>';
-        $Html .= '<input size="8" type="text" id="fHeight" name="fHeight" placeholder="Height(F)"/>';
-        
-        $Html .= '<input size="8" type="text" id="Distance" name="Distance" placeholder="Distance"/>';
-        
-        $Html .= '<input size="4" type="text" id="Reps" name="Reps" placeholder="Reps"/>';   
-        $Html .= '<input class="buttongroup" type="button" name="btnsubmit" value="Add" onClick="addexercise();"/>';
-         * 
-         */
-       // $Html.='</form><br/>';
-        //$Html.='</div>';
+
         return $Html;
     }   
     
+    function getBenchmarks()
+    {
+        $Model = new UploadModel;
+        $Benchmarks = $Model->getBenchmarks();   
+        $Html .= '<select style="width:250px" class="select buttongroup" data-role="none" id="benchmark" name="benchmark" onChange="AddBenchmark(this.value)">
+         <option value="none">Select Benchmark</option>';
+	foreach($Benchmarks AS $Benchmark){
+            $Html .= '<option value="'.$Benchmark->Id.'">'.$Benchmark->WorkoutName.'</option>';
+	}
+        $Html .= '</select>';
+	return $Html;        
+    }    
+    
+    function getAdvancedBenchmarks()
+    {
+        $Model = new UploadModel;
+        $Benchmarks = $Model->getBenchmarks();   
+        $Html .= '<select style="width:250px" class="select buttongroup" data-role="none" id="abenchmark" name="benchmark" onChange="AddBenchmarkAdvanced(this.value)">
+         <option value="none">Select Benchmark</option>';
+	foreach($Benchmarks AS $Benchmark){
+            $Html .= '<option value="'.$Benchmark->Id.'">'.$Benchmark->WorkoutName.'</option>';
+	}
+        $Html .= '</select>';
+	return $Html;        
+    }
+    
     function getAdvancedExercises()
     {
-
         $Html='';
         $Model = new UploadModel;
         $Exercises = $Model->getActivities();
-        //$Html.='<div style="height:42px;width:980px">';
-        //$Html.='<form action="index.php" id="aexerciseselect" name="exerciseselect">';
-        $Html.='<select style="width:150px" name="Exercise" id="aexerciseselect" onChange="getAdvancedInputFields(this.value);">';
+        $Html.='<select style="width:250px" name="Exercise" id="aexerciseselect" onChange="getAdvancedInputFields(this.value);">';
         $Html.='<option value="none">Select Activity</option>';
         foreach($Exercises AS $Exercise){
-
             $Html.='<option value="'.$Exercise->recid.'">'.$Exercise->ActivityName.'</option>';
-
         }
         $Html.='</select>';
-        //$Html .= '<input size="8" type="text" id="amWeight" name="mWeight" placeholder="Weight(M)"/>';
-        //$Html .= '<input size="8" type="text" id="afWeight" name="fWeight" placeholder="Weight(F)"/>';
-        //$Html .= '<input size="8" type="text" id="amHeight" name="mHeight" placeholder="Height(M)"/>';
-        //$Html .= '<input size="8" type="text" id="afHeight" name="fHeight" placeholder="Height(F)"/>';
-        //$Html .= '<input size="8" type="text" id="aDistance" name="Distance" placeholder="Distance"/>';
-        //$Html .= '<input size="4" type="text" id="aReps" name="Reps" placeholder="Reps"/>';
-        //$Html .= '<input class="buttongroup" type="button" name="btnsubmit" value="Add" onclick="addexerciseAdvanced();"/>';          
-        //$Html.='</form><br/>';
-        //$Html.='</div>';
+
         return $Html;
     }    
     
@@ -263,12 +282,14 @@ class UploadController extends Controller
         $Html.='<br/><input style="width:150px;margin-left:4px" type="text" name="RoutineNumber_Timing" id="RoutineNumber_Timing" value="" placeholder="00:00"/>';
         $Html.='</div>';
         return $Html;
-    }
+    }  
 	
 	function Output()
 	{
-            if(isset($_REQUEST['chosenexercise'])){
-  		$Model = new UploadModel;
+            $Model = new UploadModel;
+            if(isset($_REQUEST['benchmarkId'])){   
+                $html = $this->getBenchmark();
+            }else if(isset($_REQUEST['chosenexercise'])){
 		$html = $Model->getExerciseAttributes($_REQUEST['chosenexercise']);              
             }else if($_REQUEST['dropdown'] == 'refresh'){
                 $html = $this->getExercises($_REQUEST['routineno']);
@@ -294,6 +315,39 @@ class UploadController extends Controller
             }
              return $Html;
         }
+        
+    function AddThisExercise()
+    {
+        $Model = new UploadModel;
+        $ExerciseId = $_REQUEST['Exercise'];
+        $ExerciseName = $Model->getExerciseName($ExerciseId);
+        $Message = '<table><tr id="row_ThisRow"><td>'.$ExerciseName.'<input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_OrderBy" value="ThisRow"/></td>';
+                if(isset($_REQUEST['mWeight'])){
+                    $Message .= '<td>Weight(M):'.$_REQUEST['mWeight'].'<input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_mWeight" value="'.$_REQUEST['mWeight'].'"/>'.$Model->getUnitOfMeasure($_REQUEST['WUOM']).'</td>
+                        <td>Weight(F):'.$_REQUEST['fWeight'].'<input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_fWeight" value="'.$_REQUEST['fWeight'].'"/>'.$Model->getUnitOfMeasure($_REQUEST['WUOM']).'
+                            <input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_WUOM" value="'.$_REQUEST['WUOM'].'"/></td>';//WeightUnitOfMeasure     
+                }
+                if(isset($_REQUEST['mHeight'])){
+                    $Message .= '<td>Height(M):'.$_REQUEST['mHeight'].'<input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_mHeight" value="'.$_REQUEST['mHeight'].'"/>'.$Model->getUnitOfMeasure($_REQUEST['HUOM']).'</td> 
+                        <td>Height(F):'.$_REQUEST['fHeight'].'<input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_fHeight" value="'.$_REQUEST['fHeight'].'"/>'.$Model->getUnitOfMeasure($_REQUEST['HUOM']).'
+                            <input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_HUOM" value="'.$_REQUEST['HUOM'].'"/></td>';//HeightUnitOfMeasure
+                }
+                if(isset($_REQUEST['Distance'])){
+                    $Message .= '<td>Distance:'.$_REQUEST['Distance'].'<input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_Distance" value="'.$_REQUEST['Distance'].'"/>
+                        '.$Model->getUnitOfMeasure($_REQUEST['DUOM']).'<input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_DUOM" value="'.$_REQUEST['DUOM'].'"/></td>';//DistanceUnitOfMeasure
+                }
+                if(isset($_REQUEST['Reps'])){
+                    if($_REQUEST['Reps'] == '')
+                        $Reps = 'Max';
+                    else
+                        $Reps = $_REQUEST['Reps'];
+                    $Message .= '<td>Reps:'.$Reps.'<input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_Reps" value="'.$_REQUEST['Reps'].'"/></td>';
+                } 
+                
+                $Message .= '<td><input type="button" value="Remove" onClick="Remove(\'ThisRow\');"/></td></tr></table>';
+
+            return $Message;
+    }        
         
         function ChosenExercises()
         {

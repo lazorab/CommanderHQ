@@ -102,62 +102,32 @@ class MygymModel extends Model
          function getWODDetails($WodTypeId)
 	{   
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            /*
-            $SQL = 'SELECT DISTINCT WT.WodType, WW.WorkoutRoutineTypeId
-                FROM WODTypes WT 
-                LEFT JOIN WodWorkouts WW ON WW.WodTypeId = WT.recid
-                WHERE WW.WodDate = CURDATE()';
-            $db->setQuery($SQL);
-            $Row = $db->loadObject();
-            if($Row->WodType == 'Benchmarks'){
-                
- 		$SQL = 'SELECT BW.recid,
-                        BW.WorkoutName, 
-                        E.Exercise, 
-                        E.recid AS ExerciseId, 
-                        CASE 
-                            WHEN E.Acronym <> ""
-                            THEN E.Acronym
-                            ELSE E.Exercise
-                        END
-                        AS InputFieldName, 
-                        "'.$this->BenchmarkDescription($Row->WorkoutRoutineTypeId).'" AS WorkoutDescription,
-                        A.Attribute, 
-                        BD.AttributeValueMale, 
-                        BD.AttributeValueFemale, 
-                        RoundNo,
-                        (SELECT MAX(RoundNo) FROM BenchmarkDetails WHERE BenchmarkId = "'.$Row->WorkoutRoutineTypeId.'") AS TotalRounds
-			FROM BenchmarkDetails BD
-			LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
-			LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
-			LEFT JOIN Attributes A ON A.recid = BD.AttributeId
-			WHERE BD.BenchmarkId = '.$Row->WorkoutRoutineTypeId.'
-			ORDER BY RoundNo, OrderBy, Attribute';               
-            }else{
-                */
+
              if($this->getGender() == 'M'){
                 $AttributeValue = 'AttributeValueMale';
             } else {
                 $AttributeValue = 'AttributeValueFemale';
             }  
 
-		$SQL = 'SELECT WD.WodId,
+		$SQL = 'SELECT WW.recid AS Id,
                         WW.WorkoutName, 
                         E.Exercise, 
+                        E.recid AS ExerciseId, 
                         CASE 
                             WHEN E.Acronym <> ""
                             THEN E.Acronym
                             ELSE E.Exercise
                         END
-                        AS InputFieldName, 
-                        E.recid AS ExerciseId, 
+                        AS InputFieldName,  
                         A.Attribute, 
                        '.$AttributeValue.' AS AttributeValue,
                         WD.UnitOfMeasureId,   
                         UOM.UnitOfMeasure,
                         UOM.ConversionFactor,
+                        WD.RoutineNo,
+                        WD.RoundNo,
                         WD.OrderBy,
-                        WW.Routine AS RoundNo,
+                        (SELECT MAX(RoundNo) FROM WodDetails WHERE WodId = Id AND RoutineNo = WD.RoutineNo) AS TotalRounds,
                         WW.WorkoutRoutineTypeId,
                         WW.WodDate,
                         WW.Notes
@@ -167,7 +137,38 @@ class MygymModel extends Model
 			LEFT JOIN Attributes A ON A.recid = WD.AttributeId
                         LEFT JOIN UnitsOfMeasure UOM ON UOM.recid = WD.UnitOfMeasureId
 			WHERE WW.WodDate = CURDATE() AND WW.WodTypeId = '.$WodTypeId.'
-			ORDER BY OrderBy, RoundNo, Exercise, Attribute';
+			UNION
+SELECT WW.recid AS Id,
+                        BW.WorkoutName, 
+                        E.Exercise,
+                        E.recid AS ExerciseId, 
+                        CASE 
+                            WHEN E.Acronym <> ""
+                            THEN E.Acronym
+                            ELSE E.Exercise
+                        END
+                        AS InputFieldName,
+                        A.Attribute, 
+                        '.$AttributeValue.' AS AttributeValue, 
+                        BD.UnitOfMeasureId,    
+                        UOM.UnitOfMeasure,
+                        UOM.ConversionFactor,    
+                        WW.RoutineNo, 
+                        BD.RoundNo,
+                        BD.OrderBy,
+                        (SELECT MAX(RoundNo) FROM WodDetails WHERE WodId = Id AND RoutineNo = WW.RoutineNo) AS TotalRounds,
+                        WW.WorkoutRoutineTypeId,
+                        WW.WodDate,
+                        WW.Notes                        
+			FROM BenchmarkDetails BD
+			LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
+			LEFT JOIN WodWorkouts WW ON WW.WorkoutName = BD.BenchmarkId
+			LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
+			LEFT JOIN Attributes A ON A.recid = BD.AttributeId
+                        LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND BD.UnitOfMeasureId = UOM.recid
+			WHERE WW.WodDate = CURDATE() AND WW.WodTypeId = '.$WodTypeId.'
+                        AND (Attribute = "Reps" OR SystemOfMeasure = "Metric")			
+			ORDER BY RoutineNo, OrderBy, RoundNo, Exercise, Attribute';
             //}
             //    var_dump($SQL);
             $db->setQuery($SQL);
@@ -369,7 +370,6 @@ class MygymModel extends Model
             }
             $Description .= $WorkoutType;
             return $Description;           
-        }       
-			
+        }               
 }
 ?>

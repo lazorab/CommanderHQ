@@ -14,21 +14,21 @@
 <!-- https://accounts.google.com/ManageDomains-->
 <!--<meta name="google-site-verification" content="ldmUK2i2yiSlCJDFAjmjEvQox6oBjz0maCWNAqRRcjM" />-->
 <link rel="apple-touch-icon" href="images/icon.png" />
-<link rel="apple-touch-icon" href="/images/touch-icon-iphone.png">
-<link rel="apple-touch-icon" sizes="72x72" href="/images/touch-icon-ipad.png">
-<link rel="apple-touch-icon" sizes="114x114" href="/images/touch-icon-iphone4.png">
+<link rel="apple-touch-icon" href="images/touch-icon-iphone.png">
+<link rel="apple-touch-icon" sizes="72x72" href="images/touch-icon-ipad.png">
+<link rel="apple-touch-icon" sizes="114x114" href="images/touch-icon-iphone4.png">
 <!-- startup image for web apps (320x460) -->
-<link rel="apple-touch-startup-image" href="/images/splashscreen.png" media="screen and (max-device-width: 320px)" />
+<link rel="apple-touch-startup-image" href="images/splashscreen.png" media="screen and (max-device-width: 320px)" />
 
-<link type="text/css" rel="stylesheet" href="/css/jquery.mobile-1.1.0.css" />
-<link type="text/css" rel="stylesheet" href="/css/mobile.css" />
-<link type="text/css" rel="stylesheet" href="/css/clock.css" />
-<link rel="stylesheet" href="/css/add2home.css">
+<link type="text/css" rel="stylesheet" href="css/jquery.mobile-1.1.0.css" />
+<link type="text/css" rel="stylesheet" href="css/mobile.css" />
+<link type="text/css" rel="stylesheet" href="css/clock.css" />
+<link rel="stylesheet" href="css/add2home.css">
 <!--<link rel="stylesheet" href="/css/slideshow.css">-->
 <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
-<script type="text/javascript" src="/js/jquery.easing.1.3.js"></script>
-<script type="text/javascript" src="/js/jquery.nicescroll.min.js"></script>
-<script type="text/javascript" src="/js/stopwatch.js"></script>
+<script type="text/javascript" src="js/jquery.easing.1.3.js"></script>
+<script type="text/javascript" src="js/jquery.nicescroll.min.js"></script>
+<script type="text/javascript" src="js/stopwatch.js"></script>
 
 <!--<script type="text/javascript" src="/js/slides.min.jquery.js"></script>-->
 <script type="text/javascript" src="http://www.be-mobile.co.za/framework/js/device.js"></script>
@@ -100,7 +100,7 @@ window.location = page;
 }
 
 </script>
-<script type="text/javascript" src="/js/jquery.mobile-1.1.0.min.js"></script>
+<script type="text/javascript" src="js/jquery.mobile-1.1.0.min.js"></script>
 <script type="text/javascript">
 $( document ).bind( 'mobileinit', function(){
 $.mobile.loader.prototype.options.text = "loading";

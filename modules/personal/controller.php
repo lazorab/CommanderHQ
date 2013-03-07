@@ -56,6 +56,7 @@ if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
         $html.='<p>'.$this->Workout[0]->Notes.'</p>';
         //$html.='<div class="ui-grid-b">';
         $html = '<div data-role="collapsible-set" data-iconpos="right">';
+        $ThisRoutine = '';
         $ThisRound = '';
         $OrderBy = '';
 	$ThisExerciseId = 0;
@@ -78,11 +79,23 @@ if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
                 $AttributeValue = $Detail->AttributeValue * $ConversionFactor;
             }            
 		if($Detail->Attribute != 'TimeToComplete'){
-                    
-			if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0 && $ThisRound != $Detail->RoundNo){
+			if($ThisRoutine != $Detail->RoutineNo){
                             if($ThisExerciseId != null && $i > 0){
                                 $html.='</h2><p style="color:red">'.$this->getExerciseHistory("".$Detail->RoundNo."_".$ThisExerciseId."").'</p></div><br/><br/>';
-                            }                           	
+                            }    
+                            if($i > 0)
+                                $html.= '<br/>';
+                            $html.= '<h2>Routine '.$Detail->RoutineNo.'</h2>';
+                            $html.= '<h2>Round '.$Detail->RoundNo.'</h2>';
+                            $html.= '<div data-role="collapsible">';
+                            $html.= '<h2>'.$Detail->Exercise.'<br/>';             
+			}                    
+			else if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0 && $ThisRound != $Detail->RoundNo){
+                            if($ThisExerciseId != null && $i > 0){
+                                $html.='</h2><p style="color:red">'.$this->getExerciseHistory("".$Detail->RoundNo."_".$ThisExerciseId."").'</p></div><br/><br/>';
+                            }
+                            //if($i > 0)
+                            //    $html.= '<br/><br/>';                            
                             $html.= '<h2>Round '.$Detail->RoundNo.'</h2>';
                             $html.= '<div data-role="collapsible">';
                             $html.= '<h2>'.$Detail->Exercise.'<br/>';             
@@ -105,6 +118,7 @@ if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
                             $html.='value="'.$AttributeValue.'">';
                         }                        
                 }
+        $ThisRoutine = $Detail->RoutineNo;        
 	$ThisRound = $Detail->RoundNo;
         $OrderBy = $Detail->OrderBy;
 	$ThisExerciseId = $Detail->ExerciseId;

@@ -177,50 +177,7 @@ class BenchmarkModel extends Model
             $db->setQuery($SQL);
 		
             return $db->loadObjectList();
-	}	
-	
-	function getWorkoutDetails($Id)
-	{   
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-
-        if($this->getGender() == 'M'){
-            $AttributeValue = 'AttributeValueMale';
-        } else {
-            $AttributeValue = 'AttributeValueFemale';
-		}
-		//$SQL = 'SELECT WorkoutName, '.$DescriptionField.' AS WorkoutDescription, '.$InputFields.' AS InputFields, VideoId FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
-		
-		$SQL = 'SELECT BW.recid AS Id,
-                        BW.WorkoutName, 
-                        E.Exercise,
-                        E.recid AS ExerciseId, 
-                        CASE 
-                            WHEN E.Acronym <> ""
-                            THEN E.Acronym
-                            ELSE E.Exercise
-                        END
-                        AS InputFieldName,
-                        A.Attribute, 
-                        BD.'.$AttributeValue.' AS AttributeValue, 
-                        BD.UnitOfMeasureId,    
-                        UOM.UnitOfMeasure,
-                        UOM.ConversionFactor,    
-                        VideoId, 
-                        RoundNo,
-                        OrderBy,
-                        (SELECT MAX(RoundNo) FROM BenchmarkDetails WHERE BenchmarkId = "'.$Id.'") AS TotalRounds
-			FROM BenchmarkDetails BD
-			LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
-			LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
-			LEFT JOIN Attributes A ON A.recid = BD.AttributeId
-                        LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND BD.UnitOfMeasureId = UOM.recid
-			WHERE BD.BenchmarkId = '.$Id.'
-                        AND (Attribute = "Reps" OR SystemOfMeasure = "Metric")    
-			ORDER BY RoundNo, OrderBy, Exercise, Attribute';
-            $db->setQuery($SQL);
-		
-            return $db->loadObjectList(); 
-	}	
+	}		
         
         function getCustomDetails($Id)
 	{   

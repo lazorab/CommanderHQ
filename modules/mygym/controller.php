@@ -116,6 +116,7 @@ class MygymController extends Controller
         $html.='<p>'.$WodDetails[0]->Notes.'</p>';
         //$html.='<div class="ui-grid-b">';
         $html .= '<div data-role="collapsible-set" data-iconpos="right">';
+        $ThisRoutine = '';
         $ThisRound = '';
 	$ThisExerciseId = 0;
         //var_dump($WodDetails);
@@ -131,23 +132,34 @@ class MygymController extends Controller
                     $ConversionFactor = $Detail->ConversionFactor;
                 }
             }
-            if($Detail->AttributeValue == ''){
-                $AttributeValue = 'Max ';
+            if($Detail->AttributeValue == '' || $Detail->AttributeValue == 'Max'){
+                $AttributeValue = '-';
             }else{
                 $AttributeValue = $Detail->AttributeValue * $ConversionFactor;
             }            
 		if($Detail->Attribute != 'TimeToComplete'){
-
-			if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0 && $ThisRound != $Detail->RoundNo){
+			if($ThisRoutine != $Detail->RoutineNo){
                             if($ThisExerciseId != null && $i > 0){
                                 $html.='</h2><p style="color:red">'.$this->getExerciseHistory("".$Detail->RoundNo."_".$ThisExerciseId."").'</p></div>';
                             }                           	
-                            $html.= '<h2>'.$Detail->RoundNo.'</h2>';
+                            $html.= '<h2>Routine '.$Detail->RoutineNo.'</h2>';
+                            if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0){
+                                $html.= '<h2>Round '.$Detail->RoundNo.'</h2>';
+                            }
+                            $html.= '<div data-role="collapsible">';
+                            $html.= '<h2>'.$Detail->Exercise.'<br/>';             
+			}
+			else if($ThisRound != $Detail->RoundNo){
+                            if($ThisExerciseId != null && $i > 0){
+                                $html.='</h2><p style="color:red">'.$this->getExerciseHistory("".$Detail->RoundNo."_".$ThisExerciseId."").'</p></div>';
+                            }     
+                             if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0){
+                                $html.= '<h2>Round '.$Detail->RoundNo.'</h2>';
+                            }                           
                             $html.= '<div data-role="collapsible">';
                             $html.= '<h2>'.$Detail->Exercise.'<br/>';             
 			}
 			else if($ThisExerciseId != $Detail->ExerciseId){
-
                             if($ThisExerciseId != null && $i > 0){
                                 $html.='</h2><p style="color:red">'.$this->getExerciseHistory("".$Detail->RoundNo."_".$ThisExerciseId."").'</p></div>';
                             }       
@@ -158,12 +170,13 @@ class MygymController extends Controller
                         }
                         $html.=''.$Detail->Attribute.' : <span id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_html">'.$AttributeValue.'</span>'.$Detail->UnitOfMeasure.'';
                         $html.='<input type="hidden" id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'" name="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_'.$UnitOfMeasureId.'_'.$Detail->OrderBy.'"';
-                        if($AttributeValue == 'Max '){
+                        if($AttributeValue == '-'){
                             $html.='placeholder="'.$AttributeValue.'" value="">';
                         }else{
                             $html.='value="'.$AttributeValue.'">';
                         }
                 }
+        $ThisRoutine = $Detail->RoutineNo;        
 	$ThisRound = $Detail->RoundNo;
 	$ThisExerciseId = $Detail->ExerciseId;
         $i++;
@@ -173,7 +186,8 @@ class MygymController extends Controller
                             }             
     $html.='</div>';
     $html.=$this->getStopWatch();
-    $html.='</form><br/><br/>';		
+    $html.='</form><br/><br/>';	
+    $html.='<div class="clear"></div><br/>';
             }
 
             return $html;

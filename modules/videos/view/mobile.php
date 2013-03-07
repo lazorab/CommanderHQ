@@ -11,7 +11,7 @@
 <input type="hidden" name="module" value="videos"/>
 <input type="hidden" name="formsubmitted" value="yes"/>
 <div style="padding:2%;float:left;width:70%;"><input type="search" results="5" placeholder="Search" name="keyword" value="<?php echo $_REQUEST['keyword'];?>"/></div>
-<div style="float:left;"><input type="button" name="Submitbtn" value="Go" data-inline="true" onclick="this.form.submit();"/></div>
+<div style="float:left;margin:8px 0 0 0"><input type="button" name="Submitbtn" value="Go" data-inline="true" onclick="this.form.submit();"/></div>
 </form>
 </div>
 <div class="clear"></div>

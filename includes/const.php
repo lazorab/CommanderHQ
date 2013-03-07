@@ -6,15 +6,15 @@ define("SUBSCRIPTION", false);
 
 define('FORCEMOBILE',true);
 
-//define('HOST','Local');
-define('HOST','Remote');
+define('HOST','Local');
+//define('HOST','Remote');
 
 if(HOST == 'Remote'){
   define('FRAMEWORK_URL','http://framework.be-mobile.co.za'); 
   define('FRAMEWORK_PATH','/Sites/framework'); 
 }else{
-  define('FRAMEWORK_URL','http://localhost/framework/new');  
-  define('FRAMEWORK_PATH',''.$_SERVER['DOCUMENT_ROOT'].'/be-mobile/framework/new'); 
+  define('FRAMEWORK_URL','http://localhost/Framework');  
+  define('FRAMEWORK_PATH',''.$_SERVER['DOCUMENT_ROOT'].'/framework'); 
 }
 
 define('ERROR_REPORT_SITE_NAME', 'Commander HQ');

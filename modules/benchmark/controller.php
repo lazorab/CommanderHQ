@@ -22,7 +22,7 @@ class BenchmarkController extends Controller
 		$this->Height = floor(SCREENWIDTH * 0.717); 
 		$Model = new BenchmarkModel;
 		if(isset($_REQUEST['benchmarkId']) && $_REQUEST['benchmarkId'] > 0){
-                    $this->Workout = $Model->getWorkoutDetails($_REQUEST['benchmarkId']);
+                    $this->Workout = $Model->getBenchmarkDetails($_REQUEST['benchmarkId']);
                     $this->Video = $this->Workout[0]->VideoId;
                     $this->Benchmark = $this->Workout[0];
                 }
@@ -131,6 +131,7 @@ else if(isset($_REQUEST['cat']) && $_REQUEST['cat'] != '')
     Heros
     Various 
     Travel
+    Running
     */
     $Workouts = $Model->getBMWS($_REQUEST['cat']);
     $Overthrow='';
@@ -150,8 +151,8 @@ else if(isset($_REQUEST['cat']) && $_REQUEST['cat'] != '')
             <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
             <li><a style="font-size:large;margin-top:10px" href="#" onclick="getBenchmarks(\'Girls\');"><div style="height:26px;width:1px;float:left"></div>Girls<br/><span style="font-size:small"></span></a></li>             
             <li><a style="font-size:large;margin-top:10px" href="#" onclick="getBenchmarks(\'Heros\');"><div style="height:26px;width:1px;float:left"></div>Heros<br/><span style="font-size:small"></span></a></li>
+            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getBenchmarks(\'Running\');"><div style="height:26px;width:1px;float:left"></div>Running<br/><span style="font-size:small"></span></a></li>            
             <li><a style="font-size:large;margin-top:10px" href="#" onclick="getBenchmarks(\'Various\');"><div style="height:26px;width:1px;float:left"></div>Various<br/><span style="font-size:small"></span></a></li>
-            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getBenchmarks(\'Travel\');"><div style="height:26px;width:1px;float:left"></div>Travel<br/><span style="font-size:small"></span></a></li>
             </ul>
             </div>';  
 }
