@@ -198,9 +198,9 @@ return $html;
             $Model = new PersonalModel;
             $html = '<ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
             foreach($Workouts AS $Workout){
-                $Description = $Model->getDescription($Workout->Id);
+                //$Description = $Model->getDescription($Workout->Id);
                 $html .= '<li>';
-                $html .= '<a href="" onclick="getDetails('.$Workout->Id.');">'.$Workout->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span></a>';
+                $html .= '<a href="" onclick="getDetails('.$Workout->Id.');">'.$Workout->WorkoutName.':<br/><span style="font-size:small">'.$Workout->Notes.'</span></a>';
                 $html .= '</li>';
             }	
             $html .= '</ul><div class="clear"></div><br/>';
@@ -217,9 +217,9 @@ return $html;
             }else{
             $html .= '<ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
             foreach($CustomMemberWorkouts AS $Workout){
-                $Description = $Model->getCustomDescription($Workout->recid);
+                //$Description = $Model->getCustomDescription($Workout->recid);
                 $html .= '<li>';
-                $html .= '<a href="" onclick="getCustomDetails(\''.$Workout->recid.'\', \''.$this->Origin.'\');">'.$Workout->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span></a>';
+                $html .= '<a href="" onclick="getCustomDetails(\''.$Workout->recid.'\', \''.$this->Origin.'\');">'.$Workout->WorkoutName.':<br/><span style="font-size:small">'.$Workout->Notes.'</span></a>';
                 $html .= '</li>';
             }	
             $html .= '</ul><br/>';

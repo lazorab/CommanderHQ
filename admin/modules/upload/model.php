@@ -153,6 +153,8 @@ class UploadModel extends Model
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
         $this->Message = '';
         $Activities = array();
+        $HeightFlag = true;
+        $WeightFlag = true;
         foreach($_REQUEST AS $Name=>$Value)
         {
             $ExplodedKey = explode('_', $Name);
@@ -160,27 +162,29 @@ class UploadModel extends Model
                 $RoutineNo = $ExplodedKey[0];
                 $RoundNo = $ExplodedKey[1];
                 $ExerciseId = $ExplodedKey[2];
-                if($ExplodedKey[3] == 'Distance')
+                if($ExplodedKey[3] == 'Distance'){
                     $DistanceVal = $_REQUEST[''.$Name.''];
-                else if($ExplodedKey[3] == 'DUOM')
-                    $DistanceUOM = $_REQUEST[''.$Name.''];
-                else if($ExplodedKey[3] == 'mHeight')
-                    $MHeightVal = $_REQUEST[''.$Name.''];               
-                else if($ExplodedKey[3] == 'fHeight')
-                    $FHeightVal = $_REQUEST[''.$Name.''];               
-                else if($ExplodedKey[3] == 'HUOM')
-                    $HeightUOM = $_REQUEST[''.$Name.''];    
-                else if($ExplodedKey[3] == 'Rounds')
-                    $RoundsVal = $_REQUEST[''.$Name.''];        
-                else if($ExplodedKey[3] == 'fWeight')
-                    $FWeightVal = $_REQUEST[''.$Name.''];      
-                else if($ExplodedKey[3] == 'mWeight')
-                    $MWeightVal = $_REQUEST[''.$Name.''];
-                else if($ExplodedKey[3] == 'WUOM')
-                    $WeightUOM = $_REQUEST[''.$Name.''];       
-                else if($ExplodedKey[3] == 'Reps')
+                    $DistanceUOM = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_DUOM'];
+                }    
+                
+                if($ExplodedKey[3] == 'mHeight' || $ExplodedKey[3] == 'fHeight'){
+                    $MHeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_mHeight'];               
+                    $FHeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_fHeight'];               
+                    $HeightUOM = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_HUOM']; 
+                }
+                
+                if($ExplodedKey[3] == 'mWeight' || $ExplodedKey[3] == 'fWeight'){
+                    $MHeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_mWeight'];               
+                    $FHeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_fWeight'];               
+                    $HeightUOM = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_WUOM']; 
+                }                
+                
+                if($ExplodedKey[3] == 'Rounds')
+                    $RoundsVal = $_REQUEST[''.$Name.'']; 
+                
+                if($ExplodedKey[3] == 'Reps')
                     $RepsVal = $_REQUEST[''.$Name.''];  
-                else if($ExplodedKey[3] == 'OrderBy')
+                if($ExplodedKey[3] == 'OrderBy')
                     $OrderBy = $_REQUEST[''.$Name.''];                
 
                 $TimingTypeId = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_TimingType'];
@@ -202,7 +206,8 @@ class UploadModel extends Model
                     $db->setQuery($SQL);
                     array_push($Activities,$db->loadObject());
                 }
-                if($MHeightVal != '' && $FHeightVal){
+                if($MHeightVal != '' && $FHeightVal != '' && $HeightFlag == true){
+                    $HeightFlag = false;
                     $SQL='SELECT recid, 
                     (SELECT recid FROM Attributes WHERE Attribute = "Height") AS AttributeId, 
                     "'.$MHeightVal.'" AS AttributeValueMale,
@@ -213,6 +218,7 @@ class UploadModel extends Model
                     "'.$OrderBy.'" AS OrderBy      
                     FROM Exercises
                     WHERE recid = "'.$ExerciseId.'"';
+                    //var_dump($SQL);
                     $db->setQuery($SQL);
                     array_push($Activities,$db->loadObject());
                 }                 
@@ -229,7 +235,8 @@ class UploadModel extends Model
                     $db->setQuery($SQL);
                     array_push($Activities,$db->loadObject());
                 }
-                if($FWeightVal != '' && $MWeightVal != ''){
+                if($FWeightVal != '' && $MWeightVal != '' && $WeightFlag == true){
+                    $WeightFlag = false;
                     $SQL='SELECT recid, 
                     (SELECT recid FROM Attributes WHERE Attribute = "Weight") AS AttributeId, 
                     "'.$MWeightVal.'" AS AttributeValueMale, 

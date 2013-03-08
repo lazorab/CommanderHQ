@@ -87,7 +87,8 @@ class PersonalModel extends Model
 	{
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
 		$SQL = 'SELECT recid AS Id, 
-                    WorkoutName
+                    WorkoutName,
+                    Notes
                     FROM CustomWorkouts
                     WHERE MemberId = "'.$_SESSION['UID'].'"
                     ORDER BY WorkoutdateTime DESC';
@@ -119,7 +120,7 @@ JOIN WodWorkouts WW ON WW.recid = WL.WorkoutId
 JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
 WHERE WL.MemberId = 1 AND WT.WorkoutType = 'My Gym'
 ORDER BY TimeCreated DESC LIMIT 30";
-              * */
+              
               */
             $db->setQuery($SQL);
 		

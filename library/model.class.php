@@ -364,9 +364,10 @@ class Model
                 TimeCreated
                 FROM WODLog WL 
                 LEFT JOIN Attributes A ON A.recid = WL.AttributeId
-                LEFT JOIN UnitsOfMeasure UOM ON WL.UnitOfMeasureId = UOM.recid
+                LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid
                 LEFT JOIN Exercises E ON E.recid = WL.ExerciseId
                 WHERE WL.ExerciseId = '.$Id.'
+                AND (Attribute = "Reps" OR SystemOfMeasure = "'.$this->getSystemOfMeasure().'")    
                 AND MemberId = "'.$_SESSION['UID'].'"
                 ORDER BY TimeCreated DESC, RoundNo, Attribute';
             //var_dump($SQL);
@@ -425,7 +426,7 @@ class Model
 			LEFT JOIN Attributes A ON A.recid = BD.AttributeId
                         LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND BD.UnitOfMeasureId = UOM.recid
 			WHERE BD.BenchmarkId = '.$Id.'
-                        AND (Attribute = "Reps" OR SystemOfMeasure = "Metric")    
+                        AND (Attribute = "Reps" OR SystemOfMeasure = "'.$this->getSystemOfMeasure().'")    
 			ORDER BY RoundNo, OrderBy, Exercise, Attribute';
             $db->setQuery($SQL);
 		

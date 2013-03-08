@@ -167,7 +167,7 @@ SELECT WW.recid AS Id,
 			LEFT JOIN Attributes A ON A.recid = BD.AttributeId
                         LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND BD.UnitOfMeasureId = UOM.recid
 			WHERE WW.WodDate = CURDATE() AND WW.WodTypeId = '.$WodTypeId.'
-                        AND (Attribute = "Reps" OR SystemOfMeasure = "Metric")			
+                        AND (Attribute = "Reps" OR SystemOfMeasure = "'.$this->getSystemOfMeasure().'")			
 			ORDER BY RoutineNo, OrderBy, RoundNo, Exercise, Attribute';
             //}
             //    var_dump($SQL);
