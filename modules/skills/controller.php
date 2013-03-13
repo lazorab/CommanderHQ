@@ -69,31 +69,24 @@ class SkillsController extends Controller
 	function Output()
 	{
             $RENDER = new Image();
-            $Html=$this->getExerciseTypes();
-            if(isset($_REQUEST['exercisetype'])){
-                
-                 $Level1Image = ''.$RENDER->NewImage('Level 1 '.$_REQUEST['exercisetype'].'.png').' src="'.IMAGE_RENDER_PATH.'Level 1 '.$_REQUEST['exercisetype'].'.png"';
-                $Level2Image = ''.$RENDER->NewImage('Level 2 '.$_REQUEST['exercisetype'].'.png').' src="'.IMAGE_RENDER_PATH.'Level 2 '.$_REQUEST['exercisetype'].'.png"';
-                $Level3Image = ''.$RENDER->NewImage('Level 3 '.$_REQUEST['exercisetype'].'.png').' src="'.IMAGE_RENDER_PATH.'Level 3 '.$_REQUEST['exercisetype'].'.png"';
-                $Level4Image = ''.$RENDER->NewImage('Level 4 '.$_REQUEST['exercisetype'].'.png').' src="'.IMAGE_RENDER_PATH.'Level 4 '.$_REQUEST['exercisetype'].'.png"';
-      $Html.='<div id="slides">';
-      $Html.='  <div class="slides_container">';
-       $Html.='     <div class="slide">';
-        $Html.='        <img alt="Level1" '.$Level1Image.'/>';
-        $Html.='    </div>';
-        $Html.='    <div class="slide">';
-        $Html.='        <img alt="Level2" '.$Level2Image.'/>';
-        $Html.='    </div>';
-        $Html.='    <div class="slide">';
-         $Html.='       <img alt="Level3" '.$Level3Image.'/>';
-          $Html.='  </div>';
-         $Html.='   <div class="slide">';
-         $Html.='       <img alt="Level4" '.$Level4Image.'/>';
-          $Html.='  </div>  ';         
-       $Html.=' </div>';
-       $Html.=' <a href="#" class="prev"><img src="'.IMAGE_RENDER_PATH.'arrow-next.png" width="36" height="36" alt="Arrow Prev"></a>';
-        $Html.='<a href="#" class="next"><img src="'.IMAGE_RENDER_PATH.'arrow-prev.png" width="36" height="36" alt="Arrow Next"></a>';
-    $Html.='</div>';             
+
+            if($_REQUEST['level'] == 1){
+                $Html = '<img '.$RENDER->NewImage('AthleticLevel1.png').' src="'.IMAGE_RENDER_PATH.'AthleticLevel1.png"/><br/><br/>';
+                }else if($_REQUEST['level'] == 2){
+                $Html = '<img '.$RENDER->NewImage('AthleticLevel2.png').' src="'.IMAGE_RENDER_PATH.'AthleticLevel2.png"/><br/><br/>';
+                }else if($_REQUEST['level'] == 3){
+                $Html = '<img '.$RENDER->NewImage('AthleticLevel3.png').' src="'.IMAGE_RENDER_PATH.'AthleticLevel3.png"/><br/><br/>';
+                }else if($_REQUEST['level'] == 4){
+                $Html = '<img '.$RENDER->NewImage('AthleticLevel4.png').' src="'.IMAGE_RENDER_PATH.'AthleticLevel4.png"/><br/><br/>';
+            }else{
+                $Html ='<div style="padding:2%">
+                <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
+                <li><a style="font-size:large;margin-top:10px" href="#" onclick="getSkills(\'1\');"><div style="height:26px;width:1px;float:left"></div>Level I<br/><span style="font-size:small"></span></a></li>             
+                <li><a style="font-size:large;margin-top:10px" href="#" onclick="getSkills(\'2\');"><div style="height:26px;width:1px;float:left"></div>Level II<br/><span style="font-size:small"></span></a></li>
+                <li><a style="font-size:large;margin-top:10px" href="#" onclick="getSkills(\'3\');"><div style="height:26px;width:1px;float:left"></div>Level III<br/><span style="font-size:small"></span></a></li>            
+                <li><a style="font-size:large;margin-top:10px" href="#" onclick="getSkills(\'4\');"><div style="height:26px;width:1px;float:left"></div>Level IV<br/><span style="font-size:small"></span></a></li>
+                </ul>
+                </div>';
             }
 
             return $Html;

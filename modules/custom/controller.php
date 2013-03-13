@@ -38,9 +38,9 @@ class CustomController extends Controller
         $Attributes = array();
         $i=0;
         //var_dump($ActivityFields);
-        $html .= '<div data-role="collapsible-set" data-iconpos="right">'; 
+        $html .= '<div id="RoutineNo_RoundNo_RowNo" data-role="collapsible-set" data-iconpos="right">'; 
         $html .= '<div data-role="collapsible">';
-        $html .= '<h2>'.$ActivityFields[0]->Exercise.'<br/>';
+        $html .= '<h2>'.$ActivityFields[0]->Exercise.'<input class="delete" type="button" onClick="RemoveFromList(\'RoutineNo_RoundNo_RowNo\');" value="Delete"/><br/>';
         foreach($ActivityFields as $Activity){
             
             if($Activity->UnitOfMeasureId == null || $Activity->UnitOfMeasureId == 0){
@@ -76,10 +76,11 @@ class CustomController extends Controller
         $TheseAttributes='';
         //var_dump($Attributes);
         foreach($Attributes as $Attribute=>$Val){
+            $UnitOfMeasure = $Model->getUserUnitOfMeasure($Attribute);
             if($i > 0)
                 $TheseAttributes.='_';
             $TheseAttributes.=$Attribute;
-            $html .= '<div style="float:left;margin:0 25px 0 25px"">'.$Attribute.'<br/><input value="'.$Val.'" style="width:80px" type="number" id="RoutineNo_RoundNo_'.$Activity->ExerciseId.'_'.$Attribute.'_new" name="RoutineNo_RoundNo_'.$Activity->ExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_'.$Activity->OrderBy.'" placeholder="'.$Activity->UnitOfMeasure.'"/></div>';    
+            $html .= '<div style="float:left;margin:0 25px 0 25px"">'.$Attribute.'<br/><input value="'.$Val.'" style="width:80px" type="number" id="RoutineNo_RoundNo_'.$Activity->ExerciseId.'_'.$Attribute.'_new" name="RoutineNo_RoundNo_'.$Activity->ExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_'.$Activity->OrderBy.'" placeholder="'.$UnitOfMeasure.'"/></div>';    
             $i++;
         }
         $html .= '<div style="float:right;margin:10px 30px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="UpdateActivity(\'RoutineNo_RoundNo_'.$Activity->ExerciseId.'\', \''.$TheseAttributes.'\');" value="Update"/></div>';
@@ -102,8 +103,12 @@ class CustomController extends Controller
             $Message = 'Error - Must Enter Exercise Name!';
         }else if($_REQUEST['NewActivityWeight'] == '' && $_REQUEST['NewActivityHeight'] == '' && $_REQUEST['NewActivityDistance'] == '' && $_REQUEST['NewActivityReps'] == ''){
             $Message = 'Error - Must Select at least one Attribute';
-        //}else if(){
-            
+        }else if($_REQUEST['NewActivityWeight'] != '' && $_REQUEST['NewActivityHeight'] != ''){
+            $Message = 'Error - Can\'t have Weight and Height';
+        }else if($_REQUEST['NewActivityWeight'] != '' && $_REQUEST['NewActivityDistance'] != ''){
+            $Message = 'Error - Can\'t have Weight and Distance';
+        }else if($_REQUEST['NewActivityDistance'] != '' && $_REQUEST['NewActivityHeight'] != ''){
+            $Message = 'Error - Can\'t have Height and Distance';
         }
         
         return $Message;
@@ -147,8 +152,8 @@ class CustomController extends Controller
         <input type="hidden" name="form" value="submitted"/>
         <input type="hidden" name="origin" value="'.$this->Origin.'"/>
         <input type="hidden" name="rowcount" id="rowcounter" value="0"/>
-        <input type="hidden" name="Round1Counter" id="Round1Counter" value="0"/>
-        <input type="hidden" name="Rounds" id="addround" value="1"/>
+        <input type="hidden" name="Routine1Round1Counter" id="Routine1Round1Counter" value="0"/>
+        <input type="hidden" name="Routine1RoundCounter" id="Routine1RoundCounter" value="1"/>
         <input type="hidden" name="RoutineCounter" id="RoutineCounter" value="1"/>
         <input class="textinput" type="date" name="WodDate" id="WodDate" placeholder="WOD Date" value="'.date('Y-m-d').'"/><br/>
             

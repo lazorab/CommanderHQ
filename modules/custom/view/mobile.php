@@ -174,7 +174,8 @@ function AddBenchmark(Id)
 
 function addNewExercise()
 {
-    var RoundNo = $('#addround').val();
+    var RoutineNo = $('#RoutineCounter').val();
+    var RoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();
     var OrderBy = $('#Round' + RoundNo + 'Counter').val();
     var Html ='<div class="AddNewActivityAttributes">';
     Html += '<h2>New Activity</h2>';
@@ -213,9 +214,10 @@ function addactivitydisplay(data)
     }else{  
          
     var RoutineNo = $('#RoutineCounter').val();   
-    var RoundNo = $('#addround').val();
+    var RoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();
+
     document.getElementById('rowcounter').value++;
-    document.getElementById('Round' + RoundNo + 'Counter').value++;
+    document.getElementById('Routine' + RoutineNo + 'Round' + RoundNo + 'Counter').value++;
     var RowNo = $('#rowcounter').val();
     var Html = data.replace(/RowNo/g, RowNo);
     $('#add_exercise').html('');
@@ -224,6 +226,7 @@ function addactivitydisplay(data)
         DuplicateRound += Html;
     Html = Html.replace(/RoutineNo/g, RoutineNo);
     Html = Html.replace(/RoundNo/g, RoundNo);
+
     $('#activity'+RoutineNo+'list').append(Html);
     $("#exercises option[value='none']").attr("selected","selected");
     var el = $('#AjaxOutput');
@@ -256,7 +259,7 @@ function ExerciseInputs(exercise)
         Html += '<form id="activityform" name="activityform">';
         //var i = document.getElementById('rowcounter').value;
         var RoutineNo = $('#RoutineCounter').val(); 
-        var RoundNo = $('#addround').val();
+        var RoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();
         var OrderBy = $('#Round' + RoundNo + 'Counter').val();
         var Elements = new Array();   
             $.each(json, function() {
@@ -323,15 +326,17 @@ function RemoveFromList(ThisItem)
     if (r==true)
     {
         var Explode = ThisItem.split('_');
-        var RoundNo = Explode[0];
+        var RoutineNo = Explode[0];
+        var RoundNo = Explode[1];
+        var RowNo = Explode[2];
         $('#' + ThisItem + '').remove();
         
         document.getElementById('rowcounter').value--;
-        document.getElementById('Round' + RoundNo + 'Counter').value--;
+        document.getElementById('Routine' + RoutineNo +'Round' + RoundNo + 'Counter').value--;
 
-        if($('#Round' + RoundNo + 'Counter').val() == 0){
+        if($('#Routine' + RoutineNo +'Round' + RoundNo + 'Counter').val() == 0){
             DuplicateRound = '';
-            $('#Round' + RoundNo + 'Label').html('');
+            $('#Routine' + RoutineNo +'Round' + RoundNo + 'Label').html('');
         }
     }
 }
@@ -359,21 +364,22 @@ function addnew(RoundNo, OrderBy)
 function addRound()
 {  
     var RoutineNo = $('#RoutineCounter').val();
-    var PrevRoundNo = $('#addround').val();
+    var PrevRoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();
     var RowNo = $('#rowcounter').val();
-    document.getElementById('addround').value++;
-    var RoundNo = $('#addround').val();   
+    document.getElementById('Routine' + RoutineNo + 'RoundCounter').value++;
+    var RoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();   
     if(RowNo == 0){
         alert('No Exercises selected!');
-    }else if($('#Round' + PrevRoundNo + 'Counter').val() == 0){
+    }else if($('#Routine' + RoutineNo + 'Round' + PrevRoundNo + 'Counter').val() == 0){
         alert('No Exercises selected for round ' + PrevRoundNo + '!');
     }else{
         if($('#Routine' + RoutineNo + 'Round1Label').html() == '')
             $('#Routine' + RoutineNo + 'Round1Label').html('Round 1');
 
         var ThisRound ='<br/><div class="RoundLabel" id="Routine' + RoutineNo + 'Round' + RoundNo + 'Label">Round ' + RoundNo + '</div>';
-        ThisRound+= '<input type="hidden" name="Round' + RoundNo + 'Counter" id="Round' + RoundNo + 'Counter" value="'+RowNo+'"/>';
-        ThisRound+=DuplicateRound.replace(/RoundNo/g, RoundNo);
+        ThisRound +='<input type="hidden" name="Routine' + RoutineNo + 'Round' + RoundNo + 'Counter" id="Routine' + RoutineNo + 'Round' + RoundNo + 'Counter" value="0"/>';
+        ThisRound+=DuplicateRound.replace(/RoutineNo/g, RoutineNo);
+        ThisRound=ThisRound.replace(/RoundNo/g, RoundNo);
         ThisRound=ThisRound.replace(/RowNo/g, RowNo);
         ThisRound=ThisRound.replace(/undefined/g, '');
 
@@ -404,7 +410,8 @@ function addRoutine()
         var RoutineNo = $('#RoutineCounter').val();
         var ThisRoutine ='<br/><div class="RoutineLabel" id="Routine' + RoutineNo + 'Label">Routine ' + RoutineNo + '</div>';
         ThisRoutine += '<div class="RoundLabel" id="Routine' + RoutineNo + 'Round1Label"></div>';
-        ThisRoutine += '<input type="hidden" name="Routine' + RoutineNo + 'Counter" id="Routine' + RoutineNo + 'Counter" value="'+RoutineNo+'"/>';
+        ThisRoutine += '<input type="hidden" name="Routine' + RoutineNo + 'RoundCounter" id="Routine' + RoutineNo + 'RoundCounter" value="1"/>';
+        ThisRoutine += '<input type="hidden" name="Routine' + RoutineNo + 'Round1Counter" id="Routine' + RoutineNo + 'Round1Counter" value="0"/>';       
         ThisRoutine += '<div id="activity'+RoutineNo+'list"></div>';
 
         $(ThisRoutine).appendTo($('#Routines'));

@@ -27,7 +27,6 @@ function inputdisplay(data){
 
 function AddRoutine(){
     DuplicateRound = '';
-    $('#addround').val('1');
     var PrevRoutineNo = $('#RoutineCounter').val();
     var RowNo = $('#rowcounter').val();
     if(RowNo == 0){
@@ -42,6 +41,7 @@ function AddRoutine(){
         var ThisRoutine ='<br/><div class="RoutineLabel" id="Routine' + RoutineNo + 'Label">Routine ' + RoutineNo + '</div>';
         ThisRoutine += '<div class="RoundLabel" id="Routine' + RoutineNo + 'Round1Label"></div>';
         ThisRoutine += '<input type="hidden" name="Routine' + RoutineNo + 'Counter" id="Routine' + RoutineNo + 'Counter" value="0"/>';
+        ThisRoutine += '<input type="hidden" name="Routine' + RoutineNo + 'RoundCounter" id="Routine' + RoutineNo + 'RoundCounter" value="1"/>';               
         ThisRoutine += '<div id="activity'+RoutineNo+'list"></div>';
 
         $(ThisRoutine).appendTo($('#Routines'));
@@ -51,10 +51,10 @@ function AddRoutine(){
 function AddRound()
 {
     var RoutineNo = $('#RoutineCounter').val();
-    var PrevRoundNo = $('#addround').val();
+    var PrevRoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();
     var RowNo = $('#rowcounter').val();
-    document.getElementById('addround').value++;
-    var RoundNo = $('#addround').val();   
+    document.getElementById('Routine' + RoutineNo + 'RoundCounter').value++;
+    var RoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();   
     if(RowNo == 0){
         alert('No Exercises selected!');
     }else if($('#Round' + PrevRoundNo + 'Counter').val() == 0){
@@ -267,7 +267,7 @@ function wresult(message)
     var ThisRoutineNumber = $('#RoutineCounter').val();
     document.getElementById('Routine' + ThisRoutineNumber + 'Counter').value++;
     var ThisRowNumber = $('#rowcounter').val();
-    var ThisRound = $('#addround').val();
+    var ThisRound = $('#Routine' + ThisRoutineNumber + 'RoundCounter').val();
     
     var Html = message.replace(/ThisRoutine/g, ThisRoutineNumber);
     if(ThisRoutineNumber == 1)
@@ -325,7 +325,6 @@ function ainputdisplay(data){
 
 function AddAdvancedRoutine(){
     DuplicateRound = '';
-    $('#aaddround').val('1');
     var PrevRoutineNo = $('#aRoutineCounter').val();
     var RowNo = $('#arowcounter').val();
     if(RowNo == 0){
@@ -340,6 +339,7 @@ function AddAdvancedRoutine(){
         var ThisRoutine ='<br/><div class="RoutineLabel" id="aRoutine' + RoutineNo + 'Label">Routine ' + RoutineNo + '</div>';
         ThisRoutine += '<div class="RoundLabel" id="aRoutine' + RoutineNo + 'Round1Label"></div>';
         ThisRoutine += '<input type="hidden" name="Routine' + RoutineNo + 'Counter" id="aRoutine' + RoutineNo + 'Counter" value="0"/>';
+        ThisRoutine += '<input type="hidden" name="Routine' + RoutineNo + 'RoundCounter" id="aRoutine' + RoutineNo + 'RoundCounter" value="1"/>';       
         ThisRoutine += '<div id="aactivity'+RoutineNo+'list"></div>';
 
         $(ThisRoutine).appendTo($('#aRoutines'));
@@ -349,10 +349,10 @@ function AddAdvancedRoutine(){
 function AddAdvancedRound()
 {
     var RoutineNo = $('#aRoutineCounter').val();
-    var PrevRoundNo = $('#aaddround').val();
+    var PrevRoundNo = $('#aRoutine' + RoutineNo + 'RoundCounter').val();
     var RowNo = $('#arowcounter').val();
-    document.getElementById('aaddround').value++;
-    var RoundNo = $('#aaddround').val();   
+    document.getElementById('aRoutine' + RoutineNo + 'RoundCounter').value++;
+    var RoundNo = $('#aRoutine' + RoutineNo + 'RoundCounter').val();   
     if(RowNo == 0){
         alert('No Exercises selected!');
     }else if($('#aRound' + PrevRoundNo + 'Counter').val() == 0){
@@ -440,7 +440,7 @@ function aresult(message)
     var ThisRoutineNumber = $('#aRoutineCounter').val();
     document.getElementById('aRoutine' + ThisRoutineNumber + 'Counter').value++;
     var ThisRowNumber = $('#arowcounter').val();
-    var ThisRound = $('#aaddround').val();
+    var ThisRound = $('#aRoutine' + ThisRoutineNumber + 'RoundCounter').val();
     
     var Html = message.replace(/ThisRoutine/g, ThisRoutineNumber);
     if(ThisRoutineNumber == 1)
@@ -501,7 +501,7 @@ function addNewActivityAdvanced()
 <input type="hidden" name="rowcount" id="rowcounter" value="0"/>
 <input type="hidden" name="RoutineCounter" id="RoutineCounter" value="1"/>
 <input type="hidden" name="Routine1Counter" id="Routine1Counter" value="0"/>
-<input type="hidden" name="Rounds" id="addround" value="1"/>
+<input type="hidden" name="Routine1RoundCounter" id="Routine1RoundCounter" value="1"/>
 <textarea name="Notes" id="Notes" rows="4" cols="80" placeholder="Describe your WOD here"></textarea>
 <p>WOD Name:<input name="WodName" type="text"/> WOD Date:<input class="inputbox-required" type="text" name="WodDate" id="WodDate" maxlength="25" placeholder="Use Calendar" value=""/>
 <img src="images/calendar-blue.gif" alt="calendar" id="Start_trigger"/></p>
@@ -546,7 +546,7 @@ function addNewActivityAdvanced()
 <input type="hidden" name="rowcount" id="arowcounter" value="0"/>
 <input type="hidden" name="RoutineCounter" id="aRoutineCounter" value="1"/>
 <input type="hidden" name="Routine1Counter" id="aRoutine1Counter" value="0"/>
-<input type="hidden" name="Rounds" id="aaddround" value="1"/>
+<input type="hidden" name="Routine1RoundCounter" id="aRoutine1RoundCounter" value="1"/>
 <textarea name="Notes" id="aNotes" rows="4" cols="80" placeholder="Describe your WOD here"></textarea>
 <p>WOD Name:<input name="WodName" type="text"/> WOD Date:<input class="inputbox-required" type="text" name="WodDate" id="aWodDate" maxlength="25" placeholder="Use Calendar" value=""/>
 <img src="images/calendar-blue.gif" alt="calendar" id="Start_trigger"/></p>

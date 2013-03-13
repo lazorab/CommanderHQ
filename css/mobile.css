@@ -247,8 +247,15 @@ input
     -webkit-border-radius: 5px;   
 }
 
+.delete{
+    float:right;
+    background-color:#a42331;
+    color:white;
+    font-weight:bold;
+}
+
 .AddNewActivityAttributes{
-    height:275px;
+    height:300px;
     padding:5px 25px 5px 25px;
     background-color: #EEE;
     border-radius: 5px; 

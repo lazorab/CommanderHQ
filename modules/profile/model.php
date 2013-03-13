@@ -57,6 +57,7 @@ class ProfileModel extends Model
 		M.PassWord,
                 M.oauth_provider AS LoginType,
 		MD.SkillLevel,
+                MD.GymId,
 		MD.Gender,
 		MD.DOB,
                 MD.SystemOfMeasure,

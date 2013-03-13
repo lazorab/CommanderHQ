@@ -151,16 +151,26 @@ $Html.='<input class="textinput" type="email" id="email" name="Email" placeholde
           
 $Html.='<input class="textinput" type="date" name="DOB" id="DOB" placeholder="Date of Birth" value="'.$MemberDetails->DOB.'"/>';
 
-$Html.='<br/><br/>';
+ $Html.='<br/>';
  $Html.='<select class="chzn-select" name="AffiliateId" id="AffiliateId" tabindex="2">';
  $Html.='<option value="" data-placeholder="true">Select your Gym</option>';
 
         foreach($Affiliates AS $Affiliate){
-            $Html.='<option value="'.$Affiliate->AffiliateId.'">'.$Affiliate->GymName.'</option>';
+            $Selected = '';
+            if($MemberDetails->GymId == $Affiliate->AffiliateId)
+                $Selected = 'selected="selected"';
+            $Html.='<option value="'.$Affiliate->AffiliateId.'" '.$Selected.'>'.$Affiliate->GymName.'</option>';
         }
-        $Html.='</select><br/><br/>';
+        $Html.='</select><br/><br/><br/>';
 
-$Html.='<fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
+$Html.='<div id="weightlabel">Height('.$HeightUnit.')</div>
+<input id="weight" class="textinput" type="number" name="Weight" value="'.$MemberDetails->Weight.'"/>
+<div id="heightlabel">Weight('.$WeightUnit.')</div>
+<input id="height" class="textinput" type="number" name="Height" value="'.$MemberDetails->Height.'"/>
+<br/>';
+
+$Html.='Gender
+    <fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
 <label for="male">Male</label>
 <input class="radioinput" id="male" type="radio" name="Gender" value="M"';
 if($MemberDetails->Gender == 'M') 
@@ -171,14 +181,10 @@ $Html.='/>
 if($MemberDetails->Gender == 'F')
     $Html.='checked="checked"';
 $Html.='/>
-</fieldset>
-<br/><br/>
-<div id="weightlabel">Height('.$HeightUnit.')</div>
-<input id="weight" class="textinput" type="number" name="Weight" value="'.$MemberDetails->Weight.'"/>
-<div id="heightlabel">Weight('.$WeightUnit.')</div>
-<input id="height" class="textinput" type="number" name="Height" value="'.$MemberDetails->Height.'"/>
-<br/><br/>
-<fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
+</fieldset><br/>';
+
+$Html.='System Of Measure
+    <fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
     <input class="radioinput" type="radio" name="SystemOfMeasure" id="radio-choice-1" value="Metric" onclick="getSystem(\'Metric\');"';
     if($MemberDetails->SystemOfMeasure != 'Imperial')
         $Html.=' checked="checked"';
@@ -190,9 +196,9 @@ $Html.='/>
         $Html.=' checked="checked"';
      $Html.='/>
      	<label for="radio-choice-2">Imperial</label>
-</fieldset>
-<br/><br/>
-Custom Workouts Visibility
+</fieldset><br/>';
+     
+$Html.='Custom Workouts Visibility
 <fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
 <label for="private">Private</label>
 <input class="radioinput" id="private" type="radio" name="CustomWorkouts" value="Private"';
@@ -206,9 +212,9 @@ if($MemberDetails->CustomWorkouts == 'Public')
 $Html.='/>
 </fieldset>
 <br/>
-<input class="buttongroup" type="button" onclick="profilesubmit();" value="Save"/><br/>
+<input class="buttongroup" type="button" onclick="profilesubmit();" value="Save"/>
 </div>
-</form>';
+</form><div class="clear"></div><br/>';
 
         return $Html;
     }

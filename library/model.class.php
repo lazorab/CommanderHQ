@@ -65,26 +65,26 @@ class Model
             return $db->loadResult();
         }      
         
-        function getUnitOfMeasureId($Unit)
+        function getUnitOfMeasureId($Attribute)
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);  
                 
             $SQL = 'SELECT UM.recid 
                 FROM UnitsOfMeasure UM JOIN Attributes A ON A.recid = UM.AttributeId
-                WHERE Attribute = "'.$Unit.'" 
+                WHERE Attribute = "'.$Attribute.'" 
                 AND SystemOfMeasure = "'.$this->getSystemOfMeasure().'"';
             $db->setQuery($SQL);
             
             return $db->loadResult();
         }         
         
-        function getUserUnitOfMeasure($Unit)
+        function getUserUnitOfMeasure($Attribute)
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);  
                 
             $SQL = 'SELECT UM.UnitOfMeasure 
                 FROM UnitsOfMeasure UM JOIN Attributes A ON A.recid = UM.AttributeId
-                WHERE Attribute = "'.$Unit.'" 
+                WHERE Attribute = "'.$Attribute.'" 
                 AND SystemOfMeasure = "'.$this->getSystemOfMeasure().'"';
             $db->setQuery($SQL);
             

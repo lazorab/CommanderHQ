@@ -17,9 +17,10 @@ if($Device->IsGoogleAndroidDevice()) {
         });
     });    
 
-function getImages(type)
+function getSkills(thislevel)
 {
-    $.getJSON("ajax.php?module=skills",{exercisetype:type},display);
+    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=skills\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
+    $.ajax({url:'ajax.php?module=skills',data:{level:thislevel},dataType:"html",success:display});    
 }
 
 function display(data)
@@ -38,22 +39,5 @@ function display(data)
 
 <br/>
 <div id="AjaxOutput">
-      <div id="slides">
-        <div class="slides_container">
-            <div class="slide<?php echo $Overthrow;?>">
-                <img alt="Level1" <?php echo $RENDER->NewImage('AthleticLevel1.png');?> src="<?php echo IMAGE_RENDER_PATH;?>AthleticLevel1.png"/><br/><br/>
-            </div>
-            <div class="slide<?php echo $Overthrow;?>">
-                <img alt="Level2" <?php echo $RENDER->NewImage('AthleticLevel2.png');?> src="<?php echo IMAGE_RENDER_PATH;?>AthleticLevel2.png"/><br/><br/>
-            </div>
-            <div class="slide<?php echo $Overthrow;?>">
-                <img alt="Level3" <?php echo $RENDER->NewImage('AthleticLevel3.png');?> src="<?php echo IMAGE_RENDER_PATH;?>AthleticLevel3.png"/><br/><br/>
-            </div>
-            <div class="slide<?php echo $Overthrow;?>">
-                <img alt="Level4" <?php echo $RENDER->NewImage('AthleticLevel4.png');?> src="<?php echo IMAGE_RENDER_PATH;?>AthleticLevel4.png"/><br/><br/>
-            </div>       
-        </div>
-        <a href="#" class="prev"><img src="<?php echo IMAGE_RENDER_PATH;?>arrow-next.png" width="36" height="36" alt="Arrow Prev"></a>
-        <a href="#" class="next"><img src="<?php echo IMAGE_RENDER_PATH;?>arrow-prev.png" width="36" height="36" alt="Arrow Next"></a>
-    </div>
+    <?php echo $Display->Output();?>
 </div>
