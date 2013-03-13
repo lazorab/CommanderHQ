@@ -138,7 +138,7 @@ class MygymModel extends Model
                         LEFT JOIN UnitsOfMeasure UOM ON UOM.recid = WD.UnitOfMeasureId
 			WHERE WW.WodDate = CURDATE() AND WW.WodTypeId = '.$WodTypeId.'
 			UNION
-SELECT WW.recid AS Id,
+                        SELECT WW.recid AS Id,
                         BW.WorkoutName, 
                         E.Exercise,
                         E.recid AS ExerciseId, 
@@ -156,7 +156,7 @@ SELECT WW.recid AS Id,
                         WW.RoutineNo, 
                         BD.RoundNo,
                         BD.OrderBy,
-                        (SELECT MAX(RoundNo) FROM WodDetails WHERE WodId = Id AND RoutineNo = WW.RoutineNo) AS TotalRounds,
+                        (SELECT MAX(RoundNo) FROM BenchmarkDetails WHERE BenchmarkId = WW.WorkoutName) AS TotalRounds,
                         WW.WorkoutRoutineTypeId,
                         WW.WodDate,
                         WW.Notes                        
@@ -168,7 +168,7 @@ SELECT WW.recid AS Id,
                         LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND BD.UnitOfMeasureId = UOM.recid
 			WHERE WW.WodDate = CURDATE() AND WW.WodTypeId = '.$WodTypeId.'
                         AND (Attribute = "Reps" OR SystemOfMeasure = "'.$this->getSystemOfMeasure().'")			
-			ORDER BY RoutineNo, OrderBy, RoundNo, Exercise, Attribute';
+			ORDER BY RoutineNo, RoundNo, OrderBy, Exercise, Attribute';
             //}
             //    var_dump($SQL);
             $db->setQuery($SQL);

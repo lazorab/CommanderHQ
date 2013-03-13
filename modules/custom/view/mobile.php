@@ -19,6 +19,7 @@
 var LastActivity = '';
 var DuplicateRound;
 var DuplicateRoutine;
+var OrderBy=0;
 
 //onClick="RemoveFromList(' + i + ')"
 
@@ -150,10 +151,12 @@ function SelectionControl(exercise)
 
 function DuplicateLastActivity()
 {
-    if(LastActivity != '')
+    if(LastActivity != ''){
+        //OrderBy++;
         ExerciseInputs(LastActivity); 
-    else
+    }else{
         alert('Nothing to copy yet!');
+    }
 }
 
 function DisplayBenchmark(data)
@@ -176,7 +179,7 @@ function addNewExercise()
 {
     var RoutineNo = $('#RoutineCounter').val();
     var RoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();
-    var OrderBy = $('#Round' + RoundNo + 'Counter').val();
+    //var OrderBy = $('#Round' + RoundNo + 'Counter').val();
     var Html ='<div class="AddNewActivityAttributes">';
     Html += '<h2>New Activity</h2>';
     Html += '<div style="float:left;margin:0 0 0 0"><input style="width:225px" type="text" id="NewExercise" name="NewExercise" value="" placeholder="Activity Name"/></div>';
@@ -212,7 +215,7 @@ function addactivitydisplay(data)
     if(data.substring(0,5) == 'Error'){
         alert(data); 
     }else{  
-         
+    OrderBy++;     
     var RoutineNo = $('#RoutineCounter').val();   
     var RoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();
 
@@ -226,6 +229,7 @@ function addactivitydisplay(data)
         DuplicateRound += Html;
     Html = Html.replace(/RoutineNo/g, RoutineNo);
     Html = Html.replace(/RoundNo/g, RoundNo);
+    Html = Html.replace(/OrderBy/g, OrderBy);
 
     $('#activity'+RoutineNo+'list').append(Html);
     $("#exercises option[value='none']").attr("selected","selected");
@@ -260,7 +264,7 @@ function ExerciseInputs(exercise)
         //var i = document.getElementById('rowcounter').value;
         var RoutineNo = $('#RoutineCounter').val(); 
         var RoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();
-        var OrderBy = $('#Round' + RoundNo + 'Counter').val();
+        //var OrderBy = $('#Round' + RoundNo + 'Counter').val();
         var Elements = new Array();   
             $.each(json, function() {
                 if(this.UOM == null){
@@ -363,11 +367,14 @@ function addnew(RoundNo, OrderBy)
 
 function addRound()
 {  
+    OrderBy=1;
     var RoutineNo = $('#RoutineCounter').val();
     var PrevRoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();
     var RowNo = $('#rowcounter').val();
+
     document.getElementById('Routine' + RoutineNo + 'RoundCounter').value++;
-    var RoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();   
+    var RoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();
+    var NewRoundCounter = $('#Routine' + RoutineNo +'Round' + PrevRoundNo + 'Counter').val();   
     if(RowNo == 0){
         alert('No Exercises selected!');
     }else if($('#Routine' + RoutineNo + 'Round' + PrevRoundNo + 'Counter').val() == 0){
@@ -377,9 +384,10 @@ function addRound()
             $('#Routine' + RoutineNo + 'Round1Label').html('Round 1');
 
         var ThisRound ='<br/><div class="RoundLabel" id="Routine' + RoutineNo + 'Round' + RoundNo + 'Label">Round ' + RoundNo + '</div>';
-        ThisRound +='<input type="hidden" name="Routine' + RoutineNo + 'Round' + RoundNo + 'Counter" id="Routine' + RoutineNo + 'Round' + RoundNo + 'Counter" value="0"/>';
+        ThisRound +='<input type="hidden" name="Routine' + RoutineNo + 'Round' + RoundNo + 'Counter" id="Routine' + RoutineNo + 'Round' + RoundNo + 'Counter" value="'+NewRoundCounter+'"/>';
         ThisRound+=DuplicateRound.replace(/RoutineNo/g, RoutineNo);
         ThisRound=ThisRound.replace(/RoundNo/g, RoundNo);
+        ThisRound=ThisRound.replace(/OrderBy/g, OrderBy);
         ThisRound=ThisRound.replace(/RowNo/g, RowNo);
         ThisRound=ThisRound.replace(/undefined/g, '');
 
@@ -396,6 +404,7 @@ function addRound()
 
 function addRoutine()
 {
+    OrderBy=0;
     DuplicateRound = '';
     var PrevRoutineNo = $('#RoutineCounter').val();
     var RowNo = $('#rowcounter').val();
@@ -470,10 +479,15 @@ function resetControl()
 
 function UpdateActivity(ActivityId, Attributes)
 {
+    /*
+    ActivityId = [RoutineNo_RoundNo_OrderBy_ExerciseId]
+     */
+    
     var AttributesArray = Attributes.split('_');
     for(i=0; i < AttributesArray.length;i++){
+        //alert($("#"+ActivityId+"_"+AttributesArray[i]+"_new").val());
         $("#"+ActivityId+"_"+AttributesArray[i]+"_html").html($("#"+ActivityId+"_"+AttributesArray[i]+"_new").val());
-        $("#"+ActivityId+"_"+AttributesArray[i]+"").val($("#"+ActivityId+"_"+AttributesArray[i]+"_new").val());
+        //$("#"+ActivityId+"_"+AttributesArray[i]+"").val($("#"+ActivityId+"_"+AttributesArray[i]+"_new").val());
     }  
 }
 </script>

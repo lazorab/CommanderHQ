@@ -147,14 +147,14 @@ else if(isset($_REQUEST['cat']) && $_REQUEST['cat'] != '')
 
 }else{
     //OpenThisPage(\'?module=benchmark&cat=Girls\')
-    $html.='<div style="padding:2%">
-            <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getBenchmarks(\'Girls\');"><div style="height:26px;width:1px;float:left"></div>Girls<br/><span style="font-size:small"></span></a></li>             
-            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getBenchmarks(\'Heros\');"><div style="height:26px;width:1px;float:left"></div>Heros<br/><span style="font-size:small"></span></a></li>
-            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getBenchmarks(\'Running\');"><div style="height:26px;width:1px;float:left"></div>Running<br/><span style="font-size:small"></span></a></li>            
-            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getBenchmarks(\'Various\');"><div style="height:26px;width:1px;float:left"></div>Various<br/><span style="font-size:small"></span></a></li>
-            </ul>
-            </div>';  
+    $html.='<div style="padding:2%">';
+    $html.='<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
+    $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getBenchmarks(\'Girls\');"><div style="height:26px;width:1px;float:left"></div>Girls<br/><span style="font-size:small"></span></a></li>';             
+    $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getBenchmarks(\'Heros\');"><div style="height:26px;width:1px;float:left"></div>Heros<br/><span style="font-size:small"></span></a></li>';
+    //$html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getBenchmarks(\'Running\');"><div style="height:26px;width:1px;float:left"></div>Running<br/><span style="font-size:small"></span></a></li>';          
+    //$html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getBenchmarks(\'Various\');"><div style="height:26px;width:1px;float:left"></div>Various<br/><span style="font-size:small"></span></a></li>';
+    $html.='</ul>';
+    $html.='</div>';  
 }
 $html.='<div class="clear"></div><br/>';
 return $html;

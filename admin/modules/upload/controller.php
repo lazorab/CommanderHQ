@@ -55,8 +55,8 @@ class UploadController extends Controller
     {
         $Model = new UploadModel;
         $Details = $Model->getBenchmarkDetails($_REQUEST['benchmarkId']);  
-        $Html = '<table><tr id="row_ThisRow"><td>'.$Details->BenchmarkName.'<input type="hidden" name="ThisRoutine_Benchmark" value="'.$Details->BenchmarkId.'"/></td>';
-        $Html .= '<td><input type="button" value="Remove" onClick="Remove(\'ThisRow\');"/></td></tr></table>';       
+        $Html = '<table style="width:100%"><tr style="width:100%" id="row_ThisRow"><td style="width:95%">Benchmark : '.$Details->BenchmarkName.'<input type="hidden" name="ThisRoutine_Benchmark" value="'.$Details->BenchmarkId.'"/></td>';
+        $Html .= '<td style="width:5%"><input type="button" value="Delete" onClick="Remove(\'ThisRow\');"/></td></tr></table>';       
         
         return $Html;    
     }
@@ -320,33 +320,61 @@ class UploadController extends Controller
     {
         $Model = new UploadModel;
         $ExerciseId = $_REQUEST['Exercise'];
-        $ExerciseName = $Model->getExerciseName($ExerciseId);
-        $Message = '<table><tr id="row_ThisRow"><td>'.$ExerciseName.'<input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_OrderBy" value="ThisRow"/></td>';
-                if(isset($_REQUEST['mWeight'])){
-                    $Message .= '<td>Weight(M):'.$_REQUEST['mWeight'].'<input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_mWeight" value="'.$_REQUEST['mWeight'].'"/>'.$Model->getUnitOfMeasure($_REQUEST['WUOM']).'</td>
-                        <td>Weight(F):'.$_REQUEST['fWeight'].'<input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_fWeight" value="'.$_REQUEST['fWeight'].'"/>'.$Model->getUnitOfMeasure($_REQUEST['WUOM']).'
-                            <input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_WUOM" value="'.$_REQUEST['WUOM'].'"/></td>';//WeightUnitOfMeasure     
-                }
-                if(isset($_REQUEST['mHeight'])){
-                    $Message .= '<td>Height(M):'.$_REQUEST['mHeight'].'<input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_mHeight" value="'.$_REQUEST['mHeight'].'"/>'.$Model->getUnitOfMeasure($_REQUEST['HUOM']).'</td> 
-                        <td>Height(F):'.$_REQUEST['fHeight'].'<input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_fHeight" value="'.$_REQUEST['fHeight'].'"/>'.$Model->getUnitOfMeasure($_REQUEST['HUOM']).'
-                            <input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_HUOM" value="'.$_REQUEST['HUOM'].'"/></td>';//HeightUnitOfMeasure
-                }
-                if(isset($_REQUEST['Distance'])){
-                    $Message .= '<td>Distance:'.$_REQUEST['Distance'].'<input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_Distance" value="'.$_REQUEST['Distance'].'"/>
-                        '.$Model->getUnitOfMeasure($_REQUEST['DUOM']).'<input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_DUOM" value="'.$_REQUEST['DUOM'].'"/></td>';//DistanceUnitOfMeasure
-                }
-                if(isset($_REQUEST['Reps'])){
-                    if($_REQUEST['Reps'] == '')
-                        $Reps = 'Max';
-                    else
-                        $Reps = $_REQUEST['Reps'];
-                    $Message .= '<td>Reps:'.$Reps.'<input type="hidden" name="ThisRoutine_RoundNo_'.$ExerciseId.'_Reps" value="'.$_REQUEST['Reps'].'"/></td>';
-                } 
-                
-                $Message .= '<td><input type="button" value="Remove" onClick="Remove(\'ThisRow\');"/></td></tr></table>';
+        $ExerciseDetails = $Model->getExerciseDetails($ExerciseId);
+        $i=0;
+        $Message = '<table style="width:100%"><tr style="width:100%" id="row_ThisRow"><td style="width:30%">'.$ExerciseDetails->Exercise.':'.$ExerciseDetails->Acronym.'</td>';
+        //$Message .= '<td></td><td></td>';
+        if(isset($_REQUEST['mWeight'])){
+            if($_REQUEST['mWeight'] == '')
+                $mValue = '[Max]';
+            else
+                $mValue = $_REQUEST['fWeight'];
+            if($_REQUEST['fWeight'] == '')
+                $fValue = '[Max]';
+            else
+                $fValue = $_REQUEST['fWeight'];            
+            $Message .= '<td style="width:20%">Weight(M):'.$mValue.'<input type="hidden" name="ThisRoutine_ThisRound_ThisOrderBy_'.$ExerciseId.'_mWeight" value="'.$_REQUEST['mWeight'].'"/>'.$Model->getUnitOfMeasure($_REQUEST['WUOM']).'</td>
+                        <td style="width:20%">Weight(F):'.$fValue.'<input type="hidden" name="ThisRoutine_ThisRound_ThisOrderBy_'.$ExerciseId.'_fWeight" value="'.$_REQUEST['fWeight'].'"/>'.$Model->getUnitOfMeasure($_REQUEST['WUOM']).'
+                        <input type="hidden" name="ThisRoutine_ThisRound_ThisOrderBy_'.$ExerciseId.'_WUOM" value="'.$_REQUEST['WUOM'].'"/></td>';//WeightUnitOfMeasure     
 
-            return $Message;
+        }else if(isset($_REQUEST['mHeight'])){
+            if($_REQUEST['mHeight'] == '')
+                $mValue = '[Max]';
+            else
+                $mValue = $_REQUEST['fHeight'];
+            if($_REQUEST['fHeight'] == '')
+                $fValue = '[Max]';
+            else
+                $fValue = $_REQUEST['fHeight'];            
+            $Message .= '<td style="width:20%">Height(M):'.$mValue.'<input type="hidden" name="ThisRoutine_ThisRound_ThisOrderBy_'.$ExerciseId.'_mHeight" value="'.$_REQUEST['mHeight'].'"/>'.$Model->getUnitOfMeasure($_REQUEST['HUOM']).'</td> 
+                        <td style="width:20%">Height(F):'.$fValue.'<input type="hidden" name="ThisRoutine_ThisRound_ThisOrderBy_'.$ExerciseId.'_fHeight" value="'.$_REQUEST['fHeight'].'"/>'.$Model->getUnitOfMeasure($_REQUEST['HUOM']).'
+                        <input type="hidden" name="ThisRoutine_ThisRound_ThisOrderBy_'.$ExerciseId.'_HUOM" value="'.$_REQUEST['HUOM'].'"/></td>';//HeightUnitOfMeasure
+        }else{
+            $Message .= '<td style="width:20%"></td><td style="width:20%"></td>';
+        }
+        if(isset($_REQUEST['Distance'])){
+            if($_REQUEST['Distance'] == '')
+                $Value = '[Max]';
+            else
+                $Value = $_REQUEST['Distance'];            
+            $Message .= '<td style="width:20%">Distance:'.$Value.'<input type="hidden" name="ThisRoutine_ThisRound_ThisOrderBy_'.$ExerciseId.'_Distance" value="'.$_REQUEST['Distance'].'"/>
+                        '.$Model->getUnitOfMeasure($_REQUEST['DUOM']).'<input type="hidden" name="ThisRoutine_ThisRound_ThisOrderBy_'.$ExerciseId.'_DUOM" value="'.$_REQUEST['DUOM'].'"/></td>';//DistanceUnitOfMeasure
+        }else{
+            $Message .= '<td style="width:20%"></td>';
+        }
+        if(isset($_REQUEST['Reps'])){
+            if($_REQUEST['Reps'] == '')
+                $Value = '[Max]';
+            else
+                $Value = $_REQUEST['Reps'];
+            $Message .= '<td style="width:15%">Reps:'.$Value.'<input type="hidden" name="ThisRoutine_ThisRound_ThisOrderBy_'.$ExerciseId.'_Reps" value="'.$_REQUEST['Reps'].'"/></td>';
+        }else{
+            $Message .= '<td style="width:15%"></td>';
+        }
+                
+        $Message .= '<td style="width:10%"><input type="button" value="Delete" onClick="Remove(\'ThisRow\');"/></td></tr></table>';
+
+        return $Message;
     }        
         
         function ChosenExercises()

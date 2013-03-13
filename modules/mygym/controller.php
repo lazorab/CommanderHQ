@@ -118,6 +118,7 @@ class MygymController extends Controller
         $html .= '<div data-role="collapsible-set" data-iconpos="right">';
         $ThisRoutine = '';
         $ThisRound = '';
+        $ThisOrderBy = '';
 	$ThisExerciseId = 0;
         //var_dump($WodDetails);
 	foreach($WodDetails as $Detail){
@@ -159,7 +160,7 @@ class MygymController extends Controller
                             $html.= '<div data-role="collapsible">';
                             $html.= '<h2>'.$Detail->Exercise.'<br/>';             
 			}
-			else if($ThisExerciseId != $Detail->ExerciseId){
+			else if($ThisExerciseId != $Detail->ExerciseId || $ThisOrderBy != $Detail->OrderBy){
                             if($ThisExerciseId != null && $i > 0){
                                 $html.='</h2><p style="color:red">'.$this->getExerciseHistory("".$Detail->RoundNo."_".$ThisExerciseId."").'</p></div>';
                             }       
@@ -178,6 +179,7 @@ class MygymController extends Controller
                 }
         $ThisRoutine = $Detail->RoutineNo;        
 	$ThisRound = $Detail->RoundNo;
+        $ThisOrderBy = $Detail->OrderBy;
 	$ThisExerciseId = $Detail->ExerciseId;
         $i++;
 	}

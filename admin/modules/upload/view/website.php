@@ -8,8 +8,13 @@
 
 //****************************************************Well Rounded WOD**********************************************************
 var LastActivity = '';
+var LastAdvancedActivity = '';
 var DuplicateRound;
 var DuplicateRoutine;
+var DuplicateAdvancedRound;
+var DuplicateAdvancedRoutine;
+var OrderBy = 0;
+var AdvancedOrderBy = 0;
 
 function PublishWod(){
     $.getJSON('ajax.php?module=upload&action=validateform', $("#wodform").serialize(),messagedisplay);
@@ -20,12 +25,20 @@ function getInputFields(exerciseId){
 }
 
 function inputdisplay(data){
-    var routine = document.getElementById('RoutineCounter').value;
-    var Html = data.replace(/ThisRoutine/g, routine);
+    OrderBy++;
+    var RoutineNo = $('#RoutineCounter').val();   
+    var RoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();
+    if(RoutineNo == 1)
+        DuplicateRound += data;
+    Html = data.replace(/ThisRoutine/g, RoutineNo);
+    Html = Html.replace(/ThisRound/g, RoundNo);  
+    Html = Html.replace(/ThisOrderBy/g, OrderBy);
+    
     $('#inputs').html(Html);
 }
 
 function AddRoutine(){
+    OrderBy = 0;
     DuplicateRound = '';
     var PrevRoutineNo = $('#RoutineCounter').val();
     var RowNo = $('#rowcounter').val();
@@ -50,6 +63,7 @@ function AddRoutine(){
 
 function AddRound()
 {
+    OrderBy = 1;
     var RoutineNo = $('#RoutineCounter').val();
     var PrevRoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();
     var RowNo = $('#rowcounter').val();
@@ -66,7 +80,8 @@ function AddRound()
         var ThisRound ='<br/><div class="RoundLabel" id="Routine' + RoutineNo + 'Round' + RoundNo + 'Label">Round ' + RoundNo + '</div>';
         ThisRound+= '<input type="hidden" name="Round' + RoundNo + 'Counter" id="Round' + RoundNo + 'Counter" value="'+RowNo+'"/>';
         
-        ThisRound+=DuplicateRound.replace(/RoundNo/g, RoundNo);
+        ThisRound+=DuplicateRound.replace(/ThisRound/g, RoundNo);
+        ThisRound=ThisRound.replace(/ThisOrderBy/g, OrderBy);
         ThisRound=ThisRound.replace(/ThisRow/g, RowNo);
         ThisRound=ThisRound.replace(/undefined/g, '');
 
@@ -187,26 +202,7 @@ function addexercise()
     var Huom = $('#HUOM').val();
     var dist = $('#Distance').val();
     var Duom = $('#DUOM').val();
-    var reps = $('#Reps').val();
-    
-    if(MWeight == '')
-        MWeight = 'Max';
-    if(FWeight == '')
-        FWeight = 'Max';
-    if(Wuom == '')
-        Wuom = 'Max';    
-    if(FHeight == '')
-        FHeight = 'Max';
-    if(MHeight == '')
-        MHeight = 'Max';
-    if(Huom == '')
-        Huom = 'Max';
-    if(dist == '')
-        dist = 'Max';
-    if(Duom == '')
-        Duom = 'Max';   
-    if(reps == '')
-        reps = 'Max';   
+    var reps = $('#Reps').val();   
    
     $.getJSON('ajax.php?module=upload&action=validateform', {Exercise:exercise, mWeight:MWeight, fWeight:FWeight, WUOM:Wuom, fHeight:FHeight, HUOM:Huom, mHeight:MHeight, Distance:dist, DUOM:Duom, Reps:reps},wresult);
 }
@@ -267,13 +263,14 @@ function wresult(message)
     var ThisRoutineNumber = $('#RoutineCounter').val();
     document.getElementById('Routine' + ThisRoutineNumber + 'Counter').value++;
     var ThisRowNumber = $('#rowcounter').val();
-    var ThisRound = $('#Routine' + ThisRoutineNumber + 'RoundCounter').val();
-    
+    var RoundNo = $('#Routine' + ThisRoutineNumber + 'RoundCounter').val();
+    LastActivity = message;
     var Html = message.replace(/ThisRoutine/g, ThisRoutineNumber);
     if(ThisRoutineNumber == 1)
         DuplicateRound += Html;
     Html = Html.replace(/ThisRow/g, ThisRowNumber);
-    Html = Html.replace(/RoundNo/g, ThisRound);
+    Html = Html.replace(/ThisRound/g, RoundNo);
+    Html = Html.replace(/ThisOrderBy/g, OrderBy);
     
     //alert(Html);
     var exercises = $('#activity'+ThisRoutineNumber+'list');
@@ -307,6 +304,16 @@ function dropdownrefresh(data)
     $('#Routine_'+ThisRoutineNumber).html(data);
 }
 
+function DuplicateLastActivity()
+{
+    if(LastActivity != ''){
+        OrderBy++;
+        wresult(LastActivity);
+    }else{
+        alert('Nothing to copy yet!');
+    }
+}
+
 //*************************************************Advanced WOD*******************************************************************
 
 function PublishAdvancedWod(){
@@ -318,13 +325,21 @@ function getAdvancedInputFields(exerciseId){
 }
 
 function ainputdisplay(data){
-    var routine = document.getElementById('aRoutineCounter').value;
-    var Html = data.replace(/ThisRoutine/g, routine);
-    $('#ainputs').html(Html);   
+    AdvancedOrderBy++;
+    var RoutineNo = $('#aRoutineCounter').val();   
+    var RoundNo = $('#aRoutine' + RoutineNo + 'RoundCounter').val();
+    if(RoutineNo == 1)
+        DuplicateAdvancedRound += data;
+    Html = data.replace(/ThisRoutine/g, RoutineNo);
+    Html = Html.replace(/ThisRound/g, RoundNo); 
+    Html = Html.replace(/ThisOrderBy/g, AdvancedOrderBy);
+
+    $('#ainputs').html(Html);  
 }
 
 function AddAdvancedRoutine(){
-    DuplicateRound = '';
+    AdvancedOrderBy=0;
+    DuplicateAdvancedRound = '';
     var PrevRoutineNo = $('#aRoutineCounter').val();
     var RowNo = $('#arowcounter').val();
     if(RowNo == 0){
@@ -348,6 +363,7 @@ function AddAdvancedRoutine(){
 
 function AddAdvancedRound()
 {
+    AdvancedOrderBy=1;
     var RoutineNo = $('#aRoutineCounter').val();
     var PrevRoundNo = $('#aRoutine' + RoutineNo + 'RoundCounter').val();
     var RowNo = $('#arowcounter').val();
@@ -364,7 +380,8 @@ function AddAdvancedRound()
         var ThisRound ='<br/><div class="RoundLabel" id="aRoutine' + RoutineNo + 'Round' + RoundNo + 'Label">Round ' + RoundNo + '</div>';
         ThisRound+= '<input type="hidden" name="Round' + RoundNo + 'Counter" id="aRound' + RoundNo + 'Counter" value="'+RowNo+'"/>';
         
-        ThisRound+=DuplicateRound.replace(/RoundNo/g, RoundNo);
+        ThisRound+=DuplicateAdvancedRound.replace(/ThisRound/g, RoundNo);
+        ThisRound=ThisRound.replace(/ThisOrderBy/g, AdvancedOrderBy);
         ThisRound=ThisRound.replace(/ThisRow/g, RowNo);
         ThisRound=ThisRound.replace(/undefined/g, '');
 
@@ -401,25 +418,6 @@ function addexerciseAdvanced()
     var Duom = $('#aDUOM').val();
     var reps = $('#aReps').val();
     
-    if(MWeight == '')
-        MWeight = 'Max';
-    if(FWeight == '')
-        FWeight = 'Max';
-    if(Wuom == '')
-        Wuom = 'Max';    
-    if(FHeight == '')
-        FHeight = 'Max';
-    if(MHeight == '')
-        MHeight = 'Max';
-    if(Huom == '')
-        Huom = 'Max';
-    if(dist == '')
-        dist = 'Max';
-    if(Duom == '')
-        Duom = 'Max';   
-    if(reps == '')
-        reps = 'Max';
-    
     $.getJSON('ajax.php?module=upload&action=validateform', {Exercise:exercise, mWeight:MWeight, fWeight:FWeight, WUOM:Wuom, fHeight:FHeight, HUOM:Huom, mHeight:MHeight, Distance:dist, DUOM:Duom, Reps:reps},aresult);
 }
 
@@ -436,17 +434,19 @@ function aresult(message)
     }else if(message == 4){
         alert('Can\'t have distance and height!');
     }else{
+        LastAdvancedActivity = message;
     document.getElementById('arowcounter').value++; 
     var ThisRoutineNumber = $('#aRoutineCounter').val();
     document.getElementById('aRoutine' + ThisRoutineNumber + 'Counter').value++;
     var ThisRowNumber = $('#arowcounter').val();
-    var ThisRound = $('#aRoutine' + ThisRoutineNumber + 'RoundCounter').val();
+    var RoundNo = $('#aRoutine' + ThisRoutineNumber + 'RoundCounter').val();
     
     var Html = message.replace(/ThisRoutine/g, ThisRoutineNumber);
     if(ThisRoutineNumber == 1)
-        DuplicateRound += Html;
+        DuplicateAdvancedRound += Html;
     Html = Html.replace(/ThisRow/g, ThisRowNumber);
-    Html = Html.replace(/RoundNo/g, ThisRound);
+    Html = Html.replace(/ThisRound/g, RoundNo);
+    Html = Html.replace(/ThisOrderBy/g, AdvancedOrderBy);
     
     //alert(Html);
     var exercises = $('#aactivity'+ThisRoutineNumber+'list');
@@ -484,6 +484,16 @@ function addNewActivityAdvanced()
     //$('.buttongroup').button();
     //$('.buttongroup').button('refresh');
     //$('.textinput').textinput();
+}
+
+function aDuplicateLastActivity()
+{
+    if(LastAdvancedActivity != ''){
+        AdvancedOrderBy++;
+        aresult(LastAdvancedActivity);
+    }else{
+        alert('Nothing to copy yet!');
+    }    
 }
 </script>
 
@@ -530,9 +540,10 @@ function addNewActivityAdvanced()
 </div> 
 <input type="button" value="Custom Activity" onClick="addNewActivity();"/>
 <br/><br/>
+<input type="button" name="addroutine" value="Copy Activity" onClick="DuplicateLastActivity();"/>
 <input type="button" name="addroutine" value="Add Routine" onClick="AddRoutine();"/>
 <input type="button" name="addround" value="Add Round" onClick="AddRound();"/>
-<input type="button" name="btnsubmit" value="Save WOD" onClick="PublishWod()"/>
+<input style="float:right" type="button" name="btnsubmit" value="Save WOD" onClick="PublishWod()"/>
 </form><br/>
 </div>
 <div id="add_exercise"></div>   
@@ -575,9 +586,10 @@ function addNewActivityAdvanced()
 </div> 
 <input type="button" value="Custom Activity" onClick="addNewActivityAdvanced();"/>
 <br/><br/>
+<input type="button" name="addroutine" value="Copy Activity" onClick="aDuplicateLastActivity();"/>
 <input type="button" name="addroutine" value="Add Routine" onClick="AddAdvancedRoutine();"/>
 <input type="button" name="addround" value="Add Round" onClick="AddAdvancedRound();"/>
-<input type="button" name="btnsubmit" value="Save WOD" onClick="PublishAdvancedWod()"/>
+<input type="button" style="float:right" name="btnsubmit" value="Save WOD" onClick="PublishAdvancedWod()"/>
 </form><br/>
 </div>
 <div id="add_exercise"></div>   

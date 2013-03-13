@@ -63,7 +63,7 @@ class CustomController extends Controller
             if($i > 0)
                 $html.=' | ';
 
-            $html.=''.$Activity->Attribute.' : <span id="RoutineNo_RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_html">'.$AttributeValue.'</span>';
+            $html.=''.$Activity->Attribute.' : <span id="RoutineNo_RoundNo_OrderBy_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_html">'.$AttributeValue.'</span>';
 
             //if($AttributeValue != '-'){
                 $html.=''.$Activity->UnitOfMeasure.'';
@@ -80,10 +80,10 @@ class CustomController extends Controller
             if($i > 0)
                 $TheseAttributes.='_';
             $TheseAttributes.=$Attribute;
-            $html .= '<div style="float:left;margin:0 25px 0 25px"">'.$Attribute.'<br/><input value="'.$Val.'" style="width:80px" type="number" id="RoutineNo_RoundNo_'.$Activity->ExerciseId.'_'.$Attribute.'_new" name="RoutineNo_RoundNo_'.$Activity->ExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_'.$Activity->OrderBy.'" placeholder="'.$UnitOfMeasure.'"/></div>';    
+            $html .= '<div style="float:left;margin:0 25px 0 25px"">'.$Attribute.'<br/><input value="'.$Val.'" style="width:80px" type="number" id="RoutineNo_RoundNo_OrderBy_'.$Activity->ExerciseId.'_'.$Attribute.'_new" name="RoutineNo_RoundNo_'.$Activity->ExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_OrderBy" placeholder="'.$UnitOfMeasure.'"/></div>';    
             $i++;
         }
-        $html .= '<div style="float:right;margin:10px 30px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="UpdateActivity(\'RoutineNo_RoundNo_'.$Activity->ExerciseId.'\', \''.$TheseAttributes.'\');" value="Update"/></div>';
+        $html .= '<div style="float:right;margin:10px 30px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="UpdateActivity(\'RoutineNo_RoundNo_OrderBy_'.$Activity->ExerciseId.'\', \''.$TheseAttributes.'\');" value="Update"/></div>';
         $html .= '</div><div class="clear"></div>';
         $html .= '</div>';
         $html .= '</div>';

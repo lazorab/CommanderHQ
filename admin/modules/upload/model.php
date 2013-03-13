@@ -25,8 +25,8 @@ class UploadModel extends Model
             
             if($_REQUEST[''.$i.'_Benchmark'] != ''){
                 $BenchmarkId = $_REQUEST[''.$i.'_Benchmark'];
-                $SQL = 'INSERT INTO WodWorkouts(GymId, WorkoutName, WodTypeId, WorkoutRoutineTypeId, Notes, WodDate) 
-                VALUES("'.$_SESSION['GID'].'", "'. $BenchmarkId .'", "'.$WodTypeId.'", "'.$TimingTypeVal.'", "'.$NotesVal.'", "'.$_REQUEST['WodDate'].'")';
+                $SQL = 'INSERT INTO WodWorkouts(GymId, WorkoutName, RoutineNo, WodTypeId, WorkoutRoutineTypeId, Notes, WodDate) 
+                VALUES("'.$_SESSION['GID'].'", "'. $BenchmarkId .'", "'.$i.'", '.$WodTypeId.'", "'.$TimingTypeVal.'", "'.$NotesVal.'", "'.$_REQUEST['WodDate'].'")';
                 $db->setQuery($SQL);
                 $db->Query();
             }else{
@@ -139,13 +139,13 @@ class UploadModel extends Model
             return $db->loadObjectList(); 
 	}
         
-        function getExerciseName($ExerciseId)
+        function getExerciseDetails($ExerciseId)
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT Exercise FROM Exercises WHERE recid = '.$ExerciseId.'';
+            $SQL = 'SELECT Exercise, Acronym FROM Exercises WHERE recid = '.$ExerciseId.'';
             $db->setQuery($SQL);
 		
-            return $db->loadResult();
+            return $db->loadObject();
         }     
     
     function getActivityFields()
@@ -158,34 +158,49 @@ class UploadModel extends Model
         foreach($_REQUEST AS $Name=>$Value)
         {
             $ExplodedKey = explode('_', $Name);
-            if(count($ExplodedKey) > 3){
+            if(count($ExplodedKey) > 4){
                 $RoutineNo = $ExplodedKey[0];
                 $RoundNo = $ExplodedKey[1];
-                $ExerciseId = $ExplodedKey[2];
-                if($ExplodedKey[3] == 'Distance'){
+                $OrderBy = $ExplodedKey[2];
+                $ExerciseId = $ExplodedKey[3];
+                if($ExplodedKey[4] == 'Distance'){
                     $DistanceVal = $_REQUEST[''.$Name.''];
+                     if($DistanceVal == '')
+                        $DistanceVal = 'Max';                   
                     $DistanceUOM = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_DUOM'];
                 }    
                 
-                if($ExplodedKey[3] == 'mHeight' || $ExplodedKey[3] == 'fHeight'){
-                    $MHeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_mHeight'];               
-                    $FHeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_fHeight'];               
+                if($ExplodedKey[4] == 'mHeight' || $ExplodedKey[3] == 'fHeight'){
+                    $MHeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_mHeight']; 
+                    if($MHeightVal == '')
+                        $MHeightVal = 'Max';                    
+                    $FHeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_fHeight']; 
+                    if($MHeightVal == '')
+                        $MHeightVal = 'Max';                    
                     $HeightUOM = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_HUOM']; 
                 }
                 
-                if($ExplodedKey[3] == 'mWeight' || $ExplodedKey[3] == 'fWeight'){
-                    $MHeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_mWeight'];               
-                    $FHeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_fWeight'];               
-                    $HeightUOM = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_WUOM']; 
+                if($ExplodedKey[4] == 'mWeight' || $ExplodedKey[3] == 'fWeight'){
+                    $MWeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_mWeight'];
+                    if($MWeightVal == '')
+                        $MWeightVal = 'Max';
+                    $FWeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_fWeight']; 
+                    if($FWeightVal == '')
+                        $FWeightVal = 'Max';                    
+                    $WeightUOM = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_WUOM']; 
                 }                
                 
-                if($ExplodedKey[3] == 'Rounds')
+                if($ExplodedKey[4] == 'Rounds'){
                     $RoundsVal = $_REQUEST[''.$Name.'']; 
+                    if($RoundsVal == '')
+                        $RoundsVal = 'Max';                    
+                }
                 
-                if($ExplodedKey[3] == 'Reps')
-                    $RepsVal = $_REQUEST[''.$Name.''];  
-                if($ExplodedKey[3] == 'OrderBy')
-                    $OrderBy = $_REQUEST[''.$Name.''];                
+                if($ExplodedKey[4] == 'Reps'){
+                    $RepsVal = $_REQUEST[''.$Name.''];
+                    if($RepsVal == '')
+                        $RepsVal = 'Max';                   
+                }
 
                 $TimingTypeId = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_TimingType'];
                 if($TimingTypeId == '' || $TimingTypeId == 0)
