@@ -144,7 +144,7 @@ function SelectionControl(exercise)
     if(exercise == 'Add New Activity')
         addNewExercise();
     else{
-        LastActivity = exercise;
+        //LastActivity = exercise;
         ExerciseInputs(exercise); 
     }
 }
@@ -152,8 +152,9 @@ function SelectionControl(exercise)
 function DuplicateLastActivity()
 {
     if(LastActivity != ''){
+        addactivitydisplay(LastActivity);
         //OrderBy++;
-        ExerciseInputs(LastActivity); 
+        //ExerciseInputs(LastActivity); 
     }else{
         alert('Nothing to copy yet!');
     }
@@ -214,7 +215,8 @@ function addactivitydisplay(data)
 {
     if(data.substring(0,5) == 'Error'){
         alert(data); 
-    }else{  
+    }else{
+    LastActivity = data;    
     OrderBy++;     
     var RoutineNo = $('#RoutineCounter').val();   
     var RoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();

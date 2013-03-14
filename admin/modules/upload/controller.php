@@ -235,7 +235,7 @@ class UploadController extends Controller
         $Model = new UploadModel;
         $Benchmarks = $Model->getBenchmarks();   
         $Html .= '<select style="width:250px" class="select buttongroup" data-role="none" id="benchmark" name="benchmark" onChange="AddBenchmark(this.value)">
-         <option value="none">Select Benchmark</option>';
+         <option value="none">Add Benchmark</option>';
 	foreach($Benchmarks AS $Benchmark){
             $Html .= '<option value="'.$Benchmark->Id.'">'.$Benchmark->WorkoutName.'</option>';
 	}
@@ -248,7 +248,7 @@ class UploadController extends Controller
         $Model = new UploadModel;
         $Benchmarks = $Model->getBenchmarks();   
         $Html .= '<select style="width:250px" class="select buttongroup" data-role="none" id="abenchmark" name="benchmark" onChange="AddBenchmarkAdvanced(this.value)">
-         <option value="none">Select Benchmark</option>';
+         <option value="none">Add Benchmark</option>';
 	foreach($Benchmarks AS $Benchmark){
             $Html .= '<option value="'.$Benchmark->Id.'">'.$Benchmark->WorkoutName.'</option>';
 	}

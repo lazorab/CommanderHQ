@@ -47,11 +47,11 @@ function AddRoutine(){
     }else if($('#Routine' + PrevRoutineNo + 'Counter').val() == 0){
         alert('No Exercises selected for routine ' + PrevRoutineNo + '!');
     }else{
-        if($('#Routine1Label').html() == '')
-            $('#Routine1Label').html('Routine 1');
+        //if($('#Routine1Label').html() == '')
+        //    $('#Routine1Label').html('Routine 1');
         document.getElementById('RoutineCounter').value++;
         var RoutineNo = $('#RoutineCounter').val();
-        var ThisRoutine ='<br/><div class="RoutineLabel" id="Routine' + RoutineNo + 'Label">Routine ' + RoutineNo + '</div>';
+        var ThisRoutine ='<br/><div class="RoutineLabel" id="Routine' + RoutineNo + 'Label"><h2>Routine ' + RoutineNo + '</h2></div>';
         ThisRoutine += '<div class="RoundLabel" id="Routine' + RoutineNo + 'Round1Label"></div>';
         ThisRoutine += '<input type="hidden" name="Routine' + RoutineNo + 'Counter" id="Routine' + RoutineNo + 'Counter" value="0"/>';
         ThisRoutine += '<input type="hidden" name="Routine' + RoutineNo + 'RoundCounter" id="Routine' + RoutineNo + 'RoundCounter" value="1"/>';               
@@ -351,7 +351,7 @@ function AddAdvancedRoutine(){
             $('#aRoutine1Label').html('Routine 1');
         document.getElementById('aRoutineCounter').value++;
         var RoutineNo = $('#aRoutineCounter').val();
-        var ThisRoutine ='<br/><div class="RoutineLabel" id="aRoutine' + RoutineNo + 'Label">Routine ' + RoutineNo + '</div>';
+        var ThisRoutine ='<br/><div class="RoutineLabel" id="aRoutine' + RoutineNo + 'Label"><h2>Routine ' + RoutineNo + '</h2></div>';
         ThisRoutine += '<div class="RoundLabel" id="aRoutine' + RoutineNo + 'Round1Label"></div>';
         ThisRoutine += '<input type="hidden" name="Routine' + RoutineNo + 'Counter" id="aRoutine' + RoutineNo + 'Counter" value="0"/>';
         ThisRoutine += '<input type="hidden" name="Routine' + RoutineNo + 'RoundCounter" id="aRoutine' + RoutineNo + 'RoundCounter" value="1"/>';       
@@ -512,7 +512,6 @@ function aDuplicateLastActivity()
 <input type="hidden" name="RoutineCounter" id="RoutineCounter" value="1"/>
 <input type="hidden" name="Routine1Counter" id="Routine1Counter" value="0"/>
 <input type="hidden" name="Routine1RoundCounter" id="Routine1RoundCounter" value="1"/>
-<textarea name="Notes" id="Notes" rows="4" cols="80" placeholder="Describe your WOD here"></textarea>
 <p>WOD Name:<input name="WodName" type="text"/> WOD Date:<input class="inputbox-required" type="text" name="WodDate" id="WodDate" maxlength="25" placeholder="Use Calendar" value=""/>
 <img src="images/calendar-blue.gif" alt="calendar" id="Start_trigger"/></p>
 <script type="text/javascript">
@@ -523,8 +522,9 @@ function aDuplicateLastActivity()
         dateFormat : "%Y-%m-%d"
       });
 </script>
-<textarea name="1_Notes" id="Notes_1" rows="1" cols="80" placeholder="Add notes here"></textarea>
-<div id="Routine1Label"></div>
+<textarea name="Notes" id="Notes" rows="4" cols="80" placeholder="Description"></textarea>
+<h2>Routine 1</h2>
+<textarea name="1_Notes" id="Notes_1" rows="1" cols="80" placeholder="Describe your WOD"></textarea>
 <div id="Routine1Round1Label"></div>
 <div id="activity1list"></div> 
 <div id="Routines"></div>   
@@ -532,17 +532,15 @@ function aDuplicateLastActivity()
 <br/>
 <br/>
 
-<div style="height:75px;width:980px">
-    <div style="float:left;width:150px" ><?php echo $Display->getExercises();?></div>
+<div style="height:42px;width:980px">
+    <div style="float:left;width:150px;margin-left:22px;"><?php echo $Display->getExercises();?></div>
     <div style="float:right;width:700px" id="inputs"></div>
-    <br/><br/>
-    <div style="float:left;width:150px" ><?php echo $Display->getBenchmarks();?></div>
 </div> 
-<input type="button" value="Custom Activity" onClick="addNewActivity();"/>
+<input style="margin-right:10px" type="button" value="Custom Activity" onClick="addNewActivity();"/><?php echo $Display->getBenchmarks();?>
+<input style="float:right" type="button" name="addround" value="Add Round" onClick="AddRound();"/>
+<input style="float:right" type="button" name="addroutine" value="Copy Activity" onClick="DuplicateLastActivity();"/>
 <br/><br/>
-<input type="button" name="addroutine" value="Copy Activity" onClick="DuplicateLastActivity();"/>
 <input type="button" name="addroutine" value="Add Routine" onClick="AddRoutine();"/>
-<input type="button" name="addround" value="Add Round" onClick="AddRound();"/>
 <input style="float:right" type="button" name="btnsubmit" value="Save WOD" onClick="PublishWod()"/>
 </form><br/>
 </div>
@@ -558,7 +556,6 @@ function aDuplicateLastActivity()
 <input type="hidden" name="RoutineCounter" id="aRoutineCounter" value="1"/>
 <input type="hidden" name="Routine1Counter" id="aRoutine1Counter" value="0"/>
 <input type="hidden" name="Routine1RoundCounter" id="aRoutine1RoundCounter" value="1"/>
-<textarea name="Notes" id="aNotes" rows="4" cols="80" placeholder="Describe your WOD here"></textarea>
 <p>WOD Name:<input name="WodName" type="text"/> WOD Date:<input class="inputbox-required" type="text" name="WodDate" id="aWodDate" maxlength="25" placeholder="Use Calendar" value=""/>
 <img src="images/calendar-blue.gif" alt="calendar" id="Start_trigger"/></p>
 <script type="text/javascript">
@@ -569,8 +566,9 @@ function aDuplicateLastActivity()
         dateFormat : "%Y-%m-%d"
       });
 </script>
-<textarea name="1_Notes" id="aNotes_1" rows="1" cols="80" placeholder="Add notes here"></textarea>
-<div id="aRoutine1Label"></div>
+<textarea name="Notes" id="aNotes" rows="4" cols="80" placeholder="Description"></textarea>
+<h2>Routine 1</h2>
+<textarea name="1_Notes" id="aNotes_1" rows="1" cols="80" placeholder="Describe your WOD"></textarea>
 <div id="aRoutine1Round1Label"></div>
 <div id="aactivity1list"></div> 
 <div id="aRoutines"></div>   
@@ -578,17 +576,15 @@ function aDuplicateLastActivity()
 <br/>
 <br/>
 
-<div style="height:75px;width:980px">
-    <div style="float:left;width:150px" ><?php echo $Display->getAdvancedExercises();?></div>
+<div style="height:42px;width:980px">
+    <div style="float:left;width:150px;margin-left:22px;"><?php echo $Display->getAdvancedExercises();?></div>
     <div style="float:right;width:700px" id="ainputs"></div>
-    <br/><br/>
-    <div style="float:left;width:150px" ><?php echo $Display->getAdvancedBenchmarks();?></div>
 </div> 
-<input type="button" value="Custom Activity" onClick="addNewActivityAdvanced();"/>
+<input style="margin-right:10px" type="button" value="Custom Activity" onClick="addNewActivityAdvanced();"/><?php echo $Display->getAdvancedBenchmarks();?>
+<input style="float:right" type="button" name="addround" value="Add Round" onClick="AddAdvancedRound();"/>
+<input style="float:right" type="button" name="addroutine" value="Copy Activity" onClick="aDuplicateLastActivity();"/>
 <br/><br/>
-<input type="button" name="addroutine" value="Copy Activity" onClick="aDuplicateLastActivity();"/>
 <input type="button" name="addroutine" value="Add Routine" onClick="AddAdvancedRoutine();"/>
-<input type="button" name="addround" value="Add Round" onClick="AddAdvancedRound();"/>
 <input type="button" style="float:right" name="btnsubmit" value="Save WOD" onClick="PublishAdvancedWod()"/>
 </form><br/>
 </div>
