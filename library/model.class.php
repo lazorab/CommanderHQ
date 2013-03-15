@@ -234,7 +234,7 @@ class Model
         
      function getActivityFields($Validate = true)
     {
-        if(isset($_REQUEST['TimeToComplete']) && $_REQUEST['TimeToComplete'] == '00:00:0'){
+        if($Validate == true && isset($_REQUEST['TimeToComplete']) && $_REQUEST['TimeToComplete'] == '00:00:0'){
                 $this->Message = 'Error - Invalid Value for Stopwatch!';  
         }
         if($this->Message == ''){
@@ -249,6 +249,8 @@ class Model
             $ExplodedKey = explode('_', $Name);
             if(count($ExplodedKey) > 5)
             {
+                if($ExplodedKey[5] != 'UOM'){
+                //eg. 1_1_8_Height_0_1
                 $RoutineNo = $ExplodedKey[0];
                 $RoundNo = $ExplodedKey[1];
                 $ExerciseId = $ExplodedKey[2];
@@ -256,11 +258,15 @@ class Model
                 $Attribute = $ExplodedKey[3];
                 $UOMId = $ExplodedKey[4];
                 $OrderBy = $ExplodedKey[5];
+                
                 $DetailsValue=$Value;
                 if(array_key_exists('6', $ExplodedKey))
                     $DetailsValue='Max';
-                if($Attribute == 'Distance' || $Attribute == 'Height')
-                    $UOMId = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_'.$Attribute.'_UOM'];
+                if(($Attribute == 'Distance' || $Attribute == 'Height') && isset($_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$OrderBy.'_'.$ExerciseId.'_'.$Attribute.'_UOM'])){
+                    //eg. 1_1_1_8_Height_UOM
+                    //var_dump(''.$RoutineNo.'_'.$RoundNo.'_'.$OrderBy.'_'.$ExerciseId.'_'.$Attribute.'_UOM');
+                    $UOMId = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$OrderBy.'_'.$ExerciseId.'_'.$Attribute.'_UOM'];
+                }
                 $UOM = $this->getUnitOfMeasure($UOMId);
                 if($Value == '' || $Value == '0' || $Value == $Attribute || $Value == 'Max'){
                     if($Validate == true)
@@ -280,12 +286,14 @@ class Model
                         "'.$OrderBy.'" AS OrderBy     
                         FROM Exercises
                         WHERE recid = "'.$ExerciseId.'"';
+                //var_dump($SQL);
                 $db->setQuery($SQL);
                 $Row = $db->loadObject();
                 if(is_object($Row))
                     array_push($Activities, $Row);
-                }      
+                } }     
             }else if(count($ExplodedKey) > 4){
+                if($ExplodedKey[3] != 'UOM'){
                 $RoundNo = $ExplodedKey[0];
                 $ExerciseId = $ExplodedKey[1];
                 $ExerciseName = $this->getExerciseName($ExerciseId);
@@ -319,7 +327,7 @@ class Model
                 $Row = $db->loadObject();
                 if(is_object($Row))
                     array_push($Activities, $Row);
-                }                
+                }  }              
             } 
         }
         return $Activities;
@@ -361,15 +369,16 @@ class Model
                 WL.AttributeValue, 
                 UOM.UnitOfMeasure,
                 WL.RoundNo,
+                WL.OrderBy,
                 TimeCreated
                 FROM WODLog WL 
                 LEFT JOIN Attributes A ON A.recid = WL.AttributeId
-                LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid
+                LEFT JOIN UnitsOfMeasure UOM ON UOM.recid = WL.UnitOfMeasureId
                 LEFT JOIN Exercises E ON E.recid = WL.ExerciseId
                 WHERE WL.ExerciseId = '.$Id.'
                 AND (Attribute = "Reps" OR SystemOfMeasure = "'.$this->getSystemOfMeasure().'")    
                 AND MemberId = "'.$_SESSION['UID'].'"
-                ORDER BY TimeCreated DESC, RoundNo, Attribute';
+                ORDER BY TimeCreated DESC, RoundNo, OrderBy, Attribute';
             //var_dump($SQL);
             $db->setQuery($SQL);
             return $db->loadObjectList();

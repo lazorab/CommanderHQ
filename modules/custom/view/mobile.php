@@ -279,8 +279,8 @@ function ExerciseInputs(exercise)
                 if(this.Attribute == 'Distance'){ 
                     Elements.push(''+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'');
                     Html += '<div style="float:left;margin:10px 25px 10px 25px"><input placeholder="'+this.Attribute+'" style="width:80px" type="number" id="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'" name="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'"/></div>';
-                    Elements.push(''+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_Distance_UOM');
-                    Html += '<div style="float:left;margin:10px 25px 10px 25px"><select id="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_Distance_UOM" name="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_Distance_UOM">';
+                    Elements.push(''+RoutineNo+'_'+RoundNo+'_'+OrderBy+'_'+this.ExerciseId+'_Distance_UOM');
+                    Html += '<div style="float:left;margin:10px 25px 10px 25px"><select id="'+RoutineNo+'_'+RoundNo+'_'+OrderBy+'_'+this.ExerciseId+'_Distance_UOM" name="'+RoutineNo+'_'+RoundNo+'_'+OrderBy+'_'+this.ExerciseId+'_Distance_UOM">';
             if('<?php echo $Display->SystemOfMeasure();?>' == 'Metric'){
                 Html += '<option value="2">Metres</option>';
                 Html += '<option value="1">Kilometres</option>';
@@ -296,8 +296,8 @@ function ExerciseInputs(exercise)
                 Html += '<div style="float:left;margin:10px 25px 10px 25px">';
                 Html += '<input placeholder="'+this.Attribute+' '+UOM+'" style="width:80px" type="number" id="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_'+UOMId+'_'+OrderBy+'" name="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_'+UOMId+'_'+OrderBy+'"/>';
                 if(this.Attribute == 'Height'){
-                    Html += '<input type="hidden" id="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_Height_UOM" name="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_Height_UOM" value="'+UOMId+'"/>';
-                    Elements.push(''+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_Height_UOM');
+                    Html += '<input type="hidden" id="'+RoutineNo+'_'+RoundNo+'_'+OrderBy+'_'+this.ExerciseId+'_Height_UOM" name="'+RoutineNo+'_'+RoundNo+'_'+OrderBy+'_'+this.ExerciseId+'_Height_UOM" value="'+UOMId+'"/>';
+                    Elements.push(''+RoutineNo+'_'+RoundNo+'_'+OrderBy+'_'+this.ExerciseId+'_Height_UOM');
                 }
                 Html += '</div>';
                }
@@ -357,7 +357,8 @@ function Save()
         }else{
             $('#timerContainer').html('');
         }
-        $.getJSON('ajax.php?module=custom&action=validateform', $("#customform").serialize(),messagedisplay);
+        $.getJSON('ajax.php?module=custom&action=validateform&ValidateInput=no', $("#customform").serialize(),messagedisplay);
+       $('#HideAfterSave').html('');
     }
 }
 
@@ -491,6 +492,21 @@ function UpdateActivity(ActivityId, Attributes)
         $("#"+ActivityId+"_"+AttributesArray[i]+"_html").html($("#"+ActivityId+"_"+AttributesArray[i]+"_new").val());
         //$("#"+ActivityId+"_"+AttributesArray[i]+"").val($("#"+ActivityId+"_"+AttributesArray[i]+"_new").val());
     }  
+}
+
+function SaveTheseResults(ActivityForm)
+{    
+    //ActivityForm = RoutineNo_RoundNo_OrderBy_'.$Activity->ExerciseId.'
+   var Detail = ActivityForm.split('_');
+   var ExerciseId = Detail[3];   
+   var TimeToComplete = $('#clock').html();
+   var TimeField = ''+Detail[0]+'_'+Detail[1]+'_'+ExerciseId+'_TimeToComplete_0_'+Detail[2]+'';
+//1_1_81_Reps_0_1
+   $.ajax({url:'ajax.php?module=custom&action=formsubmit&'+TimeField+'='+TimeToComplete+'',data:$('#'+ActivityForm+'').serialize(),dataType:"html",success:messagedisplay});          
+   $.ajax({url:'ajax.php?module=custom',data:{history:'refresh', ExerciseId:ExerciseId},dataType:"html",success:function(html) {
+        $('#'+ActivityForm+'_History').html(html);   
+   }});      
+    //'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId, OrderBy)
 }
 </script>
 <br/>

@@ -61,10 +61,10 @@ function stopcountdown()
 }
 
 function reset(){
-    if(document.getElementById("clockType").value == 'stopwatch')
+    //if(document.getElementById("clockType").value == 'stopwatch')
         resetclock();
-    else
-        resetcountdown(); 
+    //else
+        //resetcountdown(); 
 }
 
 function resetcountdown()

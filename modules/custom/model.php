@@ -13,7 +13,11 @@ function __construct()
                 if(isset($_REQUEST['CustomName']) && $_REQUEST['CustomName'] == ''){
                     $this->Message .= "Error - Name for WOD required!";
                 }else{
-                $ActivityFields = $this->getActivityFields();
+                    if($_REQUEST['ValidateInput'] == 'no')
+                $ValidateInput = false;
+                else 
+                $ValidateInput = true;
+                $ActivityFields = $this->getActivityFields($ValidateInput);
                 if($this->Message == ''){
                 $WorkoutTypeId = $this->getCustomTypeId();
                 $WorkoutRoutineTypeId = $this->getWorkoutRoutineTypeId($_REQUEST['workouttype']);
@@ -54,8 +58,8 @@ VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$CustomWorkoutId.'", "'.
                 $db->Query();
             }
             if($ActivityField->AttributeValue != '-'){
-            $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId)
-VALUES("'.$_SESSION['UID'].'", "'.$CustomWorkoutId.'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'")';
+            $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId, OrderBy)
+VALUES("'.$_SESSION['UID'].'", "'.$CustomWorkoutId.'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'", "'.$ActivityField->OrderBy.'")';
                 $db->setQuery($SQL);
                 $db->Query();
             }
