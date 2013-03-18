@@ -33,8 +33,8 @@ class CustomController extends Controller
     
     function AddActivity(){
         $Model = new CustomModel;
-        $ValidateInput = false;
-        $ActivityFields = $Model->getActivityFields($ValidateInput);
+
+        $ActivityFields = $Model->getActivityFields();
         //$HistoryAttributes = $Model->getExerciseIdAttributes($ActivityFields[0]->ExerciseId);
         $ExerciseHistory = $Model->getExerciseHistory($ActivityFields[0]->ExerciseId);
         //var_dump($ExerciseHistory);
@@ -260,7 +260,7 @@ class CustomController extends Controller
         $Html .= $this->getBenchmarks('');        
         $Html .= '<br/><br/><br/>';
         $Html .= '<div class="StopwatchButton"><input class="buttongroup StopwatchButton" type="button" onClick="addRoutine();" value="Add a Routine"/></div>';
-        $Html .= '<div style="margin:0 6px 0 6px" class="StopwatchButton"><input class="buttongroup" id="ShowHideClock" type="button" onClick="ShowHideStopwatch();" value="Time Workout"/></div>';
+        //$Html .= '<div style="margin:0 6px 0 6px" class="StopwatchButton"><input class="buttongroup" id="ShowHideClock" type="button" onClick="ShowHideStopwatch();" value="Time Workout"/></div>';
         $Html .= '<div style="float:right" class="StopwatchButton"><input class="buttongroup" type="button" value="Save Wod" onClick="Save();"/></div>';       
         
         $Html .= '</div><div class="clear"></div>'; 

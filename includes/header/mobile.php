@@ -83,7 +83,7 @@ $('#menu').hide('slow');
 $('#AjaxLoading').html('');
 });
 
-function EnterTime()
+function EnterRoutineTime(RoutineNo)
 {
     var time=prompt("Please enter time","00:00:0");
     if(time){
@@ -93,12 +93,28 @@ function EnterTime()
     }
 }
 
-function OpenThisPage(page)
+function EnterActivityTime(ActivityId)
 {
-$('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif");?> src="/css/images/ajax-loader.gif" />');
-window.location = page;
+    var time=prompt("Please enter time","00:00:0");
+    if(time){
+        $('#'+ActivityId+'').val(time); 
+    }
 }
 
+function ShowHideStopwatch()
+{
+    if($('#timerContainer').hasClass('active')){
+        $('#timerContainer').removeClass('active');
+    }else{      
+        $('#timerContainer').addClass('active');
+    }
+}
+
+function OpenThisPage(page)
+{
+    $('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif");?> src="/css/images/ajax-loader.gif" />');
+    window.location = page;
+}
 </script>
 <script type="text/javascript" src="js/jquery.mobile-1.1.0.min.js"></script>
 <script type="text/javascript">

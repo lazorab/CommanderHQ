@@ -27,7 +27,7 @@ function getWODReport(id,type)
        //Add <set> elements
         $.each(json, function() {
             if(first)
-            strXML += '<chart caption="' + this.WorkoutName + '" showLabels="0" showYAxisValues="0" animation="0" lineColor="00008B" xAxisNamePadding="0" xAxisName="Time" yAxisName="Output" showValues="0">';
+            strXML += '<chart caption="' + this.WorkoutName + '" showLabels="0" showYAxisValues="0" animation="0" lineColor="00008B" xAxisNamePadding="0" xAxisName="Time" yAxisName="Output" showValues="1">';
             if(this.Attribute == 'TimeToComplete'){
                 var str = this.AttributeValue;
                 var ExplodedTime = str.split(":");
@@ -39,7 +39,7 @@ function getWODReport(id,type)
         //Closing Chart Element
         strXML += '</chart>';
       
-        var chartObj = new FusionCharts( "includes/FusionCharts/Line.swf","WODChartId", "300", "200", "0", "1" );
+        var chartObj = new FusionCharts( "includes/FusionCharts/Line.swf","WODChartId", "300", "250", "0", "1" );
 
         chartObj.setXMLData(strXML);
 
@@ -58,7 +58,7 @@ function getBenchmarkReport(id)
        //Add <set> elements
         $.each(json, function() {
             if(first)
-            strXML += '<chart caption="' + this.WorkoutName + '" showLabels="0" showYAxisValues="0" animation="0" lineColor="00008B" xAxisNamePadding="0" xAxisName="Time" yAxisName="Output" showValues="0">';
+            strXML += '<chart caption="' + this.WorkoutName + '" showLabels="0" showYAxisValues="0" animation="0" lineColor="00008B" xAxisNamePadding="0" xAxisName="Time" yAxisName="Output" showValues="1">';
             if(this.Attribute == 'TimeToComplete'){
                 var str = this.AttributeValue;
                 var ExplodedTime = str.split(":");
@@ -70,7 +70,7 @@ function getBenchmarkReport(id)
         //Closing Chart Element
         strXML += '</chart>';
       
-        var chartObj = new FusionCharts( "includes/FusionCharts/Line.swf","BenchmarkChartId", "300", "200", "0", "1" );
+        var chartObj = new FusionCharts( "includes/FusionCharts/Line.swf","BenchmarkChartId", "300", "250", "0", "1" );
 
         chartObj.setXMLData(strXML);
 
@@ -95,33 +95,33 @@ function getExerciseReport(id)
        //Add <set> elements
         $.each(json, function() {
             if(first)
-            strXML += '<chart caption="' + this.Exercise + '" showLabels="0" showYAxisValues="0" animation="0" xAxisNamePadding="0" yAxisName="Output" showValues="0">';
+            strXML += '<chart caption="' + this.Exercise + '" showLabels="0" canvasPadding="10" showYAxisValues="0" animation="0" lineColor="00008B" xAxisNamePadding="0" yAxisNamePadding="0" xAxisName="Time" yAxisName="Output" showToolTip="0" showValues="1">';
 
-                if(Attribute == 'Reps'){
+                if(this.Attribute == 'Reps'){
                     if(RepsData == ''){
                         Categories+='<category Label="'+this.Attribute+'"/>';
                         RepsData += '<dataset seriesName="'+this.Attribute+'" Color="00008B">';
                     }
                     RepsData += '<set  value="' + this.AttributeValue + '"/>';
                 }   
-                if(Attribute == 'Weight'){
+                if(this.Attribute == 'Weight'){
                     if(WeightData == ''){
                         Categories+='<category Label="'+this.Attribute+'"/>';
-                        WeightData += '<dataset seriesName="'+this.Attribute+'" Color="FF008B">';
+                        WeightData += '<dataset seriesName="'+this.Attribute+'('+this.UnitOfMeasure+')" Color="FF008B">';
                     }
                     WeightData += '<set  value="' + this.AttributeValue + '"/>';
                 }
-                 if(Attribute == 'Height'){
+                 if(this.Attribute == 'Height'){
                     if(HeightData == ''){
                         Categories+='<category Label="'+this.Attribute+'"/>';
-                        HeightData += '<dataset seriesName="'+this.Attribute+'" Color="FF008B">';
+                        HeightData += '<dataset seriesName="'+this.Attribute+'('+this.UnitOfMeasure+')" Color="FF008B">';
                     }
                     HeightData += '<set  value="' + this.AttributeValue + '"/>';
                 }
-                if(Attribute == 'Distance'){
+                if(this.Attribute == 'Distance'){
                     if(DistanceData == ''){
                         Categories+='<category Label="'+this.Attribute+'"/>';
-                        DistanceData += '<dataset seriesName="'+this.Attribute+'" Color="00008B">';
+                        DistanceData += '<dataset seriesName="'+this.Attribute+'('+this.UnitOfMeasure+')" Color="00008B">';
                     }
                     DistanceData += '<set  value="' + this.AttributeValue + '"/>';
                 }               
@@ -139,7 +139,7 @@ function getExerciseReport(id)
             DistanceData += '</dataset>';            
         strXML += ''+Categories+'</categories>'+RepsData+''+WeightData+''+HeightData+''+DistanceData+'</chart>';
       
-        var chartObj = new FusionCharts( "includes/FusionCharts/MSLine.swf","ExerciseChartId", "300", "200", "0", "1" );
+        var chartObj = new FusionCharts( "includes/FusionCharts/MSLine.swf","ExerciseChartId", "300", "250", "0", "1" );
 
         chartObj.setXMLData(strXML);
 
@@ -151,9 +151,20 @@ function getBaselineReport()
 {
     $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=reports\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
 
-    var chartObj = new FusionCharts( "includes/FusionCharts/Line.swf","FirstChartId", "300", "200", "0", "1" );
+    var chartObj = new FusionCharts( "includes/FusionCharts/Line.swf","FirstChartId", "300", "250", "0", "1" );
 
     chartObj.setXMLData('<?php echo $Display->BaselineChart();?>');
+
+    chartObj.render("AjaxOutput");
+}
+
+function getDummyReport()
+{
+    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=reports\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
+
+    var chartObj = new FusionCharts( "includes/FusionCharts/MSLine.swf","FirstChartId", "300", "250", "0", "1" );
+
+    chartObj.setXMLData('<?php echo $Display->DummyData();?>');
 
     chartObj.render("AjaxOutput");
 }

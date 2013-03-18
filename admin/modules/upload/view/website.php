@@ -28,8 +28,8 @@ function inputdisplay(data){
     OrderBy++;
     var RoutineNo = $('#RoutineCounter').val();   
     var RoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();
-    if(RoutineNo == 1)
-        DuplicateRound += data;
+    //if(RoutineNo == 1)
+    //    DuplicateRound += data;
     Html = data.replace(/ThisRoutine/g, RoutineNo);
     Html = Html.replace(/ThisRound/g, RoundNo);  
     Html = Html.replace(/ThisOrderBy/g, OrderBy);
@@ -266,7 +266,7 @@ function wresult(message)
     var RoundNo = $('#Routine' + ThisRoutineNumber + 'RoundCounter').val();
     LastActivity = message;
     var Html = message.replace(/ThisRoutine/g, ThisRoutineNumber);
-    if(ThisRoutineNumber == 1)
+    //if(ThisRoutineNumber == 1)
         DuplicateRound += Html;
     Html = Html.replace(/ThisRow/g, ThisRowNumber);
     Html = Html.replace(/ThisRound/g, RoundNo);

@@ -64,7 +64,7 @@ VALUES("'.$_SESSION['UID'].'", "'.$CustomWorkoutId.'", "'.$WorkoutTypeId.'", "'.
                 $db->Query();
             }
 }
-                $this->Message = 'Success';
+                $this->Message = $CustomWorkoutId;
             }
                 }
             }else{

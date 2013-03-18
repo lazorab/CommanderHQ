@@ -232,11 +232,8 @@ class Model
             return $db->loadObjectList();	
 	}   
         
-     function getActivityFields($Validate = true)
+     function getActivityFields()
     {
-        if($Validate == true && isset($_REQUEST['TimeToComplete']) && $_REQUEST['TimeToComplete'] == '00:00:0'){
-                $this->Message = 'Error - Invalid Value for Stopwatch!';  
-        }
         if($this->Message == ''){
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
         $Activities = array();
@@ -268,10 +265,12 @@ class Model
                     $UOMId = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$OrderBy.'_'.$ExerciseId.'_'.$Attribute.'_UOM'];
                 }
                 $UOM = $this->getUnitOfMeasure($UOMId);
+                /*No validation required according to Hans...
                 if($Value == '' || $Value == '0' || $Value == $Attribute || $Value == 'Max'){
                     if($Validate == true)
-                        $this->Message = 'Error - Invalid Value for '.$Attribute.'!';
+                        $this->Message = 'Error - Invalid Value for '.$ExerciseName.' '.$Attribute.'!';
                 }
+                */
                 if($this->Message == ''){
                 $SQL='SELECT recid AS ExerciseId,
                         "'.$ExerciseName.'" AS Exercise,
@@ -306,10 +305,12 @@ class Model
                 if($Attribute == 'Distance' || $Attribute == 'Height')
                     $UOMId = $_REQUEST[''.$RoundNo.'_'.$ExerciseId.'_'.$Attribute.'_UOM'];
                 $UOM = $this->getUnitOfMeasure($UOMId);
+                /*No validation required according to Hans...
                 if($Value == '' || $Value == '0' || $Value == $Attribute || $Value == 'Max'){
                     if($Validate == true)
                         $this->Message = 'Error - Invalid Value for '.$Attribute.'!';
                 }
+                 */
                 if($this->Message == ''){
                 $SQL='SELECT recid AS ExerciseId,
                         "'.$ExerciseName.'" AS Exercise,

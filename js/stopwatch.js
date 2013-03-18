@@ -7,13 +7,12 @@ var splitcounter = 0;
 var currenttime;
 var splitdate = '';
 var output;
-var clock;
 var countdown;
 var routineType = '';
 var refresh='';
 var resetflag;
 
-function save()
+function _save()
 {
     document.clockform.submit();
 }
@@ -202,7 +201,7 @@ function Stop()
 	function counter(starttime)
 		{
 		//output = document.getElementById('output');
-		clock = document.getElementById('clock');
+		var clock = document.getElementById('clock');
 		currenttime = new Date();
 		var timediff = currenttime.getTime() - starttime;
 		if(flagstop == 1)
@@ -261,6 +260,7 @@ function Stop()
                 
  	function resetclock()
 		{
+                var clock = document.getElementById('clock');
 		flagstop = 0;
 		stoptime = 0;
 		splitdate = '';
@@ -281,6 +281,7 @@ function Stop()
 		
 	function splittime()
 		{
+                var clock = document.getElementById('clock');
 		if(flagclock == 1)
 			{
 			if(splitdate != '')

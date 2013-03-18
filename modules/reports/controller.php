@@ -15,6 +15,39 @@ class ReportsController extends Controller
             $this->MemberDetails=$Model->getDetails();
         }
     }
+    
+    function DummyData()
+    {
+        $XML = "<chart showLabels='0' canvasPadding='10' showYAxisValues='0' animation='0' lineColor='00008B' xAxisNamePadding='0' yAxisNamePadding='0' caption='Dummy Graph' xAxisName='Time' yAxisName='Output' showToolTip='0' showValues= '1'>";
+        $XML .= "<categories>";
+        $XML .= "<category label='07 Jan' />";
+        $XML .= "<category label='15 Feb' />";
+        $XML .= "<category label='03 Mar' />";
+        $XML .= "<category label='18 Apr' />";
+        $XML .= "<category label='20 May' />";
+        $XML .= "<category label='06 Jun' />";
+    $XML .= "</categories>";
+    $XML .= "<dataset seriesName='Weight(kg)' color='A66EDD'>";
+        $XML .= "<set value='2' />";
+        $XML .= "<set value='4' />";
+        $XML .= "<set value='6' />";
+        $XML .= "<set value='5' />";
+        $XML .= "<set value='6' />";
+        $XML .= "<set value='5' />";
+    $XML .= "</dataset>";
+    $XML .= "<dataset seriesName='Reps' color='F6BD0F'>";
+        $XML .= "<set value='20' />";
+        $XML .= "<set value='25' />";
+        $XML .= "<set value='22' />";
+        $XML .= "<set value='26' />";
+        $XML .= "<set value='30' />";
+        $XML .= "<set value='36' />";
+    $XML .= "</dataset>";
+
+$XML .= "</chart>";
+        
+        return $XML;
+    }
 	
     function WODOutput()
     {
@@ -76,13 +109,14 @@ class ReportsController extends Controller
         }else if(isset($_REQUEST['ExerciseId'])){
             $html .= $this->ExerciseChart($_REQUEST['ExerciseId']);           
         }else{    
-            $html.='<div style="padding:2%">
-            <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getReport(\'WOD\');"><div style="height:26px;width:1px;float:left"></div>WOD<br/><span style="font-size:small"></span></a></li>             
-            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getReport(\'Benchmarks\');"><div style="height:26px;width:1px;float:left"></div>Benchmarks<br/><span style="font-size:small"></span></a></li>
-            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getBaselineReport();"><div style="height:26px;width:1px;float:left"></div>Baseline<br/><span style="font-size:small"></span></a></li>            
-            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getReport(\'Exercises\')"><div style="height:26px;width:1px;float:left"></div>Activities<br/><span style="font-size:small"></span></a></li>          
-            </ul></div>';  
+            $html.='<div style="padding:2%">';
+            $html.='<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
+            $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getDummyReport();"><div style="height:26px;width:1px;float:left"></div>Dummy Graph<br/><span style="font-size:small"></span></a></li>';                    
+            $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getReport(\'WOD\');"><div style="height:26px;width:1px;float:left"></div>WOD<br/><span style="font-size:small"></span></a></li>';          
+            $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getReport(\'Benchmarks\');"><div style="height:26px;width:1px;float:left"></div>Benchmarks<br/><span style="font-size:small"></span></a></li>';
+            $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getBaselineReport();"><div style="height:26px;width:1px;float:left"></div>Baseline<br/><span style="font-size:small"></span></a></li>';         
+            $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getReport(\'Exercises\')"><div style="height:26px;width:1px;float:left"></div>Activities<br/><span style="font-size:small"></span></a></li>';         
+            $html.='</ul></div>';  
             $html.='<div class="clear"></div><br/>';                
             }
             return $html;

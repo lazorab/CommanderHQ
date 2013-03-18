@@ -352,14 +352,23 @@ function Save()
     if($('#rowcounter').val() == 0){
         alert('No Exercises selected!');
     }else{
+        /*
         if($('#timerContainer').hasClass('active')){
             $("#TimeToComplete").val($('#clock').html())
         }else{
             $('#timerContainer').html('');
         }
-        $.getJSON('ajax.php?module=custom&action=validateform&ValidateInput=no', $("#customform").serialize(),messagedisplay);
-       $('#HideAfterSave').html('');
+        */
+        $.getJSON('ajax.php?module=custom&action=validateform&ValidateInput=no', $("#customform").serialize(),ReturnWorkoutId);
+        //$('#HideAfterSave').html('');
+        //$('#timerContainer').addClass('active');
+        
     }
+}
+
+function ReturnWorkoutId(Id)
+{
+    window.location = "?module=personal&WorkoutId="+Id+"";
 }
 
 function addnew(RoundNo, OrderBy)
@@ -445,15 +454,6 @@ function clockSelect(type)
         $('#timerContainer').addClass('active');
     }
     $('#clockType').val(type)
-}
-
-function ShowHideStopwatch()
-{
-    if($('#timerContainer').hasClass('active')){
-        $('#timerContainer').removeClass('active');
-    }else{      
-        $('#timerContainer').addClass('active');
-    }
 }
 
 function clockControl()
