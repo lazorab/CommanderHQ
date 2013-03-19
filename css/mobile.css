@@ -300,10 +300,11 @@ input
 
 #AjaxOutput
 {
-width:96%;
-margin:2% 2% 0 2%;
-font-weight:bold;
-font-size:medium;
+    padding:2%;
+    width:96%;
+    margin:2%;
+    font-weight:bold;
+    font-size:medium;
 }
 
 #bmdescription

@@ -83,13 +83,57 @@ $('#menu').hide('slow');
 $('#AjaxLoading').html('');
 });
 
-function EnterRoutineTime(RoutineNo)
+function DisplayStopwatch(Module, RoutineId)
+{
+    var ExplodedRoutineId = RoutineId.split('_');
+    var RoutineNo = ExplodedRoutineId[2];
+    if($('#'+RoutineNo+'_timerContainer').html() != ''){
+        SaveRoutineTime(Module, RoutineId);
+    }else{  
+        $('#'+RoutineNo+'_ShowHideClock').val('Save Time');
+        var Html = '<div class="clear"></div><div id="clock" onClick="EnterRoutineTime(\''+RoutineId+'\');">00:00:0</div>';
+        Html+='<input type="hidden" id="TimeToComplete" name="TimeToComplete" value="00:00:0">';
+        Html+='<div class="StopwatchButton"><input id="resetbutton" class="buttongroup" onClick="resetclock();" type="button" value="Reset"/></div>';
+        Html+='<div class="StopwatchButton"><input class="buttongroup" type="button" onClick="Start();" value="Start"/></div>';
+        Html+='<div class="StopwatchButton"><input class="buttongroup" type="button" onClick="Stop();" value="Stop"/></div><div class="clear"></div>';
+        $('#'+RoutineNo+'_timerContainer').html(Html);        
+        $('.buttongroup').button();
+        $('.buttongroup').button('refresh');        
+    }        
+}
+
+function SaveRoutineTime(Module, RoutineId)
+{
+    var ExplodedRoutineId = RoutineId.split('_');
+    var RoutineNo = ExplodedRoutineId[2];    
+    var FieldName = ''+RoutineId+'_TimeToComplete';
+    var RoutineTime = $('#clock').html();
+         $('#'+RoutineNo+'_ShowHideClock').val('Time Routine');
+        $('#'+RoutineNo+'_timerContainer').html('');
+        $('.buttongroup').button();
+        $('.buttongroup').button('refresh');   
+    $.ajax({url:'ajax.php?module='+Module+'&action=formsubmit',data:{RoutineTime:RoutineTime,TimeFieldName:FieldName},dataType:"html",success:SaveRoutineTimeResult});      
+}
+
+function SaveRoutineTimeResult(message)
+{
+    if(message == 'Success'){
+        var r=confirm("Successfully Saved!\nWould you like to provide us with feedback?");
+        if (r==true)
+        {
+            window.location = 'index.php?module=contact';
+        }
+    }  
+    else if(message != '')
+        alert(message);    
+}
+
+function EnterRoutineTime(WorkoutType, WorkoutId, RoutineNo)
 {
     var time=prompt("Please enter time","00:00:0");
     if(time){
-        
         $('#clock').html(time);
-        $('#TimeToComplete').val(time); 
+        $('#'+WorkoutType+'_'+WorkoutId+'_'+RoutineNo+'_TimeToComplete').val(time); 
     }
 }
 

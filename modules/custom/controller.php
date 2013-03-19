@@ -68,7 +68,7 @@ class CustomController extends Controller
                 $html.=' | ';
 
             $html.=''.$Activity->Attribute.' : <span id="RoutineNo_RoundNo_OrderBy_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_html">'.$AttributeValue.'</span>';
-            $html.='<input type="hidden" name="RoutineNo_RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_'.$UnitOfMeasureId.'_OrderBy" value="'.$AttributeValue.'"/>';
+            $html.='<input type="hidden" id="RoutineNo_RoundNo_OrderBy_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'" name="RoutineNo_RoundNo_'.$Activity->ExerciseId.'_'.$Activity->Attribute.'_'.$UnitOfMeasureId.'_OrderBy" value="'.$AttributeValue.'"/>';
             //if($AttributeValue != '-'){
                 $html.=''.$Activity->UnitOfMeasure.'';
             //}
@@ -123,7 +123,7 @@ class CustomController extends Controller
             }
             $i++;
         }
-        $html .= '<div style="float:right;margin:10px 30px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="SaveTheseResults(\'RoutineNo_RoundNo_OrderBy_'.$Activity->ExerciseId.'\');" value="Add Results"/></div>';
+        $html .= '<div style="float:right;margin:10px 30px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="UpdateActivity(\'RoutineNo_RoundNo_OrderBy_'.$Activity->ExerciseId.'\', \''.$TheseAttributes.'\');" value="Update Values"/></div>';
         $html .= '</form></div><div class="clear"></div>';
         $html .= '</div>';
         $html .= '</div>';
@@ -276,8 +276,8 @@ class CustomController extends Controller
         $Model = new CustomModel;
         $Benchmark = $Model->getBenchmarkDetails($_REQUEST['benchmarkId']);
         $Attributes = array();
-        $ThisRound = '';
-        $OrderBy = '';
+        $ThisRound = 0;
+        $OrderBy = 0;
 	$ThisExerciseId = 0;
         $i = 0;       
         $html .= '<div data-role="collapsible-set" data-iconpos="right">';
@@ -303,9 +303,9 @@ class CustomController extends Controller
 			
 			if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0 && $ThisRound != $Detail->RoundNo){
                             if($ThisExerciseId != null && $i > 0){
-                                $html.='</h2><div id="RoutineNo_RoundNo_OrderBy_'.$ThisExerciseId.'_History"><p style="color:red">'.$this->UpdateHistory($ThisExerciseId).'</p></div>';
+                                $html.='</h2><div id="RoutineNo_'.$ThisRound.'_'.$OrderBy.'_'.$ThisExerciseId.'_History"><p style="color:red">'.$this->UpdateHistory($ThisExerciseId).'</p></div>';
             $i=0;
-            $html .= '<div class="ActivityAttributes"><form id="RoutineNo_RoundNo_OrderBy_'.$ThisExerciseId.'" name="RoutineNo_RoundNo_OrderBy_'.$ThisExerciseId.'">';
+            $html .= '<div class="ActivityAttributes"><form id="RoutineNo_'.$ThisRound.'_'.$OrderBy.'_'.$ThisExerciseId.'" name="RoutineNo_'.$ThisRound.'_'.$OrderBy.'_'.$ThisExerciseId.'">';
             //var_dump($Attributes);
             foreach($Attributes as $Attribute=>$Val){
                 $UOM = $Model->getUserUnitOfMeasure($Attribute);
@@ -315,11 +315,11 @@ class CustomController extends Controller
                 if($i > 0)
                     $TheseAttributes.='_';
                 $TheseAttributes.=$Attribute;
-                $html .= '<div style="float:left;margin:0 25px 0 25px"">'.$Attribute.'<br/><input value="'.$Val.'" style="width:80px" type="number" id="RoutineNo_RoundNo_'.$ThisExerciseId.'_'.$Attribute.'_new" name="RoutineNo_RoundNo_'.$ThisExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_OrderBy" placeholder="'.$UOM.'"/></div>';
+                $html .= '<div style="float:left;margin:0 25px 0 25px"">'.$Attribute.'<br/><input value="'.$Val.'" style="width:80px" type="number" id="RoutineNo_'.$ThisRound.'_'.$ThisExerciseId.'_'.$Attribute.'_new" name="RoutineNo_'.$ThisRound.'_'.$ThisExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_'.$OrderBy.'" placeholder="'.$UOM.'"/></div>';
                 $i++;
             }
 
-            $html .= '<div style="float:right;margin:10px 30px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="SaveTheseResults(\'RoutineNo_RoundNo_OrderBy_'.$ThisExerciseId.'\');" value="Add Results"/></div>';
+            $html .= '<div style="float:right;margin:10px 30px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="UpdateActivity(\'RoutineNo_'.$ThisRound.'_'.$ThisExerciseId.'\', \''.$TheseAttributes.'\');" value="Update Values"/></div>';
             $html .= '</form></div><div class="clear"></div></div>';                                
                                 $Attributes = array();
                             }                           	
@@ -330,9 +330,9 @@ class CustomController extends Controller
 			else if($ThisExerciseId != $Detail->ExerciseId){
 
                             if($ThisExerciseId != null && $i > 0){
-                                $html.='</h2><div id="RoutineNo_RoundNo_OrderBy_'.$ThisExerciseId.'_History"><p style="color:red">'.$this->UpdateHistory($ThisExerciseId).'</p></div>';
+                                $html.='</h2><div id="RoutineNo_'.$ThisRound.'_'.$OrderBy.'_'.$ThisExerciseId.'_History"><p style="color:red">'.$this->UpdateHistory($ThisExerciseId).'</p></div>';
             $i=0;
-            $html .= '<div class="ActivityAttributes"><form id="RoutineNo_RoundNo_OrderBy_'.$ThisExerciseId.'" name="RoutineNo_RoundNo_OrderBy_'.$ThisExerciseId.'">';
+            $html .= '<div class="ActivityAttributes"><form id="RoutineNo_'.$ThisRound.'_'.$OrderBy.'_'.$ThisExerciseId.'" name="RoutineNo_'.$ThisRound.'_'.$OrderBy.'_'.$ThisExerciseId.'">';
             //var_dump($Attributes);
             foreach($Attributes as $Attribute=>$Val){
                 $UOM = $Model->getUserUnitOfMeasure($Attribute);
@@ -342,11 +342,11 @@ class CustomController extends Controller
                 if($i > 0)
                     $TheseAttributes.='_';
                 $TheseAttributes.=$Attribute;
-                $html .= '<div style="float:left;margin:0 25px 0 25px"">'.$Attribute.'<br/><input value="'.$Val.'" style="width:80px" type="number" id="RoutineNo_RoundNo_'.$ThisExerciseId.'_'.$Attribute.'_new" name="RoutineNo_RoundNo_'.$ThisExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_OrderBy" placeholder="'.$UOM.'"/></div>';
+                $html .= '<div style="float:left;margin:0 25px 0 25px"">'.$Attribute.'<br/><input value="'.$Val.'" style="width:80px" type="number" id="RoutineNo_'.$ThisRound.'_'.$ThisExerciseId.'_'.$Attribute.'_new" name="RoutineNo_'.$ThisRound.'_'.$ThisExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_'.$OrderBy.'" placeholder="'.$UOM.'"/></div>';
                 $i++;
             }
 
-            $html .= '<div style="float:right;margin:10px 30px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="SaveTheseResults(\'RoutineNo_RoundNo_OrderBy_'.$ThisExerciseId.'\');" value="Add Results"/></div>';
+            $html .= '<div style="float:right;margin:10px 30px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="UpdateActivity(\'RoutineNo_'.$ThisRound.'_'.$ThisExerciseId.'\', \''.$TheseAttributes.'\');" value="Update Values"/></div>';
             $html .= '</form></div><div class="clear"></div></div>';                                
                                 $Attributes = array();
                             }       
@@ -355,7 +355,8 @@ class CustomController extends Controller
                         }else{
                             $html.=' | ';
                         }
-                        $html.=''.$Detail->Attribute.' : <span id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_html">'.$AttributeValue.'</span>'.$Detail->UnitOfMeasure.'';                       
+                        $html.=''.$Detail->Attribute.' : <span id="RoutineNo_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_html">'.$AttributeValue.'</span>'.$UOM.'';
+                        $html.='<input type="hidden" id="RoutineNo_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'" name="RoutineNo_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_'.$UnitOfMeasureId.'_'.$Detail->OrderBy.'" value="'.$AttributeValue.'"/>';
                 }
         $Attributes[''.$Detail->Attribute.''] = $AttributeValue != "-" ? $AttributeValue : "";        
 	$ThisRound = $Detail->RoundNo;
@@ -364,9 +365,9 @@ class CustomController extends Controller
         $i++;
 	}
                             if($ThisExerciseId != null && $i > 0){
-                                $html.='</h2><div id="RoutineNo_RoundNo_OrderBy_'.$ThisExerciseId.'_History"><p style="color:red">'.$this->UpdateHistory($ThisExerciseId).'</p></div>';
+                                $html.='</h2><div id="RoutineNo_'.$ThisRound.'_'.$OrderBy.'_'.$ThisExerciseId.'_History"><p style="color:red">'.$this->UpdateHistory($ThisExerciseId).'</p></div>';
             $i=0;
-            $html .= '<div class="ActivityAttributes"><form id="RoutineNo_RoundNo_OrderBy_'.$ThisExerciseId.'" name="RoutineNo_RoundNo_OrderBy_'.$ThisExerciseId.'">';
+            $html .= '<div class="ActivityAttributes"><form id="RoutineNo_'.$ThisRound.'_'.$OrderBy.'_'.$ThisExerciseId.'" name="RoutineNo_'.$ThisRound.'_'.$OrderBy.'_'.$ThisExerciseId.'">';
             //var_dump($Attributes);
             foreach($Attributes as $Attribute=>$Val){
                 $UOM = $Model->getUserUnitOfMeasure($Attribute);
@@ -376,11 +377,11 @@ class CustomController extends Controller
                 if($i > 0)
                     $TheseAttributes.='_';
                 $TheseAttributes.=$Attribute;
-                $html .= '<div style="float:left;margin:0 25px 0 25px"">'.$Attribute.'<br/><input value="'.$Val.'" style="width:80px" type="number" id="RoutineNo_RoundNo_'.$ThisExerciseId.'_'.$Attribute.'_new" name="RoutineNo_RoundNo_'.$ThisExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_OrderBy" placeholder="'.$UOM.'"/></div>';
+                $html .= '<div style="float:left;margin:0 25px 0 25px"">'.$Attribute.'<br/><input value="'.$Val.'" style="width:80px" type="number" id="RoutineNo_'.$ThisRound.'_'.$ThisExerciseId.'_'.$Attribute.'_new" name="RoutineNo_'.$ThisRound.'_'.$ThisExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_'.$OrderBy.'" placeholder="'.$UOM.'"/></div>';
                 $i++;
             }
 
-            $html .= '<div style="float:right;margin:10px 30px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="SaveTheseResults(\'RoutineNo_RoundNo_OrderBy_'.$ThisExerciseId.'\');" value="Add Results"/></div>';
+            $html .= '<div style="float:right;margin:10px 30px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="UpdateActivity(\'RoutineNo_'.$ThisRound.'_'.$ThisExerciseId.'\', \''.$TheseAttributes.'\');" value="Update Values"/></div>';
             $html .= '</form></div><div class="clear"></div></div>';                                
                                 $Attributes = array();
                             }             

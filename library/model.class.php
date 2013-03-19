@@ -441,6 +441,22 @@ class Model
             $db->setQuery($SQL);
 		
             return $db->loadObjectList(); 
-	}        
+	}      
+        
+        function SaveRoutineTime($TimeFieldName)
+        {
+            $ExplodedDetails = explode('_',$TimeFieldName);
+            $WODTypeId = $ExplodedDetails[0];
+            $WorkoutId = $ExplodedDetails[1];
+            $RoutineNo = $ExplodedDetails[2];
+            $AttributeId = $this->getAttributeId('TimeToComplete');
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL='INSERT INTO WODLog(MemberId, WODTypeId, WorkoutId, RoutineNo, AttributeId, AttributeValue) 
+                VALUES("'.$_SESSION['UID'].'", "'.$WODTypeId.'", "'.$WorkoutId.'", "'.$RoutineNo.'", "'.$AttributeId.'","'.$_REQUEST['RoutineTime'].'")';
+            $db->setQuery($SQL);
+            $db->Query();
+            
+            return 'Success';
+        }
 }
 ?>

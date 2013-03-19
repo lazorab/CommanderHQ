@@ -165,7 +165,10 @@ function DisplayBenchmark(data)
     document.getElementById('rowcounter').value++;
     var el = $('#AjaxOutput');
     var RoutineNo = $('#RoutineCounter').val();
+    var RoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();    
     Html = data.replace(/RoutineNo/g, RoutineNo);
+    Html = Html.replace(/RoundNo/g, RoundNo);    
+    
     $('#activity'+RoutineNo+'list').append(Html);
     $("#benchmark option[value='none']").attr("selected","selected");
     el.find('div[data-role=collapsible]').collapsible({theme:'c',refresh:true});
@@ -368,7 +371,12 @@ function Save()
 
 function ReturnWorkoutId(Id)
 {
-    window.location = "?module=personal&WorkoutId="+Id+"";
+    if(isNaN(Id)){
+        alert(Id); 
+    }
+    else{    
+        window.location = "?module=personal&WorkoutId="+Id+"";
+     }
 }
 
 function addnew(RoundNo, OrderBy)
@@ -488,9 +496,9 @@ function UpdateActivity(ActivityId, Attributes)
     
     var AttributesArray = Attributes.split('_');
     for(i=0; i < AttributesArray.length;i++){
-        //alert($("#"+ActivityId+"_"+AttributesArray[i]+"_new").val());
+        //alert("#"+ActivityId+"_"+AttributesArray[i]+"_new");
         $("#"+ActivityId+"_"+AttributesArray[i]+"_html").html($("#"+ActivityId+"_"+AttributesArray[i]+"_new").val());
-        //$("#"+ActivityId+"_"+AttributesArray[i]+"").val($("#"+ActivityId+"_"+AttributesArray[i]+"_new").val());
+        $("#"+ActivityId+"_"+AttributesArray[i]+"").val($("#"+ActivityId+"_"+AttributesArray[i]+"_new").val());
     }  
 }
 
