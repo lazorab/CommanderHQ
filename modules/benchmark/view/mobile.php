@@ -53,10 +53,9 @@ function Save()
 
 function messagedisplay(message)
 {
-    var currentround = $('#addround').val();
     if(message == 'Success'){
         $( "#popupFeedback" ).popup("open");
-
+        resetclock();
         document.getElementById('addround').value++;
     }  
     else
