@@ -5,7 +5,7 @@ if($Device->IsGoogleAndroidDevice()) { ?>
 <?php } ?>
      
 <script type="text/javascript">
-
+    
 $(document).ready(function() {
 	//Trigger video
 	$("#menuvideo").bind('click', function(){
@@ -62,14 +62,15 @@ function messagedisplay(message)
 function getBenchmarks(cat)
 {
     $('.toplist').html('');
-    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=personal\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
+   // $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=personal\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
     $.ajax({url:'ajax.php?module=personal',data:{cat:cat},dataType:"html",success:display});
 }
 
-function getDetails(id,cat)
+function getDetails(id)
 {
     $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=personal\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
-    
+ //$('#back').html('<img alt="Back" onclick="goBack();" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');     
+   
     $.ajax({url:'ajax.php?module=personal',data:{WorkoutId:id},dataType:"html",success:display});   
     $.ajax({url:'ajax.php?module=personal',data:{topselection:id,WorkoutId:id},dataType:"html",success:topselectiondisplay});
     

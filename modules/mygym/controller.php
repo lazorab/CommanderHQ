@@ -60,8 +60,8 @@ class MygymController extends Controller
 		}else{          
                     $WODdata = '<div data-role="navbar">
             <ul>
-                <li><a href="#" data-role="tab" onClick="Tabs(\'1\');" class="ui-btn-active">Well Rounded</a></li>
-                <li><a href="#" data-role="tab" onClick="Tabs(\'2\');">Advanced</a></li>
+                <li style="width:48%"><a href="#" onClick="Tabs(\'1\');" class="ui-btn-active">Well Rounded</a></li>
+                <li style="width:48%"><a href="#" onClick="Tabs(\'2\');">Advanced</a></li>
             </ul>
         </div><div id="tab1"> ';
 

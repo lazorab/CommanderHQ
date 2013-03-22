@@ -3,6 +3,7 @@
     var lat;
     var lng;   
 navigator.geolocation.getCurrentPosition(findLocation, noLocation);
+
 function findLocation(position)
 {
     lat = position.coords.latitude;
@@ -27,7 +28,7 @@ function GymSearch()
     $('#toplist').listview('refresh');   
 }
 
-function goBack()
+function goBackTo()
 {
     $.ajax({url:'ajax.php?module=locator',data:{latitude:lat,longitude:lng},dataType:"html",success:display});
     $("#map_canvas").html("");
@@ -38,7 +39,7 @@ function goBack()
 
 function getDetails(id)
 {
-    $('#back').html('<img alt="Back" onclick="goBack();" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
+    $('#back').html('<img alt="Back" onclick="goBackTo();" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
     $.ajax({url:'ajax.php?module=locator',data:{Id:id,lat:lat,lng:lng},dataType:"html",success:display});
     $.ajax({url:'ajax.php?module=locator',data:{topselection:id},dataType:"html",success:topselectiondisplay});
     //$.getJSON("ajax.php?module=locator",{Id:id,lat:lat,lng:lng},display);

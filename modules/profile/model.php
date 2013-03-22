@@ -96,12 +96,12 @@ class ProfileModel extends Model
                 Email,
                 UserName,
                 PassWord) 
-                VALUES('".$_REQUEST['FirstName']."',
-                   '".$_REQUEST['LastName']."',
-                   '".$_REQUEST['Cell']."',
-                   '".$_REQUEST['Email']."',
-                   '".$_REQUEST['UserName']."',
-                   '".$_REQUEST['PassWord']."')";
+                VALUES('".trim($_REQUEST['FirstName'])."',
+                   '".trim($_REQUEST['LastName'])."',
+                   '".trim($_REQUEST['Cell'])."',
+                   '".trim($_REQUEST['Email'])."',
+                   '".trim($_REQUEST['UserName'])."',
+                   '".trim($_REQUEST['PassWord'])."')";
                     $db->setQuery($SQL);
                     $db->Query();
             
@@ -130,26 +130,27 @@ class ProfileModel extends Model
                         CustomWorkouts,
                         BMI) 
                     VALUES('".$NewId."',
-                        '".$_REQUEST['AffiliateId']."',
+                        '".trim($_REQUEST['AffiliateId'])."',
                         '".$DOB."',
-                        '".$Weight."',
-                        '".$Height."',
-                        '".$_REQUEST['Gender']."',
-                        '".$_REQUEST['SystemOfMeasure']."',
-                        '".$_REQUEST['CustomWorkouts']."',
+                        '".trim($Weight)."',
+                        '".trim($Height)."',
+                        '".trim($_REQUEST['Gender'])."',
+                        '".trim($_REQUEST['SystemOfMeasure'])."',
+                        '".trim($_REQUEST['CustomWorkouts'])."',
                         '".$BMI."')";
                     $db->setQuery($SQL);
                     $db->Query();
                 
-            $SQL='SELECT MemberId FROM MemberInvites WHERE InvitationCode = "'.$_REQUEST['InvCode'].'"';
+            $SQL='SELECT MemberId FROM MemberInvites WHERE InvitationCode = "'.trim($_REQUEST['InvCode']).'"';
             $db->setQuery($SQL);
             
             $MemberId = $db->loadResult();
-            $SQL = 'UPDATE MemberInvites SET NewMemberId = '.$NewId.' WHERE MemberId = '.$MemberId.' AND InvitationCode = "'.$_REQUEST['InvCode'].'"';
+            $SQL = 'UPDATE MemberInvites SET NewMemberId = '.$NewId.' WHERE MemberId = '.$MemberId.' AND InvitationCode = "'.trim($_REQUEST['InvCode']).'"';
             $db->setQuery($SQL);
             $db->Query();
             $_SESSION['UID'] = $NewId;
             $_SESSION['NEW_USER'] = $NewId;
+            $this->SendEmail(trim($_REQUEST['FirstName']), trim($_REQUEST['Email']), trim($_REQUEST['UserName']), trim($_REQUEST['PassWord']));
 	}    
 	
 	function Update($Id)
@@ -218,6 +219,19 @@ class ProfileModel extends Model
 		
 	return $db->loadObjectList();
     }
+    
+        function SendEmail($Name, $Email, $UserName, $Password)
+        {
+            $message = 'Welcome to Commander HQ '.$Name.'<br/>
+                Your Username is '.$UserName.'<br/>
+                Password is '.$Password.'<br/>';
+		$mail = new Rmail();
+		$mail->setFrom('Commander HQ<info@be-mobile.co.za>');
+		$mail->setSubject('Welcome Commander HQ');
+		$mail->setPriority('normal');
+		$mail->setHTML($message);
+                $mail->send(array($Email));
+        }    
 }
 
 class MemberObject

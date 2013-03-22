@@ -6,7 +6,8 @@ if($Device->IsGoogleAndroidDevice()) {
         <script src="/js/overthrow.js"></script>
 <?php } ?>
 
-<script type="text/javascript">	
+<script type="text/javascript">
+
     $(function(){
         $('#slides').slides({
             preload: true,

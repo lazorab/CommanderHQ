@@ -230,12 +230,12 @@ function addactivitydisplay(data)
     var Html = data.replace(/RowNo/g, RowNo);
     $('#add_exercise').html('');
     $('#ExerciseInputs').html('');
+    Html = Html.replace(/OrderBy/g, OrderBy);
     if(RoutineNo == 1)
         DuplicateRound += Html;
     Html = Html.replace(/RoutineNo/g, RoutineNo);
     Html = Html.replace(/RoundNo/g, RoundNo);
-    Html = Html.replace(/OrderBy/g, OrderBy);
-
+    
     $('#activity'+RoutineNo+'list').append(Html);
     $("#exercises option[value='none']").attr("selected","selected");
     var el = $('#AjaxOutput');

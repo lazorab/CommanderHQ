@@ -1,4 +1,5 @@
 <script type="text/javascript">
+    
     $(function(){
         $('#tab1').addClass('active');
         $('#details1').html('<?php echo $Display->WorkoutDetails("2");?>');
@@ -7,6 +8,7 @@
         var el = $('#AjaxOutput');
         el.find('div[data-role=collapsible]').collapsible({theme:'c',refresh:true});       
     });
+    
 function Tabs(tab)
 {
     if(tab == 1){
@@ -57,13 +59,6 @@ function getFeedDetails(ThisWorkout)
     $('#back').html('<img alt="Back" onclick="goBack();" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
     $.ajax({url:'ajax.php?module=mygym',data:{Workout:ThisWorkout},dataType:"html",success:display});
     $.ajax({url:'ajax.php?module=mygym',data:{topselection:ThisWorkout},dataType:"html",success:topselectiondisplay});
-}
-
-function goBack()
-{
-    $('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif");?> src="/css/images/ajax-loader.gif" />');
-    $.ajax({url:'ajax.php?module=mygym',data:{wod:'display'},dataType:"html",success:display});
-    $.ajax({url:'ajax.php?module=mygym',data:{topselection:'mygym'},dataType:"html",success:topdisplay});
 }
 
 function topdisplay(data)

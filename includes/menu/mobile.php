@@ -1,21 +1,10 @@
 <?php
 $ratio = SCREENWIDTH / LAYOUT_WIDTH;
 $NavIconSize = floor(72*$ratio);
-$BackButton = '';
-$BackbuttonImage = $RENDER->NewImage('back.png');
+
 ?>
 
 <div id="nav" style="height:<?php echo floor(100*$ratio);?>px;">
-
-<?php 
-$BackButton = '';
-if(isset($_REQUEST['wodtype']) || (isset($_REQUEST['origin'])) || isset($_REQUEST['report']) || isset($_REQUEST['customexercise'])){
-    if(isset($_REQUEST['origin']))
-        $BackModule = $_REQUEST['origin'];
-    else
-        $BackModule = $_REQUEST['module'];
-    $BackButton = '<img alt="Back" onclick="OpenThisPage(\'?module='.$BackModule.'\');" '.$BackbuttonImage.' src="'.IMAGE_RENDER_PATH.'back.png"/>';     
-} ?>
 		
 <div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 0 4%;">
 	<img id="menuselect" alt="Menu" <?php echo $RENDER->NewImage('menu.png');?> src="<?php echo IMAGE_RENDER_PATH;?>menu.png"/>
@@ -30,7 +19,7 @@ if(isset($_REQUEST['wodtype']) || (isset($_REQUEST['origin'])) || isset($_REQUES
 <div id="menuvideo" class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 0 4%;"></div>	
 
 <div id="back" class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 0 4%;">
-<?php echo $BackButton;?>	
+	
 </div>
 
 <div id="AjaxLoading" class="grid" style="float:right;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 4% 2% 0;"></div>
@@ -113,4 +102,20 @@ if(isset($_REQUEST['wodtype']) || (isset($_REQUEST['origin'])) || isset($_REQUES
 
 <img alt="Down" <?php echo $RENDER->NewImage('menu_down.png');?> src="<?php echo IMAGE_RENDER_PATH;?>menu_down.png"/>
 
+</div>
+
+<script type="text/javascript">
+$('#back').html('<img alt="Back" onclick="goBack();" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');     
+</script>
+
+<div data-role="popup" id="popupFeedback" data-theme="a" class="ui-corner-all">
+<form id="feedbackform">
+<div style="padding:10px 20px;">
+<h3>Comments?</h3>
+<textarea id="feedback" name="Comments" cols="10" rows="20"></textarea>
+<a style="width:40%;margin:4%;float:left" href="#" data-role="button" data-inline="true" onClick="SubmitFeedback();" data-theme="c">Submit</a>
+<a style="width:40%;margin:4%;float:right" href="#" data-role="button" data-inline="true" data-rel="back" data-theme="c">Cancel</a>
+<br/><br/><br/>
+</div>
+</form>
 </div>

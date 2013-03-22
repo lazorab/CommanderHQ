@@ -22,13 +22,6 @@ function getDetails(ThisWorkout,ThisWodType)
     $.ajax({url:'ajax.php?module=challenge',data:{topselection:ThisWorkout},dataType:"html",success:topselectiondisplay});
 }
 
-function goBack()
-{
-    $('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif");?> src="/css/images/ajax-loader.gif" />');
-    $.ajax({url:'ajax.php?module=challenge',data:{challenge:'display'},dataType:"html",success:display});
-    $.ajax({url:'ajax.php?module=challenge',data:{topselection:'mygym'},dataType:"html",success:topdisplay});
-}
-
 function topdisplay(data)
 {
     $('#toplist').listview();

@@ -34,7 +34,7 @@ class ProfileController extends Controller
                 $Message = 'Lastname Required';
             else if(!isset($_SESSION['UID']) && $Model->CheckUserNameExists($_REQUEST['UserName']))
                 $Message = 'Username already exists. Please choose another.';
-            else if($_REQUEST['PassWord'] != $_REQUEST['ConfirmPassWord'])
+            else if(trim($_REQUEST['PassWord']) != trim($_REQUEST['ConfirmPassWord']))
                 $Message = 'Passwords do not match!';
             else if($_REQUEST['Cell'] == '' && $_REQUEST['Email'] == '')
                 $Message = 'Either a Cell or Email Required';
@@ -45,11 +45,15 @@ class ProfileController extends Controller
             else if(!isset($_SESSION['UID']) && $Model->CheckEmailExists($_REQUEST['Email']))
                 $Message = 'Email Address already exists!';
             else if($_REQUEST['DOB'] == '')
-                $Message = 'Invalid Date of Birth';				
+                $Message = 'Date of Birth Required';				
             else if($_REQUEST['Weight'] == '')
                 $Message = 'Weight Required';
+            else if(!is_int($_REQUEST['Weight']))
+                $Message = 'Invalid Weight';            
             else if($_REQUEST['Height'] == '')
                 $Message = 'Height Required';
+            else if(!is_int($_REQUEST['Height']))
+                $Message = 'Invalid Height';            
             else if($_REQUEST['Gender'] == '')		
                 $Message = 'Select Gender';
             else if($_REQUEST['CustomWorkouts'] == '')		
@@ -151,7 +155,7 @@ $Html.='<input class="textinput" type="email" id="email" name="Email" placeholde
           
 $Html.='<input class="textinput" type="date" name="DOB" id="DOB" placeholder="Date of Birth" value="'.$MemberDetails->DOB.'"/>';
 
- $Html.='<br/>';
+ $Html.='<br/><br/>Registered Gym';
  $Html.='<select class="chzn-select" name="AffiliateId" id="AffiliateId" tabindex="2">';
  $Html.='<option value="" data-placeholder="true">Select your Gym</option>';
 
@@ -161,28 +165,8 @@ $Html.='<input class="textinput" type="date" name="DOB" id="DOB" placeholder="Da
                 $Selected = 'selected="selected"';
             $Html.='<option value="'.$Affiliate->AffiliateId.'" '.$Selected.'>'.$Affiliate->GymName.'</option>';
         }
-        $Html.='</select><br/><br/><br/>';
-
-$Html.='<div id="weightlabel">Height('.$HeightUnit.')</div>
-<input id="weight" class="textinput" type="number" name="Weight" value="'.$MemberDetails->Weight.'"/>
-<div id="heightlabel">Weight('.$WeightUnit.')</div>
-<input id="height" class="textinput" type="number" name="Height" value="'.$MemberDetails->Height.'"/>
-<br/>';
-
-$Html.='Gender
-    <fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
-<label for="male">Male</label>
-<input class="radioinput" id="male" type="radio" name="Gender" value="M"';
-if($MemberDetails->Gender == 'M') 
-    $Html.='checked="checked"';
-$Html.='/>
-<label for="female">Female</label>
-<input class="radioinput" id="female" type="radio" name="Gender" value="F"';
-if($MemberDetails->Gender == 'F')
-    $Html.='checked="checked"';
-$Html.='/>
-</fieldset><br/>';
-
+        $Html.='</select><br/><br/>';
+        
 $Html.='System Of Measure
     <fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
     <input class="radioinput" type="radio" name="SystemOfMeasure" id="radio-choice-1" value="Metric" onclick="getSystem(\'Metric\');"';
@@ -196,6 +180,26 @@ $Html.='System Of Measure
         $Html.=' checked="checked"';
      $Html.='/>
      	<label for="radio-choice-2">Imperial</label>
+</fieldset><br/>';        
+
+$Html.='<div id="weightlabel">Height('.$HeightUnit.')</div>
+<input id="weight" class="textinput" type="number" name="Weight" value="'.$MemberDetails->Weight.'"/>
+<div id="heightlabel">Weight('.$WeightUnit.')</div>
+<input id="height" class="textinput" type="number" name="Height" value="'.$MemberDetails->Height.'"/>
+<br/><br/>';
+
+$Html.='Gender
+    <fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
+<label for="male">Male</label>
+<input class="radioinput" id="male" type="radio" name="Gender" value="M"';
+if($MemberDetails->Gender == 'M' || $MemberDetails->Gender == '') 
+    $Html.='checked="checked"';
+$Html.='/>
+<label for="female">Female</label>
+<input class="radioinput" id="female" type="radio" name="Gender" value="F"';
+if($MemberDetails->Gender == 'F')
+    $Html.='checked="checked"';
+$Html.='/>
 </fieldset><br/>';
      
 $Html.='Custom Workouts Visibility

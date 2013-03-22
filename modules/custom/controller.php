@@ -229,6 +229,7 @@ class CustomController extends Controller
         <input class="textinput" type="text" name="CustomName" id="CustomName" placeholder="Name for WOD" value=""/><br/>
         
         <textarea name="descr" placeholder="Describe your wod"></textarea><br/>';
+        
         $Html .= '<div id="Routine1Label"></div>';
         $Html .= '<div id="Routine1Round1Label"></div>';       
         $Html .= '<div id="activity1list">'.$this->ChosenExercises().'</div>';
@@ -414,7 +415,7 @@ class CustomController extends Controller
         $Model = new CustomModel;
         $Exercises = $Model->getExercises();
         $Selected='';
-        $Html .= '<br/><select style="width:300px" class="select buttongroup" data-role="none" id="exercises" name="exercise" onChange="SelectionControl(this.value)">
+        $Html .= '<br/><select style="width:99%" class="select buttongroup" data-role="none" id="exercises" name="exercise" onChange="SelectionControl(this.value)">
          <option value="none">Add Activity</option>';
 	foreach($Exercises AS $Exercise){
             if($Exercise->ActivityName == $SelectedExercise)

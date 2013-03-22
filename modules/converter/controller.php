@@ -44,16 +44,16 @@ class ConverterController extends Controller
             }else if($_REQUEST['converter'] == 'Distance'){    
                 $html.=$this->getDistance();
             }else{    
-            $html.='<div style="padding:2%">
-            <ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getConverter(\'Weight\');"><div style="height:26px;width:1px;float:left"></div>Weight<br/><span style="font-size:small"></span></a></li>             
-            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getConverter(\'Height\');"><div style="height:26px;width:1px;float:left"></div>Height<br/><span style="font-size:small"></span></a></li>
-            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getConverter(\'Volume\');"><div style="height:26px;width:1px;float:left"></div>Volume<br/><span style="font-size:small"></span></a></li>
-            <li><a style="font-size:large;margin-top:10px" href="#" onclick="getConverter(\'Distance\');"><div style="height:26px;width:1px;float:left"></div>Distance<br/><span style="font-size:small"></span></a></li>
-            </ul>
-            </div>';  
+            $html.='<div style="padding:2%">';
+            $html.='<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
+            $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getConverter(\'Weight\');"><div style="height:26px;width:1px;float:left"></div>Weight<br/><span style="font-size:small"></span></a></li>';             
+            $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getConverter(\'Height\');"><div style="height:26px;width:1px;float:left"></div>Height<br/><span style="font-size:small"></span></a></li>';
+            //$html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getConverter(\'Volume\');"><div style="height:26px;width:1px;float:left"></div>Volume<br/><span style="font-size:small"></span></a></li>';
+            $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getConverter(\'Distance\');"><div style="height:26px;width:1px;float:left"></div>Distance<br/><span style="font-size:small"></span></a></li>';
+            $html.='</ul>';
+            $html.='</div>';  
 
-        $html.='<div class="clear"></div><br/>';                
+            $html.='<div class="clear"></div><br/>';                
             }
             return $html;
         }

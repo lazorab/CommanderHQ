@@ -47,9 +47,6 @@ function UpdateActivity(ActivityId, Attributes)
     
 function Save()
 {
-    //var currentround = document.getElementById('addround').value;
-    //var currentround = $('#addround').val();
-    //$("input:visible[id*='"+currentround+"___146___TimeLimit']").val($('#clock').val());
     $("#TimeToComplete").val($('#clock').html());
     $.getJSON('ajax.php?module=benchmark&action=validateform', $(":checkbox, :hidden").serialize(),messagedisplay);
 }
@@ -58,15 +55,8 @@ function messagedisplay(message)
 {
     var currentround = $('#addround').val();
     if(message == 'Success'){
-        var r=confirm("Round "+currentround+" Successfully Saved!\nWould you like to provide us with feedback?");
-        if (r==true)
-        {
-            window.location = 'index.php?module=contact';
-        }
-        else
-        {
-            resetclock();
-        }
+        $( "#popupFeedback" ).popup("open");
+
         document.getElementById('addround').value++;
     }  
     else
@@ -86,10 +76,7 @@ function getDetails(id,cat)
     
     $.ajax({url:'ajax.php?module=benchmark',data:{benchmarkId:id,cat:cat},dataType:"html",success:display});  
     $.ajax({url:'ajax.php?module=benchmark',data:{video:id,benchmarkId:id},dataType:"html",success:videodisplay}); 
-    $.ajax({url:'ajax.php?module=benchmark',data:{topselection:id,benchmarkId:id},dataType:"html",success:topselectiondisplay});
-    
-    //var newround = document.getElementById('addround').value;
-    //$('[id^=1_]').attr('disabled', false);   
+    $.ajax({url:'ajax.php?module=benchmark',data:{topselection:id,benchmarkId:id},dataType:"html",success:topselectiondisplay});   
 }
 
 function getCustomDetails(id,origin)
@@ -107,7 +94,8 @@ function topselectiondisplay(data)
     codes += '<div class="ui-block-d"><input type="text" data-role="none" style="width:80%;color:black;font-weight:bold;background-color:#ccff66" value="Reps" readonly="readonly"/></div>';
     codes += '</div>';
     $('.toplist').html(data);
-    
+    $('.toplist').listview();
+    $('.toplist').listview('refresh');    
     $('#colorcodes').html(codes);
 }
 
@@ -136,7 +124,6 @@ function display(data)
 
 function addRound()
 {
-    //var rounds = document.getElementById('addround').value; 
     $.getJSON('ajax.php?module=benchmark', $("#benchmarkform").serialize(),display);
 }
 </script>

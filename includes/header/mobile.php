@@ -24,8 +24,8 @@
 <link type="text/css" rel="stylesheet" href="css/mobile.css" />
 <link type="text/css" rel="stylesheet" href="css/clock.css" />
 <link rel="stylesheet" href="css/add2home.css">
-<!--<link rel="stylesheet" href="/css/slideshow.css">-->
-<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+	
+<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="js/jquery.easing.1.3.js"></script>
 <script type="text/javascript" src="js/jquery.nicescroll.min.js"></script>
 <script type="text/javascript" src="js/stopwatch.js"></script>
@@ -70,7 +70,6 @@ document.location.href = noddy.href;
 }
 </script>
 <script type="text/javascript">
-
 $(document).ready(function() {
 $("#menu").niceScroll();
 $('#menu').hide();
@@ -154,13 +153,26 @@ function ShowHideStopwatch()
     }
 }
 
+function goBack()
+{
+    window.history.back();
+}
+
 function OpenThisPage(page)
 {
     $('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif");?> src="/css/images/ajax-loader.gif" />');
     window.location = page;
 }
+
+function SubmitFeedback()
+{
+    $.getJSON('ajax.php?module=feedback', $("#feedbackform").serialize(),function(callback){$( "#popupFeedback" ).popup( "close" )});
+}
+
 </script>
-<script type="text/javascript" src="js/jquery.mobile-1.1.0.min.js"></script>
+
+<script src="http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.js"></script>
+
 <script type="text/javascript">
 $( document ).bind( 'mobileinit', function(){
 $.mobile.loader.prototype.options.text = "loading";
