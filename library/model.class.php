@@ -12,8 +12,8 @@ class Model
 	{
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $Message = '';
-            if(isset($_SESSION['UID'])){
-                $SQL = 'SELECT FirstName FROM Members WHERE UserId = "'.$_SESSION['UID'].'"';
+            if(isset($_COOKIE['UID'])){
+                $SQL = 'SELECT FirstName FROM Members WHERE UserId = "'.$_COOKIE['UID'].'"';
                 $db->setQuery($SQL);
                 $FirstName = $db->loadResult();
 
@@ -41,7 +41,7 @@ class Model
         function getGender()
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
+            $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_COOKIE['UID'].'"';
             $db->setQuery($SQL);
             
             return $db->loadResult();
@@ -50,7 +50,7 @@ class Model
         function getSystemOfMeasure()
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT SystemOfMeasure FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
+            $SQL = 'SELECT SystemOfMeasure FROM MemberDetails WHERE MemberId = "'.$_COOKIE['UID'].'"';
             $db->setQuery($SQL);
             
             return $db->loadResult();
@@ -96,7 +96,7 @@ class Model
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $Status = false;
             if(SUBSCRIPTION){
-                $SQL = 'SELECT Subscribed FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
+                $SQL = 'SELECT Subscribed FROM MemberDetails WHERE MemberId = "'.$_COOKIE['UID'].'"';
                 $db->setQuery($SQL);
                 $Status = $db->loadResult();
             }else{
@@ -139,7 +139,7 @@ class Model
             $SQL = 'SELECT RG.AffiliateId, RG.GymName, RG.City, RG.Region, RG.URL
 		FROM Affiliates RG
 		JOIN MemberDetails MD ON MD.GymId = RG.AffiliateId
-		WHERE MD.MemberId = "'.$_SESSION['UID'].'"';
+		WHERE MD.MemberId = "'.$_COOKIE['UID'].'"';
             $db->setQuery($SQL);
             $db->Query();
             if($db->getNumRows() > 0){
@@ -197,7 +197,7 @@ class Model
             FROM Exercises E
             LEFT JOIN ExerciseAttributes EA ON EA.ExerciseId = E.recid
             WHERE CustomOption = 0
-            OR CustomOption = "'.$_SESSION['UID'].'"
+            OR CustomOption = "'.$_COOKIE['UID'].'"
             OR GymOption = "'.$this->getMemberGym()->AffiliateId.'"
             ORDER BY ActivityName';
             $db->setQuery($SQL);
@@ -378,7 +378,7 @@ class Model
                 LEFT JOIN Exercises E ON E.recid = WL.ExerciseId
                 WHERE WL.ExerciseId = '.$Id.'
                 AND (Attribute = "Reps" OR SystemOfMeasure = "'.$this->getSystemOfMeasure().'")    
-                AND MemberId = "'.$_SESSION['UID'].'"
+                AND MemberId = "'.$_COOKIE['UID'].'"
                 ORDER BY TimeCreated DESC, RoundNo, OrderBy, Attribute';
             //var_dump($SQL);
             $db->setQuery($SQL);
@@ -452,7 +452,7 @@ class Model
             $AttributeId = $this->getAttributeId('TimeToComplete');
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $SQL='INSERT INTO WODLog(MemberId, WODTypeId, WorkoutId, RoutineNo, AttributeId, AttributeValue) 
-                VALUES("'.$_SESSION['UID'].'", "'.$WODTypeId.'", "'.$WorkoutId.'", "'.$RoutineNo.'", "'.$AttributeId.'","'.$_REQUEST['RoutineTime'].'")';
+                VALUES("'.$_COOKIE['UID'].'", "'.$WODTypeId.'", "'.$WorkoutId.'", "'.$RoutineNo.'", "'.$AttributeId.'","'.$_REQUEST['RoutineTime'].'")';
             $db->setQuery($SQL);
             $db->Query();
             

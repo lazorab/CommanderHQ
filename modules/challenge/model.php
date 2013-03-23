@@ -20,7 +20,7 @@ class ChallengeModel extends Model
         {
             // ExerciseId only applies for benchmarks so we need it here!
             $SQL = 'INSERT INTO ChallengesLog(MemberId, ChallengeId, RoundNo, ExerciseId, AttributeId, AttributeValue) 
-            VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['ChallengeId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->recid.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
+            VALUES("'.$_COOKIE['UID'].'", "'.$_REQUEST['ChallengeId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->recid.'", "'.$ActivityField->Attribute.'", "'.$ActivityField->AttributeValue.'")';
                 $db->setQuery($SQL);
                 $db->Query();
             
@@ -107,7 +107,7 @@ class ChallengeModel extends Model
                 FROM Members M
                 LEFT JOIN MemberDetails MD ON MD.MemberId = M.UserId
                 LEFT JOIN RegisteredGyms RG ON RG.recid = MD.GymId
-		WHERE M.UserId = '.$_SESSION['UID'].'';
+		WHERE M.UserId = '.$_COOKIE['UID'].'';
             $db->setQuery($SQL);
             $Row = $db->loadObject();          
             $URL = $Row['FeedURL'];
@@ -135,7 +135,7 @@ class ChallengeModel extends Model
             $SQL = 'SELECT WW.recid AS ChallengeId, WW.ChallengeDate
                 FROM Challenges WW
                 LEFT JOIN MemberDetails MD ON MD.GymId = WW.GymId
-                WHERE MD.MemberId = "'.$_SESSION['UID'].'"
+                WHERE MD.MemberId = "'.$_COOKIE['UID'].'"
                 AND ChallengeDate = CURDATE()
                 GROUP BY ChallengeDate';
 
@@ -269,7 +269,7 @@ class ChallengeModel extends Model
                 FROM Members M
                 LEFT JOIN MemberDetails MD ON MD.MemberId = M.UserId
                 LEFT JOIN RegisteredGyms RG ON RG.recid = MD.GymId
-		WHERE M.UserId = '.$_SESSION['UID'].'';
+		WHERE M.UserId = '.$_COOKIE['UID'].'';
             $db->setQuery($SQL);
             $Row = $db->loadObject();          
             $URL = $Row->FeedURL;
@@ -363,7 +363,7 @@ class ChallengeModel extends Model
             $SQL = 'SELECT RG.AffiliateId, RG.GymName, RG.City, RG.Region, RG.URL
 		FROM Affiliates RG
 		JOIN MemberDetails MD ON MD.GymId = RG.AffiliateId
-		WHERE MD.MemberId = "'.$_SESSION['UID'].'"';
+		WHERE MD.MemberId = "'.$_COOKIE['UID'].'"';
             $db->setQuery($SQL);
             $db->Query();
             if($db->getNumRows() > 0){

@@ -44,7 +44,7 @@ include("includes/header/$Environment.php");
 <div id="header">
 <img alt="Header" <?php echo $RENDER->NewImage(''.$Banner.'.png');?> src="<?php echo IMAGE_RENDER_PATH.$Banner;?>.png"/>
 </div>
-<?php if(isset($_SESSION['UID'])){
+<?php if(isset($_COOKIE['UID'])){
 /*MENU*/	
 if (file_exists("includes/menu/$Environment.php"))
 include("includes/menu/$Environment.php");

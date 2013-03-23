@@ -21,20 +21,20 @@ class MygymModel extends Model
                 $TimeAttributeId = $this->getAttributeId('TimeToComplete');
                 //Save the time
             $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue) 
-            VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['WorkoutId'].'", "'.$WorkoutTypeId.'", "0", "0", "'.$TimeAttributeId.'", "'.$_REQUEST['TimeToComplete'].'")';
+            VALUES("'.$_COOKIE['UID'].'", "'.$_REQUEST['WorkoutId'].'", "'.$WorkoutTypeId.'", "0", "0", "'.$TimeAttributeId.'", "'.$_REQUEST['TimeToComplete'].'")';
                 $db->setQuery($SQL);
                 $db->Query();
         foreach($ActivityFields AS $ActivityField)
         {
             if($_REQUEST['origin'] == 'baseline'){
                 $SQL = 'INSERT INTO BaselineLog(MemberId, BaselineTypeId, ExerciseId, RoundNo, ActivityId, AttributeId, AttributeValue) 
-                VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$_REQUEST['WorkoutId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'")';
+                VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutTypeId.'", "'.$_REQUEST['WorkoutId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'")';
                 $db->setQuery($SQL);
                 $db->Query();
             }
             // ExerciseId only applies for benchmarks so we need it here!
             $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId) 
-            VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['WorkoutId'].'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'")';
+            VALUES("'.$_COOKIE['UID'].'", "'.$_REQUEST['WorkoutId'].'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'")';
                 $db->setQuery($SQL);
                 $db->Query();
             
@@ -61,7 +61,7 @@ class MygymModel extends Model
                 FROM Members M
                 LEFT JOIN MemberDetails MD ON MD.MemberId = M.UserId
                 LEFT JOIN RegisteredGyms RG ON RG.recid = MD.GymId
-		WHERE M.UserId = '.$_SESSION['UID'].'';
+		WHERE M.UserId = '.$_COOKIE['UID'].'';
             $db->setQuery($SQL);
             $Row = $db->loadObject();          
             $URL = $Row['FeedURL'];
@@ -90,7 +90,7 @@ class MygymModel extends Model
                 FROM WodWorkouts WW
                 LEFT JOIN MemberDetails MD ON MD.GymId = WW.GymId
                 LEFT JOIN WODTypes WT ON WT.recid = WW.WodTypeId
-                WHERE MD.MemberId = "'.$_SESSION['UID'].'"
+                WHERE MD.MemberId = "'.$_COOKIE['UID'].'"
                 AND WodDate = CURDATE()
                 GROUP BY WodId
                 ORDER BY WodDate';
@@ -284,7 +284,7 @@ class MygymModel extends Model
                 FROM Members M
                 LEFT JOIN MemberDetails MD ON MD.MemberId = M.UserId
                 LEFT JOIN RegisteredGyms RG ON RG.recid = MD.GymId
-		WHERE M.UserId = '.$_SESSION['UID'].'';
+		WHERE M.UserId = '.$_COOKIE['UID'].'';
             $db->setQuery($SQL);
             $Row = $db->loadObject();          
             $URL = $Row->FeedURL;

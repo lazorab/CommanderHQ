@@ -12,7 +12,7 @@ class GoalsModel extends Model
         $Goals=array();
 		$SQL = 'SELECT recid, GoalTitle, GoalDescription 
                     FROM MemberGoals 
-                    WHERE MemberId = '.$_SESSION['UID'].'
+                    WHERE MemberId = '.$_COOKIE['UID'].'
                     AND AchieveByDate > NOW() 
                     AND Achieved <> 1';
 		$Result = mysql_query($SQL);	
@@ -28,7 +28,7 @@ class GoalsModel extends Model
         $Goals=array();
 		$SQL = 'SELECT recid, GoalTitle, GoalDescription 
                     FROM MemberGoals 
-                    WHERE MemberId = '.$_SESSION['UID'].'
+                    WHERE MemberId = '.$_COOKIE['UID'].'
                     AND Achieved = 1';
 		$Result = mysql_query($SQL);	
 		while($Row = mysql_fetch_assoc($Result))
@@ -43,7 +43,7 @@ class GoalsModel extends Model
         $Goals=array();
 		$SQL = 'SELECT recid, GoalTitle, GoalDescription 
                     FROM MemberGoals 
-                    WHERE MemberId = '.$_SESSION['UID'].'
+                    WHERE MemberId = '.$_COOKIE['UID'].'
                     AND AchieveByDate < NOW() 
                     AND Achieved = 0';
 		$Result = mysql_query($SQL);	
@@ -67,7 +67,7 @@ class GoalsModel extends Model
                     END
                     AS Achieved
                     FROM MemberGoals 
-                    WHERE MemberId = '.$_SESSION['UID'].'';
+                    WHERE MemberId = '.$_COOKIE['UID'].'';
 		$Result = mysql_query($SQL);	
 		while($Row = mysql_fetch_assoc($Result))
         {
@@ -80,7 +80,7 @@ class GoalsModel extends Model
     {
 	$SQL = 'SELECT recid, GoalTitle, GoalDescription, Achieved, SetDate,  AchievedDate,  AchieveByDate
         FROM MemberGoals 
-        WHERE MemberId = '.$_SESSION['UID'].'
+        WHERE MemberId = '.$_COOKIE['UID'].'
         AND recid = '.$Id.'';
 		$Result = mysql_query($SQL);	
 		$Row = mysql_fetch_assoc($Result);
@@ -92,7 +92,7 @@ class GoalsModel extends Model
     function setGoal()
     {
 		$SQL = 'INSERT INTO MemberGoals(MemberId, GoalTitle, GoalDescription, AchieveByDate)
-        VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['GoalTitle'].'", "'.$_REQUEST['GoalDescription'].'", "'.$_REQUEST['AchieveByDate'].'")';
+        VALUES("'.$_COOKIE['UID'].'", "'.$_REQUEST['GoalTitle'].'", "'.$_REQUEST['GoalDescription'].'", "'.$_REQUEST['AchieveByDate'].'")';
 		mysql_query($SQL);        
     }
     

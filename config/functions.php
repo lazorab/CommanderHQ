@@ -21,7 +21,7 @@ class User {
 	$db->Query();
 	if($db->getNumRows() > 0){	
             $Row = $db->loadObject();
-            $_SESSION['UID'] = $Row->UserId;
+            setcookie('UID', $Row->UserId, time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
         } else {
             $Gender = '';
             #user not present. Insert a new Record

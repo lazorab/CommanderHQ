@@ -7,7 +7,7 @@ class ProductsController extends Controller
 	{
 		parent::__construct();
 		session_start();
-		if(!isset($_SESSION['UID']))
+		if(!isset($_COOKIE['UID']))
 			header('location: index.php?module=login');
 	}
 	
@@ -114,24 +114,24 @@ class ProductsController extends Controller
 	{
         $Model = new ProductsModel;
 		if(!isset($_SESSION['BasketId'])){
-			$_SESSION['BasketId'] = $Model->getBasketId($_SESSION['UID']);
+			$_SESSION['BasketId'] = $Model->getBasketId($_COOKIE['UID']);
 		}
 		
 		$Html='';
 		if($Action == 'add'){
-			$Response = $Model->AddToBasket($_SESSION['UID'], $_SESSION['BasketId'], $ProductId, $Quantity);
+			$Response = $Model->AddToBasket($_COOKIE['UID'], $_SESSION['BasketId'], $ProductId, $Quantity);
 			$this->Message.=''.$Response.'';
 		}
 		else if($Action == 'remove'){
-			$Response = $Model->RemoveFromBasket($_SESSION['UID'], $_SESSION['BasketId'], $ProductId);
+			$Response = $Model->RemoveFromBasket($_COOKIE['UID'], $_SESSION['BasketId'], $ProductId);
 			$this->Message.=''.$Response.'';
 		}	
 		else if($Action == 'update'){
-			$Response = $Model->UpdateBasket($_SESSION['UID'], $_SESSION['BasketId']);
+			$Response = $Model->UpdateBasket($_COOKIE['UID'], $_SESSION['BasketId']);
 			$this->Message.=''.$Response.'';
 		}		
 		else if($Action == 'view'){
-			$Basket = $Model->ViewBasket($_SESSION['UID'], $_SESSION['BasketId']);
+			$Basket = $Model->ViewBasket($_COOKIE['UID'], $_SESSION['BasketId']);
 			$Html.='Quantity	ProductName		Unit Price	Total<'.$this->Wall.'br/>';
 			$GrandTotal=0;
 			foreach($Basket AS $Item)

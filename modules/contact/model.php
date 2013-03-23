@@ -10,7 +10,7 @@ class ContactModel extends Model
         function SendForm()
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL='SELECT FirstName, LastName, Email FROM Members WHERE UserId = "'.$_SESSION['UID'].'"';
+            $SQL='SELECT FirstName, LastName, Email FROM Members WHERE UserId = "'.$_COOKIE['UID'].'"';
             $db->setQuery($SQL);
             $Row = $db->loadObject(); ;
             $message = 'A User by the name of <b>'.$Row->FirstName.' '.$Row->LastName.'</b><br/>

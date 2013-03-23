@@ -8,7 +8,7 @@ class LoginController extends Controller
 		parent::__construct();	
 		$Model = new LoginModel();
 		session_start();
-		if(isset($_SESSION['UID'])){
+		if(isset($_COOKIE['UID'])){
 			header('location: index.php?module=memberhome');	
 		}
 		else if($_REQUEST['action'] == 'Login')
@@ -19,10 +19,10 @@ class LoginController extends Controller
 			}
 			else{
 				if($_REQUEST['remember'] == 'yes'){
-					setcookie("CommanderUsername", $_REQUEST['username'], time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
-					setcookie("CommanderPassword", $_REQUEST['password'], time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
+					setcookie("Username", $_REQUEST['username'], time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
+					setcookie("Password", $_REQUEST['password'], time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
 				}			
-				$_SESSION['UID'] = $UserId;
+				setcookie('UID', $UserId, time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
 
 				header('location: index.php?module=memberhome');
 			}		

@@ -14,7 +14,7 @@ class RegistergymModel extends Model
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $SQL = 'Update MemberDetails
 		SET GymId = "'.$_REQUEST['AffiliateId'].'"
-                WHERE MemberId = "'.$_SESSION['UID'].'"';  
+                WHERE MemberId = "'.$_COOKIE['UID'].'"';  
             $db->setQuery($SQL);
             $db->Query();
             
@@ -24,7 +24,7 @@ class RegistergymModel extends Model
         function getMemberGym()
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL='SELECT GymId FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
+            $SQL='SELECT GymId FROM MemberDetails WHERE MemberId = "'.$_COOKIE['UID'].'"';
             $db->setQuery($SQL);
             
             return $db->loadResult(); 

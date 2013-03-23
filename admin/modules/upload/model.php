@@ -286,7 +286,7 @@ class UploadModel extends Model
     function MemberActivityExists()
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-        $SQL = 'SELECT MemberId AS MemberRecord FROM MemberBaseline WHERE MemberId = "'.$_SESSION['UID'].'"';
+        $SQL = 'SELECT MemberId AS MemberRecord FROM MemberBaseline WHERE MemberId = "'.$_COOKIE['UID'].'"';
         $db->setQuery($SQL);
 	$db->Query();
 	if($db->getNumRows() > 0)
@@ -321,7 +321,7 @@ class UploadModel extends Model
                 $db->Query();
                 $ExerciseId = $db->insertid();
             }
-            $SQL = 'INSERT INTO MemberBaseline(MemberId, ExerciseId) VALUES("'.$_SESSION['UID'].'", '.$ExerciseId.')';
+            $SQL = 'INSERT INTO MemberBaseline(MemberId, ExerciseId) VALUES("'.$_COOKIE['UID'].'", '.$ExerciseId.')';
             $db->setQuery($SQL);
             $db->Query();
         }
@@ -400,7 +400,7 @@ class UploadModel extends Model
             FROM MemberBaseline MB
             JOIN Exercises E ON E.recid = MB.ExerciseId
             JOIN Attributes A ON A.recid = MB.AttributeId
-            WHERE MB.MemberId = "'.$_SESSION['UID'].'"';
+            WHERE MB.MemberId = "'.$_COOKIE['UID'].'"';
             $db->setQuery($SQL);
 		
             return $db->loadObjectList();

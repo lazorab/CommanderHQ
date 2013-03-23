@@ -286,7 +286,7 @@ class SkillsModel extends Model
 	function BodyWeight()
 	{
 		$Sql = 'SELECT M.SystemOfMeasure, MD.Weight FROM Members M JOIN MemberDetails MD ON MD.MemberId = M.UserId
-		WHERE M.UserId = '.$_SESSION['UID'].'';
+		WHERE M.UserId = '.$_COOKIE['UID'].'';
 		$Result = mysql_query($Sql);
 		$Row = mysql_fetch_assoc($Result);
 		$Unit = 'Kg';
@@ -302,7 +302,7 @@ class SkillsModel extends Model
         
         function Gender()
         {
-            $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
+            $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_COOKIE['UID'].'"';
             $Result = mysql_query($SQL);	
             $Row = mysql_fetch_assoc($Result);
             return $Row['Gender'];
@@ -386,10 +386,10 @@ class SkillsModel extends Model
         FROM MemberBaseline MB
         JOIN Exercises E ON E.recid = MB.ExerciseId
         JOIN Attributes A ON A.recid = MB.AttributeId
-        WHERE MB.MemberId = "'.$_SESSION['UID'].'"';
+        WHERE MB.MemberId = "'.$_COOKIE['UID'].'"';
 
         }else{
-        $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
+        $SQL = 'SELECT Gender FROM MemberDetails WHERE MemberId = "'.$_COOKIE['UID'].'"';
  		$Result = mysql_query($SQL);	
 		$Row = mysql_fetch_assoc($Result);
         if($Row['Gender'] == 'M'){

@@ -49,19 +49,19 @@ class BaselineModel extends Model
             //First Store the values incase they changed
             $SQL = 'UPDATE MemberBaseline 
             SET AttributeValue = "'.$Activity->AttributeValue.'" 
-            WHERE MemberId = "'.$_SESSION['UID'].'" 
+            WHERE MemberId = "'.$_COOKIE['UID'].'" 
             AND ExerciseId = "'.$Activity->ExerciseId.'"
             AND AttributeId = "'.$Activity->Attribute.'"';
             $db->setQuery($SQL);
             $db->Query();
             
             $SQL = 'INSERT INTO BaselineLog(MemberId, BaselineTypeId, WorkoutId, ExerciseId, AttributeId, AttributeValue) 
-            VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$WorkoutId.'", "'.$Activity->ExerciseId.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
+            VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutTypeId.'", "'.$WorkoutId.'", "'.$Activity->ExerciseId.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
             $db->setQuery($SQL);
             $db->Query();
 			
             $SQL = 'INSERT INTO WODLog(MemberId, WODTypeId, WorkoutId, ExerciseId, AttributeId, AttributeValue) 
-            VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$WorkoutId.'", "'.$Activity->ExerciseId.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
+            VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutTypeId.'", "'.$WorkoutId.'", "'.$Activity->ExerciseId.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
             $db->setQuery($SQL);
             $db->Query();
             $this->Message = 'Success';
@@ -79,7 +79,7 @@ class BaselineModel extends Model
             if(isset($_REQUEST[''.$Row['Attribute'].''])){
                 $AttributeValue = $_REQUEST[''.$Row['Attribute'].''];
                 $SQL = 'INSERT INTO BaselineLog(MemberId, ExerciseTypeId, ExerciseId, AttributeId, AttributeValue) 
-                VALUES("'.$_SESSION['UID'].'", "'.$ExerciseTypeId.'", "'.$_REQUEST['exercise'].'", "'.$Row['recid'].'", "'.$AttributeValue.'")';
+                VALUES("'.$_COOKIE['UID'].'", "'.$ExerciseTypeId.'", "'.$_REQUEST['exercise'].'", "'.$Row['recid'].'", "'.$AttributeValue.'")';
                 mysql_query($SQL);	
             }
         }
@@ -97,7 +97,7 @@ class BaselineModel extends Model
     function MemberBaselineExists()
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-        $SQL = 'SELECT MemberId AS MemberRecord FROM MemberBaseline WHERE MemberId = "'.$_SESSION['UID'].'"';
+        $SQL = 'SELECT MemberId AS MemberRecord FROM MemberBaseline WHERE MemberId = "'.$_COOKIE['UID'].'"';
         $db->setQuery($SQL);
 	$db->Query();
         if($db->getNumRows() > 0)
@@ -129,7 +129,7 @@ class BaselineModel extends Model
             $ExerciseId = $Row->ExerciseId;
             $AttributeId = $Row->AttributeId;
             $AttributeValue = $Row->AttributeValue;
-            $SQL = 'INSERT INTO MemberBaseline(MemberId, BaselineTypeId, WorkoutId, ExerciseId, AttributeId, AttributeValue) VALUES("'.$_SESSION['UID'].'", "'.$BaselineTypeId.'", "'.$WorkoutId.'", "'.$ExerciseId.'", "'.$AttributeId.'", "'.$AttributeValue.'")';
+            $SQL = 'INSERT INTO MemberBaseline(MemberId, BaselineTypeId, WorkoutId, ExerciseId, AttributeId, AttributeValue) VALUES("'.$_COOKIE['UID'].'", "'.$BaselineTypeId.'", "'.$WorkoutId.'", "'.$ExerciseId.'", "'.$AttributeId.'", "'.$AttributeValue.'")';
             $db->setQuery($SQL); 
             $db->Query();
         }
@@ -152,7 +152,7 @@ class BaselineModel extends Model
                 $db->Query();
                 $ExerciseId = $db->insertid();
             }
-            $SQL = 'INSERT INTO MemberBaseline(MemberId, ExerciseId) VALUES("'.$_SESSION['UID'].'", '.$ExerciseId.')';
+            $SQL = 'INSERT INTO MemberBaseline(MemberId, ExerciseId) VALUES("'.$_COOKIE['UID'].'", '.$ExerciseId.')';
             $db->setQuery($SQL);
             $db->Query();
         }
@@ -167,7 +167,7 @@ class BaselineModel extends Model
                 BT.BaselineType
                 FROM MemberBaseline MB
                 JOIN WorkoutTypes BT ON BT.recid = MB.BaselineTypeId
-                WHERE MB.MemberId = "'.$_SESSION['UID'].'"';
+                WHERE MB.MemberId = "'.$_COOKIE['UID'].'"';
             $db->setQuery($SQL);
             $Rows = $db->loadObjectList();	
         
@@ -207,7 +207,7 @@ class BaselineModel extends Model
             $WorkoutId = $_REQUEST['custom'];
             $BaselineTypeId=$this->getWorkoutTypeId('Custom');
         }
-        $SQL='INSERT INTO MemberBaseline(MemberId, WorkoutId, BaselineTypeId) VALUES("'.$_SESSION['UID'].'", "'.$WorkoutId.'", "'.$BaselineTypeId.'")';
+        $SQL='INSERT INTO MemberBaseline(MemberId, WorkoutId, BaselineTypeId) VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutId.'", "'.$BaselineTypeId.'")';
         $db->setQuery($SQL);
         $db->Query();
         return $db->insertid();
@@ -228,7 +228,7 @@ class BaselineModel extends Model
             BT.WorkoutType AS BaselineType
             FROM MemberBaseline MB 
             LEFT JOIN WorkoutTypes BT ON BT.recid = MB.BaselineTypeId
-            WHERE MB.MemberId = "'.$_SESSION['UID'].'"'; 
+            WHERE MB.MemberId = "'.$_COOKIE['UID'].'"'; 
 
         $db->setQuery($SQL);
         $Row = $db->loadObject();
@@ -349,7 +349,7 @@ class BaselineModel extends Model
             LEFT JOIN Exercises E ON E.recid = MB.ExerciseId
             LEFT JOIN Attributes A ON A.recid = MB.AttributeId
             LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND MB.UnitOfMeasureId = UOM.recid
-            WHERE MB.MemberId = "'.$_SESSION['UID'].'"';
+            WHERE MB.MemberId = "'.$_COOKIE['UID'].'"';
         $db->setQuery($SQL);
         return $db->loadObjectList();
     } 

@@ -17,7 +17,7 @@ class ProfileController extends Controller
             if(isset($_SESSION['NEW_USER'])){
                 $this->UserId = $_SESSION['NEW_USER'];
             }else{
-                $this->UserId = $_SESSION['UID'];
+                $this->UserId = $_COOKIE['UID'];
             }
         }
         
@@ -32,7 +32,7 @@ class ProfileController extends Controller
                 $Message = 'Firstname Required';
             else if($_REQUEST['LastName'] == '')
                 $Message = 'Lastname Required';
-            else if(!isset($_SESSION['UID']) && $Model->CheckUserNameExists($_REQUEST['UserName']))
+            else if(!isset($_COOKIE['UID']) && $Model->CheckUserNameExists($_REQUEST['UserName']))
                 $Message = 'Username already exists. Please choose another.';
             else if(trim($_REQUEST['PassWord']) != trim($_REQUEST['ConfirmPassWord']))
                 $Message = 'Passwords do not match!';
@@ -42,7 +42,7 @@ class ProfileController extends Controller
                 $Message = 'Cell number invalid!';
             else if($_REQUEST['Email'] != '' && !$Validate->CheckEmailAddress($_REQUEST['Email']))
                 $Message = 'Email Address invalid!';
-            else if(!isset($_SESSION['UID']) && $Model->CheckEmailExists($_REQUEST['Email']))
+            else if(!isset($_COOKIE['UID']) && $Model->CheckEmailExists($_REQUEST['Email']))
                 $Message = 'Email Address already exists!';
             else if($_REQUEST['DOB'] == '')
                 $Message = 'Date of Birth Required';				
@@ -68,15 +68,15 @@ class ProfileController extends Controller
         if($Message == 'Success')
         {
             $Model = new ProfileModel; 
-            if(isset($_SESSION['UID'])){
-                $this->UserId = $_SESSION['UID'];
-                $Model->Update($_SESSION['UID']);
+            if(isset($_COOKIE['UID'])){
+                $this->UserId = $_COOKIE['UID'];
+                $Model->Update($_COOKIE['UID']);
             }else if(isset($_SESSION['NEW_USER'])){
                 $this->UserId = $_SESSION['NEW_USER'];
                 $Model->Update($_SESSION['NEW_USER']);
             }else{
                 $Model->Register();
-                $this->UserId = $_SESSION['UID'];
+                $this->UserId = $_COOKIE['UID'];
             }
         }
         return $Message;
@@ -107,7 +107,7 @@ class ProfileController extends Controller
         <div data-role="fieldcontain">
         <input type="hidden" name="module" value="profile"/>
         <input type="hidden" name="UserId" value="'.$MemberDetails->UserId.'"/>';
-      if(!isset($_SESSION['UID'])){
+      if(!isset($_COOKIE['UID'])){
           $Html.='
             <input class="textinput" type="text" id="invcode" name="InvCode" placeholder="Invitation Code" value="'.$_REQUEST['InvCode'].'"/>';
       }      
@@ -123,7 +123,7 @@ $Html.='<input class="textinput" type="text" id="lastname" name="LastName" place
           $Html.='<label for="username">User Name</label>';
           
 $Html.='<input class="textinput" type="text" id="username" name="UserName" placeholder="User Name" value="'.$MemberDetails->UserName.'"'; 
-if(isset($_SESSION['UID']) || $MemberDetails->LoginType != '')   
+if(isset($_COOKIE['UID']) || $MemberDetails->LoginType != '')   
     $Html.=' readonly="readonly"';
 $Html.='/>';
 if($MemberDetails->LoginType == ''){

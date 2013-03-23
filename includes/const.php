@@ -22,8 +22,8 @@ define('ERROR_REPORT_EMAIL_ADDRESS', 'support@be-mobile.co.za');
 
 if (QA) {
     define('COMMANDER_EMAIL', 'devguru@be-mobile.co.za');
-    define("THIS_DOMAIN", "www.commanderhq.net");
-    define("THIS_ADDRESS", "http://www.commanderhq.net/");
+    define("THIS_DOMAIN", "crossfit.be-mobile.co.za");
+    define("THIS_ADDRESS", "http://crossfit.be-mobile.co.za/");
 } else {
     define('COMMANDER_EMAIL', 'devguru@be-mobile.co.za');
     define("THIS_DOMAIN", "www.commanderhq.net");

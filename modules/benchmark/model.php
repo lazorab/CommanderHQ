@@ -22,7 +22,7 @@ class BenchmarkModel extends Model
                 DATE_FORMAT(TimeCreated, "%d %M %Y") AS WorkoutName,
                 TimeCreated
                 FROM CustomWorkouts
-                WHERE MemberId = "'.$_SESSION['UID'].'"
+                WHERE MemberId = "'.$_COOKIE['UID'].'"
                 GROUP BY TimeCreated   
                 ORDER BY TimeCreated';
             $db->setQuery($SQL);
@@ -38,7 +38,7 @@ class BenchmarkModel extends Model
                 FROM CustomDetails CD
                 LEFT JOIN MemberDetails MD ON MD.MemberId = CD.MemberId
                 WHERE MD.CustomWorkouts = "Public"
-                AND CD.MemberId <> "'.$_SESSION['UID'].'"
+                AND CD.MemberId <> "'.$_COOKIE['UID'].'"
                 GROUP BY WorkoutName    
                 ORDER BY WorkoutName';
             $db->setQuery($SQL);
@@ -65,7 +65,7 @@ class BenchmarkModel extends Model
                 LEFT JOIN Exercises E ON E.recid = CD.ExerciseId
                 LEFT JOIN Attributes A ON A.recid = CD.AttributeId
                 LEFT JOIN WorkoutRoutineTypes WT ON WT.recid = CW.WorkoutRoutineTypeId
-                WHERE CW.MemberId = "'.$_SESSION['UID'].'"
+                WHERE CW.MemberId = "'.$_COOKIE['UID'].'"
                     '.$Filter.'
                 ORDER BY TimeCreated, RoundNo, Exercise';
             return $this->MakeDescription($SQL);
@@ -201,7 +201,7 @@ class BenchmarkModel extends Model
                         LEFT JOIN CustomWorkouts CW ON CW.recid = CD.CustomWorkoutId
 			LEFT JOIN Exercises E ON E.recid = CD.ExerciseId
 			LEFT JOIN Attributes A ON A.recid = CD.AttributeId
-			WHERE CW.MemberId = "'.$_SESSION['UID'].'"
+			WHERE CW.MemberId = "'.$_COOKIE['UID'].'"
                         AND CW.recid = "'.$Id.'"
 			ORDER BY RoundNo, Attribute';
             $db->setQuery($SQL);
@@ -221,14 +221,14 @@ class BenchmarkModel extends Model
                 $TimeAttributeId = $this->getAttributeId('TimeToComplete');
                 //Save the time
                 $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue) 
-                VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$WorkoutTypeId.'", "0", "0", "'.$TimeAttributeId.'", "'.$_REQUEST['TimeToComplete'].'")';
+                VALUES("'.$_COOKIE['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$WorkoutTypeId.'", "0", "0", "'.$TimeAttributeId.'", "'.$_REQUEST['TimeToComplete'].'")';
                 $db->setQuery($SQL);
                 $db->Query();                
                 //$Attributes=$this->getAttributes();
                 //var_dump($ActivityFields);
                 if($_REQUEST['baseline'] == 'yes'){
                     $SetBaseline = true;
-                    $SQL = 'DELETE FROM MemberBaseline WHERE MemberId = "'.$_SESSION['UID'].'"';
+                    $SQL = 'DELETE FROM MemberBaseline WHERE MemberId = "'.$_COOKIE['UID'].'"';
                     $db->setQuery($SQL);
                     $db->Query();
                 }
@@ -237,13 +237,13 @@ class BenchmarkModel extends Model
         {
             if($_REQUEST['origin'] == 'baseline'){
                 $SQL = 'INSERT INTO BaselineLog(MemberId, BaselineTypeId, ExerciseId, RoundNo, ActivityId, AttributeId, AttributeValue) 
-                VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$_REQUEST['benchmarkId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'")';
+                VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutTypeId.'", "'.$_REQUEST['benchmarkId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'")';
                 $db->setQuery($SQL);
                 $db->Query();
             }
             // ExerciseId only applies for benchmarks so we need it here!
             $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId) 
-            VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'")';
+            VALUES("'.$_COOKIE['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'")';
                 $db->setQuery($SQL);
                 $db->Query();
             
@@ -321,7 +321,7 @@ class BenchmarkModel extends Model
                 LEFT JOIN BenchmarkWorkouts B ON B.recid = L.ExerciseId 
                 LEFT JOIN Attributes A ON A.recid = L.AttributeId
                 LEFT JOIN WorkoutTypes ET ON ET.recid = L.WODTypeId
-                WHERE L.MemberId = '.$_SESSION['UID'].' 
+                WHERE L.MemberId = '.$_COOKIE['UID'].' 
                 AND ET.WorkoutType = "Benchmark"
                 AND A.Attribute = "TimeToComplete"
                 ORDER BY TimeCreated';

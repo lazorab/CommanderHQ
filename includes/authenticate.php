@@ -1,16 +1,16 @@
 <?php
         session_start();
-	if(!isset($_SESSION['UID']))
+	if(!isset($_COOKIE['UID']))
 	{
-            if(isset($_COOKIE['CommanderUsername']) && isset($_COOKIE['CommanderPassword'])){
-                $Username = $_COOKIE['CommanderUsername'];
-		$Password = $_COOKIE['CommanderPassword'];
+            if(isset($_COOKIE['Username']) && isset($_COOKIE['Password'])){
+                $Username = $_COOKIE['Username'];
+		$Password = $_COOKIE['Password'];
                 $UserId = AutoLogin($Username, $Password);	
 		if(!$UserId){
                     header('location: index.php?module=login');
 		}
-		else{			
-                    $_SESSION['UID'] = $UserId;
+		else{
+                    setcookie('UID', $UserId, time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
                 }				
             }
 	}				

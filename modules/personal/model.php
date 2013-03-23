@@ -27,7 +27,7 @@ class PersonalModel extends Model
                 LEFT JOIN Exercises E ON E.recid = CD.ExerciseId
                 LEFT JOIN Attributes A ON A.recid = CD.AttributeId
                 LEFT JOIN WorkoutRoutineTypes WT ON WT.recid = CW.WorkoutRoutineTypeId
-                WHERE CW.MemberId = "'.$_SESSION['UID'].'"
+                WHERE CW.MemberId = "'.$_COOKIE['UID'].'"
                 AND CW.recid = "'.$Id.'"
                 ORDER BY RoundNo, OrderBy, Exercise, Attribute';
             return $this->MakeDescription($SQL);
@@ -90,7 +90,7 @@ class PersonalModel extends Model
                     WorkoutName,
                     Notes
                     FROM CustomWorkouts
-                    WHERE MemberId = "'.$_SESSION['UID'].'"
+                    WHERE MemberId = "'.$_COOKIE['UID'].'"
                     ORDER BY WorkoutdateTime DESC';
              /*   
                 $SQL="SELECT DISTINCT CW.recid AS WodId, 
@@ -196,7 +196,7 @@ ORDER BY TimeCreated DESC LIMIT 30";
 			LEFT JOIN Exercises E ON E.recid = CD.ExerciseId
 			LEFT JOIN Attributes A ON A.recid = CD.AttributeId
                         LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND CD.UnitOfMeasureId = UOM.recid
-			WHERE CW.MemberId = "'.$_SESSION['UID'].'"
+			WHERE CW.MemberId = "'.$_COOKIE['UID'].'"
                         AND CW.recid = "'.$Id.'"
 			ORDER BY RoutineNo, RoundNo, OrderBy, Exercise, Attribute';
             $db->setQuery($SQL);
@@ -219,7 +219,7 @@ ORDER BY TimeCreated DESC LIMIT 30";
 
                 if($_REQUEST['baseline'] == 'yes'){
                     $SetBaseline = true;
-                    $SQL = 'DELETE FROM MemberBaseline WHERE MemberId = "'.$_SESSION['UID'].'"';
+                    $SQL = 'DELETE FROM MemberBaseline WHERE MemberId = "'.$_COOKIE['UID'].'"';
                     $db->setQuery($SQL);
                     $db->Query();
                 }
@@ -250,19 +250,19 @@ ORDER BY TimeCreated DESC LIMIT 30";
                     }
                     if($SetBaseline){
                         $SQL = 'INSERT INTO MemberBaseline(MemberId, BaselineTypeId, WorkoutId, ExerciseId, AttributeId, AttributeValue) 
-                            VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$ThisId.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$AttributeValue.'")';
+                            VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutTypeId.'", "'.$ThisId.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$AttributeValue.'")';
                         $db->setQuery($SQL);
                         $db->Query();
                     }
                     if($_REQUEST['origin'] == 'baseline'){
                         $SQL = 'INSERT INTO BaselineLog(MemberId, BaselineTypeId, ExerciseId, RoundNo, ActivityId, AttributeId, AttributeValue) 
-				VALUES("'.$_SESSION['UID'].'", "'.$WorkoutTypeId.'", "'.$ThisId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$AttributeValue.'")';
+				VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutTypeId.'", "'.$ThisId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$AttributeValue.'")';
                         $db->setQuery($SQL);
                         $db->Query();
                     }
                     // ExerciseId only applies for benchmarks so we need it here!
                     $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId, OrderBy) 
-			VALUES("'.$_SESSION['UID'].'", "'.$ThisId.'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'", "'.$ActivityField->OrderBy.'")';
+			VALUES("'.$_COOKIE['UID'].'", "'.$ThisId.'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'", "'.$ActivityField->OrderBy.'")';
                         $db->setQuery($SQL);
                         $db->Query();
                         //var_dump($SQL);
@@ -340,7 +340,7 @@ ORDER BY TimeCreated DESC LIMIT 30";
                 LEFT JOIN CustomWorkouts B ON B.recid = L.ExerciseId 
                 LEFT JOIN Attributes A ON A.recid = L.AttributeId
                 LEFT JOIN WorkoutTypes ET ON ET.recid = L.WODTypeId
-                WHERE L.MemberId = '.$_SESSION['UID'].' 
+                WHERE L.MemberId = '.$_COOKIE['UID'].' 
                 AND ET.WorkoutType = "Custom"
                 AND A.Attribute = "TimeToComplete"
                 ORDER BY TimeCreated';

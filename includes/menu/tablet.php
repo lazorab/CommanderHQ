@@ -1,6 +1,6 @@
 <?php
 session_start();
-if(isset($_SESSION['UID'])){ ?>
+if(isset($_COOKIE['UID'])){ ?>
 
 <a href="?module=memberhome">Home</a>
 <a href="?module=reports">Reports</a>

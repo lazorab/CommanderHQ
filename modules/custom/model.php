@@ -21,7 +21,7 @@ function __construct()
 
                 if($CustomWorkoutId == 0){
                      $SQL = 'INSERT INTO CustomWorkouts(MemberId, WorkoutName, WorkoutRoutineTypeId, Notes, WorkoutDateTime)
-VALUES("'.$_SESSION['UID'].'", "'.$_REQUEST['CustomName'].'", "'.$WorkoutRoutineTypeId.'", "'.$_REQUEST['descr'].'", "'.$_REQUEST['WodDate'].'")';
+VALUES("'.$_COOKIE['UID'].'", "'.$_REQUEST['CustomName'].'", "'.$WorkoutRoutineTypeId.'", "'.$_REQUEST['descr'].'", "'.$_REQUEST['WodDate'].'")';
                     $db->setQuery($SQL);
                     $db->Query();
                     $CustomWorkoutId = $db->insertid();
@@ -48,7 +48,7 @@ VALUES("'.$CustomWorkoutId.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityFie
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             if($this->UserIsSubscribed()){
                 $SQL = 'INSERT INTO Exercises(Exercise, Acronym, CustomOption)
-VALUES("'.$_REQUEST['NewExercise'].'", "'.$_REQUEST['Acronym'].'", "'.$_SESSION['UID'].'")';
+VALUES("'.$_REQUEST['NewExercise'].'", "'.$_REQUEST['Acronym'].'", "'.$_COOKIE['UID'].'")';
                 $db->setQuery($SQL);
                 $db->Query();
                 $ExerciseId = $db->insertid();
@@ -87,7 +87,7 @@ VALUES("'.$ExerciseId.'","'.$this->getAttributeId('Reps').'")';
     function MemberActivityExists()
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-        $SQL = 'SELECT count(MemberId) AS MemberRecord FROM MemberBaseline WHERE MemberId = "'.$_SESSION['UID'].'"';
+        $SQL = 'SELECT count(MemberId) AS MemberRecord FROM MemberBaseline WHERE MemberId = "'.$_COOKIE['UID'].'"';
         $db->setQuery($SQL);
         $MemberRecord = $db->loadResult();
         if($MemberRecord > 0)
@@ -118,7 +118,7 @@ A.Attribute, MB.AttributeValue
 FROM MemberBaseline MB
 JOIN Exercises E ON E.recid = MB.ExerciseId
 JOIN Attributes A ON A.recid = MB.AttributeId
-WHERE MB.MemberId = "'.$_SESSION['UID'].'"';
+WHERE MB.MemberId = "'.$_COOKIE['UID'].'"';
 $db->setQuery($SQL);
 
 return $db->loadObjectList();

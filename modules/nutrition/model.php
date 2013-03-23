@@ -10,7 +10,7 @@ class NutritionModel extends Model
     function Log()
     {
         $SQL='INSERT INTO FoodLog(MemberId, Meal, MealTime) 
-        Values("'.$_SESSION['UID'].'", "'.$_REQUEST['meal'].'", "'.date_format(date_create(strtotime($_REQUEST['mealtime'])), 'Y-m-d H:i:s').'")';
+        Values("'.$_COOKIE['UID'].'", "'.$_REQUEST['meal'].'", "'.date_format(date_create(strtotime($_REQUEST['mealtime'])), 'Y-m-d H:i:s').'")';
         mysql_query($SQL);
     }
 	

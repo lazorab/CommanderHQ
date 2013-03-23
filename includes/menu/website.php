@@ -16,7 +16,7 @@ $NavIconSize = floor(58*$ratio);
 <img alt="Header" src="<?php echo $RENDER->Image('search.png', $request->get_screen_width_new());?>"/>
 </div>
 <?php
-if(isset($_SESSION['UID'])){ ?>
+if(isset($_COOKIE['UID'])){ ?>
 
 <a href="?module=memberhome">Home</a>
 <a href="?module=reports">Reports</a>

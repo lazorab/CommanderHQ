@@ -14,7 +14,7 @@ class ReportsModel extends Model
 		FROM MemberGoals MG 
 		JOIN Members M ON M.UserId = MG.MemberId
 		JOIN MemberDetails MD ON MD.MemberID = MG.MemberId
-		WHERE MG.MemberId = '.$_SESSION['UID'].' AND MG.Achieved = 0';
+		WHERE MG.MemberId = '.$_COOKIE['UID'].' AND MG.Achieved = 0';
             $db->setQuery($SQL);
 		
             return $db->loadObject();
@@ -34,7 +34,7 @@ class ReportsModel extends Model
                     LEFT JOIN Exercises E on E.recid = L.ActivityId 
                     LEFT JOIN Attributes A on A.recid = L.AttributeId 
                     LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
-                    WHERE L.MemberId = '.$_SESSION['UID'].' 
+                    WHERE L.MemberId = '.$_COOKIE['UID'].' 
                     AND L.ActivityId = '.$ExerciseId.'';
             $db->setQuery($SQL);
 		
@@ -48,7 +48,7 @@ class ReportsModel extends Model
                 E.Exercise
                 FROM WODLog L
                 LEFT JOIN Exercises E ON E.recid = L.ExerciseId
-                WHERE L.MemberId = "'.$_SESSION['UID'].'"
+                WHERE L.MemberId = "'.$_COOKIE['UID'].'"
                 ORDER BY Exercise';
         $db->setQuery($SQL);
 		
@@ -63,7 +63,7 @@ class ReportsModel extends Model
         FROM WODLog L
         LEFT JOIN BenchmarkWorkouts B ON B.recid = L.WorkoutId
         LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
-        WHERE L.MemberId = '.$_SESSION['UID'].'
+        WHERE L.MemberId = '.$_COOKIE['UID'].'
         AND WT.WorkoutType = "Benchmark"
         ORDER BY WorkoutName';
         $db->setQuery($SQL);
@@ -80,7 +80,7 @@ class ReportsModel extends Model
         FROM WODLog L
         LEFT JOIN WodWorkouts B ON B.recid = L.WorkoutId
         LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
-        WHERE L.MemberId = '.$_SESSION['UID'].'
+        WHERE L.MemberId = '.$_COOKIE['UID'].'
         AND WT.WorkoutType <> "Benchmark"
         ORDER BY WorkoutName';
         $db->setQuery($SQL);
@@ -104,7 +104,7 @@ class ReportsModel extends Model
             LEFT JOIN WODTypes WT ON WT.recid = L.WODTypeId
             LEFT JOIN Exercises E ON E.recid = L.ExerciseId
             LEFT JOIN Attributes A ON A.recid = L.AttributeId
-            WHERE L.MemberId = '.$_SESSION['UID'].'
+            WHERE L.MemberId = '.$_COOKIE['UID'].'
             AND L.WorkoutId = '.$WorkoutId.'
             AND L.WODTypeId = '.$WorkoutTypeId.'  
             ORDER BY TimeCreated';// AND L.ExerciseId = '.$_REQUEST['WODId'].'';
@@ -123,7 +123,7 @@ class ReportsModel extends Model
             LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
             LEFT JOIN BenchmarkWorkouts B ON B.recid = L.WorkoutId
             LEFT JOIN Attributes A ON A.recid = L.AttributeId
-            WHERE L.MemberId = '.$_SESSION['UID'].'
+            WHERE L.MemberId = '.$_COOKIE['UID'].'
             AND WorkoutType = "Benchmark"
             AND L.WorkoutId = '.$Id.'
             ORDER BY TimeCreated';// AND L.ExerciseId = '.$_REQUEST['WODId'].'';
@@ -141,7 +141,7 @@ class ReportsModel extends Model
         FROM MemberBaseline MB
         JOIN WorkoutTypes WT ON WT.recid = MB.ExerciseTypeId
         LEFT JOIN BaselineLog L ON L.ExerciseId = MB.recid
-        WHERE L.MemberId = "'.$_SESSION['UID'].'"';
+        WHERE L.MemberId = "'.$_COOKIE['UID'].'"';
         $db->setQuery($SQL);
 		
         $Rows = $db->loadObjectList();	
@@ -185,7 +185,7 @@ class ReportsModel extends Model
         LEFT JOIN WorkoutTypes WT ON WT.recid = L.BaselineTypeId
         LEFT JOIN Exercises E ON E.recid = L.ExerciseId
         LEFT JOIN Attributes A ON A.recid = L.AttributeId
-	WHERE L.MemberId = '.$_SESSION['UID'].'
+	WHERE L.MemberId = '.$_COOKIE['UID'].'
         GROUP BY Exercise, TimeCreated
 	ORDER BY WorkoutType, TimeCreated';// AND L.ExerciseId = '.$_REQUEST['BaselineId'].'';
         $db->setQuery($SQL);
@@ -198,7 +198,7 @@ class ReportsModel extends Model
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $SQL = 'SELECT BodyWeight as Weight, TimeCreated 
 		FROM ExerciseLog
-		WHERE MemberId = '.$_SESSION['UID'].' AND BodyWeight <> ""';
+		WHERE MemberId = '.$_COOKIE['UID'].' AND BodyWeight <> ""';
             $db->setQuery($SQL);
 		
             return $db->loadObjectList();	

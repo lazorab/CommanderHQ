@@ -1,7 +1,7 @@
 <?php
 session_start();
     
-		if(!isset($_SESSION['UID']))
+		if(!isset($_COOKIE['UID']))
 		{
 			if(isset($_COOKIE['CommanderUsername']) && isset($_COOKIE['CommanderPassword'])){
 				$Username = $_COOKIE['CommanderUsername'];
@@ -11,7 +11,7 @@ session_start();
 					header('location: index.php?module=login');
 				}
 				else{			
-					$_SESSION['UID'] = $UserId;
+					$_COOKIE['UID'] = $UserId;
 				}				
 			}
 		}				

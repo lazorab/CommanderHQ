@@ -7,7 +7,7 @@ class ReportsController extends Controller
     {
 	parent::__construct();
 	session_start();
-	if(!isset($_SESSION['UID'])){
+	if(!isset($_COOKIE['UID'])){
             header('location: index.php?module=login');	
         }
         else{

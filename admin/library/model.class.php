@@ -10,7 +10,7 @@ class Model
         
                 function getSystemOfMeasure()
         {
-            $SQL = 'SELECT SystemOfMeasure FROM MemberDetails WHERE MemberId = "'.$_SESSION['UID'].'"';
+            $SQL = 'SELECT SystemOfMeasure FROM MemberDetails WHERE MemberId = "'.$_COOKIE['UID'].'"';
             $Result = mysql_query($SQL);	
             $Row = mysql_fetch_assoc($Result);
             

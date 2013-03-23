@@ -7,15 +7,16 @@ class ShoppingbasketController extends Controller
 	{
 		parent::__construct();
 		session_start();
-		if(!isset($_SESSION['UID']))
+		if(!isset($_COOKIE['UID']))
 			header('location: index.php?module=login');
 					
 		$this->Model = new ShoppingbasketModel;
 		if($_REQUEST['form'] != 'submitted'){
-			if($_REQUEST['action'] != 'Check Out')
+			if($_REQUEST['action'] != 'Check Out'){
 			
-			if($_REQUEST['action'] != 'Back to Products')
-			
+                        }else if($_REQUEST['action'] != 'Back to Products'){
+                            
+                        }
 		}
 	}
 	

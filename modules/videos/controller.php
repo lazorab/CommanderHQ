@@ -6,7 +6,7 @@ class VideosController extends Controller
 	function __construct()
 	{
 		parent::__construct();
-		if(!isset($_SESSION['UID']))
+		if(!isset($_COOKIE['UID']))
 			header('location: index.php?module=login');		
 			
 	$i=1;
