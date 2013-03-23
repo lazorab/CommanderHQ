@@ -5,39 +5,41 @@ class LoginController extends Controller
 	
 	function __construct()
 	{
-		parent::__construct();	
-		$Model = new LoginModel();
-		session_start();
-		if(isset($_COOKIE['UID'])){
-			header('location: index.php?module=memberhome');	
+            parent::__construct();	
+            $Model = new LoginModel();
+            session_start();
+            if(isset($_COOKIE['UID'])){
+                header('location: index.php?module=memberhome');	
+            }
+            else if($_REQUEST['action'] == 'Login')
+            {
+		$UserId = $Model->Login($_REQUEST['username'], $_REQUEST['password']);	
+		if(!$UserId){
+                    $this->Message = 'Invalid Credentials, Please try again.';
 		}
-		else if($_REQUEST['action'] == 'Login')
+		else{
+                    if($_REQUEST['remember'] == 'yes' && (!isset($_COOKIE['Username']) && !isset($_COOKIE['Password']))){
+                        setcookie("Username", $_REQUEST['username'], time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
+			setcookie("Password", $_REQUEST['password'], time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
+                    }else if(isset($_COOKIE['Username']) && isset($_COOKIE['Password'])){
+                        setcookie("Username", "", time()-36000);
+                        setcookie("Password", "", time()-36000);                       
+                    }	
+                    setcookie('UID', $UserId, time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
+                    header('location: index.php?module=memberhome');
+		}		
+            }	
+            else if($_REQUEST['oauth_provider'] == 'twitter')
 		{
-			$UserId = $Model->Login($_REQUEST['username'], $_REQUEST['password']);	
-			if(!$UserId){
-				$this->Message = 'Invalid Credentials, Please try again.';
-			}
-			else{
-				if($_REQUEST['remember'] == 'yes'){
-					setcookie("Username", $_REQUEST['username'], time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
-					setcookie("Password", $_REQUEST['password'], time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
-				}			
-				setcookie('UID', $UserId, time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
-
-				header('location: index.php?module=memberhome');
-			}		
-		}	
-        else if($_REQUEST['oauth_provider'] == 'twitter')
-		{
-            header("Location: login-twitter.php");		
+                header("Location: login-twitter.php");		
 		}
-        else if($_REQUEST['oauth_provider'] == 'google')
+            else if($_REQUEST['oauth_provider'] == 'google')
 		{
-            header("Location: gplus_login.php");		
+                header("Location: gplus_login.php");		
 		}
-        else if($_REQUEST['oauth_provider'] == 'facebook')
+            else if($_REQUEST['oauth_provider'] == 'facebook')
 		{
-            header("Location: login-facebook.php");		 
+                header("Location: login-facebook.php");		 
 		}
 		else if($_REQUEST['action'] == 'Retrieve')
 		{

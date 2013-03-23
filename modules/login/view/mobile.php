@@ -13,7 +13,11 @@
 <br/>
 
 Remember me
-<input type="checkbox" id="remember" name="remember" value="yes" data-role="none"/>
+<input type="checkbox" id="remember" name="remember" value="yes" data-role="none"
+<?php if(isset($_COOKIE['Username']) && isset($_COOKIE['Password'])){?>
+       checked="checked"
+<?php } ?>
+/>
 
 <img onclick="document.login.submit();" alt="Login" <?php echo $RENDER->NewImage('login.png');?> src="<?php echo IMAGE_RENDER_PATH;?>login.png"/>
 </form>

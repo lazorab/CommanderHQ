@@ -7,10 +7,12 @@ class FeedbackController extends Controller
 	session_start();	
     }
     
-     function Output()
+    function Output()
     {
-        $Model = new FeedbackModel;
-        $Model->SendFeedback();
+        if($_REQUEST['Comments'] != ''){
+            $Model = new FeedbackModel;
+            $Model->SendFeedback();
+        }
     }
 }
 ?>

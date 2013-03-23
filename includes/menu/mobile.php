@@ -112,8 +112,7 @@ $('#back').html('<img alt="Back" onclick="goBack();" <?php echo $RENDER->NewImag
 <form id="feedbackform">
 <div style="padding:10px 20px;">
 <h3>Successfully Saved</h3>
-<h3>Send us some feedback</h3>
-<textarea id="feedback" name="Comments" cols="10" rows="20"></textarea>
+<textarea id="feedback" name="Comments" cols="10" rows="20" placeholder="Send us your comments"></textarea>
 <a style="width:40%;margin:4%;float:left" href="#" data-role="button" data-inline="true" onClick="SubmitFeedback();" data-theme="c">Submit</a>
 <a style="width:40%;margin:4%;float:right" href="#" data-role="button" data-inline="true" data-rel="back" data-theme="c">Cancel</a>
 <br/><br/><br/>
