@@ -1,7 +1,7 @@
 <?php
 require_once('/Sites/framework/general/databasemanager.class.php');
 require_once('dbconfig.php');
-
+define("THIS_DOMAIN", "www.commanderhq.net");
 class User {
     
     function __construct()
@@ -17,6 +17,7 @@ class User {
         $FirstName = $explodedName[0];
         $LastName= $explodedName[1];
         $SQL = "SELECT *, 'memberhome' AS redirect FROM `Members` WHERE oauth_uid = '$user->id' and oauth_provider = '$oauth_provider'";
+        //var_dump($SQL);
         $db->setQuery($SQL);
 	$db->Query();
 	if($db->getNumRows() > 0){	

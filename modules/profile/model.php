@@ -148,7 +148,7 @@ class ProfileModel extends Model
             $SQL = 'UPDATE MemberInvites SET NewMemberId = '.$NewId.' WHERE MemberId = '.$MemberId.' AND InvitationCode = "'.trim($_REQUEST['InvCode']).'"';
             $db->setQuery($SQL);
             $db->Query();
-            $_COOKIE['UID'] = $NewId;
+            setcookie('UID', $NewId, time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
             $_SESSION['NEW_USER'] = $NewId;
             $this->SendEmail(trim($_REQUEST['FirstName']), trim($_REQUEST['Email']), trim($_REQUEST['UserName']), trim($_REQUEST['PassWord']));
 	}    
@@ -203,7 +203,7 @@ class ProfileModel extends Model
                         $db->setQuery($SQL);
                         $db->Query();
             if(!isset($_COOKIE['UID'])){
-                $_COOKIE['UID'] = $Id;
+                setcookie('UID', $Id, time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
             }
             
 	}

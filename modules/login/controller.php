@@ -22,8 +22,8 @@ class LoginController extends Controller
                         setcookie("Username", $_REQUEST['username'], time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
 			setcookie("Password", $_REQUEST['password'], time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
                     }else if(isset($_COOKIE['Username']) && isset($_COOKIE['Password'])){
-                        setcookie("Username", "", time()-36000);
-                        setcookie("Password", "", time()-36000);                       
+                        setcookie("Username", "", time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
+                        setcookie("Password", "", time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);                    
                     }	
                     setcookie('UID', $UserId, time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
                     header('location: index.php?module=memberhome');
@@ -39,7 +39,7 @@ class LoginController extends Controller
 		}
             else if($_REQUEST['oauth_provider'] == 'facebook')
 		{
-                header("Location: login-facebook.php");		 
+                header("Location: facebook_login.php");		 
 		}
 		else if($_REQUEST['action'] == 'Retrieve')
 		{
