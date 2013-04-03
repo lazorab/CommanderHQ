@@ -458,5 +458,47 @@ class Model
             
             return 'Success';
         }
+        
+    function getMemberDetails($Id)
+    {
+        if($Id > 0){
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+ 		$SQL='SELECT M.UserId,
+		M.FirstName,
+		M.LastName,
+		M.Cell,
+		M.Email,
+		M.UserName,
+		M.PassWord,
+                M.oauth_provider AS LoginType,
+		MD.SkillLevel,
+                MD.GymId,
+		MD.Gender,
+		MD.DOB,
+                MD.SystemOfMeasure,
+		MD.CustomWorkouts,
+                MD.Height,
+                MD.Weight,
+                MD.BMI,
+                MD.RestHR,
+                MD.RecHR
+                FROM Members M 
+                LEFT JOIN MemberDetails MD ON MD.MemberId = M.UserId 
+                WHERE M.UserId = "'.$Id.'"';           
+
+            $db->setQuery($SQL);
+		
+            $MemberDetails = $db->loadObject();   
+            if($MemberDetails->SystemOfMeasure == 'Imperial'){
+                //convert to metric for storage in db. Displaying of values will be converted back.
+                $MemberDetails->Weight = ceil($MemberDetails->Weight * 2.22);
+                $MemberDetails->Height = ceil($MemberDetails->Height * 0.39);
+            }          
+        }
+        else{
+            $MemberDetails=new MemberObject($_REQUEST);
+        }   
+	return $MemberDetails;
+    }        
 }
 ?>

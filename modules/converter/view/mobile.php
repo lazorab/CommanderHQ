@@ -7,21 +7,66 @@ function getForm(cat)
 
 function getConversionValues(cat)
 {
-    if(cat == 'weight'){  
-        var imperialweight = document.getElementById("metric_weight_input").value * 2.20;
-        var metricweight = document.getElementById("imperial_weight_input").value * 0.45; 
-        $('#metric_weight').val(metricweight.toFixed(2) + 'kg'); 
-        $('#imperial_weight').val(imperialweight.toFixed(2) + 'lbs');
+    var intRegex = /^\d+$/;
+    var imperialvalue = 0;
+    var metricvalue = 0;   
+    if(cat == 'weight'){
+        if($('#metric_weight_input').val() != ''){
+            if(intRegex.test($('#metric_weight_input').val())){
+                imperialvalue = $('#metric_weight_input').val() * 2.20;
+                $('#imperial_weight').val(imperialvalue.toFixed(2) + 'lbs');
+            }else{
+                alert('Invalid Value!');
+                return false;
+            }
+        }
+        if($('#imperial_weight_input').val() != ''){
+            if(intRegex.test($('#imperial_weight_input').val())){
+                metricvalue = $('#imperial_weight_input').val() * 0.45;
+                $('#metric_weight').val(metricvalue.toFixed(2) + 'kg'); 
+            }else{
+                alert('Invalid Value!');
+                return false;
+            }
+        }
     }else if(cat == 'height'){
-        var metricheight = document.getElementById("imperial_height_input").value * 2.54;
-        var imperialheight = document.getElementById("metric_height_input").value * 0.39;
-        $('#metric_height').val(metricheight.toFixed(2) + 'cm'); 
-        $('#imperial_height').val(imperialheight.toFixed(2) + 'in');
+        if($('#metric_height_input').val() != ''){
+            if(intRegex.test($('#metric_height_input').val())){
+                imperialvalue = $('#metric_height_input').val() * 0.39;
+                $('#imperial_height').val(imperialvalue.toFixed(2) + 'in');
+            }else{
+                alert('Invalid Value!');
+                return false;
+            }
+        }
+        if($('#imperial_height_input').val() != ''){
+            if(intRegex.test($('#imperial_height_input').val())){
+                metricvalue = $('#imperial_height_input').val() * 2.54;
+                $('#metric_height').val(metricvalue.toFixed(2) + 'cm'); 
+            }else{
+                alert('Invalid Value!');
+                return false;
+            }
+        }        
     }else if(cat == 'distance'){
-        var metricdistance = document.getElementById("imperial_distance_input").value * 0.62;
-        var imperialdistance = document.getElementById("metric_distance_input").value * 1.61;
-        $('#metric_distance').val(metricdistance.toFixed(2) + 'km'); 
-        $('#imperial_distance').val(imperialdistance.toFixed(2) + 'm');    
+        if($('#metric_distance_input').val() != ''){
+            if(intRegex.test($('#metric_distance_input').val())){
+                imperialvalue = $('#metric_distance_input').val() * 1.61;
+                $('#imperial_distance').val(imperialvalue.toFixed(2) + 'm');
+            }else{
+                alert('Invalid Value!');
+                return false;
+            }
+        }
+        if($('#imperial_distance_input').val() != ''){
+            if(intRegex.test($('#imperial_distance_input').val())){
+                metricvalue = $('#imperial_distance_input').val() * 0.62;
+                $('#metric_distance').val(metricvalue.toFixed(2) + 'km'); 
+            }else{
+                alert('Invalid Value!');
+                return false;
+            }
+        }            
     }else if(cat == 'volume'){
         var metricvolume = document.getElementById("imperial_volume_input").value * 33.81;
         var imperialvolume = document.getElementById("metric_volume_input").value * 0.03;

@@ -375,7 +375,7 @@ function ReturnWorkoutId(Id)
         alert(Id); 
     }
     else{    
-        window.location = "?module=personal&WorkoutId="+Id+"";
+        window.location = "?module=personal&WorkoutTypeId=3&WorkoutId="+Id+"";
      }
 }
 

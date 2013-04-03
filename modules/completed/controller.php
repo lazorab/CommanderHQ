@@ -1,5 +1,5 @@
 <?php
-class PersonalController extends Controller
+class CompletedController extends Controller
 {
         var $Origin;
 	var $Workout;
@@ -19,14 +19,9 @@ class PersonalController extends Controller
             if(isset($_REQUEST['origin']))
                 $this->Origin = $_REQUEST['origin'];
 		$this->Height = floor(SCREENWIDTH * 0.717); 
-		$Model = new PersonalModel;
 
                 if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] > 0){
-                    if($_REQUEST['WorkoutTypeId'] == 3){//Custom
-                        $this->Workout = $Model->getCustomDetails($_REQUEST['WorkoutId']);
-                    }else if($_REQUEST['WorkoutTypeId'] == 4){//My Gym
-                        $this->Workout = $Model->getMyGymDetails($_REQUEST['WorkoutId']);
-                    }
+                    $this->Workout = $this->getDetails();
                     //var_dump($WorkoutDetails);
                     //$this->Workout = $WorkoutDetails[0];
                 }
@@ -34,7 +29,7 @@ class PersonalController extends Controller
         
         function Message()
         {
-            $Model = new PersonalModel;
+            $Model = new CompletedModel;
             if(isset($_REQUEST['RoutineTime'])){
             //Save Routine Time  
                 $Message = $Model->SaveRoutineTime($_REQUEST['TimeFieldName']);
@@ -42,22 +37,39 @@ class PersonalController extends Controller
                 $Message = $Model->Log();
             }
             return $Message;
-        }       
+        }      
+        
+        function getDetails()
+        {
+            if($_REQUEST['WodTypeId'] == 1){
+                
+                $Model = new BaselineModel;
+                
+            }else if($_REQUEST['WodTypeId'] == 2){
+                $Model = new BenchmarkModel;
+                
+            }else if($_REQUEST['WodTypeId'] == 3){
+                $Model = new CustomModel;
+                
+            }else{
+                $Model = new MygymModel;
+            }
+        }
         
 	function Output()
 	{
             $html = '';
             
-            $Model = new PersonalModel;
+            $Model = new CompletedModel;
 
 if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
 {
-	$WorkoutType = $_REQUEST['WorkoutTypeId'];//Custom or My Gym
+	$WorkoutTypeId = $_REQUEST['WorkoutTypeId'];
         $WorkoutId = $_REQUEST['WorkoutId'];
 	$html.='<form name="form" id="personalform" action="index.php">
             <input type="hidden" name="origin" value="'.$this->Origin.'"/>
             <input type="hidden" name="WorkoutId" value="'.$WorkoutId.'"/>
-            <input type="hidden" name="wodtype" value="'.$WorkoutType.'"/>
+            <input type="hidden" name="WorkoutTypeId" value="'.$WorkoutTypeId.'"/>
             <input type="hidden" id="addround" name="RoundNo" value="1"/>
             <input type="hidden" name="form" value="submitted"/>';       
         $html.='<input type="checkbox" name="baseline" value="yes" data-role="none"/>';
@@ -233,7 +245,7 @@ if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
     if($Device->IsGoogleAndroidDevice()) {
         $Overthrow='class="overthrow"';
     }
-    $Workouts = $Model->getPersonalWorkouts();
+    $Workouts = $Model->getCompletedWorkouts();
      $html.='<div '.$Overthrow.'>
             <h2>Your Personal Workouts</h2>
             '.$this->getWorkoutList($Workouts).'
@@ -244,7 +256,7 @@ return $html;
 	}
         
     function UpdateHistory($ExerciseId){
-        $Model = new PersonalModel;
+        $Model = new CompletedModel;
         $Attributes = $Model->getExerciseIdAttributes($ExerciseId);
         $ExerciseHistory = $Model->getExerciseHistory($ExerciseId);
         $html.='<p style="color:red">';
@@ -278,7 +290,7 @@ return $html;
             $ExplodedExercise = explode('_',$ThisExercise);
             $ThisRoundNo = $ExplodedExercise[0];
             $ThisExerciseId = $ExplodedExercise[1];
-            $Model = new PersonalModel;
+            $Model = new CompletedModel;
             $ExerciseHistory = $Model->getExerciseHistory($ThisExerciseId);
             //var_dump($ThisExerciseId);
             if(count($ExerciseHistory) == 0){
@@ -320,61 +332,21 @@ return $html;
         
         function getWorkoutList($Workouts)
         {
-            $Model = new PersonalModel;
+            $Model = new CompletedModel;
             $html = '<ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
             foreach($Workouts AS $Workout){
                 //$Description = $Model->getDescription($Workout->Id);
                 $html .= '<li>';
-                $html .= '<a href="" onclick="getDetails('.$Workout->Id.');">'.$Workout->WorkoutName.':<br/><span style="font-size:small">'.$Workout->Notes.'</span></a>';
+                $html .= '<a href="" onclick="getDetails('.$Workout->WodTypeId.','.$Workout->WodId.');">'.$Workout->WodName.':<br/><span style="font-size:small">'.$Workout->Notes.'</span></a>';
                 $html .= '</li>';
             }	
             $html .= '</ul><div class="clear"></div><br/>';
             return $html;
         }
-        
-        function getCustomMemberWorkouts()
-        {
-            $html = '';
-            $Model = new PersonalModel;
-            $CustomMemberWorkouts = $Model->getCustomMemberWorkouts();
-            if(empty($CustomMemberWorkouts)){
-                $html .= '<br/>Oops! You have not recorded any Custom Workouts yet.';
-            }else{
-            $html .= '<ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
-            foreach($CustomMemberWorkouts AS $Workout){
-                //$Description = $Model->getCustomDescription($Workout->recid);
-                $html .= '<li>';
-                $html .= '<a href="" onclick="getCustomDetails(\''.$Workout->recid.'\', \''.$this->Origin.'\');">'.$Workout->WorkoutName.':<br/><span style="font-size:small">'.$Workout->Notes.'</span></a>';
-                $html .= '</li>';
-            }	
-            $html .= '</ul><br/>';
-            }
-            return $html;
-        }
-        
-        function getCustomPublicWorkouts()
-        {
-            $html = '';
-            $Model = new PersonalModel;
-            $CustomPublicWorkouts = $Model->getCustomPublicWorkouts();
-            if(empty($CustomPublicWorkouts)){
-                $html .= '<br/>Looks like there are none yet!';
-            }else{
-            $html .= '<ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
-            foreach($CustomPublicWorkouts AS $Workout){
-                $Description = $Model->getCustomDescription($Workout->recid);
-                $html .= '<li>';
-                $html .= '<a href="" onclick="getCustomDetails(\''.$Workout->recid.'\', \''.$this->Origin.'\');">'.$Workout->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span></a>';
-                $html .= '</li>';
-            }	
-            $html .= '</ul><br/>';
-            }
-            return $html;
-        }
 	
 	function getHistory()
 	{
-		$Model = new PersonalModel;
+		$Model = new CompletedModel;
 		$HistoricalData = $Model->getHistory();
 		if(empty($HistoricalData)){
 			$History = 'Oops! You have not recorded any Benchmark workouts yet.';
@@ -388,7 +360,7 @@ return $html;
 	
 	function TopSelection()
 	{
-            $Model = new PersonalModel;
+            $Model = new CompletedModel;
             //$Description = $Model->getDescription($_REQUEST['topselection']);
             $Html .= '<li>';
             $Html .= ''.$this->Workout[0]->WorkoutName.'';

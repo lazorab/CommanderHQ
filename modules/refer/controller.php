@@ -9,16 +9,17 @@ class ReferController extends Controller
     
     function Validate()
     {
+        $Model = new ReferModel;
         $Validate = new ValidationUtils;		
         $Message = 'Success';       
         if($_REQUEST['FriendName'] == '')
             $Message = 'Name Required';
-        else if($_REQUEST['FriendCell'] == '' && $_REQUEST['FriendEmail'] == '')
-            $Message = 'Either a Cell or Email Required';
-        else if($_REQUEST['FriendCell'] != '' && !$Validate->CheckMobileNumber($_REQUEST['FriendCell']))
+        else if(!$Validate->CheckMobileNumber($_REQUEST['FriendCell']))
             $Message = 'Cell number invalid!';
         else if($_REQUEST['FriendEmail'] != '' && !$Validate->CheckEmailAddress($_REQUEST['FriendEmail']))
-            $Message = 'Email Address invalid!';      
+            $Message = 'Email Address invalid!'; 
+        else if($Model->CheckFriendExists())
+            $Message = 'Friend has been invited already!';
             
         return $Message;
     }

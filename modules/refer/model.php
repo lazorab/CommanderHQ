@@ -7,13 +7,29 @@ class ReferModel extends Model
 
         }
 	
+        function CheckFriendExists()
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL='SELECT MemberId
+                FROM MemberInvites 
+                WHERE NewMemberEmail = "'.$_REQUEST['FriendEmail'].'"
+                OR NewMemberCell = "'.$_REQUEST['FriendCell'].'"';
+            $db->setQuery($SQL);
+            $db->Query();
+            if($db->getNumRows() > 0)
+                return true;
+            else 
+                return false;            
+        }
+        
 	function ReferFriend()
 	{
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $ReturnMessage='';
             $message = '';
             $InvCode = base_convert(time(), 10, 16);
-            $SQL = 'INSERT INTO MemberInvites(MemberId,InvitationCode,NewMemberName,NewMemberEmail,NewMemberCell) VALUES("'.$_COOKIE['UID'].'","'.$InvCode.'","'.$_REQUEST['FriendName'].'","'.$_REQUEST['FriendEmail'].'","'.$_REQUEST['FriendCell'].'")';
+            $SQL = 'INSERT INTO MemberInvites(MemberId,InvitationCode,NewMemberName,NewMemberEmail,NewMemberCell) 
+                VALUES("'.$_COOKIE['UID'].'","'.$InvCode.'","'.$_REQUEST['FriendName'].'","'.$_REQUEST['FriendEmail'].'","'.$_REQUEST['FriendCell'].'")';
             $db->setQuery($SQL);
             $db->Query();
             $SQL='SELECT FirstName FROM Members WHERE UserId = "'.$_COOKIE['UID'].'"';
@@ -25,15 +41,10 @@ class ReferModel extends Model
             $message .= "\n";
             $message .= 'A Crossfit interface, allowing you to record &amp; track your progress during &amp; after your workouts.';
             $message .= "\n";
-            $message .= 'Your unique code is <b>'.$InvCode.'</b>';
+            $message .= 'You will receive a unique code sent to you for registration after successfull verification';
             $message .= "\n";  
-            $message .= '<a href="http://'.THIS_DOMAIN.'/?module=profile">REGISTER HERE</a> - NOW';
+            $message .= '<a href="http://'.THIS_DOMAIN.'/?module=verify&Cell='.trim($_REQUEST['FriendCell']).'&Email='.trim($_REQUEST['FriendEmail']).'">VERIFY YOURSELF HERE</a>';
             $message .= "\n";
-            $message .='& STAND A CHANCE TO WIN!';
-            $message .= "\n\n";
-            $message .='Eat Clean - Train Dirty!';
-            $message .= "\n";
-            $message .='The Commander.';
             
             $MailResult = true;
             $SmsResult = true;
@@ -46,11 +57,10 @@ class ReferModel extends Model
 		$mail->setHTML($message);
                 $MailResult =  $mail->send(array($_REQUEST['FriendEmail']));                
             }
+
+            $SMS = new SmsManager(SITE_ID, trim($_REQUEST['FriendCell']), $message, 3, 0, SMS_FROM_NUMBER, 0, null, null);
+            $SmsResult = $SMS->Send(); 
             
-            if($_REQUEST['FriendCell'] != ''){
-                $SMS = new SmsManager(SITE_ID, trim($_REQUEST['FriendCell']), $message, 3, 0, SMS_FROM_NUMBER, 0, null, null);
-                $SmsResult = $SMS->Send(); 
-            }
             
                  if(!$MailResult || !$SmsResult)
                     $ReturnMessage .= 'Error Referring - Please Try again';

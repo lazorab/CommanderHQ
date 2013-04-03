@@ -5,21 +5,49 @@ function __construct()
 {
             parent::__construct();	
 }
+
+        function CheckCustomNameExists()
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL='SELECT WorkoutName FROM CustomWorkouts WHERE MemberId = "'.$_COOKIE['UID'].'" AND WorkoutName = "'.trim($_REQUEST['CustomName']).'"';
+            $db->setQuery($SQL);
+            $db->Query();
+            if($db->getNumRows() > 0)
+                return true;
+            else 
+                return false;            
+        }
+        
+         function CheckExerciseNameExists()
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL='SELECT Exercise FROM Exercises WHERE CustomOption = "'.$_COOKIE['UID'].'" AND Exercise = "'.trim($_REQUEST['NewExercise']).'"';
+            $db->setQuery($SQL);
+            $db->Query();
+            if($db->getNumRows() > 0)
+                return true;
+            else 
+                return false;            
+        }       
     
     function Save()
 {
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             if($this->UserIsSubscribed()){
                 if(isset($_REQUEST['CustomName']) && $_REQUEST['CustomName'] == ''){
-                    $this->Message .= "Error - Name for WOD required!";
-                }else{
+                    $this->Message = "Error - Name for WOD required!";
+                }else if($this->CheckCustomNameExists()){
+                    $this->Message = "Error - WOD Name already exists!";
+                }else{    
                 $ActivityFields = $this->getActivityFields();
                 if($this->Message == ''){
+                    $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
                 $WorkoutTypeId = $this->getCustomTypeId();
                 $WorkoutRoutineTypeId = $this->getWorkoutRoutineTypeId($_REQUEST['workouttype']);
                 $CustomWorkoutId = 0;
 
                 if($CustomWorkoutId == 0){
+                    
+                
                      $SQL = 'INSERT INTO CustomWorkouts(MemberId, WorkoutName, WorkoutRoutineTypeId, Notes, WorkoutDateTime)
 VALUES("'.$_COOKIE['UID'].'", "'.$_REQUEST['CustomName'].'", "'.$WorkoutRoutineTypeId.'", "'.$_REQUEST['descr'].'", "'.$_REQUEST['WodDate'].'")';
                     $db->setQuery($SQL);
@@ -44,9 +72,12 @@ VALUES("'.$CustomWorkoutId.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityFie
 }
         
         function SaveNewExercise()
-{
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            if($this->UserIsSubscribed()){
+        {
+            if($this->CheckExerciseNameExists()){
+                $Message = "Error - Exercise already exists!";
+            }else{  
+                if($this->UserIsSubscribed()){
+                    $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
                 $SQL = 'INSERT INTO Exercises(Exercise, Acronym, CustomOption)
 VALUES("'.$_REQUEST['NewExercise'].'", "'.$_REQUEST['Acronym'].'", "'.$_COOKIE['UID'].'")';
                 $db->setQuery($SQL);
@@ -78,8 +109,9 @@ VALUES("'.$ExerciseId.'","'.$this->getAttributeId('Reps').'")';
                     $db->Query();
                 }
                 $Message = $ExerciseId;
-            }else{
+                }else{
                 $Message = 'Error - You are not subscribed!';
+            }
             }
             return $Message;
         }

@@ -9,11 +9,12 @@ class FeedbackModel extends Model
         
     function SendFeedback()
     {
+        $Member = $this->getMemberDetails($_COOKIE['UID']);
         $mail = new Rmail();
-	$mail->setFrom('Commander HQ<info@be-mobile.co.za>');
+	$mail->setFrom($Member->Email);
 	$mail->setSubject('Commander HQ Feedback');
 	$mail->setPriority('normal');
-	$mail->setHTML($_REQUEST['Comments']);
+	$mail->setHTML("".$Member->FirstName." ".$Member->LastName." has the following feedback: \n\n ".$_REQUEST['Comments']."");
         $mail->send(array(COMMANDER_EMAIL));
     }
 }
