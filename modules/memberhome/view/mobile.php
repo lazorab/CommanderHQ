@@ -11,7 +11,8 @@ echo $Display->FirstTimeMessage();
 
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
 <a href="#" onclick="OpenThisPage('index.php?module=wod');">
-<img alt="WOD" <?php echo $RENDER->NewImage('wod.png');?> src="<?php echo IMAGE_RENDER_PATH;?>wod.png"/>
+<img alt="WOD" <?php echo $RENDER->NewImage('wod.png');?> src="<?php echo IMAGE_RENDER_PATH;?>wod.png"/><br />
+<div class="tagIcon">WOD</div>
 </a>
 </div>
 
