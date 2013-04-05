@@ -167,27 +167,27 @@ class UploadModel extends Model
                     $DistanceVal = $_REQUEST[''.$Name.''];
                      if($DistanceVal == '')
                         $DistanceVal = 'Max';                   
-                    $DistanceUOM = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_DUOM'];
+                    $DistanceUOM = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$OrderBy.'_'.$ExerciseId.'_DUOM'];
                 }    
                 
                 if($ExplodedKey[4] == 'mHeight' || $ExplodedKey[3] == 'fHeight'){
-                    $MHeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_mHeight']; 
+                    $MHeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$OrderBy.'_'.$ExerciseId.'_mHeight']; 
                     if($MHeightVal == '')
                         $MHeightVal = 'Max';                    
-                    $FHeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_fHeight']; 
+                    $FHeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$OrderBy.'_'.$ExerciseId.'_fHeight']; 
                     if($MHeightVal == '')
                         $MHeightVal = 'Max';                    
-                    $HeightUOM = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_HUOM']; 
+                    $HeightUOM = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$OrderBy.'_'.$ExerciseId.'_HUOM']; 
                 }
                 
                 if($ExplodedKey[4] == 'mWeight' || $ExplodedKey[3] == 'fWeight'){
-                    $MWeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_mWeight'];
+                    $MWeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$OrderBy.'_'.$ExerciseId.'_mWeight'];
                     if($MWeightVal == '')
                         $MWeightVal = 'Max';
-                    $FWeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_fWeight']; 
+                    $FWeightVal = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$OrderBy.'_'.$ExerciseId.'_fWeight']; 
                     if($FWeightVal == '')
                         $FWeightVal = 'Max';                    
-                    $WeightUOM = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$ExerciseId.'_WUOM']; 
+                    $WeightUOM = $_REQUEST[''.$RoutineNo.'_'.$RoundNo.'_'.$OrderBy.'_'.$ExerciseId.'_WUOM']; 
                 }                
                 
                 if($ExplodedKey[4] == 'Rounds'){

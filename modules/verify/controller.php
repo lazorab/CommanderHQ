@@ -12,9 +12,9 @@ class VerifyController extends Controller
         $Model = new VerifyModel;
         $Validate = new ValidationUtils;		
         $Message = 'Success';       
-        if(!$Validate->CheckMobileNumber($_REQUEST['Cell']))
-            $Message = 'Cell number invalid!';
-        else if($_REQUEST['Email'] != '' && !$Validate->CheckEmailAddress($_REQUEST['Email']))
+        if(!$Validate->CheckMobileNumber(trim($_REQUEST['Cell'])))
+            $Message = 'Please enter a valid Cell number!';
+        else if($_REQUEST['Email'] != '' && !$Validate->CheckEmailAddress(trim($_REQUEST['Email'])))
             $Message = 'Email Address invalid!';
             
         return $Message;
@@ -36,9 +36,9 @@ class VerifyController extends Controller
             <form action="index.php" name="refer" id="verifyform" method="post">
             <input type="hidden" name="module" value="verify"/>
             <input type="hidden" name="form" value="submitted"/>
-            <input class="textinput" id="email" type="email" name="Email" value="'.$_REQUEST['Email'].'" placeholder="Email Address"/>
+            <input class="textinput" id="email" type="email" name="Email" value="'.trim($_REQUEST['Email']).'" placeholder="Email Address"/>
             <br/>
-            <input class="textinput" id="cell" type="number" name="Cell" value="'.$_REQUEST['Cell'].'" placeholder="Cell ('.DEFAULT_SUB_NUMBER.')"/>
+            <input class="textinput" id="cell" type="number" name="Cell" value="'.trim($_REQUEST['Cell']).'" placeholder="Cell ('.DEFAULT_SUB_NUMBER.')"/>
             <br/><br/>
             <input class="buttongroup" type="button" onClick="verifysubmit();" value="Submit"/>
             </form>';

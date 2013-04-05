@@ -8,10 +8,13 @@ class ProfileModel extends Model
         parent::__construct();	
     }
     
-    function CheckInvitationCode($Code)
+    function CheckInvitationCode()
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-        $SQL='SELECT InvitationCode FROM MemberInvites WHERE InvitationCode = "'.$Code.'"';
+        $SQL='SELECT NewMemberCell, InvitationCode 
+            FROM MemberVerification 
+            WHERE NewMemberCell = '.$_REQUEST['Cell'].'
+            AND InvitationCode = "'.$_REQUEST['InvCode'].'"';
         $db->setQuery($SQL);
 	$db->Query();
 	if($db->getNumRows() > 0)
@@ -111,13 +114,10 @@ class ProfileModel extends Model
                     $db->setQuery($SQL);
                     $db->Query();
                 
-            $SQL='SELECT MemberId FROM MemberInvites WHERE InvitationCode = "'.trim($_REQUEST['InvCode']).'"';
-            $db->setQuery($SQL);
-            
-            $MemberId = $db->loadResult();
-            $SQL = 'UPDATE MemberInvites SET NewMemberId = '.$NewId.' WHERE MemberId = '.$MemberId.' AND InvitationCode = "'.trim($_REQUEST['InvCode']).'"';
+            $SQL = 'UPDATE MemberVerification SET NewMemberId = '.$NewId.' WHERE Cell = '.trim($_REQUEST['Cell']).' AND InvitationCode = "'.trim($_REQUEST['InvCode']).'"';
             $db->setQuery($SQL);
             $db->Query();
+           
             setcookie('UID', $NewId, time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
             $_SESSION['NEW_USER'] = $NewId;
             $this->SendEmail(trim($_REQUEST['FirstName']), trim($_REQUEST['Email']), trim($_REQUEST['UserName']), trim($_REQUEST['PassWord']));
@@ -126,16 +126,6 @@ class ProfileModel extends Model
 	function Update($Id)
 	{
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            
-            if(isset($_REQUEST['InvCode'])){
-                $SQL='SELECT MemberId FROM MemberInvites WHERE InvitationCode = "'.$_REQUEST['InvCode'].'"';
-                $db->setQuery($SQL);
-            
-            $MemberId = $db->loadResult();
-            $SQL = 'UPDATE MemberInvites SET NewMemberId = '.$Id.' WHERE MemberId = '.$MemberId.' AND InvitationCode = "'.$_REQUEST['InvCode'].'"';
-            $db->setQuery($SQL);
-            $db->Query();              
-            }
             
 			$SQL="UPDATE Members SET 
 				FirstName = '".$_REQUEST['FirstName']."',
@@ -229,9 +219,16 @@ class MemberObject
 	{
 		$this->UserId = $Row['UserId'];
 		$this->FirstName = $Row['FirstName'];
-		$this->LastName = $Row['LastName'];
-		$this->Cell = $Row['Cell'];
-		$this->Email = $Row['Email'];
+		$this->LastName = $Row['LastName'];                
+                if(isset($Row['InvCode'])){
+                    $ContactDetails = $this->getFromCodeVerification();
+                    $this->Cell = $ContactDetails->Cell;
+                    $this->Email = $ContactDetails->Email;
+                }else{
+                    $this->Cell = $Row['Cell'];
+                    $this->Email = $Row['Email'];                    
+                }
+
 		$this->UserName = $Row['UserName'];
 		$this->PassWord = $Row['PassWord'];
                 $this->LoginType = isset($Row['oauth_provider']) ? $Row['oauth_provider'] : "";
@@ -252,5 +249,18 @@ class MemberObject
 		$this->RestHR = $Row['RestHR'];
 		$this->RecHR = $Row['RecHR'];	
 	}
+        
+        function getFromCodeVerification()
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT NewMemberEmail AS Email,
+            NewMemberCell AS Cell
+            FROM MemberVerification
+            WHERE InvitationCode = "'.$_REQUEST['InvCode'].'"';
+            
+            $db->setQuery($SQL);
+		
+            return $db->loadObject();           
+        }
 }
 ?>

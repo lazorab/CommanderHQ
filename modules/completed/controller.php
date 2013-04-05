@@ -239,16 +239,20 @@ if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
 
 }else if($_REQUEST['history'] == 'refresh'){
     $html = $this->UpdateHistory($_REQUEST['ExerciseId']);
+            
+}else if(isset($_REQUEST['YearMonth'])){
+    $html = $this->getCompletedWorkoutsForMonth($_REQUEST['YearMonth']);
             }else{
     $Overthrow='';
     $Device = new DeviceManager;
     if($Device->IsGoogleAndroidDevice()) {
         $Overthrow='class="overthrow"';
     }
-    $Workouts = $Model->getCompletedWorkouts();
+    
      $html.='<div '.$Overthrow.'>
-            <h2>Your Personal Workouts</h2>
-            '.$this->getWorkoutList($Workouts).'
+            <h2>Completed WODs</h2>
+            '.$this->getCurrentMonthWorkoutList().'
+            '.$this->getOlderWorkoutMonthList().'
             </div>';    
 }
 $html.='<div class="clear"></div><br/>';
@@ -330,19 +334,61 @@ return $html;
             return $Html;
         }        
         
-        function getWorkoutList($Workouts)
+        function getCurrentMonthWorkoutList()
         {
             $Model = new CompletedModel;
-            $html = '<ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
+            $Workouts = $Model->getCurrentMonthWorkoutList();
+            if(count($Workouts) == 0){
+                $html = '<h2>No Workouts Completed this month</h2>';
+            }else{
+            $html = '<h2>Workouts Completed this month</h2><ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
             foreach($Workouts AS $Workout){
                 //$Description = $Model->getDescription($Workout->Id);
                 $html .= '<li>';
-                $html .= '<a href="" onclick="getDetails('.$Workout->WodTypeId.','.$Workout->WodId.');">'.$Workout->WodName.':<br/><span style="font-size:small">'.$Workout->Notes.'</span></a>';
+                $html .= '<a href="" onclick="getDetails('.$Workout->WodTypeId.','.$Workout->WodId.');">'.$Workout->WodName.':<br/><span style="font-size:small">'.$Workout->TimeCreated.'</span></a>';
                 $html .= '</li>';
             }	
             $html .= '</ul><div class="clear"></div><br/>';
+            }
             return $html;
         }
+        
+        function getOlderWorkoutMonthList()
+        {
+            $Model = new CompletedModel;
+            $Months = $Model->getOlderWorkoutMonthList();
+            $html = '';
+            if(count($Months) > 0){
+            $html = '<h2>Workouts Completed in previous months</h2><ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
+            foreach($Months AS $Month){
+                //$Description = $Model->getDescription($Workout->Id);
+                $html .= '<li>';
+                $html .= '<a href="" onclick="getWorkoutList(\''.$Month->YearMonth.'\');">'.$Month->Month.' '.$Month->Year.'</a>';
+                $html .= '</li>';
+            }	
+            $html .= '</ul><div class="clear"></div><br/>';
+            }
+            return $html;
+        }        
+        
+        function getCompletedWorkoutsForMonth($YearMonth)
+        {
+            $Model = new CompletedModel;
+            $Workouts = $Model->getCompletedWorkoutsForMonth($YearMonth);
+            $DisplayDate = date('F Y', strtotime($YearMonth));
+            $html = '';
+            if(count($Workouts) > 0){
+            $html = '<h2>Workouts Completed in '.$DisplayDate.'</h2><ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
+            foreach($Workouts AS $Workout){
+                //$Description = $Model->getDescription($Workout->Id);
+                $html .= '<li>';
+                $html .= '<a href="" onclick="getDetails('.$Workout->WodTypeId.','.$Workout->WodId.');">'.$Workout->WodName.':<br/><span style="font-size:small">'.$Workout->TimeCreated.'</span></a>';
+                $html .= '</li>';
+            }	
+            $html .= '</ul><div class="clear"></div><br/>';
+            }
+            return $html;
+        }          
 	
 	function getHistory()
 	{

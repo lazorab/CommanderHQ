@@ -110,7 +110,7 @@ class MygymController extends Controller
 	$Clock = '';
         $i = 0;
 	$html.='<form name="form" id="wodform" action="index.php">';
-         $html.='<input type="hidden" name="WorkoutId" value="'.$WodDetails[0]->WodId.'"/>'; 
+         $html.='<input type="hidden" name="WorkoutId" value="'.$WodDetails[0]->Id.'"/>'; 
         //$html.='<input type="checkbox" name="baseline" value="yes" data-role="none"/>';
         //$html.='Make this my baseline';
         $html.='<p>'.$WodDetails[0]->Notes.'</p>';

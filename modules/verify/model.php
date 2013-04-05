@@ -24,26 +24,16 @@ class VerifyModel extends Model
         
 	function Verify()
 	{
+            $InvCode = base_convert(time(), 10, 16);
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $ReturnMessage='';
-            $message = '';
-            $SQL='SELECT M.FirstName, MI.NewMemberName, MI.InvitationCode 
-                FROM Members M JOIN MemberInvites MI ON MI.MemberId = M.MemberId
-                WHERE NewMemberCell = "'.$_REQUEST['Cell'].'"
-                AND NewMemberId = ""';
+            $SQL='INSERT INTO MemberVerification(InvitationCode, NewMemberEmail, NewMembercell)
+                VALUES("'.$InvCode.'", "'.$_REQUEST['Email'].'", "'.$_REQUEST['Cell'].'")';
             $db->setQuery($SQL);
-	$db->Query();
-	if($db->getNumRows() > 0){            
-            $Row = $db->loadObject();
-            $FriendName = $Row->FirstName;
-            $FirstName = $Row->NewMemberName;
-            $InvCode = $Row->InvitationCode;
+            $db->Query();            
  
-            $message .= "Hi ".$FirstName.", You have been successfully verified!";
-            $message .= "\n";
             $message .= 'Your unique code is <b>'.$InvCode.'</b>';
             $message .= "\n";  
-            $message .= '<a href="http://'.THIS_DOMAIN.'/?module=profile">REGISTER HERE</a> - NOW';
+            $message .= 'Complete your registration <a href="http://'.THIS_DOMAIN.'/?module=profile&InvCode='.$InvCode.'">HERE</a> - NOW';
             $message .= "\n";
             $message .='& STAND A CHANCE TO WIN!';
             $message .= "\n\n";
@@ -57,7 +47,7 @@ class VerifyModel extends Model
             if($_REQUEST['Email'] != ''){
 		$mail = new Rmail();
 		$mail->setFrom('Commander HQ<info@be-mobile.co.za>');
-		$mail->setSubject('Invitation to Commander HQ');
+		$mail->setSubject('Verification for Commander HQ');
 		$mail->setPriority('normal');
 		$mail->setHTML($message);
                 $MailResult =  $mail->send(array($_REQUEST['Email']));                
@@ -70,9 +60,7 @@ class VerifyModel extends Model
                     $ReturnMessage .= 'Error - Please Try again';
                 else
                     $ReturnMessage .= 'Successfully Verified!';
-        }else{
-            $ReturnMessage .= 'Error - Invalid Credentials!';
-        }
+                
             return $ReturnMessage;
 	}
 }

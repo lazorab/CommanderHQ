@@ -15,7 +15,7 @@ class ReferController extends Controller
         if($_REQUEST['FriendName'] == '')
             $Message = 'Name Required';
         else if(!$Validate->CheckMobileNumber($_REQUEST['FriendCell']))
-            $Message = 'Cell number invalid!';
+            $Message = 'Please enter a valid Cell number!';
         else if($_REQUEST['FriendEmail'] != '' && !$Validate->CheckEmailAddress($_REQUEST['FriendEmail']))
             $Message = 'Email Address invalid!'; 
         else if($Model->CheckFriendExists())

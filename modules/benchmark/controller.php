@@ -209,7 +209,7 @@ return $html;
         function getWorkoutList($Category)
         {
             $Model = new BenchmarkModel;
-            $html = '<ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
+            $html = '<ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
             foreach($Category AS $Workout){
                 $Description = $Model->getBenchmarkDescription($Workout->Id);
                 $html .= '<li>';

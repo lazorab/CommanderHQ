@@ -28,8 +28,8 @@ class ReferModel extends Model
             $ReturnMessage='';
             $message = '';
             $InvCode = base_convert(time(), 10, 16);
-            $SQL = 'INSERT INTO MemberInvites(MemberId,InvitationCode,NewMemberName,NewMemberEmail,NewMemberCell) 
-                VALUES("'.$_COOKIE['UID'].'","'.$InvCode.'","'.$_REQUEST['FriendName'].'","'.$_REQUEST['FriendEmail'].'","'.$_REQUEST['FriendCell'].'")';
+            $SQL = 'INSERT INTO MemberInvites(MemberId, NewMemberName, NewMemberEmail, NewMemberCell) 
+                VALUES("'.$_COOKIE['UID'].'", "'.$_REQUEST['FriendName'].'", "'.$_REQUEST['FriendEmail'].'", "'.$_REQUEST['FriendCell'].'")';
             $db->setQuery($SQL);
             $db->Query();
             $SQL='SELECT FirstName FROM Members WHERE UserId = "'.$_COOKIE['UID'].'"';

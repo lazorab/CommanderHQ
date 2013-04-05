@@ -7,10 +7,7 @@ function verifysubmit()
 
 function messagedisplay(message)
 {
-    alert(message);
-    if(message == 'Successfully Verified!'){
-        window.location = '?module=profile';
-    }   
+    alert(message);   
 }
 
 function display(data)

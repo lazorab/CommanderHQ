@@ -27,7 +27,7 @@ class PersonalController extends Controller
                     }else if($_REQUEST['WorkoutTypeId'] == 4){//My Gym
                         $this->Workout = $Model->getMyGymDetails($_REQUEST['WorkoutId']);
                     }
-                    //var_dump($WorkoutDetails);
+                    //var_dump($this->Workout);
                     //$this->Workout = $WorkoutDetails[0];
                 }
 	}
@@ -52,12 +52,12 @@ class PersonalController extends Controller
 
 if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
 {
-	$WorkoutType = $_REQUEST['WorkoutTypeId'];//Custom or My Gym
+	$WorkoutTypeId = $_REQUEST['WorkoutTypeId'];//Custom or My Gym
         $WorkoutId = $_REQUEST['WorkoutId'];
 	$html.='<form name="form" id="personalform" action="index.php">
             <input type="hidden" name="origin" value="'.$this->Origin.'"/>
             <input type="hidden" name="WorkoutId" value="'.$WorkoutId.'"/>
-            <input type="hidden" name="wodtype" value="'.$WorkoutType.'"/>
+            <input type="hidden" name="wodtype" value="'.$WorkoutTypeId.'"/>
             <input type="hidden" id="addround" name="RoundNo" value="1"/>
             <input type="hidden" name="form" value="submitted"/>';       
         $html.='<input type="checkbox" name="baseline" value="yes" data-role="none"/>';
@@ -210,12 +210,20 @@ if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
                 if($j > 0)
                     $TheseAttributes.='_';
                 $TheseAttributes.=$Attribute;
-                $html .= '<div style="float:left;margin:0 25px 0 25px"">'.$Attribute.'<br/><input value="'.$Val.'" style="width:80px" type="number" id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$ThisExerciseId.'_'.$Attribute.'_new" name="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$ThisExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_'.$Detail->OrderBy.'" placeholder="'.$UOM.'"/></div>';
+                $html .= '<div style="float:left;margin:0 25px 0 25px"">'.$Attribute.'';
+                if($UOM != '')
+                $html .= '('.$UOM.')';
+                $html .= '<br/><input ';
+                if($Val == 'Max')
+                    $html .= 'value="" placeholder="'.$Val.'"'; 
+                else      
+                    $html .= 'value="'.$Val.'"'; 
+                $html .= ' style="width:60px" type="number" id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$ThisExerciseId.'_'.$Attribute.'_new" name="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$ThisExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_'.$Detail->OrderBy.'"/></div>';
                 $j++;
             }
             $Attributes = array();
             $html .= '<input type="hidden" id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$Detail->OrderBy.'" name="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$Detail->OrderBy.'" value=""/>';
-            $html .= '<div class="clear"></div><div style="width:100%;height:25px"><div style="float:left;margin:10px 0 10px 20px"><input type="button" id="" name="timebtn" onClick="EnterActivityTime(\''.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$Detail->OrderBy.'\');" value="Add Time"/></div>';
+            $html .= '<div class="clear"></div><div style="width:100%"><div style="float:left;margin:10px 0 10px 20px"><input type="button" id="" name="timebtn" onClick="EnterActivityTime(\''.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$Detail->OrderBy.'\');" value="Add Time"/></div>';
             $html .= '<div style="float:right;margin:10px 20px 10px 0"><input type="button" id="" name="btn" onClick="SaveTheseResults(\''.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->OrderBy.'_'.$ThisExerciseId.'\');" value="Add Results"/></div>';
             $html .= '</div></form></div><div class="clear"></div></div>';                                
 
@@ -321,7 +329,7 @@ return $html;
         function getWorkoutList($Workouts)
         {
             $Model = new PersonalModel;
-            $html = '<ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
+            $html = '<ul class="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
             foreach($Workouts AS $Workout){
                 //$Description = $Model->getDescription($Workout->Id);
                 $html .= '<li>';

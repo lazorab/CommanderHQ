@@ -6,36 +6,100 @@ class CompletedModel extends Model
             parent::__construct();	
 	}
         
-	function getCompletedWorkouts()
-	{
+        function getCompletedWorkoutsForMonth($Month)
+        {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $SQL="SELECT DISTINCT CW.recid AS WodId, 
 CW.WorkoutName AS WodName,
 (SELECT recid FROM WorkoutTypes WHERE WorkoutType = 'Custom') AS WodTypeId,
-WL.TimeCreated
+DATE_FORMAT(WL.TimeCreated, '%Y-%m-%d') AS TimeCreated
 FROM WODLog WL
 JOIN CustomWorkouts CW ON CW.recid = WL.WorkoutId
 JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
-WHERE WL.MemberId = 1 AND WT.WorkoutType = 'Custom'
+WHERE WL.MemberId = '".$_COOKIE['UID']."' 
+AND WT.WorkoutType = 'Custom'
+AND WL.TimeCreated LIKE '".$Month."%'
 UNION
 SELECT DISTINCT BW.recid AS WodId, 
 BW.WorkoutName AS WodName,
 (SELECT recid FROM WorkoutTypes WHERE WorkoutType = 'Benchmark') AS WodTypeId,
-WL.TimeCreated
+DATE_FORMAT(WL.TimeCreated, '%Y-%m-%d') AS TimeCreated
 FROM WODLog WL
 JOIN BenchmarkWorkouts BW ON BW.recid = WL.WorkoutId
 JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
-WHERE WL.MemberId = 1 AND WT.WorkoutType = 'Benchmark'
+WHERE WL.MemberId = '".$_COOKIE['UID']."' 
+AND WT.WorkoutType = 'Benchmark'
+AND WL.TimeCreated LIKE '".$Month."%'
 UNION
 SELECT DISTINCT WW.recid AS WodId, 
 WW.WorkoutName AS WodName,
 (SELECT recid FROM WorkoutTypes WHERE WorkoutType = 'My Gym') AS WodTypeId,
-WL.TimeCreated
+DATE_FORMAT(WL.TimeCreated, '%Y-%m-%d') AS TimeCreated
 FROM WODLog WL
 JOIN WodWorkouts WW ON WW.recid = WL.WorkoutId
 JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
-WHERE WL.MemberId = 1 AND WT.WorkoutType = 'My Gym'
-ORDER BY TimeCreated DESC LIMIT 30";
+WHERE WL.MemberId = '".$_COOKIE['UID']."' 
+AND WT.WorkoutType = 'My Gym'
+AND WL.TimeCreated LIKE '".$Month."%'
+ORDER BY TimeCreated DESC LIMIT 30"; 
+            $db->setQuery($SQL);
+		
+            return $db->loadObjectList();
+        }
+        
+        function getOlderWorkoutMonthList()
+        {
+            $CurrentMonth = date('Y-m');
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL='SELECT DISTINCT DATE_FORMAT(TimeCreated, "%M") AS Month,
+                DATE_FORMAT(TimeCreated, "%Y") AS Year,
+                DATE_FORMAT(TimeCreated, "%Y-%m") AS YearMonth
+                FROM WODLog
+                WHERE MemberId = "'.$_COOKIE['UID'].'"
+                AND DATE_FORMAT(TimeCreated, "%Y-%m") <> "'.$CurrentMonth.'"';
+           
+            $db->setQuery($SQL);
+		
+            return $db->loadObjectList();            
+        }
+        
+	function getCurrentMonthWorkoutList()
+	{
+            $CurrentMonth = date('Y-m');
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL='SELECT DISTINCT CW.recid AS WodId, 
+CW.WorkoutName AS WodName,
+(SELECT recid FROM WorkoutTypes WHERE WorkoutType = "Custom") AS WodTypeId,
+DATE_FORMAT(WL.TimeCreated, "%Y-%m-%d") AS TimeCreated
+FROM WODLog WL
+JOIN CustomWorkouts CW ON CW.recid = WL.WorkoutId
+JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
+WHERE WL.MemberId = "'.$_COOKIE['UID'].'"
+AND WT.WorkoutType = "Custom"
+AND WL.TimeCreated LIKE "'.$CurrentMonth.'%"
+UNION
+SELECT DISTINCT BW.recid AS WodId, 
+BW.WorkoutName AS WodName,
+(SELECT recid FROM WorkoutTypes WHERE WorkoutType = "Benchmark") AS WodTypeId,
+DATE_FORMAT(WL.TimeCreated, "%Y-%m-%d") AS TimeCreated
+FROM WODLog WL
+JOIN BenchmarkWorkouts BW ON BW.recid = WL.WorkoutId
+JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
+WHERE WL.MemberId = "'.$_COOKIE['UID'].'"
+AND WT.WorkoutType = "Benchmark"
+AND WL.TimeCreated LIKE "'.$CurrentMonth.'%"
+UNION
+SELECT DISTINCT WW.recid AS WodId, 
+WW.WorkoutName AS WodName,
+(SELECT recid FROM WorkoutTypes WHERE WorkoutType = "My Gym") AS WodTypeId,
+DATE_FORMAT(WL.TimeCreated, "%Y-%m-%d") AS TimeCreated
+FROM WODLog WL
+JOIN WodWorkouts WW ON WW.recid = WL.WorkoutId
+JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
+WHERE WL.MemberId = "'.$_COOKIE['UID'].'"
+AND WT.WorkoutType = "My Gym"
+AND WL.TimeCreated LIKE "'.$CurrentMonth.'%"
+ORDER BY TimeCreated DESC LIMIT 30';
               
             $db->setQuery($SQL);
 		

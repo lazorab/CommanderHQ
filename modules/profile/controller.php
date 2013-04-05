@@ -26,7 +26,7 @@ class ProfileController extends Controller
             $Model = new ProfileModel;
             $Validate = new ValidationUtils;		
             $Message = 'Success';
-            if(isset($_REQUEST['InvCode']) && !$Model->CheckInvitationCode($_REQUEST['InvCode']))
+            if(isset($_REQUEST['InvCode']) && !$Model->CheckInvitationCode())
                 $Message = 'Invalid Invitation Code';
             else if($_REQUEST['FirstName'] == '')
                 $Message = 'Firstname Required';

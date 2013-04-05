@@ -199,6 +199,7 @@ ORDER BY TimeCreated DESC LIMIT 30";
 			WHERE CW.MemberId = "'.$_COOKIE['UID'].'"
                         AND CW.recid = "'.$Id.'"
 			ORDER BY RoutineNo, RoundNo, OrderBy, Exercise, Attribute';
+            //return $SQL;
             $db->setQuery($SQL);
 		
             return $db->loadObjectList();
@@ -273,6 +274,7 @@ ORDER BY TimeCreated DESC LIMIT 30";
 			WHERE WW.recid = '.$Id.'
                         AND (Attribute = "Reps" OR SystemOfMeasure = "'.$this->getSystemOfMeasure().'")			
 			ORDER BY RoutineNo, RoundNo, OrderBy, Exercise, Attribute';
+            //return $SQL;
             $db->setQuery($SQL);
 		
             return $db->loadObjectList();

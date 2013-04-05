@@ -9,7 +9,6 @@ function messagedisplay(message)
 {
     alert(message);
     if(message == 'Friend Successfully Referred!'){
-        resetclock();
         $.getJSON('ajax.php?module=refer', {},display);
     }   
 }

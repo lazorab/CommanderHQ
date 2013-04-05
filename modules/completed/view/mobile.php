@@ -59,13 +59,18 @@ function getBenchmarks(cat)
     $.ajax({url:'ajax.php?module=completed',data:{cat:cat},dataType:"html",success:display});
 }
 
+function getWorkoutList(YearMonth)
+{
+    $.ajax({url:'ajax.php?module=completed',data:{YearMonth:YearMonth},dataType:"html",success:display});
+}
+
 function getDetails(typeid,id)
 {
 //redirect according to type
     if(typeid == 1){//Baseline
         window.location = "?module=baseline&WorkoutId="+id+"";
     }else if(typeid == 2){//Benchmark
-        window.location = "?module=benchmark&WorkoutId="+id+"";
+        window.location = "?module=benchmark&benchmarkId="+id+"";
     }else if(typeid == 3){//Custom
         window.location = "?module=personal&WorkoutTypeId=3&WorkoutId="+id+"";
     }else if(typeid == 4){//My Gym (treat same as custom?)

@@ -7,6 +7,14 @@ if($Device->IsGoogleAndroidDevice()) { ?>
 <script type="text/javascript">
     
 $(document).ready(function() {
+        $('.listview').listview();
+    $('.listview').listview('refresh');
+    $('.controlbutton').button();
+    $('.controlbutton').button('refresh');
+    $('.buttongroup').button();
+    $('.buttongroup').button('refresh');
+    $('.textinput').textinput();
+    el.find('div[data-role=collapsible]').collapsible({theme:'c',refresh:true});
 	//Trigger video
 	$("#menuvideo").bind('click', function(){
 		//Set vars
