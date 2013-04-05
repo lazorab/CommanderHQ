@@ -1,7 +1,7 @@
 <?php 
 $ratio = SCREENWIDTH / 640;
-$margin = floor(((640*$ratio) - (435*$ratio)) / 4);
-$GridIconSize = floor(145*$ratio);
+$margin = floor(((640*$ratio) - (400*$ratio)) / 4);
+$GridIconSize = floor(132*$ratio);
 
 echo $Display->FirstTimeMessage();
 

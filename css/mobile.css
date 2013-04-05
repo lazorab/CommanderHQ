@@ -18,6 +18,11 @@ body {
 	font-weight:bold;
 }
 
+.ui-link{
+	text-align: center;
+	
+}
+
 .buttongroup{
 	margin: 0 0 0 0.1em; 
 	width:95%;
