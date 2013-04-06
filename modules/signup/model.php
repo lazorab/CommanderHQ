@@ -22,12 +22,12 @@ class SignupModel extends Model
                 return false;            
         }
         
-	function Verify()
+	function Signup()
 	{
             $InvCode = base_convert(time(), 10, 16);
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL='INSERT INTO MemberVerification(InvitationCode, NewMemberEmail, NewMembercell)
-                VALUES("'.$InvCode.'", "'.$_REQUEST['Email'].'", "'.$_REQUEST['Cell'].'")';
+            $SQL='INSERT INTO MemberVerification(InvitationCode, NewMemberFirstName, NewMemberLastName, UserName, Password, NewMemberEmail, NewMembercell)
+                VALUES("'.$InvCode.'", , "'.$_REQUEST['FirstName'].'", "'.$_REQUEST['LastName'].'", "'.$_REQUEST['UserName'].'", "'.$_REQUEST['Password'].'""'.$_REQUEST['Email'].'", "'.$_REQUEST['Cell'].'")';
             $db->setQuery($SQL);
             $db->Query();            
  
@@ -47,7 +47,7 @@ class SignupModel extends Model
             if($_REQUEST['Email'] != ''){
 		$mail = new Rmail();
 		$mail->setFrom('Commander HQ<info@be-mobile.co.za>');
-		$mail->setSubject('Verification for Commander HQ');
+		$mail->setSubject('Signup for Commander HQ');
 		$mail->setPriority('normal');
 		$mail->setHTML($message);
                 $MailResult =  $mail->send(array($_REQUEST['Email']));                

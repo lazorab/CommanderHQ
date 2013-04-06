@@ -27,37 +27,41 @@ class ProfileController extends Controller
             $Validate = new ValidationUtils;		
             $Message = 'Success';
             if(isset($_REQUEST['InvCode']) && !$Model->CheckInvitationCode())
-                $Message = 'Invalid Invitation Code';
+                $Message = 'Error - Invalid Invitation Code';
             else if($_REQUEST['FirstName'] == '')
-                $Message = 'Firstname Required';
+                $Message = 'Error - Firstname Required';
             else if($_REQUEST['LastName'] == '')
-                $Message = 'Lastname Required';
+                $Message = 'Error - Lastname Required';
             else if(!isset($_COOKIE['UID']) && $Model->CheckUserNameExists($_REQUEST['UserName']))
-                $Message = 'Username already exists. Please choose another.';
+                $Message = 'Error - Username already exists. Please choose another.';
+            else if($_REQUEST['UserName'] == '')
+                $Message = 'Error - Invalid Username!';
+            else if($_REQUEST['Password'] == '')
+                $Message = 'Error - Invalid Password!';
             else if(trim($_REQUEST['PassWord']) != trim($_REQUEST['ConfirmPassWord']))
-                $Message = 'Passwords do not match!';
+                $Message = 'Error - Passwords do not match!';
             else if($_REQUEST['Cell'] == '' && $_REQUEST['Email'] == '')
-                $Message = 'Either a Cell or Email Required';
+                $Message = 'Error - Either a Cell or Email Required';
             else if($_REQUEST['Cell'] == '' || !$Validate->CheckMobileNumber($_REQUEST['Cell']))
-                $Message = 'Cell number invalid!';
+                $Message = 'Error - Cell number invalid!';
             else if($_REQUEST['Email'] != '' && !$Validate->CheckEmailAddress($_REQUEST['Email']))
-                $Message = 'Email Address invalid!';
+                $Message = 'Error - Email Address invalid!';
             else if(!isset($_COOKIE['UID']) && $Model->CheckEmailExists($_REQUEST['Email']))
-                $Message = 'Email Address already exists!';
+                $Message = 'Error - Email Address already exists!';
             else if($_REQUEST['DOB'] == '')
-                $Message = 'Date of Birth Required';				
+                $Message = 'Error - Date of Birth Required';				
             else if($_REQUEST['Weight'] == '')
-                $Message = 'Weight Required';
+                $Message = 'Error - Weight Required';
             else if(!is_int($_REQUEST['Weight']))
-                $Message = 'Invalid Weight';            
+                $Message = 'Error - Invalid Weight';            
             else if($_REQUEST['Height'] == '')
-                $Message = 'Height Required';
+                $Message = 'Error - Height Required';
             else if(!is_int($_REQUEST['Height']))
-                $Message = 'Invalid Height';            
+                $Message = 'Error - Invalid Height';            
             else if($_REQUEST['Gender'] == '')		
-                $Message = 'Select Gender';
+                $Message = 'Error - Select Gender';
             else if($_REQUEST['CustomWorkouts'] == '')		
-                $Message = 'Select access to your Custom Workouts';
+                $Message = 'Error - Select access to your Custom Workouts';
 		
             return $Message;	
 	}

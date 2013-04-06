@@ -12,7 +12,7 @@ class ProfileModel extends Model
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
         $SQL='SELECT NewMemberCell, InvitationCode 
-            FROM MemberVerification 
+            FROM MemberVerification
             WHERE NewMemberCell = '.$_REQUEST['Cell'].'
             AND InvitationCode = "'.$_REQUEST['InvCode'].'"';
         $db->setQuery($SQL);
@@ -21,42 +21,6 @@ class ProfileModel extends Model
             return true;
         else 
             return false;       
-    }
-        
-    function CheckUserNameExists($UserName)
-    {
-        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-        $SQL='SELECT UserId FROM Members WHERE UserName = "'.$UserName.'"';
-        $db->setQuery($SQL);
-	$db->Query();
-	if($db->getNumRows() > 0)
-            return true;
-        else 
-            return false; 
-    }
-    
-    function CheckEmailExists($Email)
-    {
-        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-        $SQL='SELECT UserId FROM Members WHERE Email = "'.$Email.'"';
-        $db->setQuery($SQL);
-	$db->Query();
-	if($db->getNumRows() > 0)
-            return true;
-        else 
-            return false;
-    }
-    
-     function CheckCellExists($Cell)
-    {
-        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-        $SQL='SELECT UserId FROM Members WHERE Cell = "'.$Cell.'"';
-        $db->setQuery($SQL);
-	$db->Query();
-	if($db->getNumRows() > 0)
-            return true;
-        else 
-            return false;
     }   
     
     function Register()
@@ -218,19 +182,25 @@ class MemberObject
 	function __construct($Row)
 	{
 		$this->UserId = $Row['UserId'];
-		$this->FirstName = $Row['FirstName'];
-		$this->LastName = $Row['LastName'];                
-                if(isset($Row['InvCode'])){
-                    $ContactDetails = $this->getFromCodeVerification();
+                
+                if(isset($Row['InvCode']) && !isset($_COOKIE['UID'])){
+                    $ContactDetails = $this->getMemberVerificationDetails();
+                    $this->FirstName = $ContactDetails->FirstName;
+                    $this->LastName = $ContactDetails->LastName;
+                    $this->UserName = $ContactDetails->UserName;
+                    $this->PassWord = $ContactDetails->PassWord;                    
                     $this->Cell = $ContactDetails->Cell;
                     $this->Email = $ContactDetails->Email;
                 }else{
+                    $this->FirstName = $Row['FirstName'];
+                    $this->LastName = $Row['LastName'];
+                    $this->UserName = $Row['UserName'];
+                    $this->PassWord = $Row['PassWord'];
                     $this->Cell = $Row['Cell'];
                     $this->Email = $Row['Email'];                    
                 }
 
-		$this->UserName = $Row['UserName'];
-		$this->PassWord = $Row['PassWord'];
+
                 $this->LoginType = isset($Row['oauth_provider']) ? $Row['oauth_provider'] : "";
 		$this->SkillLevel = $Row['SkillLevel'];
 		$this->Gender = $Row['Gender'];
@@ -250,13 +220,17 @@ class MemberObject
 		$this->RecHR = $Row['RecHR'];	
 	}
         
-        function getFromCodeVerification()
+        function getMemberVerificationDetails()
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT NewMemberEmail AS Email,
-            NewMemberCell AS Cell
-            FROM MemberVerification
-            WHERE InvitationCode = "'.$_REQUEST['InvCode'].'"';
+            $SQL = 'SELECT NewMemberFirstName AS FirstName,
+                NewMemberLastName AS LastName,
+                UserName,
+                PassWord,
+                NewMemberEmail AS Email,
+                NewMemberCell AS Cell
+                FROM MemberVerification
+                WHERE InvitationCode = "'.$_REQUEST['InvCode'].'"';
             
             $db->setQuery($SQL);
 		

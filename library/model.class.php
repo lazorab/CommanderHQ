@@ -7,6 +7,42 @@ class Model
 	{
 	
 	}
+        
+    function CheckUserNameExists($UserName)
+    {
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+        $SQL='SELECT UserId FROM Members WHERE UserName = "'.$UserName.'"';
+        $db->setQuery($SQL);
+	$db->Query();
+	if($db->getNumRows() > 0)
+            return true;
+        else 
+            return false; 
+    }
+    
+    function CheckEmailExists($Email)
+    {
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+        $SQL='SELECT UserId FROM Members WHERE Email = "'.$Email.'"';
+        $db->setQuery($SQL);
+	$db->Query();
+	if($db->getNumRows() > 0)
+            return true;
+        else 
+            return false;
+    }
+    
+     function CheckCellExists($Cell)
+    {
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+        $SQL='SELECT UserId FROM Members WHERE Cell = "'.$Cell.'"';
+        $db->setQuery($SQL);
+	$db->Query();
+	if($db->getNumRows() > 0)
+            return true;
+        else 
+            return false;
+    }        
 	
 	function getRandomMessage()
 	{
