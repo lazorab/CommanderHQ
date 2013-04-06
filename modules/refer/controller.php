@@ -38,7 +38,6 @@ class ReferController extends Controller
     {
             $Html .= '<h2>Refer a friend</h2><br/>
             <form action="index.php" name="refer" id="referform" method="post">
-            <input type="hidden" name="module" value="refer"/>
             <input type="hidden" name="form" value="submitted"/>
             <input class="textinput" id="name" type="text" name="FriendName" placeholder="Friend\'s Name"/>                
             <br/>

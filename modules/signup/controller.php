@@ -1,5 +1,5 @@
 <?php
-class VerifyController extends Controller
+class SignupController extends Controller
 {
     function __construct()
     {
@@ -9,7 +9,7 @@ class VerifyController extends Controller
     
     function Validate()
     {
-        $Model = new VerifyModel;
+        $Model = new SignupModel;
         $Validate = new ValidationUtils;		
         $Message = 'Success';       
         if(!$Validate->CheckMobileNumber(trim($_REQUEST['Cell'])))
@@ -22,7 +22,7 @@ class VerifyController extends Controller
     
      function Message()
     {
-        $Model = new VerifyModel;
+        $Model = new SignupModel;
         $Message = $this->Validate();
         if($Message == 'Success')
             $Message = $Model->Verify();
@@ -32,9 +32,8 @@ class VerifyController extends Controller
         
     function Output()
     {
-            $Html .= '<h2>Verification</h2><br/>
+            $Html .= '<h2>Sign Up</h2><br/>
             <form action="index.php" name="refer" id="verifyform" method="post">
-            <input type="hidden" name="module" value="verify"/>
             <input type="hidden" name="form" value="submitted"/>
             <input class="textinput" id="email" type="email" name="Email" value="'.trim($_REQUEST['Email']).'" placeholder="Email Address"/>
             <br/>

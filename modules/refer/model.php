@@ -43,7 +43,7 @@ class ReferModel extends Model
             $message .= "\n";
             $message .= 'You will receive a unique code sent to you for registration after successfull verification';
             $message .= "\n";  
-            $message .= '<a href="http://'.THIS_DOMAIN.'/?module=verify&Cell='.trim($_REQUEST['FriendCell']).'&Email='.trim($_REQUEST['FriendEmail']).'">VERIFY YOURSELF HERE</a>';
+            $message .= '<a href="http://'.THIS_DOMAIN.'/?module=signup&Cell='.trim($_REQUEST['FriendCell']).'&Email='.trim($_REQUEST['FriendEmail']).'">VERIFY YOURSELF HERE</a>';
             $message .= "\n";
             
             $MailResult = true;

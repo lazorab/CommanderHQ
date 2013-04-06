@@ -1,6 +1,6 @@
 <?php
 
-class VerifyModel extends Model
+class SignupModel extends Model
 {
 	function __construct()
 	{

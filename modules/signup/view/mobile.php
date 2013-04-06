@@ -2,7 +2,7 @@
 
 function verifysubmit()
 {
-    $.getJSON('ajax.php?module=verify&action=validateform', $("#verifyform").serialize(),messagedisplay);
+    $.getJSON('ajax.php?module=signup&action=validateform', $("#verifyform").serialize(),messagedisplay);
 }
 
 function messagedisplay(message)

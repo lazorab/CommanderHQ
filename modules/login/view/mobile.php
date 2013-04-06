@@ -24,7 +24,7 @@ Remember me
 
 <br/>
 Not a member yet?
-<a href="?module=profile" style="margin-left:0.1%">
+<a href="?module=signup" style="margin-left:0.1%">
 <img alt="Signup" <?php echo $RENDER->NewImage('register.png');?> src="<?php echo IMAGE_RENDER_PATH;?>register.png"/>
 </a>
 <br/>
