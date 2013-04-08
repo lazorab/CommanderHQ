@@ -6,34 +6,23 @@ class SignupModel extends Model
 	{
 
         }
-	
-        function CheckFriendExists()
-        {
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL='SELECT NewMemberId
-                FROM MemberInvites 
-                WHERE NewMemberEmail = "'.$_REQUEST['FriendEmail'].'"
-                OR NewMemberCell = "'.$_REQUEST['FriendCell'].'"';
-            $db->setQuery($SQL);
-            $db->Query();
-            if($db->getNumRows() > 0)
-                return true;
-            else 
-                return false;            
-        }
         
 	function Signup()
 	{
-            $InvCode = base_convert(time(), 10, 16);
+            $Code = base_convert(time(), 10, 16);
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL='INSERT INTO MemberVerification(InvitationCode, NewMemberFirstName, NewMemberLastName, UserName, Password, NewMemberEmail, NewMembercell)
-                VALUES("'.$InvCode.'", , "'.$_REQUEST['FirstName'].'", "'.$_REQUEST['LastName'].'", "'.$_REQUEST['UserName'].'", "'.$_REQUEST['Password'].'""'.$_REQUEST['Email'].'", "'.$_REQUEST['Cell'].'")';
-            $db->setQuery($SQL);
-            $db->Query();            
- 
-            $message .= 'Your unique code is <b>'.$InvCode.'</b>';
+            if(isset($_SESSION['NEW_USER'])){
+                $Id = $_SESSION['NEW_USER'];
+            }else{
+                $SQL='INSERT INTO Members(VerificationCode, FirstName, LastName, UserName, Password, Email, Cell)
+                VALUES("'.$Code.'", , "'.$_REQUEST['FirstName'].'", "'.$_REQUEST['LastName'].'", "'.$_REQUEST['UserName'].'", "'.$_REQUEST['Password'].'""'.$_REQUEST['Email'].'", "'.$_REQUEST['Cell'].'")';
+                $db->setQuery($SQL);
+                $db->Query();            
+                $Id = $db->insertid();
+            }
+            $message .= 'Your unique code is <b>'.$Code.'</b>';
             $message .= "\n";  
-            $message .= 'Complete your registration <a href="http://'.THIS_DOMAIN.'/?module=profile&InvCode='.$InvCode.'">HERE</a> - NOW';
+            $message .= 'Complete your registration <a href="http://'.THIS_DOMAIN.'/?module=verify&id='.$Id.'">HERE</a> - NOW';
             $message .= "\n";
             $message .='& STAND A CHANCE TO WIN!';
             $message .= "\n\n";
@@ -63,5 +52,26 @@ class SignupModel extends Model
                 
             return $ReturnMessage;
 	}
+        
+        function setMemberDetails()
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT FirstName,
+                LastName,
+                UserName,
+                PassWord,
+                Email,
+                Cell,
+                VerificationCode
+                FROM Members
+                WHERE UserId = "'.$_SESSION['NEW_USER'].'"';
+            
+            $db->setQuery($SQL);
+		
+            $Member = $db->loadObject();           
+            $_REQUEST['FirstName'] = $Member->FirstName;
+            $_REQUEST['LastName'] = $Member->LastName;
+            $_REQUEST['UserName'] = $Member->UserName;
+        }        
 }
 

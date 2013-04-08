@@ -18,14 +18,14 @@ class SignupController extends Controller
             $Message = 'Error - Please enter a valid Cell number!';
         else if($_REQUEST['Email'] != '' && !$Validate->CheckEmailAddress(trim($_REQUEST['Email'])))
             $Message = 'Error - Email Address invalid!';
-        else if($Model->CheckUserNameExists($_REQUEST['UserName']))
+        else if(!isset($_SESSION['NEW_USER']) && $Model->CheckUserNameExists($_REQUEST['UserName']))
             $Message = 'Error - Username already exists!';
-        else if($_REQUEST['UserName'] == '')
+        else if(!isset($_SESSION['NEW_USER']) && $_REQUEST['UserName'] == '')
             $Message = 'Error - Invalid Username!';
-        else if($_REQUEST['Password'] == '')
+        else if(!isset($_SESSION['NEW_USER']) && $_REQUEST['Password'] == '')
             $Message = 'Error - Invalid Password!';
-        else if(trim($_REQUEST['PassWord']) != trim($_REQUEST['ConfirmPassWord']))
-            $Message = 'Error - Passwords do not match!';            
+        else if(!isset($_SESSION['NEW_USER']) && trim($_REQUEST['PassWord']) != trim($_REQUEST['ConfirmPassWord']))
+            $Message = 'Error - Passwords do not match!';  
         else if($Model->CheckEmailExists(trim($_REQUEST['Email'])))
             $Message = 'Error - Email already exists!';
         else if($Model->CheckCellExists(trim($_REQUEST['Cell'])))
@@ -51,14 +51,16 @@ class SignupController extends Controller
             <input type="hidden" name="form" value="submitted"/>
             <input class="textinput" type="text" id="firstname" name="FirstName" placeholder="First Name" value="'.trim($_REQUEST['FirstName']).'"/>
             <br/>    
-            <input class="textinput" type="text" id="lastname" name="LastName" placeholder="Last Name" value="'.trim($_REQUEST['LastName']).'"/>     
-            <br/>   
+            <input class="textinput" type="text" id="lastname" name="LastName" placeholder="Last Name" value="'.trim($_REQUEST['LastName']).'"/>';
+            if(!isset($_SESSION['NEW_USER'])){ 
+            $Html .= '<br/>   
             <input class="textinput" type="text" id="username" name="UserName" placeholder="User Name" value="'.trim($_REQUEST['UserName']).'"/>
             <br/>    
             <input class="textinput" type="password" id="password" name="PassWord" placeholder="Password" value="'.trim($_REQUEST['PassWord']).'"/>
             <br/>    
-            <input class="textinput" type="password" id="password" name="ConfirmPassWord" placeholder="Confirm Password" value="'.trim($_REQUEST['ComfirmPassWord']).'"/>
-            <br/>
+            <input class="textinput" type="password" id="password" name="ConfirmPassWord" placeholder="Confirm Password" value="'.trim($_REQUEST['ComfirmPassWord']).'"/>';
+            }
+            $Html .= '<br/>
             <input class="textinput" id="email" type="email" name="Email" value="'.trim($_REQUEST['Email']).'" placeholder="Email Address"/>
             <br/>
             <input class="textinput" id="cell" type="number" name="Cell" value="'.trim($_REQUEST['Cell']).'" placeholder="Cell ('.DEFAULT_SUB_NUMBER.')"/>

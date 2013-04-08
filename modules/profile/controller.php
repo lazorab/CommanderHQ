@@ -26,9 +26,7 @@ class ProfileController extends Controller
             $Model = new ProfileModel;
             $Validate = new ValidationUtils;		
             $Message = 'Success';
-            if(isset($_REQUEST['InvCode']) && !$Model->CheckInvitationCode())
-                $Message = 'Error - Invalid Invitation Code';
-            else if($_REQUEST['FirstName'] == '')
+            if($_REQUEST['FirstName'] == '')
                 $Message = 'Error - Firstname Required';
             else if($_REQUEST['LastName'] == '')
                 $Message = 'Error - Lastname Required';
@@ -110,13 +108,9 @@ class ProfileController extends Controller
         <form action="index.php" method="post" id="profileform" name="profileform">
         <div data-role="fieldcontain">
         <input type="hidden" name="module" value="profile"/>
-        <input type="hidden" name="UserId" value="'.$MemberDetails->UserId.'"/>';
-      if(!isset($_COOKIE['UID'])){
-          $Html.='
-            <input class="textinput" type="text" id="invcode" name="InvCode" placeholder="Invitation Code" value="'.$_REQUEST['InvCode'].'"/>';
-      }      
+        <input type="hidden" name="UserId" value="'.$MemberDetails->UserId.'"/>';      
 
-          $Html.='<label for="firstname">First Name</label>';
+        $Html.='<label for="firstname">First Name</label>';
           
 $Html.='<input class="textinput" type="text" id="firstname" name="FirstName" placeholder="First Name" value="'.$MemberDetails->FirstName.'"/>';
 

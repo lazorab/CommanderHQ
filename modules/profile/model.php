@@ -6,86 +6,7 @@ class ProfileModel extends Model
     function __construct()
     {
         parent::__construct();	
-    }
-    
-    function CheckInvitationCode()
-    {
-        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-        $SQL='SELECT NewMemberCell, InvitationCode 
-            FROM MemberVerification
-            WHERE NewMemberCell = '.$_REQUEST['Cell'].'
-            AND InvitationCode = "'.$_REQUEST['InvCode'].'"';
-        $db->setQuery($SQL);
-	$db->Query();
-	if($db->getNumRows() > 0)
-            return true;
-        else 
-            return false;       
-    }   
-    
-    function Register()
-    {
-        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-
-            $SQL="INSERT INTO Members(FirstName,
-                LastName,
-                Cell,
-                Email,
-                UserName,
-                PassWord) 
-                VALUES('".trim($_REQUEST['FirstName'])."',
-                   '".trim($_REQUEST['LastName'])."',
-                   '".trim($_REQUEST['Cell'])."',
-                   '".trim($_REQUEST['Email'])."',
-                   '".trim($_REQUEST['UserName'])."',
-                   '".trim($_REQUEST['PassWord'])."')";
-                    $db->setQuery($SQL);
-                    $db->Query();
-            
-		$NewId = $db->insertid();
-			
-		if($_REQUEST['SystemOfMeasure'] == 'Imperial'){
-                //convert to metric for storage in db. Displaying of values will be converted back.
-                    $Weight = round($_REQUEST['Weight'] * 0.45, 2);
-                    $Height = round($_REQUEST['Height'] * 2.54, 2);
-		}
-		else{
-                    $Weight = $_REQUEST['Weight'];
-                    $Height = $_REQUEST['Height'];			
-		}
-                    $HeightInMeters = $Height / 100;
-                    $BMI = floor($Weight / ($HeightInMeters * $HeightInMeters));
-                    $DOB = date('Y-m-d',strtotime($_REQUEST['DOB']));
-                    $SQL="INSERT INTO MemberDetails(
-                        MemberId,
-                        GymId,
-                        DOB,
-                        Weight,
-                        Height,
-                        Gender,
-                        SystemOfMeasure,
-                        CustomWorkouts,
-                        BMI) 
-                    VALUES('".$NewId."',
-                        '".trim($_REQUEST['AffiliateId'])."',
-                        '".$DOB."',
-                        '".trim($Weight)."',
-                        '".trim($Height)."',
-                        '".trim($_REQUEST['Gender'])."',
-                        '".trim($_REQUEST['SystemOfMeasure'])."',
-                        '".trim($_REQUEST['CustomWorkouts'])."',
-                        '".$BMI."')";
-                    $db->setQuery($SQL);
-                    $db->Query();
-                
-            $SQL = 'UPDATE MemberVerification SET NewMemberId = '.$NewId.' WHERE Cell = '.trim($_REQUEST['Cell']).' AND InvitationCode = "'.trim($_REQUEST['InvCode']).'"';
-            $db->setQuery($SQL);
-            $db->Query();
-           
-            setcookie('UID', $NewId, time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
-            $_SESSION['NEW_USER'] = $NewId;
-            $this->SendEmail(trim($_REQUEST['FirstName']), trim($_REQUEST['Email']), trim($_REQUEST['UserName']), trim($_REQUEST['PassWord']));
-	}    
+    }       
 	
 	function Update($Id)
 	{
@@ -126,10 +47,6 @@ class ProfileModel extends Model
 				WHERE MemberId = '".$Id."'";
                         $db->setQuery($SQL);
                         $db->Query();
-            if(!isset($_COOKIE['UID'])){
-                setcookie('UID', $Id, time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
-            }
-            
 	}
         
         function getAffiliates() {
@@ -182,24 +99,13 @@ class MemberObject
 	function __construct($Row)
 	{
 		$this->UserId = $Row['UserId'];
-                
-                if(isset($Row['InvCode']) && !isset($_COOKIE['UID'])){
-                    $ContactDetails = $this->getMemberVerificationDetails();
-                    $this->FirstName = $ContactDetails->FirstName;
-                    $this->LastName = $ContactDetails->LastName;
-                    $this->UserName = $ContactDetails->UserName;
-                    $this->PassWord = $ContactDetails->PassWord;                    
-                    $this->Cell = $ContactDetails->Cell;
-                    $this->Email = $ContactDetails->Email;
-                }else{
-                    $this->FirstName = $Row['FirstName'];
-                    $this->LastName = $Row['LastName'];
-                    $this->UserName = $Row['UserName'];
-                    $this->PassWord = $Row['PassWord'];
-                    $this->Cell = $Row['Cell'];
-                    $this->Email = $Row['Email'];                    
-                }
 
+                $this->FirstName = $Row['FirstName'];
+                $this->LastName = $Row['LastName'];
+                $this->UserName = $Row['UserName'];
+                $this->PassWord = $Row['PassWord'];
+                $this->Cell = $Row['Cell'];
+                $this->Email = $Row['Email'];                    
 
                 $this->LoginType = isset($Row['oauth_provider']) ? $Row['oauth_provider'] : "";
 		$this->SkillLevel = $Row['SkillLevel'];
@@ -219,22 +125,5 @@ class MemberObject
 		$this->RestHR = $Row['RestHR'];
 		$this->RecHR = $Row['RecHR'];	
 	}
-        
-        function getMemberVerificationDetails()
-        {
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT NewMemberFirstName AS FirstName,
-                NewMemberLastName AS LastName,
-                UserName,
-                PassWord,
-                NewMemberEmail AS Email,
-                NewMemberCell AS Cell
-                FROM MemberVerification
-                WHERE InvitationCode = "'.$_REQUEST['InvCode'].'"';
-            
-            $db->setQuery($SQL);
-		
-            return $db->loadObject();           
-        }
 }
 ?>

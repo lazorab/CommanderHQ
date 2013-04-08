@@ -48,7 +48,7 @@ class User {
             $SQL = "INSERT INTO `MemberDetails` (MemberId, Gender) VALUES ('$NewId', '$Gender')";
             $db->setQuery($SQL);
             $db->Query();
-            $SQL = "SELECT *, 'profile' AS redirect FROM `Members` WHERE oauth_uid = '$user->id' and oauth_provider = '$oauth_provider'";
+            $SQL = "SELECT *, 'signup' AS redirect FROM `Members` WHERE oauth_uid = '$user->id' and oauth_provider = '$oauth_provider'";
             $db->setQuery($SQL);
             $Row = $db->loadObject();
 
