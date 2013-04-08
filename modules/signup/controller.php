@@ -30,6 +30,8 @@ class SignupController extends Controller
             $Message = 'Error - Email already exists!';
         else if($Model->CheckCellExists(trim($_REQUEST['Cell'])))
             $Message = 'Error - Cell Number already exists!';
+        else if($_REQUEST['Terms'] != 'agree')
+            $Message = 'Error - Must agree to Terms and Conditions!';
             
         return $Message;
     }
@@ -64,7 +66,13 @@ class SignupController extends Controller
             <input class="textinput" id="email" type="email" name="Email" value="'.trim($_REQUEST['Email']).'" placeholder="Email Address"/>
             <br/>
             <input class="textinput" id="cell" type="number" name="Cell" value="'.trim($_REQUEST['Cell']).'" placeholder="Cell ('.DEFAULT_SUB_NUMBER.')"/>
-            <br/>
+
+ 	<fieldset data-role="controlgroup">
+		<input type="checkbox" name="Terms" id="checkbox-1" class="custom" />
+		<label for="checkbox-1">I have read and agree to Terms and Conditions</label>
+    </fieldset>
+            
+            <br/>           
             <input class="buttongroup" type="button" onClick="verifysubmit();" value="Submit"/>
             <br/>
             </form><div class="clear"</div>';

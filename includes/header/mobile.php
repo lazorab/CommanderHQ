@@ -70,17 +70,55 @@ document.location.href = noddy.href;
 }
 </script>
 <script type="text/javascript">
-$(document).ready(function() {
-$("#menu").niceScroll();
-$('#menu').hide();
-$(document).on("click","img#menuselect",function(){
-$('#menu').show('slow');
-});
-$(document).on("click","img#menuarrow",function(){
-$('#menu').hide('slow');
-});
-$('#AjaxLoading').html('');
-});
+$(function(){
+	var menuStatus;
+	
+	$(".ShowSlideMenu").click(function(){
+		if(menuStatus != true){				
+		$(".ui-page-active").animate({
+			marginLeft: "200px",
+		  }, 300, function(){menuStatus = true;
+                  $("#slidemenu").addClass('active');
+                  $("#slidemenu").niceScroll();
+                  });
+		  return false;
+		  } else {
+			$(".ui-page-active").animate({
+			marginLeft: "0px",
+		  }, 300, function(){menuStatus = false;
+                  $("#slidemenu").removeClass('active');
+                  });
+                  return false;
+		  }
+	});
+
+	$('.pages').live("swipeleft", function(){
+		if (menuStatus){	
+		$(".ui-page-active").animate({
+			marginLeft: "0px",
+		  }, 300, function(){menuStatus = false});
+		  }
+	});
+	
+	$('.pages').live("swiperight", function(){
+		if (!menuStatus){	
+		$(".ui-page-active").animate({
+			marginLeft: "165px",
+		  }, 300, function(){menuStatus = true});
+		  }
+	});
+	
+	$("#menu li a").click(function(){
+		var p = $(this).parent();
+		if($(p).hasClass('active')){
+			$("#menu li").removeClass('active');
+		} else {
+			$("#menu li").removeClass('active');
+			$(p).addClass('active');
+		}
+	});
+		
+});	
 
 function DisplayStopwatch(Module, RoutineId)
 {

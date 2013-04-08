@@ -4,7 +4,7 @@ define("QA", true);
 
 define("SUBSCRIPTION", false);
 
-define('FORCEMOBILE',true);
+define('FORCEMOBILE',false);
 
 define('HOST','Local');
 //define('HOST','Remote');

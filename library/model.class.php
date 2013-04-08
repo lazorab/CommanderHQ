@@ -43,6 +43,15 @@ class Model
         else 
             return false;
     }        
+    
+    function getUsersName(){
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT FirstName, LastName FROM Members WHERE UserId = "'.$_COOKIE['UID'].'"';
+            $db->setQuery($SQL);
+            $Member = $db->loadObject(); 
+            $Name = ''.$Member->FirstName.' '.$Member->LastName.'';
+            return $Name;
+    }
 	
 	function getRandomMessage()
 	{
@@ -168,6 +177,14 @@ class Model
             $db->setQuery($SQL);
             return $db->loadObjectList();
 	}    
+        
+        function getMemberAgreeToTerms() 
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT TermsAccepted FROM Members WHERE UserId = "'.$_COOKIE['UID'].'"';
+            $db->setQuery($SQL);
+            return $db->loadResult();
+        }
     
     	function getMemberGym()
 	{

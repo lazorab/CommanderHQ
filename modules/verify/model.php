@@ -11,6 +11,7 @@ class VerifyModel extends Model
 	{
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $SQL='SELECT UserId,
+                oauth_provider,
                 FirstName,
                 LastName,
                 UserName,
@@ -28,9 +29,17 @@ class VerifyModel extends Model
                 $db->Query();
                 setcookie('UID', $Member->UserId, time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
                 $message = 'Successfully verified. Welcome to Commander HQ!';
+                $message .= "\n";
+                if($Member->oauth_provider != ''){
+                    $message .= 'You have signed up using your '.$Member->oauth_provider.' profile';
+                }else{
+                    $message .= 'Your Username is '.$Member->UserName.'';
+                    $message .= "\n";
+                    $message .= 'Your Password is '.$Member->PassWord.'';
+                }
 		$mail = new Rmail();
 		$mail->setFrom('Commander HQ<info@be-mobile.co.za>');
-		$mail->setSubject('Welcom to Commander HQ');
+		$mail->setSubject('Welcome to Commander HQ');
 		$mail->setPriority('normal');
 		$mail->setHTML($message);
                 $MailResult =  $mail->send(array($_REQUEST['Email']));                

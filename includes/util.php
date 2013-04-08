@@ -4,10 +4,13 @@ $Request = new BRequest();
 $RENDER = new Image();
 $Device = new DeviceManager();
 
-if(FORCEMOBILE)
+if(FORCEMOBILE){
     define('SCREENWIDTH',320);
-else    
+}else if($Device->GetScreenWidth() > 640){
+    define('SCREENWIDTH',640);
+}else{
     define('SCREENWIDTH',$Device->GetScreenWidth());
+}
 if (SCREENWIDTH < 641) {
     define('LAYOUT_WIDTH','640');
 }else if(SCREENWIDTH < 981){

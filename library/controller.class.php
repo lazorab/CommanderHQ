@@ -51,6 +51,24 @@ class Controller
             return $Model->getGender();
         }
         
+        function UsersName()
+        {
+            $Model= new Model;
+            return $Model->getUsersName();           
+        }
+        
+        function UserGym()
+        {
+            $Model= new Model;
+            return $Model->getMemberGym();           
+        }
+        
+        function MemberAgreeToTerms()
+        {
+            $Model= new Model;
+            return $Model->getMemberAgreeToTerms();              
+        }
+        
         function SystemOfMeasure()
         {
             $Model= new Model;

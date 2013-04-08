@@ -39,22 +39,29 @@ include("includes/header/$Environment.php");
     }
 ?>
     <body>
+<?php
+/*SLIDE MENU*/        
+if (file_exists("includes/menu/$Environment.php"))
+include("includes/menu/$Environment.php");?>
+        
 <div data-role="page" data-theme="c">
 
 <div id="header">
 <img alt="Header" <?php echo $RENDER->NewImage(''.$Banner.'.png');?> src="<?php echo IMAGE_RENDER_PATH.$Banner;?>.png"/>
 </div>
 <?php if(isset($_COOKIE['UID'])){
-/*MENU*/	
-if (file_exists("includes/menu/$Environment.php"))
-include("includes/menu/$Environment.php");
+/*NAVBAR*/	
+if (file_exists("includes/navbar/$Environment.php"))
+include("includes/navbar/$Environment.php");
     }
 ?>
 <div id="content">
 <?php
-/*CONTENT*/	
-    if (file_exists("modules/$Module/view/$Environment.php"))
-include("modules/$Module/view/$Environment.php");
+/*CONTENT*/
+if(isset($_COOKIE['UID']) && $Display->MemberAgreeToTerms() == 0)
+    include("modules/logout/view/$Environment.php");
+else if (file_exists("modules/$Module/view/$Environment.php"))
+    include("modules/$Module/view/$Environment.php");
 ?>
 
 </div><!-- /content -->
