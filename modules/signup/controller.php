@@ -16,6 +16,8 @@ class SignupController extends Controller
         $Message = 'Success';       
         if(!$Validate->CheckMobileNumber(trim($_REQUEST['Cell'])))
             $Message = 'Error - Please enter a valid Cell number!';
+        else if($_REQUEST['Email'] == '')
+            $Message = 'Error - Email Address required!';        
         else if($_REQUEST['Email'] != '' && !$Validate->CheckEmailAddress(trim($_REQUEST['Email'])))
             $Message = 'Error - Email Address invalid!';
         else if(!isset($_SESSION['NEW_USER']) && $Model->CheckUserNameExists($_REQUEST['UserName']))
@@ -65,13 +67,7 @@ class SignupController extends Controller
             $Html .= '<br/>
             <input class="textinput" id="email" type="email" name="Email" value="'.trim($_REQUEST['Email']).'" placeholder="Email Address"/>
             <br/>
-            <input class="textinput" id="cell" type="number" name="Cell" value="'.trim($_REQUEST['Cell']).'" placeholder="Cell ('.DEFAULT_SUB_NUMBER.')"/>
-
- 	<fieldset data-role="controlgroup">
-		<input type="checkbox" name="Terms" id="checkbox-1" class="custom" />
-		<label for="checkbox-1">I have read and agree to Terms and Conditions</label>
-    </fieldset>
-            
+            <input class="textinput" id="cell" type="number" name="Cell" value="'.trim($_REQUEST['Cell']).'" placeholder="Cell ('.DEFAULT_SUB_NUMBER.')"/> 
             <br/>           
             <input class="buttongroup" type="button" onClick="verifysubmit();" value="Submit"/>
             <br/>

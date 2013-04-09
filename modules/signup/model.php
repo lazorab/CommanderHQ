@@ -20,27 +20,19 @@ class SignupModel extends Model
                 $db->Query();            
                 $Id = $db->insertid();
             }
-            $message .= 'Your unique code is <b>'.$Code.'</b>';
+            $message .= 'Your verification code for Commander is <b>'.$Code.'</b>';
             $message .= "\n";  
-            $message .= 'Complete your registration <a href="http://'.THIS_DOMAIN.'/?module=verify&id='.$Id.'">HERE</a> - NOW';
-            $message .= "\n";
-            $message .='& STAND A CHANCE TO WIN!';
-            $message .= "\n\n";
-            $message .='Eat Clean - Train Dirty!';
-            $message .= "\n";
-            $message .='The Commander.';
+            $message .= 'Complete your registration <a href="http://'.THIS_DOMAIN.'/?module=verify&id='.$Id.'">HERE</a>';
             
             $MailResult = true;
             $SmsResult = true;
 
-            if($_REQUEST['Email'] != ''){
-		$mail = new Rmail();
-		$mail->setFrom('Commander HQ<info@be-mobile.co.za>');
-		$mail->setSubject('Signup for Commander HQ');
-		$mail->setPriority('normal');
-		$mail->setHTML($message);
-                $MailResult =  $mail->send(array($_REQUEST['Email']));                
-            }
+            $mail = new Rmail();
+            $mail->setFrom('Commander HQ<info@be-mobile.co.za>');
+            $mail->setSubject('Signup for Commander HQ');
+            $mail->setPriority('normal');
+            $mail->setHTML($message);
+            $MailResult =  $mail->send(array($_REQUEST['Email']));                
             
             $SMS = new SmsManager(SITE_ID, trim($_REQUEST['Cell']), $message, 3, 0, SMS_FROM_NUMBER, 0, null, null);
             $SmsResult = $SMS->Send(); 

@@ -44,10 +44,6 @@ class VerifyModel extends Model
 		$mail->setHTML($message);
                 $MailResult =  $mail->send(array($_REQUEST['Email']));                
             
-            
-            $SMS = new SmsManager(SITE_ID, trim($_REQUEST['Cell']), $message, 3, 0, SMS_FROM_NUMBER, 0, null, null);
-            $SmsResult = $SMS->Send(); 
-            
             $ReturnMessage .= 'Successfully Verified!';
             }
             else{

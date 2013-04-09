@@ -10,7 +10,7 @@ class UploadController extends Controller
 	{
             parent::__construct();
             session_start();
-            if(!isset($_SESSION['GID'])){
+            if(!isset($_COOKIE['GID'])){
                 header('location: index.php?module=login');	
             }
             $this->Origin = $_REQUEST['origin'];
@@ -25,6 +25,8 @@ class UploadController extends Controller
             $Result = 'No name given!';
         }else if($_REQUEST['WodDate'] == ''){
             $Result = 'Must select date!';
+        }else if($_REQUEST['WodDate'] < date('Y-m-d')){
+            $Result = 'Invalid Date!';            
         }else if($_REQUEST['WodDate'] > date('Y-m-d', strtotime("+30 days"))){
             $Result = 'Date too far ahead!';            
         }else if($_REQUEST['rowcount'] == 0){
@@ -324,7 +326,7 @@ class UploadController extends Controller
         $ExerciseId = $_REQUEST['Exercise'];
         $ExerciseDetails = $Model->getExerciseDetails($ExerciseId);
         $i=0;
-        $Message = '<table style="width:100%"><tr style="width:100%" id="row_ThisRow"><td style="width:30%">'.$ExerciseDetails->Exercise.':'.$ExerciseDetails->Acronym.'</td>';
+        $Message = '<table style="width:100%"><tr style="width:100%" id="row_ThisRow"><td style="width:25%">'.$ExerciseDetails->Exercise.':'.$ExerciseDetails->Acronym.'</td>';
         //$Message .= '<td></td><td></td>';
         if(isset($_REQUEST['mWeight'])){
             if($_REQUEST['mWeight'] == '')
@@ -351,17 +353,16 @@ class UploadController extends Controller
             $Message .= '<td style="width:20%">Height(M):'.$mHeight.'<input type="hidden" name="ThisRoutine_ThisRound_ThisOrderBy_'.$ExerciseId.'_mHeight" value="'.$_REQUEST['mHeight'].'"/>'.$Model->getUnitOfMeasure($_REQUEST['HUOM']).'</td> 
                         <td style="width:20%">Height(F):'.$fHeight.'<input type="hidden" name="ThisRoutine_ThisRound_ThisOrderBy_'.$ExerciseId.'_fHeight" value="'.$_REQUEST['fHeight'].'"/>'.$Model->getUnitOfMeasure($_REQUEST['HUOM']).'
                         <input type="hidden" name="ThisRoutine_ThisRound_ThisOrderBy_'.$ExerciseId.'_HUOM" value="'.$_REQUEST['HUOM'].'"/></td>';//HeightUnitOfMeasure
-        }else{
-            $Message .= '<td style="width:20%"></td><td style="width:20%"></td>';
-        }
-        if(isset($_REQUEST['Distance'])){
+
+       }else if(isset($_REQUEST['Distance'])){
             if($_REQUEST['Distance'] == '')
                 $Distance = '[Max]';
             else
                 $Distance = $_REQUEST['Distance'];            
-            $Message .= '<td style="width:20%">Distance:'.$Distance.'<input type="hidden" name="ThisRoutine_ThisRound_ThisOrderBy_'.$ExerciseId.'_Distance" value="'.$_REQUEST['Distance'].'"/>
+            $Message .= '<td style="width:20%"></td><td style="width:15%"></td><td style="width:20%">Distance:'.$Distance.'<input type="hidden" name="ThisRoutine_ThisRound_ThisOrderBy_'.$ExerciseId.'_Distance" value="'.$_REQUEST['Distance'].'"/>
                         '.$Model->getUnitOfMeasure($_REQUEST['DUOM']).'<input type="hidden" name="ThisRoutine_ThisRound_ThisOrderBy_'.$ExerciseId.'_DUOM" value="'.$_REQUEST['DUOM'].'"/></td>';//DistanceUnitOfMeasure
-        }else{
+        }
+        if(!isset($_REQUEST['Distance'])){
             $Message .= '<td style="width:20%"></td>';
         }
         if(isset($_REQUEST['Reps'])){

@@ -35,7 +35,7 @@ function __construct()
             if($this->UserIsSubscribed()){
                 if(isset($_REQUEST['CustomName']) && $_REQUEST['CustomName'] == ''){
                     $this->Message = "Error - Name for WOD required!";
-                }else if($_REQUEST['WodDate'] == ''){
+                }else if($_REQUEST['WodDate'] == '' || $_REQUEST['WodDate'] < date('Y-m-d')){
                     $this->Message = 'Error - Invalid Date!';                   
                 }else if($_REQUEST['WodDate'] > date('Y-m-d', strtotime("+30 days"))){
                     $this->Message = 'Error - Date too far ahead!';     

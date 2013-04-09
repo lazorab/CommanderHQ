@@ -7,7 +7,7 @@ class LoginController extends Controller
 	{
 		$Model = new LoginModel();
 		session_start();
-		if(isset($_SESSION['GID'])){
+		if(isset($_COOKIE['GID'])){
 			header('location: index.php?module=upload');	
 		}
 		else if($_REQUEST['action'] == 'Login')
@@ -20,8 +20,8 @@ class LoginController extends Controller
 				if($_REQUEST['remember'] == 'yes'){
 					setcookie("AdminUsername", $_REQUEST['username'], time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
 					setcookie("AdminPassword", $_REQUEST['password'], time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
-				}			
-				$_SESSION['GID'] = $GymId;
+				}
+                                setcookie('GID', $GymId, time() + (20 * 365 * 24 * 60 * 60), '/', THIS_DOMAIN, false, false);
 
 				header('location: index.php?module=upload');
 			}		

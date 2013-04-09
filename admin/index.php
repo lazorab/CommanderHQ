@@ -28,20 +28,17 @@ $Environment = 'website';
 if (file_exists("includes/header/$Environment.php"))
 include("includes/header/$Environment.php");
   
-    $Banner = 'header';//default
-    if(isset($_REQUEST['banner']))
-        $Banner = $_REQUEST['banner'];
-    else if($_REQUEST['module'] != '' && $_REQUEST['module'] != 'memberhome'){
-        if (file_exists(''.IMAGE_RENDER_PATH.$_REQUEST['module'].'.php'))
-        $Banner = ''.$_REQUEST['module'].'_header';
-    }
 ?>
     <body>
 
 <div id="header">
-<img alt="Header" src="<?php echo IMAGE_RENDER_PATH.$Banner;?>.png"/>
+<?php if(isset($_COOKIE['GID'])){
+    echo $Display->GymDetails()->GymName;
+}else{?>
+<img alt="Header" src="<?php echo IMAGE_RENDER_PATH;?>header.png"/>
+<?php } ?>
 </div>
-<?php if(isset($_SESSION['GID'])){
+<?php if(isset($_COOKIE['GID'])){
 /*MENU*/	
 if (file_exists("includes/menu/$Environment.php"))
 include("includes/menu/$Environment.php");

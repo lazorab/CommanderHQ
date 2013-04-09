@@ -9,7 +9,7 @@ function messagedisplay(message)
 {
     alert(message);
     if(message == 'Successfully Verified!')
-        window.location = 'index.php?module=profile';
+        window.location = 'index.php?module=terms';
 }
 
 function display(data)

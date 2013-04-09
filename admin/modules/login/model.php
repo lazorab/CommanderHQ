@@ -21,8 +21,9 @@ class LoginModel extends Model
     function Login($username,$password)
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-	$SQL='SELECT MD.GymId FROM MemberDetails MD JOIN Members M ON M.UserId = MD.MemberId
-            WHERE M.UserName = "'.$username.'" AND M.PassWord = "'.$password.'"';
+	$SQL='SELECT AffiliateId 
+            FROM Affiliates
+            WHERE UserName = "'.$username.'" AND PassWord = "'.$password.'"';
         $db->setQuery($SQL);
 	$db->Query();
 	if($db->getNumRows() > 0){	

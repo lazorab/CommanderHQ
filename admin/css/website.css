@@ -9,15 +9,19 @@ body {
 	font-weight: normal;
 }
 
+table{
+    border-collapse:collapse;
+}
+
 .select_exercise td{
     font-weight:bold;
     width:150px;
 }
 .select_exercise tr
 {
-float:right;
-background-color: #ccc;
-width:750px;
+    float:right;
+    background-color: #ccc;
+    width:750px;
 }
 
 .select_exercise.inactive

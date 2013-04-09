@@ -7,10 +7,10 @@ class Controller
             
         }
         
-        function SystemOfMeasure()
+        function GymDetails()
         {
             $Model= new Model;
-            return $Model->getSystemOfMeasure();
+            return $Model->getGymDetails();
         }
 }
 ?>

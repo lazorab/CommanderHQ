@@ -7,6 +7,8 @@ class MygymController extends Controller
             session_start();
             if(!isset($_COOKIE['UID'])){
                 header('location: index.php?module=login');
+            }else if(!$this->MemberGym()){
+                header('location: index.php?module=registergym');
             }
 	}
 	
@@ -54,11 +56,7 @@ class MygymController extends Controller
 	
 	function Output()
 	{
-                $Gym = $this->MemberGym();
-                if(!$Gym){//must register gym
-                    $WODdata = 'Must First Register Gym!';
-		}else{          
-                    $WODdata = '<div data-role="navbar">
+            $WODdata = '<div data-role="navbar">
             <ul>
                 <li style="width:48%"><a href="#" onClick="Tabs(\'1\');" class="ui-btn-active">Well Rounded</a></li>
                 <li style="width:48%"><a href="#" onClick="Tabs(\'2\');">Advanced</a></li>
@@ -71,7 +69,7 @@ class MygymController extends Controller
 
           $WODdata .= ' <div id="details2"></div>
                                 </div>';                
-		}	
+			
 	
             return $WODdata;
 	}
@@ -103,8 +101,9 @@ class MygymController extends Controller
             $html='';
             $Model = new MygymModel;
             $WodDetails = $Model->getWODDetails($type);
+            $Gym = $this->MemberGym();
             if(count($WodDetails) == 0){
-                $html='No data from your gym today';
+                $html=' No WOD loaded from '.$Gym->GymName.' today';
             }else{
                 //$this->getTopSelection();
 	$Clock = '';

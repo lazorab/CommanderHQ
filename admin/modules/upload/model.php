@@ -26,13 +26,13 @@ class UploadModel extends Model
             if($_REQUEST[''.$i.'_Benchmark'] != ''){
                 $BenchmarkId = $_REQUEST[''.$i.'_Benchmark'];
                 $SQL = 'INSERT INTO WodWorkouts(GymId, WorkoutName, RoutineNo, WodTypeId, WorkoutRoutineTypeId, Notes, WodDate) 
-                VALUES("'.$_SESSION['GID'].'", "'. $BenchmarkId .'", "'.$i.'", '.$WodTypeId.'", "'.$TimingTypeVal.'", "'.$NotesVal.'", "'.$_REQUEST['WodDate'].'")';
+                VALUES("'.$_COOKIE['GID'].'", "'. $BenchmarkId .'", "'.$i.'", '.$WodTypeId.'", "'.$TimingTypeVal.'", "'.$NotesVal.'", "'.$_REQUEST['WodDate'].'")';
                 $db->setQuery($SQL);
                 $db->Query();
             }else{
            
             $SQL = 'INSERT INTO WodWorkouts(GymId, WorkoutName, WodTypeId, WorkoutRoutineTypeId, Notes, WodDate) 
-            VALUES("'.$_SESSION['GID'].'", "'. $WorkoutName .'", "'.$WodTypeId.'", "'.$TimingTypeVal.'", "'.$NotesVal.'", "'.$_REQUEST['WodDate'].'")';
+            VALUES("'.$_COOKIE['GID'].'", "'. $WorkoutName .'", "'.$WodTypeId.'", "'.$TimingTypeVal.'", "'.$NotesVal.'", "'.$_REQUEST['WodDate'].'")';
             $db->setQuery($SQL);
             $db->Query();
             }
@@ -98,7 +98,7 @@ class UploadModel extends Model
 	{
                 $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
                 $SQL = 'INSERT INTO Exercises(Exercise, Acronym, GymOption) 
-                    VALUES("'.$_REQUEST['NewExercise'].'", "'.$_REQUEST['Acronym'].'", "'.$_SESSION['GID'].'")';
+                    VALUES("'.$_REQUEST['NewExercise'].'", "'.$_REQUEST['Acronym'].'", "'.$_COOKIE['GID'].'")';
                 $db->setQuery($SQL);
                 $db->Query();
                 $ExerciseId = $db->insertid();
