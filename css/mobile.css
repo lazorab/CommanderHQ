@@ -10,6 +10,7 @@ body {
 
 /* main menu items */
 
+
 .tagIcon {
 	text-align:center;
 	padding: 4px 0 0 0;
@@ -105,7 +106,11 @@ p{
 }
 
 #slidemenu ul li.active {
-  background-color: #716f6f;
+  background-color: #333;
+}
+
+#slidemenu ul li.active a{
+  color:#CA3C32;
 }
 
 #slidemenu.active
@@ -119,6 +124,7 @@ p{
   display: none;
   float: left;
 }
+
 #slidemenu h3{
 	font-family:arial;
 	font-size:12px;
@@ -136,30 +142,37 @@ p{
   margin: 0;
   padding: 0;
   width: inherit;
+  vertical-align:middle;  
 }
 
 #slidemenu ul li {
   list-style-type: none;
   margin: 0px 0;
   background-color: #3d3d3d;
-  height:20px;
-  color: #fff;
-  border: 1px groove #fff;
+  height: 40px;
+  line-height: 40px;
+  color: #999;
+  border-top: 2px solid #494949;
+  border-bottom: 2px solid #2b2b2b;
 }
 
 #slidemenu ul li a{
-
-  color: #fff;
-
+  
+  font-size: 1.2em;
+  color:#999;
+  text-shadow: 0.125em 0.125em 0 #000;
 }
 
 .menusection{
   margin: 0px 0;
-  background-color: #3d3d3d;
+  background-color: #4d4d4d;
   height:16px;
-  color: #fff;
-  font-weight:bold;
-  border: 1px groove #fff;   
+  color: #969696;
+  font-size: 1em;
+  font-weight:bold; 
+  padding: 2px 0 2px 4px;
+  border-top: 2px solid #494949;
+  border-bottom: 2px solid #2b2b2b;  
 }
 
 #menu
