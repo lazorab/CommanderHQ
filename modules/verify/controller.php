@@ -26,13 +26,13 @@ class VerifyController extends Controller
             <input type="hidden" name="form" value="submitted"/>
             <input type="hidden" id="firstname" name="FirstName" value="'.$Details->FirstName.'"/>
             <input type="hidden" id="lastname" name="LastName" value="'.$Details->LastName.'"/>     
-            <input type="hidden" id="email" name="Email" value="'.$Details->Email.'/>
+            <input type="hidden" id="email" name="Email" value="'.$Details->Email.'"/>
             <input type="hidden" id="cell" name="Cell" value="'.$Details->Cell.'"/>
             <input class="textinput" type="text" id="invcode" name="code" placeholder="Verification Code" value="'.$_REQUEST['code'].'"/>  
             <br/>
             <input class="buttongroup" type="button" onClick="verifysubmit();" value="Submit"/>
             <br/>
-            </form><div class="clear"</div>';
+            </form><div class="clear"></div>';
 
         return $Html;
     }

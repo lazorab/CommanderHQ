@@ -40,11 +40,11 @@ class BaselineController extends Controller
         $html='<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
         $html.='<li>Baseline : '.$BaselineDetails[0]->WorkoutName.'</li>';
         $html.='</ul>';
-
+/*
         $html.='<form name="baselineform" id="baselineform" action="index.php">
         <input type="hidden" name="BaselineType" value="'.$BaselineDetails[0]->BaselineType.'"/>
         <input type="hidden" name="WorkoutId" value="'.$BaselineDetails[0]->WorkoutId.'"/>';
-
+*/
         $html .= '<div data-role="collapsible-set" data-iconpos="right">';
         $ThisRoutine = '';
         $ThisRound = '';
@@ -124,7 +124,9 @@ class BaselineController extends Controller
             $html .= '<input type="hidden" id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$Detail->OrderBy.'" name="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$Detail->OrderBy.'" value=""/>';
             $html .= '<div class="clear"></div><div style="width:100%;height:25px"><div style="float:left;margin:10px 0 10px 20px"><input type="button" id="" name="timebtn" onClick="EnterActivityTime(\''.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$Detail->OrderBy.'\');" value="Add Time"/></div>';
             $html .= '<div style="float:right;margin:10px 20px 10px 0"><input type="button" id="" name="btn" onClick="SaveTheseResults(\''.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->OrderBy.'_'.$ThisExerciseId.'\');" value="Add Results"/></div>';
-            $html .= '</div></form></div><div class="clear"></div></div>';                                
+            $html .= '</div>';
+            //$html .= '</form>';
+            $html .= '</div><div class="clear"></div></div>';                                
                                          
                             }
                             //if($i > 0)

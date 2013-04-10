@@ -14,17 +14,19 @@ function messagedisplay(message)
 }
 
 </script>
-
+<br/>
+<?php echo $Display->Message;?>
 <h2>Terms and Conditions</h2>
-<form id="terms">
+<form action="index.php" id="terms">
+    <input type="hidden" name="module" value="terms"/>
 <div data-role="fieldcontain">
  	<fieldset data-role="controlgroup">
-		<input type="checkbox" name="Terms" id="checkbox-1" class="custom" />
+		<input id="checkbox-1" type="checkbox" name="TermsAccepted" value="yes"/>
 		<label for="checkbox-1">I have read and agree to Terms and Conditions</label>
     </fieldset>
 </div>
 <br/>           
-<input class="buttongroup" type="button" onClick="Continue(Terms.value);" value="Continue"/>
+<input class="buttongroup" type="submit" value="Continue"/>
 <br/>
 </form>
-<div class="clear"</div>
+<div class="clear"></div>

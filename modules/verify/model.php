@@ -23,7 +23,7 @@ class VerifyModel extends Model
                 WHERE VerificationCode = "'.$_REQUEST['code'].'"';
             $db->setQuery($SQL);
             $Member = $db->loadObject();     
-            if($Member->Cell == $_REQUEST['Cell']){
+            if($Member->Cell == $_REQUEST['Cell'] && $Member->Email == $_REQUEST['Email']){
                 $SQL='UPDATE Members SET Verified = 1 WHERE UserId = "'.$Member->UserId.'"';
                 $db->setQuery($SQL);
                 $db->Query();

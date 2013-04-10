@@ -54,6 +54,7 @@ if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
 {
 	$WorkoutTypeId = $_REQUEST['WorkoutTypeId'];//Custom or My Gym
         $WorkoutId = $_REQUEST['WorkoutId'];
+        /*
 	$html.='<form name="form" id="personalform" action="index.php">
             <input type="hidden" name="origin" value="'.$this->Origin.'"/>
             <input type="hidden" name="WorkoutId" value="'.$WorkoutId.'"/>
@@ -62,7 +63,8 @@ if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
             <input type="hidden" name="form" value="submitted"/>';       
         $html.='<input type="checkbox" name="baseline" value="yes" data-role="none"/>';
         $html.='Make this my baseline';
-        $html.='<p>'.$this->Workout[0]->Notes.'</p>';
+        */
+        $html='<p>'.$this->Workout[0]->Notes.'</p>';
         //$html.='<div class="ui-grid-b">';
         $html .= '<div data-role="collapsible-set" data-iconpos="right">';
         $ThisRoutine = '';
@@ -230,8 +232,8 @@ if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
                             }   
            $html.='<div style="float:left;width:65%" id="'.$ThisRoutine.'_timerContainer"></div>';                       
             $html.='<div style="width:30%;float:right;margin:10px 4px 0 0"><input class="buttongroup" id="'.$ThisRoutine.'_ShowHideClock" type="button" onClick="DisplayStopwatch(\'personal\', \''.$WorkoutType.'_'.$WorkoutId.'_'.$ThisRoutine.'\');" value="Time Routine"/></div><div class="clear"></div>';                                                                    
-     $html.='</div>';
-    $html.='</form><br/><br/>';
+     $html.='</div><br/><br/>';
+    //$html.='</form>';
 
 }else if($_REQUEST['history'] == 'refresh'){
     $html = $this->UpdateHistory($_REQUEST['ExerciseId']);

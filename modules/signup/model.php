@@ -19,22 +19,27 @@ class SignupModel extends Model
                 $db->setQuery($SQL);
                 $db->Query();            
                 $Id = $db->insertid();
+                $SQL='INSERT INTO MembersDetails(MemberId, SystemOfMeasure)
+                VALUES("'.$Id.'", "'.$_REQUEST['SystemOfMeasure'].'")';
+                $db->setQuery($SQL);
+                $db->Query();                
             }
-            $message .= 'Your verification code for Commander is <b>'.$Code.'</b>';
-            $message .= "\n";  
-            $message .= 'Complete your registration <a href="http://'.THIS_DOMAIN.'/?module=verify&id='.$Id.'">HERE</a>';
+            $HtmlMessage = 'Your verification code for Commander is <b>'.$Code.'</b>';
+            $HtmlMessage .= "\n";  
+            $HtmlMessage .= 'Complete your registration <a href="http://'.THIS_DOMAIN.'/?module=verify&id='.$Id.'">HERE</a>';
             
-            $MailResult = true;
-            $SmsResult = true;
+            $TextMessage = 'Your verification code for Commander is '.$Code.'';
+            $TextMessage .= "\n";  
+            $TextMessage .= 'To Complete your registration visit http://'.THIS_DOMAIN.'/?module=verify&id='.$Id.'';            
 
             $mail = new Rmail();
             $mail->setFrom('Commander HQ<info@be-mobile.co.za>');
             $mail->setSubject('Signup for Commander HQ');
             $mail->setPriority('normal');
-            $mail->setHTML($message);
+            $mail->setHTML($HtmlMessage);
             $MailResult =  $mail->send(array($_REQUEST['Email']));                
             
-            $SMS = new SmsManager(SITE_ID, trim($_REQUEST['Cell']), $message, 3, 0, SMS_FROM_NUMBER, 0, null, null);
+            $SMS = new SmsManager(SITE_ID, trim($_REQUEST['Cell']), $TextMessage, 3, 0, SMS_FROM_NUMBER, 0, null, null);
             $SmsResult = $SMS->Send(); 
             
                  if(!$MailResult || !$SmsResult)
