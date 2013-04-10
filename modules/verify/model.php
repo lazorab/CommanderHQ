@@ -20,7 +20,7 @@ class VerifyModel extends Model
                 Cell,
                 VerificationCode
                 FROM Members
-                WHERE VericationCode = "'.$_REQUEST['code'].'"';
+                WHERE VerificationCode = "'.$_REQUEST['code'].'"';
             $db->setQuery($SQL);
             $Member = $db->loadObject();     
             if($Member->Cell == $_REQUEST['Cell']){

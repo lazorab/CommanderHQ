@@ -275,6 +275,7 @@ class BaselineModel extends Model
                         UOM.UnitOfMeasure,
                         UOM.ConversionFactor,    
                         VideoId, 
+                        RoutineNo,
                         RoundNo,
                         OrderBy,
                         (SELECT MAX(RoundNo) FROM BenchmarkDetails WHERE BenchmarkId = "'.$Id.'") AS TotalRounds
@@ -284,7 +285,8 @@ class BaselineModel extends Model
 			LEFT JOIN Attributes A ON A.recid = BD.AttributeId
                         LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND BD.UnitOfMeasureId = UOM.recid
 			WHERE BD.BenchmarkId = '.$Id.'
-			ORDER BY RoundNo, OrderBy, Attribute';
+                        AND ExerciseId > 0
+			ORDER BY RoutineNo, RoundNo, OrderBy, Exercise, Attribute';
             $db->setQuery($SQL);
 		
             return $db->loadObjectList();    
@@ -308,7 +310,8 @@ class BaselineModel extends Model
                         CD.AttributeValue,  
                         CD.UnitOfMeasureId,    
                         UOM.UnitOfMeasure,
-                        UOM.ConversionFactor,    
+                        UOM.ConversionFactor, 
+                        RoutineNo,
                         RoundNo,
                         OrderBy,
                         (SELECT MAX(RoundNo) FROM CustomDetails WHERE CustomWorkoutId = "'.$Id.'") AS TotalRounds
@@ -318,7 +321,8 @@ class BaselineModel extends Model
 			LEFT JOIN Attributes A ON A.recid = CD.AttributeId
                         LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND CD.UnitOfMeasureId = UOM.recid                        
 			WHERE CD.CustomWorkoutId = '.$Id.'
-			ORDER BY RoundNo, Attribute';
+                        AND ExerciseId > 0    
+			ORDER BY RoutineNo, RoundNo, OrderBy, Exercise, Attribute';
                 $db->setQuery($SQL);
                 return $db->loadObjectList();       
     }
@@ -327,7 +331,8 @@ class BaselineModel extends Model
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
 
-        $SQL = 'SELECT "0" AS WorkoutId, 
+        $SQL = 'SELECT "1" AS RoutineNo,
+            "0" AS WorkoutId, 
             "Default" AS WorkoutName, 
             "Baseline" AS BaselineType, 
             MB.ExerciseId AS ExerciseId, 
@@ -342,14 +347,16 @@ class BaselineModel extends Model
             MB.UnitOfMeasureId,    
             UOM.UnitOfMeasure,
             UOM.ConversionFactor,    
-            RoundNo,
+            "1" AS RoundNo,
             OrderBy,           
             "1" AS TotalRounds
             FROM MemberBaseline MB
             LEFT JOIN Exercises E ON E.recid = MB.ExerciseId
             LEFT JOIN Attributes A ON A.recid = MB.AttributeId
             LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND MB.UnitOfMeasureId = UOM.recid
-            WHERE MB.MemberId = "'.$_COOKIE['UID'].'"';
+            WHERE MB.MemberId = "'.$_COOKIE['UID'].'"
+            AND ExerciseId > 0
+            ORDER BY RoutineNo, RoundNo, OrderBy, Exercise, Attribute';
         $db->setQuery($SQL);
         return $db->loadObjectList();
     } 

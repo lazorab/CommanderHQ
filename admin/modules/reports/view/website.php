@@ -17,4 +17,11 @@ function display(options)
 Total registered Athletes:<?php echo $Display->RegisteredAthleteCount();?>
 <br/>
 <br/>
-<?php echo $Display->RegisteredAthletes();?><select name="wod" id="wod"><option value="">Completed Wods</option></select>
+<form action="index.php" name="reports">
+    <input type="hidden" name="module" value="reports"/>
+<input type="submit" name="report" value="Registered Athletes"/>
+<br/>
+<br/>
+<input type="submit" name="report" value="WOD Results"/><?php echo $Display->RegisteredAthletes();?><select name="wod" id="wod"><option value="">Completed Wods</option></select>
+
+</form>

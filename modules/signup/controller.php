@@ -14,26 +14,28 @@ class SignupController extends Controller
         $Model = new SignupModel;
         $Validate = new ValidationUtils;		
         $Message = 'Success';       
-        if(!$Validate->CheckMobileNumber(trim($_REQUEST['Cell'])))
-            $Message = 'Error - Please enter a valid Cell number!';
-        else if($_REQUEST['Email'] == '')
-            $Message = 'Error - Email Address required!';        
-        else if($_REQUEST['Email'] != '' && !$Validate->CheckEmailAddress(trim($_REQUEST['Email'])))
-            $Message = 'Error - Email Address invalid!';
+        if($_REQUEST['FirstName'] == '')
+            $Message = 'Error - Please enter your First Name!';
+        else if($_REQUEST['LastName'] == '')
+            $Message = 'Error - Please enter your Last Name!';
         else if(!isset($_SESSION['NEW_USER']) && $Model->CheckUserNameExists($_REQUEST['UserName']))
             $Message = 'Error - Username already exists!';
         else if(!isset($_SESSION['NEW_USER']) && $_REQUEST['UserName'] == '')
             $Message = 'Error - Invalid Username!';
-        else if(!isset($_SESSION['NEW_USER']) && $_REQUEST['Password'] == '')
+        else if(!isset($_SESSION['NEW_USER']) && $_REQUEST['PassWord'] == '')
             $Message = 'Error - Invalid Password!';
         else if(!isset($_SESSION['NEW_USER']) && trim($_REQUEST['PassWord']) != trim($_REQUEST['ConfirmPassWord']))
             $Message = 'Error - Passwords do not match!';  
         else if($Model->CheckEmailExists(trim($_REQUEST['Email'])))
             $Message = 'Error - Email already exists!';
+        else if($_REQUEST['Email'] == '')
+            $Message = 'Error - Email Address required!';        
+        else if($_REQUEST['Email'] != '' && !$Validate->CheckEmailAddress(trim($_REQUEST['Email'])))
+            $Message = 'Error - Email Address invalid!';  
+        else if(!$Validate->CheckMobileNumber(trim($_REQUEST['Cell'])))
+            $Message = 'Error - Please enter a valid Cell number!';       
         else if($Model->CheckCellExists(trim($_REQUEST['Cell'])))
             $Message = 'Error - Cell Number already exists!';
-        else if($_REQUEST['Terms'] != 'agree')
-            $Message = 'Error - Must agree to Terms and Conditions!';
             
         return $Message;
     }
@@ -67,7 +69,7 @@ class SignupController extends Controller
             $Html .= '<br/>
             <input class="textinput" id="email" type="email" name="Email" value="'.trim($_REQUEST['Email']).'" placeholder="Email Address"/>
             <br/>
-            <input class="textinput" id="cell" type="number" name="Cell" value="'.trim($_REQUEST['Cell']).'" placeholder="Cell ('.DEFAULT_SUB_NUMBER.')"/> 
+            <input class="textinput" id="cell" type="tel" name="Cell" value="'.trim($_REQUEST['Cell']).'" placeholder="Cell ('.DEFAULT_SUB_NUMBER.')"/> 
             <br/>           
             <input class="buttongroup" type="button" onClick="verifysubmit();" value="Submit"/>
             <br/>

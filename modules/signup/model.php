@@ -14,8 +14,8 @@ class SignupModel extends Model
             if(isset($_SESSION['NEW_USER'])){
                 $Id = $_SESSION['NEW_USER'];
             }else{
-                $SQL='INSERT INTO Members(VerificationCode, FirstName, LastName, UserName, Password, Email, Cell)
-                VALUES("'.$Code.'", , "'.$_REQUEST['FirstName'].'", "'.$_REQUEST['LastName'].'", "'.$_REQUEST['UserName'].'", "'.$_REQUEST['Password'].'""'.$_REQUEST['Email'].'", "'.$_REQUEST['Cell'].'")';
+                $SQL='INSERT INTO Members(VerificationCode, FirstName, LastName, UserName, PassWord, Email, Cell)
+                VALUES("'.$Code.'", "'.$_REQUEST['FirstName'].'", "'.$_REQUEST['LastName'].'", "'.$_REQUEST['UserName'].'", "'.$_REQUEST['PassWord'].'", "'.$_REQUEST['Email'].'", "'.$_REQUEST['Cell'].'")';
                 $db->setQuery($SQL);
                 $db->Query();            
                 $Id = $db->insertid();
@@ -38,9 +38,9 @@ class SignupModel extends Model
             $SmsResult = $SMS->Send(); 
             
                  if(!$MailResult || !$SmsResult)
-                    $ReturnMessage .= 'Error - Please Try again';
+                    $ReturnMessage = 'Error - Please Try again';
                 else
-                    $ReturnMessage .= 'Successfully Verified!';
+                    $ReturnMessage = 'We have sent you an email and an sms containing your code and a link to follow!';
                 
             return $ReturnMessage;
 	}

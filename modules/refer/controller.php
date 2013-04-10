@@ -14,10 +14,10 @@ class ReferController extends Controller
         $Message = 'Success';       
         if($_REQUEST['FriendName'] == '')
             $Message = 'Name Required';
-        else if(!$Validate->CheckMobileNumber($_REQUEST['FriendCell']))
-            $Message = 'Please enter a valid Cell number!';
         else if($_REQUEST['FriendEmail'] != '' && !$Validate->CheckEmailAddress($_REQUEST['FriendEmail']))
-            $Message = 'Email Address invalid!'; 
+            $Message = 'Email Address invalid!';        
+        else if(!$Validate->CheckMobileNumber($_REQUEST['FriendCell']))
+            $Message = 'Please enter a valid Cell number!'; 
         else if($Model->CheckFriendExists())
             $Message = 'Friend has been invited already!';
             
@@ -43,7 +43,7 @@ class ReferController extends Controller
             <br/>
             <input class="textinput" id="email" type="email" name="FriendEmail" placeholder="Friend\'s Email Address"/>
             <br/>
-            <input class="textinput" id="cell" type="number" name="FriendCell" placeholder="Friend\'s Cell ('.DEFAULT_SUB_NUMBER.')"/>
+            <input class="textinput" id="cell" type="tel" name="FriendCell" placeholder="Friend\'s Cell ('.DEFAULT_SUB_NUMBER.')"/>
             <br/><br/>
             <input class="buttongroup" type="button" onClick="refersubmit();" value="Submit"/>
             </form>';

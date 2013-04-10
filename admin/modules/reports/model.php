@@ -30,34 +30,42 @@ class ReportsModel extends Model
         function getCompletedWods($AthleteId)
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT DISTINCT CW.recid AS WodId, 
-CW.WorkoutName AS WodName,
-(SELECT recid FROM WorkoutTypes WHERE WorkoutType = "Custom") AS WodTypeId
-FROM WODLog WL
-JOIN CustomWorkouts CW ON CW.recid = WL.WorkoutId
-JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
-WHERE WL.MemberId = "'.$AthleteId.'"
-AND WT.WorkoutType = "Custom"
-UNION
-SELECT DISTINCT BW.recid AS WodId, 
-BW.WorkoutName AS WodName,
-(SELECT recid FROM WorkoutTypes WHERE WorkoutType = "Benchmark") AS WodTypeId
-FROM WODLog WL
-JOIN BenchmarkWorkouts BW ON BW.recid = WL.WorkoutId
-JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
-WHERE WL.MemberId = "'.$AthleteId.'"
-AND WT.WorkoutType = "Benchmark"
-UNION
-SELECT DISTINCT WW.recid AS WodId, 
-WW.WorkoutName AS WodName,
-(SELECT recid FROM WorkoutTypes WHERE WorkoutType = "My Gym") AS WodTypeId
-FROM WODLog WL
-JOIN WodWorkouts WW ON WW.recid = WL.WorkoutId
-JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
-WHERE WL.MemberId = "'.$AthleteId.'"
-AND WT.WorkoutType = "My Gym"';
+            $SQL = 'SELECT DISTINCT WW.recid AS WodId, 
+                WW.WorkoutName AS WodName,
+                (SELECT recid FROM WorkoutTypes WHERE WorkoutType = "My Gym") AS WodTypeId
+                FROM WODLog WL
+                LEFT JOIN WodWorkouts WW ON WW.recid = WL.WorkoutId
+                LEFT JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
+                WHERE WL.MemberId = "'.$AthleteId.'"
+                AND WT.WorkoutType = "My Gym"';
             $db->setQuery($SQL);
             return $db->loadObjectList();             
+        }
+        
+        function getCompletedGymWods($AthleteId)
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT DISTINCT M.FirstName,
+                M.LastName,
+                WW.recid AS WodId, 
+                WW.WorkoutName AS WodName,
+                (SELECT recid FROM WorkoutTypes WHERE WorkoutType = "My Gym") AS WodTypeId,
+                E.Exercise,
+                A.Attribute,
+                WL.AttributeValue,
+                WL.TimeCreated
+                FROM WODLog WL
+                LEFT JOIN Members M ON M.UserId = WL.MemberId
+                LEFT JOIN Exercises E ON WL.ExerciseId = E.recid
+                LEFT JOIN WodWorkouts WW ON WW.recid = WL.WorkoutId
+                LEFT JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
+                LEFT JOIN Attributes A ON A.recid = WL.AttributeId
+                WHERE WT.WorkoutType = "My Gym"';
+                if($AthleteId > 0)
+                    $SQL .= ' AND WL.MemberId = "'.$AthleteId.'"'; 
+                $SQL .= ' ORDER BY LastName, TimeCreated'; 
+            $db->setQuery($SQL);
+            return $db->loadObjectList();            
         }
         
         function getRecordedWodResult($AthleteId, $WodId)

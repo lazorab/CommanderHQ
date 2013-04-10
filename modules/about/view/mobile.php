@@ -1,3 +1,5 @@
+<iframe marginwidth="0px" marginheight="0px" width="<?php echo SCREENWIDTH;?>" height="<?php echo floor(SCREENWIDTH * 0.717);?>" src="http://www.youtube.com/embed/tzD9BkXGJ1M" frameborder="0"></iframe> 
+<div id="bodytext">
 <p>
 Commander HQ has been designed with the express
 purpose of giving athletes a convenient way to record workouts and measure
@@ -49,3 +51,4 @@ CHALLENGES, watch
 Remember - eat clean, train dirty and make a solid
 contribution!
 </p>
+</div>

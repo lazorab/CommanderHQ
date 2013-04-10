@@ -24,10 +24,10 @@ class VerifyController extends Controller
             $Html .= '<h2>Verification</h2>
             <form action="index.php" name="verify" id="verifyform" method="post">
             <input type="hidden" name="form" value="submitted"/>
-            <input class="hidden" type="text" id="firstname" name="FirstName" value="'.$Details->FirstName.'"/>
-            <input class="hidden" type="text" id="lastname" name="LastName" value="'.$Details->LastName.'"/>     
-            <input class="hidden" id="email" type="email" name="Email" value="'.$Details->Email.'/>
-            <input class="hidden" id="cell" type="number" name="Cell" value="'.$Details->Cell.'"/>
+            <input type="hidden" id="firstname" name="FirstName" value="'.$Details->FirstName.'"/>
+            <input type="hidden" id="lastname" name="LastName" value="'.$Details->LastName.'"/>     
+            <input type="hidden" id="email" name="Email" value="'.$Details->Email.'/>
+            <input type="hidden" id="cell" name="Cell" value="'.$Details->Cell.'"/>
             <input class="textinput" type="text" id="invcode" name="code" placeholder="Verification Code" value="'.$_REQUEST['code'].'"/>  
             <br/>
             <input class="buttongroup" type="button" onClick="verifysubmit();" value="Submit"/>

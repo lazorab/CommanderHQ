@@ -17,10 +17,10 @@ echo $Display->FirstTimeMessage();
 </div>
 
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
-<a href="#" onclick="OpenThisPage('?module=nutrition');">
+
 <img class="Aicon" alt="Nutrition" <?php echo $RENDER->NewImage('nutrition.png');?> src="<?php echo IMAGE_RENDER_PATH;?>nutrition.png"/><br />
 <div class="tagIcon">Nutrition</div>
-</a>
+
 </div>
 
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
@@ -33,17 +33,17 @@ echo $Display->FirstTimeMessage();
 <div class="clear"></div>
 
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
-<a href="#" onclick="OpenThisPage('?module=challenge');">
+
 <img class="Aicon" alt="Challenge" <?php echo $RENDER->NewImage('challenges.png');?> src="<?php echo IMAGE_RENDER_PATH;?>challenges.png"/><br />
 <div class="tagIcon">Challenges</div>
-</a>
+
 </div>
 
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
-<a href="#" onclick="OpenThisPage('?module=products');">
+
 <img class="Aicon" alt="Store" <?php echo $RENDER->NewImage('store.png');?> src="<?php echo IMAGE_RENDER_PATH;?>store.png"/><br />
 <div class="tagIcon">Store</div>
-</a>
+
 </div>
 
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px 0px <?php echo $margin;?>px;">
@@ -56,10 +56,10 @@ echo $Display->FirstTimeMessage();
 <div class="clear"></div>
 
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px <?php echo $margin;?>px <?php echo $margin;?>px;">
-<a href="#" onclick="OpenThisPage('?module=book');">
+
 <img class="Aicon" alt="Book" <?php echo $RENDER->NewImage('booking.png');?> src="<?php echo IMAGE_RENDER_PATH;?>booking.png"/><br />
 <div class="tagIcon">Booking</div>
-</a>
+
 </div>
 
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px <?php echo $margin;?>px <?php echo $margin;?>px;">
@@ -70,7 +70,7 @@ echo $Display->FirstTimeMessage();
 </div>
 
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;margin:<?php echo $margin;?>px 0px <?php echo $margin;?>px <?php echo $margin;?>px;">
-<a href="#" onclick="OpenThisPage('?module=aboutcrossfit');">
+<a href="#" onclick="OpenThisPage('?module=about');">
 <img class="Aicon" alt="About" <?php echo $RENDER->NewImage('crossfit.png');?> src="<?php echo IMAGE_RENDER_PATH;?>crossfit.png"/><br />
 <div class="tagIcon">CrossFit</div>
 </a>
