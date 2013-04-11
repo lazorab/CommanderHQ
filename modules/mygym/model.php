@@ -5,8 +5,25 @@ class MygymModel extends Model
 	{
 	
 	}
+        
+        function MakeBaseline()
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $ThisId = $_REQUEST['WorkoutId'];
+            $WorkoutTypeId = $_REQUEST['WodTypeId'];
+            $SQL = 'DELETE FROM MemberBaseline WHERE MemberId = "'.$_COOKIE['UID'].'"';
+            $db->setQuery($SQL);
+            $db->Query();
+                    
+            $SQL = 'INSERT INTO MemberBaseline(MemberId, BaselineTypeId, WorkoutId) 
+                  VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutTypeId.'", "'.$ThisId.'")';
+            $db->setQuery($SQL); 
+            $db->Query();  
+            
+            return 'Baseline Successfully Created';
+        }       
 	
-    function Log()
+        function Log()
 	{
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             if($this->UserIsSubscribed()){
@@ -17,13 +34,9 @@ class MygymModel extends Model
                 }
             //var_dump($ActivityFields);
             if($this->Message == ''){
-                $WorkoutTypeId = $this->getWorkoutTypeId('My Gym');
-                $TimeAttributeId = $this->getAttributeId('TimeToComplete');
-                //Save the time
-            $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue) 
-            VALUES("'.$_COOKIE['UID'].'", "'.$_REQUEST['WorkoutId'].'", "'.$WorkoutTypeId.'", "0", "0", "'.$TimeAttributeId.'", "'.$_REQUEST['TimeToComplete'].'")';
-                $db->setQuery($SQL);
-                $db->Query();
+                    $ThisId = $_REQUEST['WorkoutId'];
+                    $WorkoutTypeId = $_REQUEST['WodTypeId'];
+
         foreach($ActivityFields AS $ActivityField)
         {
             if($_REQUEST['origin'] == 'baseline'){
@@ -33,10 +46,10 @@ class MygymModel extends Model
                 $db->Query();
             }
             // ExerciseId only applies for benchmarks so we need it here!
-            $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId) 
-            VALUES("'.$_COOKIE['UID'].'", "'.$_REQUEST['WorkoutId'].'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'")';
-                $db->setQuery($SQL);
-                $db->Query();
+                    $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoutineNo, RoundNo, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId, OrderBy) 
+			VALUES("'.$_COOKIE['UID'].'", "'.$ThisId.'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoutineNo.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'", "'.$ActivityField->OrderBy.'")';
+                        $db->setQuery($SQL);
+                        $db->Query();
             
 		}
                 $this->Message = 'Success';

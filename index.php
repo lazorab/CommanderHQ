@@ -38,7 +38,7 @@ include("includes/header/$Environment.php");
         $Banner = ''.$_REQUEST['module'].'_header';
     }
 ?>
-    <body>
+<body onorientationchange="updateOrientation();">
 <?php
 /*SLIDE MENU*/        
 if (file_exists("includes/menu/$Environment.php"))

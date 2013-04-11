@@ -207,7 +207,24 @@ class BenchmarkModel extends Model
             $db->setQuery($SQL);
 		
             return $db->loadObjectList();
-	}		
+	}
+        
+        function MakeBaseline()
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $ThisId = $_REQUEST['WorkoutId'];
+            $WorkoutTypeId = $_REQUEST['WodTypeId'];
+            $SQL = 'DELETE FROM MemberBaseline WHERE MemberId = "'.$_COOKIE['UID'].'"';
+            $db->setQuery($SQL);
+            $db->Query();
+                    
+            $SQL = 'INSERT INTO MemberBaseline(MemberId, BaselineTypeId, WorkoutId) 
+                  VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutTypeId.'", "'.$ThisId.'")';
+            $db->setQuery($SQL); 
+            $db->Query();  
+            
+            return 'Baseline Successfully Created';
+        }
 	
     function Log()
 	{
@@ -217,33 +234,22 @@ class BenchmarkModel extends Model
             $ActivityFields = $this->getActivityFields();
             //var_dump($ActivityFields);
             if($this->Message == ''){
+                if($_REQUEST['WorkoutId'] != ''){
+                    $ThisId = $_REQUEST['WorkoutId'];
+                    $WorkoutTypeId = $_REQUEST['WodTypeId'];
+                }                
                 $WorkoutTypeId = $this->getWorkoutTypeId('Benchmark');
-                $TimeAttributeId = $this->getAttributeId('TimeToComplete');
-                //Save the time
-                $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue) 
-                VALUES("'.$_COOKIE['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$WorkoutTypeId.'", "0", "0", "'.$TimeAttributeId.'", "'.$_REQUEST['TimeToComplete'].'")';
-                $db->setQuery($SQL);
-                $db->Query();                
-                //$Attributes=$this->getAttributes();
-                //var_dump($ActivityFields);
-                if($_REQUEST['baseline'] == 'yes'){
-                    $SetBaseline = true;
-                    $SQL = 'DELETE FROM MemberBaseline WHERE MemberId = "'.$_COOKIE['UID'].'"';
-                    $db->setQuery($SQL);
-                    $db->Query();
-                }
 
         foreach($ActivityFields AS $ActivityField)
         {
             if($_REQUEST['origin'] == 'baseline'){
                 $SQL = 'INSERT INTO BaselineLog(MemberId, BaselineTypeId, ExerciseId, RoundNo, ActivityId, AttributeId, AttributeValue) 
-                VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutTypeId.'", "'.$_REQUEST['benchmarkId'].'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'")';
+                VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutTypeId.'", "'.$ThisId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'")';
                 $db->setQuery($SQL);
                 $db->Query();
             }
-            // ExerciseId only applies for benchmarks so we need it here!
-            $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId) 
-            VALUES("'.$_COOKIE['UID'].'", "'.$_REQUEST['benchmarkId'].'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'")';
+                $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoutineNo, RoundNo, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId, OrderBy) 
+                VALUES("'.$_COOKIE['UID'].'", "'.$ThisId.'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoutineNo.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$ActivityField->AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'", "'.$ActivityField->OrderBy.'")';
                 $db->setQuery($SQL);
                 $db->Query();
             

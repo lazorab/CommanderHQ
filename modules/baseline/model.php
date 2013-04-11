@@ -10,7 +10,7 @@ class BaselineModel extends Model
     function Log()
     {
         //RoutineTime:RoutineTime (00:00:0)
-        //TimeFieldName:FieldName (3_35_1_TimeToComplete)
+        //TimeFieldName:FieldName (WodTypeId_WodId_RoutineNo_TimeToComplete)
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
         if($this->UserIsSubscribed()){
         if($_REQUEST['newcount'] > 0){
@@ -20,8 +20,10 @@ class BaselineModel extends Model
         $ActivityFields=$this->getActivityFields();
         if($this->Message == ''){
         //var_dump($ActivityFields);
-        $WorkoutTypeId = $this->getWorkoutTypeId($_REQUEST['BaselineType']);
-        $WorkoutId = $_REQUEST['WorkoutId'];
+                if($_REQUEST['WorkoutId'] != ''){
+                    $WorkoutId = $_REQUEST['WorkoutId'];
+                    $WorkoutTypeId = $_REQUEST['WodTypeId'];
+                }
         foreach($ActivityFields AS $Activity)
         {
             $AttributeValue = '';
@@ -62,8 +64,8 @@ class BaselineModel extends Model
             $db->setQuery($SQL);
             $db->Query();
 			
-            $SQL = 'INSERT INTO WODLog(MemberId, WODTypeId, WorkoutId, ExerciseId, AttributeId, AttributeValue) 
-            VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutTypeId.'", "'.$WorkoutId.'", "'.$Activity->ExerciseId.'", "'.$Activity->Attribute.'", "'.$Activity->AttributeValue.'")';
+            $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoutineNo, RoundNo, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId, OrderBy) 
+            VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutId.'", "'.$WorkoutTypeId.'", "'.$Activity->RoutineNo.'", "'.$Activity->RoundNo.'", "'.$Activity->ExerciseId.'", "'.$Activity->AttributeId.'", "'.$AttributeValue.'", "'.$Activity->UnitOfMeasureId.'", "'.$Activity->OrderBy.'")';
             $db->setQuery($SQL);
             $db->Query();
             $this->Message = 'Success';
@@ -115,23 +117,27 @@ class BaselineModel extends Model
         
         foreach($DefaultActivities AS $key=>$val)
         {
-            $SQL='SELECT E.recid AS ExerciseId, A.recid AS AttributeId, "'.$val.'" AS AttributeValue
+            $SQL='SELECT E.recid AS ExerciseId, 
+                A.recid AS AttributeId, 
+                "'.$val.'" AS AttributeValue,
+                UOM.recid AS UnitOfMeasureId,
+                A.Attribute
             FROM Attributes A
-            JOIN ExerciseAttributes EA ON EA.AttributeId = A.recid
-            JOIN Exercises E ON EA.ExerciseId = E.recid
+            LEFT JOIN ExerciseAttributes EA ON EA.AttributeId = A.recid
+            LEFT JOIN Exercises E ON EA.ExerciseId = E.recid
+            LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid
             WHERE E.Exercise = "'.$key.'"
-            AND (A.Attribute = "Distance"
-                 OR A.Attribute = "Reps"
-                 OR A.Attribute = "TimeToComplete")'; 
+            AND (A.Attribute = "Reps" OR UOM.SystemOfMeasure = "'.$this->getSystemOfMeasure().'")';
             $db->setQuery($SQL);
             $Row = $db->loadObject();
             
             $BaselineTypeId = '1';
-            $WorkoutId = '0';
-            $ExerciseId = $Row->ExerciseId;
-            $AttributeId = $Row->AttributeId;
-            $AttributeValue = $Row->AttributeValue;
-            $SQL = 'INSERT INTO MemberBaseline(MemberId, BaselineTypeId, WorkoutId, ExerciseId, AttributeId, AttributeValue) VALUES("'.$_COOKIE['UID'].'", "'.$BaselineTypeId.'", "'.$WorkoutId.'", "'.$ExerciseId.'", "'.$AttributeId.'", "'.$AttributeValue.'")';
+            $WorkoutId = '1';
+            $RoutineNo = '1';
+            $RoundNo = '1';
+            if($Row->Attribute == 'Distance'){$UnitOfMeasure = 2;}else{$UnitOfMeasure = 0;};
+            $SQL = 'INSERT INTO MemberBaseline(MemberId, BaselineTypeId, WorkoutId, RoutineNo, RoundNo, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId) 
+                VALUES("'.$_COOKIE['UID'].'", "'.$BaselineTypeId.'", "'.$WorkoutId.'", "'.$RoutineNo.'", "'.$RoundNo.'", "'.$Row->ExerciseId.'", "'.$Row->AttributeId.'", "'.$Row->AttributeValue.'", "'.$UnitOfMeasure.'")';
             $db->setQuery($SQL); 
             $db->Query();
         }
@@ -227,6 +233,9 @@ class BaselineModel extends Model
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
         $SQL = 'SELECT DISTINCT MB.WorkoutId, 
+            MB.RoutineNo,
+            MB.RoundNo,
+            MB.OrderBy,
             BT.WorkoutType AS BaselineType
             FROM MemberBaseline MB 
             LEFT JOIN WorkoutTypes BT ON BT.recid = MB.BaselineTypeId
@@ -235,13 +244,13 @@ class BaselineModel extends Model
         $db->setQuery($SQL);
         $Row = $db->loadObject();
         if($Row->BaselineType == 'Custom'){
-            $BaselineObject = $this->getCustomBaseline($Row->WorkoutId);
-        }
-        else if($Row->BaselineType == 'Benchmark'){
-            $BaselineObject = $this->getBenchmarkBaseline($Row->WorkoutId);
-        }     
-        else if($Row->BaselineType == 'Baseline'){
+            $BaselineObject = $this->getCustomDetails($Row->WorkoutId);
+        }else if($Row->BaselineType == 'Benchmark'){
+            $BaselineObject = $this->getBenchmarkDetails($Row->WorkoutId);
+        }else if($Row->BaselineType == 'Baseline'){
             $BaselineObject = $this->getDefaultBaseline();          
+        }else if($Row->BaselineType == 'My Gym'){
+            $BaselineObject = $this->getMyGymDetails($Row->WorkoutId);
         }    
         else{
             $this->SaveNewBaseline();
@@ -250,93 +259,15 @@ class BaselineModel extends Model
         return $BaselineObject;
     } 
     
-    function getBenchmarkBaseline($Id)
-    {
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-
-        if($this->getGender() == 'M'){
-            $AttributeValue = 'AttributeValueMale';
-        } else {
-            $AttributeValue = 'AttributeValueFemale';
-		}
-		//$SQL = 'SELECT WorkoutName, '.$DescriptionField.' AS WorkoutDescription, '.$InputFields.' AS InputFields, VideoId FROM BenchmarkWorkouts WHERE recid = '.$Id.'';
-		
-		$SQL = 'SELECT BW.recid AS Id,
-                        BW.WorkoutName, 
-                        E.Exercise,
-                        E.recid AS ExerciseId, 
-                        CASE 
-                            WHEN E.Acronym <> ""
-                            THEN E.Acronym
-                            ELSE E.Exercise
-                        END
-                        AS InputFieldName,
-                        A.Attribute, 
-                        BD.'.$AttributeValue.' AS AttributeValue, 
-                        BD.UnitOfMeasureId,    
-                        UOM.UnitOfMeasure,
-                        UOM.ConversionFactor,    
-                        VideoId, 
-                        RoutineNo,
-                        RoundNo,
-                        OrderBy,
-                        (SELECT MAX(RoundNo) FROM BenchmarkDetails WHERE BenchmarkId = "'.$Id.'") AS TotalRounds
-			FROM BenchmarkDetails BD
-			LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
-			LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
-			LEFT JOIN Attributes A ON A.recid = BD.AttributeId
-                        LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND BD.UnitOfMeasureId = UOM.recid
-			WHERE BD.BenchmarkId = '.$Id.'
-                        AND ExerciseId > 0
-			ORDER BY RoutineNo, RoundNo, OrderBy, Exercise, Attribute';
-            $db->setQuery($SQL);
-		
-            return $db->loadObjectList();    
-    }
-    
-    function getCustomBaseline($Id)
-    {
-        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-
-		$SQL = 'SELECT CW.WorkoutName, 
-                        E.Exercise, 
-                        CASE 
-                            WHEN E.Acronym <> ""
-                            THEN E.Acronym
-                            ELSE E.Exercise
-                        END
-                        AS InputFieldName, 
-                        "'.$this->getCustomDescription($Id).'" AS WorkoutDescription,
-                        E.recid AS ExerciseId, 
-                        A.Attribute, 
-                        CD.AttributeValue,  
-                        CD.UnitOfMeasureId,    
-                        UOM.UnitOfMeasure,
-                        UOM.ConversionFactor, 
-                        RoutineNo,
-                        RoundNo,
-                        OrderBy,
-                        (SELECT MAX(RoundNo) FROM CustomDetails WHERE CustomWorkoutId = "'.$Id.'") AS TotalRounds
-			FROM CustomDetails CD
-			LEFT JOIN CustomWorkouts CW ON CW.recid = CD.CustomWorkoutId
-			LEFT JOIN Exercises E ON E.recid = CD.ExerciseId
-			LEFT JOIN Attributes A ON A.recid = CD.AttributeId
-                        LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND CD.UnitOfMeasureId = UOM.recid                        
-			WHERE CD.CustomWorkoutId = '.$Id.'
-                        AND ExerciseId > 0    
-			ORDER BY RoutineNo, RoundNo, OrderBy, Exercise, Attribute';
-                $db->setQuery($SQL);
-                return $db->loadObjectList();       
-    }
-    
     function getDefaultBaseline()
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
 
         $SQL = 'SELECT "1" AS RoutineNo,
-            "0" AS WorkoutId, 
+            "1" AS WorkoutId, 
             "Default" AS WorkoutName, 
-            "Baseline" AS BaselineType, 
+            "Baseline" AS BaselineType,
+            BaselineTypeId AS WodTypeId,
             MB.ExerciseId AS ExerciseId, 
             E.Exercise AS Exercise, 
             CASE 

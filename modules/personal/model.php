@@ -166,122 +166,27 @@ ORDER BY TimeCreated DESC LIMIT 30";
             $db->setQuery($SQL);
 		
             return $db->loadObjectList(); 
-	}	
+	}		     
         
-        function getCustomDetails($Id)
-	{   
+        function MakeBaseline()
+        {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT CW.WorkoutName, 
-                        E.Exercise, 
-                        E.recid AS ExerciseId, 
-                        CASE 
-                            WHEN E.Acronym <> ""
-                            THEN E.Acronym
-                            ELSE E.Exercise
-                        END
-                        AS InputFieldName,
-                        CW.Notes,
-                        E.recid AS ExerciseId, 
-                        A.Attribute, 
-                        CD.AttributeValue,
-                        CD.UnitOfMeasureId,
-                        UOM.UnitOfMeasure,
-                        UOM.ConversionFactor,
-                        CD.RoutineNo,
-                        CD.RoundNo,
-                        CD.OrderBy,
-                        (SELECT MAX(RoundNo) FROM CustomDetails WHERE CustomWorkoutId = "'.$Id.'") AS TotalRounds
-			FROM CustomDetails CD
-                        LEFT JOIN CustomWorkouts CW ON CW.recid = CD.CustomWorkoutId
-			LEFT JOIN Exercises E ON E.recid = CD.ExerciseId
-			LEFT JOIN Attributes A ON A.recid = CD.AttributeId
-                        LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND CD.UnitOfMeasureId = UOM.recid
-			WHERE CW.MemberId = "'.$_COOKIE['UID'].'"
-                        AND CW.recid = "'.$Id.'"
-			ORDER BY RoutineNo, RoundNo, OrderBy, Exercise, Attribute';
-            //return $SQL;
+            $ThisId = $_REQUEST['WorkoutId'];
+            $WorkoutTypeId = $_REQUEST['WodTypeId'];
+            $SQL = 'DELETE FROM MemberBaseline WHERE MemberId = "'.$_COOKIE['UID'].'"';
             $db->setQuery($SQL);
-		
-            return $db->loadObjectList();
-	}	
-        
-        function getMyGymDetails($Id)
-	{   
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-             if($this->getGender() == 'M'){
-                $AttributeValue = 'AttributeValueMale';
-            } else {
-                $AttributeValue = 'AttributeValueFemale';
-            }  
-
-		$SQL = 'SELECT WW.recid AS Id,
-                        WW.WorkoutName, 
-                        E.Exercise, 
-                        E.recid AS ExerciseId, 
-                        CASE 
-                            WHEN E.Acronym <> ""
-                            THEN E.Acronym
-                            ELSE E.Exercise
-                        END
-                        AS InputFieldName,  
-                        A.Attribute, 
-                       '.$AttributeValue.' AS AttributeValue,
-                        WD.UnitOfMeasureId,   
-                        UOM.UnitOfMeasure,
-                        UOM.ConversionFactor,
-                        WD.RoutineNo,
-                        WD.RoundNo,
-                        WD.OrderBy,
-                        (SELECT MAX(RoundNo) FROM WodDetails WHERE WodId = Id AND RoutineNo = WD.RoutineNo) AS TotalRounds,
-                        WW.WorkoutRoutineTypeId,
-                        WW.WodDate,
-                        WW.Notes
-			FROM WodDetails WD
-			LEFT JOIN WodWorkouts WW ON WW.recid = WD.WodId
-			LEFT JOIN Exercises E ON E.recid = WD.ExerciseId
-			LEFT JOIN Attributes A ON A.recid = WD.AttributeId
-                        LEFT JOIN UnitsOfMeasure UOM ON UOM.recid = WD.UnitOfMeasureId
-			WHERE WW.recid = '.$Id.'
-			UNION
-                        SELECT WW.recid AS Id,
-                        BW.WorkoutName, 
-                        E.Exercise,
-                        E.recid AS ExerciseId, 
-                        CASE 
-                            WHEN E.Acronym <> ""
-                            THEN E.Acronym
-                            ELSE E.Exercise
-                        END
-                        AS InputFieldName,
-                        A.Attribute, 
-                        '.$AttributeValue.' AS AttributeValue, 
-                        BD.UnitOfMeasureId,    
-                        UOM.UnitOfMeasure,
-                        UOM.ConversionFactor,    
-                        WW.RoutineNo, 
-                        BD.RoundNo,
-                        BD.OrderBy,
-                        (SELECT MAX(RoundNo) FROM BenchmarkDetails WHERE BenchmarkId = WW.WorkoutName) AS TotalRounds,
-                        WW.WorkoutRoutineTypeId,
-                        WW.WodDate,
-                        WW.Notes                        
-			FROM BenchmarkDetails BD
-			LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
-			LEFT JOIN WodWorkouts WW ON WW.WorkoutName = BD.BenchmarkId
-			LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
-			LEFT JOIN Attributes A ON A.recid = BD.AttributeId
-                        LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND BD.UnitOfMeasureId = UOM.recid
-			WHERE WW.recid = '.$Id.'
-                        AND (Attribute = "Reps" OR SystemOfMeasure = "'.$this->getSystemOfMeasure().'")			
-			ORDER BY RoutineNo, RoundNo, OrderBy, Exercise, Attribute';
-            //return $SQL;
-            $db->setQuery($SQL);
-		
-            return $db->loadObjectList();
-	}        
+            $db->Query();
+                    
+            $SQL = 'INSERT INTO MemberBaseline(MemberId, BaselineTypeId, WorkoutId) 
+                  VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutTypeId.'", "'.$ThisId.'")';
+            $db->setQuery($SQL); 
+            $db->Query();  
+            
+            return 'Baseline Successfully Created';
+        }       
 	
     function Log()
-	{
+	{       
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $SetBaseline = false;
             if($this->UserIsSubscribed()){
@@ -290,15 +195,9 @@ ORDER BY TimeCreated DESC LIMIT 30";
             if($this->Message == ''){
                 if($_REQUEST['WorkoutId'] != ''){
                     $ThisId = $_REQUEST['WorkoutId'];
-                    $WorkoutTypeId = $this->getWorkoutTypeId('Custom');
+                    $WorkoutTypeId = $_REQUEST['WodTypeId'];
                 }
 
-                if($_REQUEST['baseline'] == 'yes'){
-                    $SetBaseline = true;
-                    $SQL = 'DELETE FROM MemberBaseline WHERE MemberId = "'.$_COOKIE['UID'].'"';
-                    $db->setQuery($SQL);
-                    $db->Query();
-                }
                 foreach($ActivityFields AS $ActivityField)
                 {
                     $AttributeValue = '';
@@ -324,12 +223,7 @@ ORDER BY TimeCreated DESC LIMIT 30";
                     if($AttributeValue == ''){
                         $AttributeValue = $ActivityField->AttributeValue;
                     }
-                    if($SetBaseline){
-                        $SQL = 'INSERT INTO MemberBaseline(MemberId, BaselineTypeId, WorkoutId, ExerciseId, AttributeId, AttributeValue) 
-                            VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutTypeId.'", "'.$ThisId.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$AttributeValue.'")';
-                        $db->setQuery($SQL);
-                        $db->Query();
-                    }
+
                     if($_REQUEST['origin'] == 'baseline'){
                         $SQL = 'INSERT INTO BaselineLog(MemberId, BaselineTypeId, ExerciseId, RoundNo, ActivityId, AttributeId, AttributeValue) 
 				VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutTypeId.'", "'.$ThisId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$AttributeValue.'")';
@@ -337,8 +231,8 @@ ORDER BY TimeCreated DESC LIMIT 30";
                         $db->Query();
                     }
                     // ExerciseId only applies for benchmarks so we need it here!
-                    $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoundNo, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId, OrderBy) 
-			VALUES("'.$_COOKIE['UID'].'", "'.$ThisId.'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'", "'.$ActivityField->OrderBy.'")';
+                    $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoutineNo, RoundNo, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId, OrderBy) 
+			VALUES("'.$_COOKIE['UID'].'", "'.$ThisId.'", "'.$WorkoutTypeId.'", "'.$ActivityField->RoutineNo.'", "'.$ActivityField->RoundNo.'", "'.$ActivityField->ExerciseId.'", "'.$ActivityField->AttributeId.'", "'.$AttributeValue.'", "'.$ActivityField->UnitOfMeasureId.'", "'.$ActivityField->OrderBy.'")';
                         $db->setQuery($SQL);
                         $db->Query();
                         //var_dump($SQL);

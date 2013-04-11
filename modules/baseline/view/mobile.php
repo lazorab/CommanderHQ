@@ -70,15 +70,18 @@ function messagedisplay(message)
         alert(message);
 }
 
-function SaveTheseResults(ActivityForm)
+function SaveTheseResults(WOD, ActivityForm)
 {    
+    var WodDetail = WOD.split('_');
+    var WodId = WodDetail[0];
+    var WodTypeId = WodDetail[1];    
     //ActivityForm = RoutineNo_RoundNo_OrderBy_'.$Activity->ExerciseId.'
    var Detail = ActivityForm.split('_');
    var ExerciseId = Detail[3];   
    //var TimeToComplete = $('#clock').html();
    //var TimeField = ''+Detail[0]+'_'+Detail[1]+'_'+ExerciseId+'_TimeToComplete_0_'+Detail[2]+'';
 //1_1_81_Reps_0_1
-   $.ajax({url:'ajax.php?module=baseline&action=formsubmit',data:$('#'+ActivityForm+'').serialize(),dataType:"html",success:messagedisplay});          
+   $.ajax({url:'ajax.php?module=baseline&action=formsubmit&WorkoutId='+WodId+'&WodTypeId='+WodTypeId+'',data:$('#'+ActivityForm+'').serialize(),dataType:"html",success:messagedisplay});          
    $.ajax({url:'ajax.php?module=baseline',data:{history:'refresh', ExerciseId:ExerciseId},dataType:"html",success:function(html) {
         $('#'+ActivityForm+'_History').html(html);   
    }});      
