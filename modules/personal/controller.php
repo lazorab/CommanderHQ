@@ -52,8 +52,11 @@ class PersonalController extends Controller
 
 if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
 {
-	$WorkoutTypeId = $_REQUEST['WorkoutTypeId'];//Custom or My Gym
-        $WorkoutId = $_REQUEST['WorkoutId'];
+    if(isset($_REQUEST['WorkoutTypeId']))
+        $WorkoutTypeId = $_REQUEST['WorkoutTypeId'];
+    else
+	$WorkoutTypeId = 3;//Custom or My Gym
+    $WorkoutId = $_REQUEST['WorkoutId'];
         /*
 	$html.='<form name="form" id="personalform" action="index.php">
             <input type="hidden" name="origin" value="'.$this->Origin.'"/>
@@ -231,7 +234,7 @@ if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
 
                             }   
            $html.='<div style="float:left;width:65%" id="'.$ThisRoutine.'_timerContainer"></div>';                       
-            $html.='<div style="width:30%;float:right;margin:10px 4px 0 0"><input class="buttongroup" id="'.$ThisRoutine.'_ShowHideClock" type="button" onClick="DisplayStopwatch(\'personal\', \''.$WorkoutType.'_'.$WorkoutId.'_'.$ThisRoutine.'\');" value="Time Routine"/></div><div class="clear"></div>';                                                                    
+            $html.='<div style="width:30%;float:right;margin:10px 4px 0 0"><input class="buttongroup" id="'.$ThisRoutine.'_ShowHideClock" type="button" onClick="DisplayStopwatch(\'personal\', \''.$WorkoutTypeId.'_'.$WorkoutId.'_'.$ThisRoutine.'\');" value="Time Routine"/></div><div class="clear"></div>';                                                                    
      $html.='</div><br/><br/>';
     //$html.='</form>';
 

@@ -19,8 +19,8 @@ class SignupModel extends Model
                 $db->setQuery($SQL);
                 $db->Query();            
                 $Id = $db->insertid();
-                $SQL='INSERT INTO MembersDetails(MemberId, SystemOfMeasure)
-                VALUES("'.$Id.'", "'.$_REQUEST['SystemOfMeasure'].'")';
+                $SQL='INSERT INTO MemberDetails(MemberId, SystemOfMeasure, Gender)
+                VALUES("'.$Id.'", "'.$_REQUEST['SystemOfMeasure'].'", "'.$_REQUEST['Gender'].'")';
                 $db->setQuery($SQL);
                 $db->Query();                
             }

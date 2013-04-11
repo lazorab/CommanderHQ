@@ -1,16 +1,16 @@
 <script type="text/javascript">
 
-function Continue(status)
+function Continue()
 {
-    $.getJSON('ajax.php?module=terms&action=validateform', {status:status},messagedisplay);
+    $.ajax({url:'ajax.php?module=terms&action=validateform',data:$("#terms").serialize(),dataType:"html",success:messagedisplay});  
 }
 
 function messagedisplay(message)
 {
-    if(message == 'Continue')
-        window.location = '?module=memberhome';
+    if(message.length > 2)
+         alert(message);
     else    
-        alert(message);   
+         window.location = '?module=memberhome'; 
 }
 
 </script>
@@ -26,7 +26,7 @@ function messagedisplay(message)
     </fieldset>
 </div>
 <br/>           
-<input class="buttongroup" type="submit" value="Continue"/>
+<input class="buttongroup" type="button" onClick="Continue();" value="Continue"/>
 <br/>
 </form>
 <div class="clear"></div>

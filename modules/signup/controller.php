@@ -36,6 +36,8 @@ class SignupController extends Controller
             $Message = 'Error - Please enter a valid Cell number!';       
         else if($Model->CheckCellExists(trim($_REQUEST['Cell'])))
             $Message = 'Error - Cell Number already exists!';
+        else if($_REQUEST['Gender'] == '')
+            $Message = 'Error - Must Select Gender!';        
         else if($_REQUEST['SystemOfMeasure'] == '')
             $Message = 'Error - Must Select System of Measure!';        
             
@@ -55,6 +57,7 @@ class SignupController extends Controller
     function Output()
     {
             $Html .= '<h2>Sign Up</h2>
+            * All fields are required    
             <form action="index.php" name="refer" id="verifyform" method="post">
             <input type="hidden" name="form" value="submitted"/>
             <input class="textinput" type="text" id="firstname" name="FirstName" placeholder="First Name" value="'.trim($_REQUEST['FirstName']).'"/>
@@ -72,7 +75,15 @@ class SignupController extends Controller
             <input class="textinput" id="email" type="email" name="Email" value="'.trim($_REQUEST['Email']).'" placeholder="Email Address"/>
             <br/>
             <input class="textinput" id="cell" type="tel" name="Cell" value="'.trim($_REQUEST['Cell']).'" placeholder="Cell ('.DEFAULT_SUB_NUMBER.')"/> 
-            <br/>';   
+            <br/>';  
+            
+ $Html.='<fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
+<label for="male">Male</label>
+<input class="radioinput" id="male" type="radio" name="Gender" value="M"/>
+<label for="female">Female</label>
+<input class="radioinput" id="female" type="radio" name="Gender" value="F"/>
+</fieldset><br/>';           
+            
 $Html.='System Of Measure
     <fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
     <input class="radioinput" type="radio" name="SystemOfMeasure" id="radio-choice-1" value="Metric"/>

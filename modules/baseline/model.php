@@ -9,6 +9,8 @@ class BaselineModel extends Model
     
     function Log()
     {
+        //RoutineTime:RoutineTime (00:00:0)
+        //TimeFieldName:FieldName (3_35_1_TimeToComplete)
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
         if($this->UserIsSubscribed()){
         if($_REQUEST['newcount'] > 0){

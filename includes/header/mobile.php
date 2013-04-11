@@ -155,14 +155,11 @@ function SaveRoutineTime(Module, RoutineId)
 function SaveRoutineTimeResult(message)
 {
     if(message == 'Success'){
-        var r=confirm("Successfully Saved!\nWould you like to provide us with feedback?");
-        if (r==true)
-        {
-            window.location = 'index.php?module=contact';
-        }
+        $( "#popupFeedback" ).popup("open");
+        resetclock();
     }  
-    else if(message != '')
-        alert(message);    
+    else
+        alert(message);   
 }
 
 function EnterRoutineTime(WorkoutType, WorkoutId, RoutineNo)

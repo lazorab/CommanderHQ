@@ -5,8 +5,8 @@ class VerifyController extends Controller
     {
 	parent::__construct();	
 	session_start();
-	if(isset($_COOKIE['UID']))
-            header('location: index.php?module=memberhome');	
+	//if(isset($_COOKIE['UID']))
+            //header('location: index.php?module=memberhome');	
     }
     
      function Message()

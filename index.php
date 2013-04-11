@@ -58,7 +58,7 @@ include("includes/navbar/$Environment.php");
 <div id="content">
 <?php
 /*CONTENT*/
-if(isset($_COOKIE['UID']) && $Display->MemberAgreeToTerms() == 0)
+if($Module != 'verify' && isset($_COOKIE['UID']) && $Display->MemberAgreeToTerms() == 0)
     include("modules/terms/view/$Environment.php");
 else if (file_exists("modules/$Module/view/$Environment.php"))
     include("modules/$Module/view/$Environment.php");
