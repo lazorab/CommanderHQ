@@ -13,9 +13,9 @@ body {
 
 .tagIcon {
 	text-align:center;
-	padding: 4px 0 0 0;
+	padding: 4px 0 0 0.8em;
 	color: #c83006;
-	font-size:1.2em;
+	font-size:1.1em;
 	font-weight:bold;
 }
 
@@ -151,6 +151,7 @@ p{
   background-color: #3d3d3d;
   height: 40px;
   line-height: 40px;
+  color: #999;
   border-top: 2px solid #494949;
   border-bottom: 2px solid #2b2b2b;
 }
