@@ -76,7 +76,7 @@ $(function(){
 	$(".ShowSlideMenu").click(function(){
 		if(menuStatus != true){				
 		$(".ui-page-active").animate({
-			marginLeft: "200px",
+			marginLeft: "300px",
 		  }, 300, function(){menuStatus = true;
                   $("#slidemenu").addClass('active');
                   $("#slidemenu").niceScroll();
