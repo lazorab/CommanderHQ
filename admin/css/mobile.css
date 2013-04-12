@@ -114,8 +114,7 @@ p{
 }
 
 #nav{
-	height:40px;
-	background:url(../../images/640/navBk.png) repeat-x top left #fff;
+	background-color:#66486e;
 }
 
 #canvas
