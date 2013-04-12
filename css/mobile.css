@@ -107,7 +107,6 @@ p{
 
 #slidemenu ul li.active {
   background-color: #333;
-  color:#CA3C32;
 }
 
 #slidemenu ul li.active a{
@@ -152,9 +151,6 @@ p{
   background-color: #3d3d3d;
   height: 40px;
   line-height: 40px;
-  font-size: 1.2em;
-  color:#999;
-  text-shadow: 0.125em 0.125em 0 #000;
   border-top: 2px solid #494949;
   border-bottom: 2px solid #2b2b2b;
 }
