@@ -107,6 +107,18 @@ class Controller
             $Html.='<div class="clear"></div>';
             
             return $Html;
-        }        
+        }  
+        
+        function NewFontSize($MasterSize)
+        {
+            $Model= new Model;
+            return $Model->NewFontSize($MasterSize); 
+        }
+        
+        function NewLineHeight($MasterSize)
+        {
+            $Model= new Model;
+            return $Model->NewLineHeight($MasterSize); 
+        } 
 }
 ?>

@@ -41,7 +41,9 @@ class BenchmarkController extends Controller
         {
             $Model = new BenchmarkModel;
             if($_REQUEST['baseline'] == 'yes')
-                $Message = $Model->MakeBaseline();
+                $Message = $Model->MakeBaseline($_REQUEST['WorkoutId'], $_REQUEST['WodTypeId']);
+            else if($_REQUEST['baseline'] == 'no')
+                $Message = $Model->ClearBaseline();            
             else
                 $Message = $Model->Log();
 
@@ -65,7 +67,7 @@ if(isset($_REQUEST['benchmarkId']) && $_REQUEST['benchmarkId'] > 0)
             <input type="hidden" id="addround" name="RoundNo" value="1"/>'; 
      */  
     
-        $html='<input type="checkbox" name="baseline" onClick="MakeBaseline(\''.$WorkoutId.'_'.$WorkoutTypeId.'\');" data-role="none"/>';
+        $html='<input type="checkbox" id="baseline" name="baseline" onClick="MakeBaseline(\''.$WorkoutId.'_'.$WorkoutTypeId.'\');" data-role="none"/>';
         $html.='Make this my baseline';
         $html.='<p>'.$this->Workout[0]->Notes.'</p>';
         //$html.='<div class="ui-grid-b">';

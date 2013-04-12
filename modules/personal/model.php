@@ -92,36 +92,7 @@ class PersonalModel extends Model
                     FROM CustomWorkouts
                     WHERE MemberId = "'.$_COOKIE['UID'].'"
                     ORDER BY WorkoutdateTime DESC';
-             /*   
-                $SQL="SELECT DISTINCT CW.recid AS WodId, 
-CW.WorkoutName AS WodName,
-'Custom' AS WodType,
-WL.TimeCreated
-FROM WODLog WL
-JOIN CustomWorkouts CW ON CW.recid = WL.WorkoutId
-JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
-WHERE WL.MemberId = 1 AND WT.WorkoutType = 'Custom'
-UNION
-SELECT DISTINCT BW.recid AS WodId, 
-BW.WorkoutName AS WodName,
-'Benchmark' AS WodType,
-WL.TimeCreated
-FROM WODLog WL
-JOIN BenchmarkWorkouts BW ON BW.recid = WL.WorkoutId
-JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
-WHERE WL.MemberId = 1 AND WT.WorkoutType = 'Benchmark'
-UNION
-SELECT DISTINCT WW.recid AS WodId, 
-WW.WorkoutName AS WodName,
-'My Gym' AS WodType,
-WL.TimeCreated
-FROM WODLog WL
-JOIN WodWorkouts WW ON WW.recid = WL.WorkoutId
-JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
-WHERE WL.MemberId = 1 AND WT.WorkoutType = 'My Gym'
-ORDER BY TimeCreated DESC LIMIT 30";
-              
-              */
+
             $db->setQuery($SQL);
 		
             return $db->loadObjectList();
@@ -166,24 +137,7 @@ ORDER BY TimeCreated DESC LIMIT 30";
             $db->setQuery($SQL);
 		
             return $db->loadObjectList(); 
-	}		     
-        
-        function MakeBaseline()
-        {
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $ThisId = $_REQUEST['WorkoutId'];
-            $WorkoutTypeId = $_REQUEST['WodTypeId'];
-            $SQL = 'DELETE FROM MemberBaseline WHERE MemberId = "'.$_COOKIE['UID'].'"';
-            $db->setQuery($SQL);
-            $db->Query();
-                    
-            $SQL = 'INSERT INTO MemberBaseline(MemberId, BaselineTypeId, WorkoutId) 
-                  VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutTypeId.'", "'.$ThisId.'")';
-            $db->setQuery($SQL); 
-            $db->Query();  
-            
-            return 'Baseline Successfully Created';
-        }       
+	}		            
 	
     function Log()
 	{       

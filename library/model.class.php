@@ -626,6 +626,61 @@ class Model
             return 'Success';
         }
         
+        function ClearBaseline()
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'DELETE FROM MemberBaseline WHERE MemberId = "'.$_COOKIE['UID'].'"';
+            $db->setQuery($SQL);
+            $db->Query();           
+        }
+        
+        function MakeBaseline($ThisId, $WorkoutTypeId)
+        {
+            $this->ClearBaseline();
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+                    
+            $SQL = 'INSERT INTO MemberBaseline(MemberId, BaselineTypeId, WorkoutId) 
+                  VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutTypeId.'", "'.$ThisId.'")';
+            $db->setQuery($SQL); 
+            $db->Query();  
+        }     
+        
+        function NewFontSize($MasterSize)
+        {
+            if(LAYOUT_WIDTH > SCREENWIDTH)
+            {
+                $ratio = SCREENWIDTH / LAYOUT_WIDTH;
+            }
+            else if(SCREENWIDTH > LAYOUT_WIDTH)
+            {
+                $ratio = LAYOUT_WIDTH / SCREENWIDTH;
+            }
+            else
+                $ratio = 1;
+     
+            $FontSize = ceil($MasterSize * $ratio);
+
+            return 'font-size:'.$FontSize.'px';
+        } 
+        
+        function NewLineHeight($MasterSize)
+        {
+            if(LAYOUT_WIDTH > SCREENWIDTH)
+            {
+                $ratio = SCREENWIDTH / LAYOUT_WIDTH;
+            }
+            else if(SCREENWIDTH > LAYOUT_WIDTH)
+            {
+                $ratio = LAYOUT_WIDTH / SCREENWIDTH;
+            }
+            else
+                $ratio = 1;
+     
+            $NewSize = ceil($MasterSize * $ratio);
+
+            return 'height:'.$NewSize.'px; line-height:'.$NewSize.'px';
+        } 
+        
     function getMemberDetails($Id)
     {
         if($Id > 0){

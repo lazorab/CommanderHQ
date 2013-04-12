@@ -138,12 +138,15 @@ function UpdateActivity(ActivityId, Attributes)
 
 function MakeBaseline(WOD)
 {
+    var c=document.getElementById('baseline');
+    if(c.checked == false){
+    $.ajax({url:'ajax.php?module=personal&action=formsubmit',data:{baseline:'no'},dataType:"html"});                      
+    }else if(c.checked == true){
     var WodDetail = WOD.split('_');
     var WodId = WodDetail[0];
     var WodTypeId = WodDetail[1];
-    $.ajax({url:'ajax.php?module=personal&action=formsubmit',data:{baseline:'yes',WorkoutId:WodId,WodTypeId:WodTypeId},dataType:"html",success:function(html) {
-        alert(html);   
-   }});              
+    $.ajax({url:'ajax.php?module=personal&action=formsubmit',data:{baseline:'yes',WorkoutId:WodId,WodTypeId:WodTypeId},dataType:"html"});              
+    }              
 }
 
 function SaveTheseResults(WOD,ActivityForm)

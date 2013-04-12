@@ -36,7 +36,9 @@ class PersonalController extends Controller
         {
             $Model = new PersonalModel;
             if($_REQUEST['baseline'] == 'yes')
-                $Message = $Model->MakeBaseline();            
+                $Message = $Model->MakeBaseline($_REQUEST['WorkoutId'], $_REQUEST['WodTypeId']);
+            else if($_REQUEST['baseline'] == 'no')
+                $Message = $Model->ClearBaseline();            
             else if(isset($_REQUEST['RoutineTime'])){
             //Save Routine Time  
                 $Message = $Model->SaveRoutineTime($_REQUEST['TimeFieldName']);
@@ -67,7 +69,7 @@ if(isset($_REQUEST['WorkoutId']) && $_REQUEST['WorkoutId'] != '')
             <input type="hidden" id="addround" name="RoundNo" value="1"/>
             <input type="hidden" name="form" value="submitted"/>';       
         */
-        $html='<input type="checkbox" name="baseline" onClick="MakeBaseline(\''.$WorkoutId.'_'.$WorkoutTypeId.'\');" data-role="none"/>';
+        $html='<input type="checkbox" id="baseline" name="baseline" onClick="MakeBaseline(\''.$WorkoutId.'_'.$WorkoutTypeId.'\');" data-role="none"/>';
         $html.='Make this my baseline';   
         $html.='<p>'.$this->Workout[0]->Notes.'</p>';
         //$html.='<div class="ui-grid-b">';

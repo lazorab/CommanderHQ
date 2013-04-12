@@ -4,24 +4,7 @@ class MygymModel extends Model
 	function __construct()
 	{
 	
-	}
-        
-        function MakeBaseline()
-        {
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $ThisId = $_REQUEST['WorkoutId'];
-            $WorkoutTypeId = $_REQUEST['WodTypeId'];
-            $SQL = 'DELETE FROM MemberBaseline WHERE MemberId = "'.$_COOKIE['UID'].'"';
-            $db->setQuery($SQL);
-            $db->Query();
-                    
-            $SQL = 'INSERT INTO MemberBaseline(MemberId, BaselineTypeId, WorkoutId) 
-                  VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutTypeId.'", "'.$ThisId.'")';
-            $db->setQuery($SQL); 
-            $db->Query();  
-            
-            return 'Baseline Successfully Created';
-        }       
+	}      
 	
         function Log()
 	{

@@ -50,7 +50,9 @@ class MygymController extends Controller
         {
             $Model = new MygymModel;
             if($_REQUEST['baseline'] == 'yes')
-                $Message = $Model->MakeBaseline();
+                $Message = $Model->MakeBaseline($_REQUEST['WorkoutId'], $_REQUEST['WodTypeId']);
+            else if($_REQUEST['baseline'] == 'no')
+                $Message = $Model->ClearBaseline();
             else
                 $Message = $Model->Log();
 
@@ -115,7 +117,7 @@ class MygymController extends Controller
             }else{
 	$WorkoutTypeId = 4;
         $WorkoutId = $WodDetails[0]->Id;                
-        $html='<input type="checkbox" name="baseline" onClick="MakeBaseline(\\\''.$WorkoutId.'_'.$WorkoutTypeId.'\\\');" data-role="none"/>';
+        $html='<input type="checkbox" id="baseline" name="baseline" onClick="MakeBaseline(\\\''.$WorkoutId.'_'.$WorkoutTypeId.'\\\');" data-role="none"/>';
         $html.='Make this my baseline';   
         $html.='<p>'.$WodDetails[0]->Notes.'</p>';
         $html .= '<div data-role="collapsible-set" data-iconpos="right">';

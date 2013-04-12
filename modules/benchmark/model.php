@@ -87,31 +87,6 @@ class BenchmarkModel extends Model
             return $db->loadResult();
         }       
         
-        function _getBenchmarkDescription($Id)
-        {
-            if($this->getGender() == 'M'){
-                $AttributeValue = 'AttributeValueMale';
-            } else {
-                $AttributeValue = 'AttributeValueFemale';
-            }
-             $SQL = 'SELECT E.Exercise, 
-                 E.Acronym, 
-                 A.Attribute, 
-                 '.$AttributeValue.' AS AttributeValue, 
-                     WT.WorkoutType,
-                     (SELECT MAX(RoundNo) FROM BenchmarkDetails WHERE BenchmarkId = "'.$Id.'") AS TotalRounds,
-                     BD.RoundNo
-                FROM BenchmarkDetails BD
-                LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
-                LEFT JOIN Attributes A ON A.recid = BD.AttributeId
-                LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
-                LEFT JOIN WorkoutRoutineTypes WT ON WT.recid = BW.WorkoutTypeId
-                WHERE BD.BenchmarkId = "'.$Id.'"
-                GROUP BY Exercise
-                ORDER BY OrderBy'; 
-             return $this->MakeDescription($SQL);
-        }
-        
         function MakeDescription($SQL)
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
@@ -178,53 +153,6 @@ class BenchmarkModel extends Model
 		
             return $db->loadObjectList();
 	}		
-        
-        function getCustomDetails($Id)
-	{   
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT DATE_FORMAT(CW.TimeCreated, "%d %M %Y") AS WorkoutName, 
-                        E.Exercise, 
-                        E.recid AS ExerciseId, 
-                        CASE 
-                            WHEN E.Acronym <> ""
-                            THEN E.Acronym
-                            ELSE E.Exercise
-                        END
-                        AS InputFieldName,
-                        CW.Notes,
-                        "'.$this->getCustomDescription($Id).'" AS WorkoutDescription,
-                        E.recid AS ExerciseId, 
-                        A.Attribute, 
-                        CD.AttributeValue,  
-                        RoundNo
-			FROM CustomDetails CD
-                        LEFT JOIN CustomWorkouts CW ON CW.recid = CD.CustomWorkoutId
-			LEFT JOIN Exercises E ON E.recid = CD.ExerciseId
-			LEFT JOIN Attributes A ON A.recid = CD.AttributeId
-			WHERE CW.MemberId = "'.$_COOKIE['UID'].'"
-                        AND CW.recid = "'.$Id.'"
-			ORDER BY RoundNo, Attribute';
-            $db->setQuery($SQL);
-		
-            return $db->loadObjectList();
-	}
-        
-        function MakeBaseline()
-        {
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $ThisId = $_REQUEST['WorkoutId'];
-            $WorkoutTypeId = $_REQUEST['WodTypeId'];
-            $SQL = 'DELETE FROM MemberBaseline WHERE MemberId = "'.$_COOKIE['UID'].'"';
-            $db->setQuery($SQL);
-            $db->Query();
-                    
-            $SQL = 'INSERT INTO MemberBaseline(MemberId, BaselineTypeId, WorkoutId) 
-                  VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutTypeId.'", "'.$ThisId.'")';
-            $db->setQuery($SQL); 
-            $db->Query();  
-            
-            return 'Baseline Successfully Created';
-        }
 	
     function Log()
 	{
