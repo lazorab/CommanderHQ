@@ -7,25 +7,25 @@ $NavIconSize = floor(72*$ratio);
 $('#back').html('<img alt="Back" onclick="goBack();" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');     
 </script>
 
-<div id="nav" style="height:<?php echo floor(100*$ratio);?>px;">
+<div id="nav" style="height:<?php echo floor(72*$ratio);?>px; margin-bottom:<?php echo floor(8*$ratio);?>px;">
 		
-<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:0;">
+<div class="grid" style="float:left;width:<?php echo floor($NavIconSize+(32*ratio));?>px;height:<?php echo $NavIconSize;?>px;margin:0;">
 	<img class="ShowSlideMenu" id="menuselect" alt="Menu" <?php echo $RENDER->NewImage('menu.png');?> src="<?php echo IMAGE_RENDER_PATH;?>menu.png"/>
 </div>
  
 <?php if(isset($_REQUEST['module']) && ($_REQUEST['module'] != 'memberhome' && $_REQUEST['module'] != 'index')){ ?>
-<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 0 4%;">
+<div class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:0;">
 	<a class="menuitem" href="#" onclick="OpenThisPage('?module=memberhome');" data-transition="slidefade" data-prefetch><img alt="Home" <?php echo $RENDER->NewImage('home.png');?> src="<?php echo IMAGE_RENDER_PATH;?>home.png"/></a>
 </div>	
 <?php } ?>
 
-<div id="menuvideo" class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 0 4%;"></div>	
+<div id="menuvideo" class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:0;"></div>	
 
-<div id="back" class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 0 0 4%;">
+<div id="back" class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:0%;">
 	
 </div>
 
-<div id="AjaxLoading" class="grid" style="float:right;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:2% 4% 2% 0;"></div>
+<div id="AjaxLoading" class="grid" style="float:right;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:0;"></div>
 </div>
 <div class="clear"></div>
 
