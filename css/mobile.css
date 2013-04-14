@@ -10,12 +10,14 @@ body {
 
 /* main menu items */
 
+#gridcontainer{
+    float:left;
+}
 
 .tagIcon {
 	text-align:center;
-	padding: 4px 0 0 0.6em;
+	padding: 4px 0 0 0;
 	color: #c83006;
-	font-size:1.1em;
 	font-weight:bold;
 }
 
@@ -25,7 +27,7 @@ body {
 }
 
 .Aicon{
-	padding: 0 0 0 0.8em;
+	padding:0 0 0 16%;
 }
 
 .buttongroup{
@@ -119,10 +121,11 @@ p{
 }
 
 #slidemenu {
-  width: 200px;
+  width: 62%;
   height: 400px;
   display: none;
   float: left;
+  overflow: scroll;
 }
 
 #slidemenu h3{
@@ -141,7 +144,7 @@ p{
 #slidemenu ul {
   margin: 0;
   padding: 0;
-  width: inherit;
+  width: 100%;
   vertical-align:middle;  
 }
 
@@ -150,6 +153,7 @@ p{
   margin: 0px 0;
   background-color: #3d3d3d;
   height: 40px;
+  width:100%;
   line-height: 40px;
   color: #999;
   border-top: 2px solid #494949;
@@ -165,12 +169,13 @@ p{
 
 .menusection{
   margin: 0px 0;
+  width:98%;
   background-color: #4d4d4d;
   height:16px;
   color: #969696;
   font-size: 1em;
   font-weight:bold; 
-  padding: 2px 0 2px 4px;
+  padding: 1% 0 1% 2%;
   border-top: 2px solid #494949;
   border-bottom: 2px solid #2b2b2b;  
 }
@@ -263,7 +268,6 @@ p{
 
 #content
 {
-min-height: 360px;
 color:#333;
 background-color:#fff;
 }

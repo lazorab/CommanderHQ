@@ -26,11 +26,7 @@
 <link rel="stylesheet" href="css/add2home.css">
 	
 <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
-<script type="text/javascript" src="js/jquery.easing.1.3.js"></script>
-<script type="text/javascript" src="js/jquery.nicescroll.min.js"></script>
 <script type="text/javascript" src="js/stopwatch.js"></script>
-
-<!--<script type="text/javascript" src="/js/slides.min.jquery.js"></script>-->
 <script type="text/javascript" src="http://www.be-mobile.co.za/framework/js/device.js"></script>
 
 <style type="text/css">
@@ -75,11 +71,8 @@ $(function(){
 	
 	$(".ShowSlideMenu").click(function(){
 		if(menuStatus != true){				
-		$(".ui-page-active").animate({
-			marginLeft: "80%",
-		  }, 300, function(){menuStatus = true;
+		$(".ui-page-active").animate({marginLeft: "62%"}, 300, function(){menuStatus = true;
                   $("#slidemenu").addClass('active');
-                  $("#slidemenu").niceScroll();
                   });
 		  return false;
 		  } else {
@@ -102,9 +95,7 @@ $(function(){
 	
 	$('.pages').live("swiperight", function(){
 		if (!menuStatus){	
-		$(".ui-page-active").animate({
-			marginLeft: "165px",
-		  }, 300, function(){menuStatus = true});
+		$(".ui-page-active").animate({marginLeft: "62%"}, 300, function(){menuStatus = true});
 		  }
 	});
 	

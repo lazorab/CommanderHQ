@@ -55,7 +55,7 @@ if (file_exists("includes/navbar/$Environment.php"))
 include("includes/navbar/$Environment.php");
     }
 ?>
-<div id="content">
+    <div id="content" style="min-height:<?php echo SCREENWIDTH;?>">
 <?php
 /*CONTENT*/
 if($Module != 'verify' && isset($_COOKIE['UID']) && $Display->MemberAgreeToTerms() == 0)
