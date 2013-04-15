@@ -44,7 +44,7 @@ include("includes/header/$Environment.php");
 if (file_exists("includes/menu/$Environment.php"))
 include("includes/menu/$Environment.php");?>
         
-<div data-role="page" data-theme="c">
+<div data-role="page" class="pages" data-theme="c">
 
 <div id="header">
 <img alt="Header" <?php echo $RENDER->NewImage(''.$Banner.'.png');?> src="<?php echo IMAGE_RENDER_PATH.$Banner;?>.png"/>

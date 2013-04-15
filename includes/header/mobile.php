@@ -74,29 +74,27 @@ $(function(){
 	$(".ShowSlideMenu").click(function(){
 		if(menuStatus != true){				
 		$(".ui-page-active").animate({marginLeft: "62%"}, 300, function(){menuStatus = true;
-                  $("#slidemenu").addClass('active');
+                  //$("#slidemenu").addClass('active');
                   });
 		  return false;
 		  } else {
 			$(".ui-page-active").animate({
-			marginLeft: "0px",
-		  }, 300, function(){menuStatus = false;
-                  $("#slidemenu").removeClass('active');
+			marginLeft: "0px"}, 300, function(){menuStatus = false;
+                  //$("#slidemenu").removeClass('active');
                   });
                   return false;
 		  }
 	});
 
 	$('.pages').live("swipeleft", function(){
-		if (menuStatus){	
+		if (menuStatus == true){	
 		$(".ui-page-active").animate({
-			marginLeft: "0px",
-		  }, 300, function(){menuStatus = false});
+			marginLeft: "0px"}, 300, function(){menuStatus = false});
 		  }
 	});
 	
 	$('.pages').live("swiperight", function(){
-		if (!menuStatus){	
+		if (menuStatus == false){	
 		$(".ui-page-active").animate({marginLeft: "62%"}, 300, function(){menuStatus = true});
 		  }
 	});

@@ -223,12 +223,15 @@ class CustomController extends Controller
         <input type="hidden" name="rowcount" id="rowcounter" value="0"/>
         <input type="hidden" name="Routine1Round1Counter" id="Routine1Round1Counter" value="0"/>
         <input type="hidden" name="Routine1RoundCounter" id="Routine1RoundCounter" value="1"/>
-        <input type="hidden" name="RoutineCounter" id="RoutineCounter" value="1"/>
-        <input class="textinput" type="date" name="WodDate" id="WodDate" placeholder="WOD Date" value="'.date('Y-m-d').'"/><br/>
-            
-        <input class="textinput" type="text" name="CustomName" id="CustomName" placeholder="Name for WOD" value=""/><br/>
-        
-        <textarea name="descr" placeholder="Describe your wod"></textarea><br/>';
+        <input type="hidden" name="RoutineCounter" id="RoutineCounter" value="1"/>';
+        $Html .= '<div class="ui-grid-a">';
+        $Html .= '<div class="ui-block-a" style="width:45%;">';
+        $Html .= '<input class="textinput" type="text" name="CustomName" id="CustomName" placeholder="WOD Name" value=""/>';
+        $Html .= '</div><div class="ui-block-b" style="width:45%;float:right">';
+        $Html .= '<input class="textinput" type="date" name="WodDate" id="WodDate" placeholder="WOD Date" value="'.date('Y-m-d').'"/>';        
+        $Html .= '</div></div>';  
+        $Html .= '<br/><br/><br/>'; 
+        $Html .= '<textarea name="descr" placeholder="Describe your wod"></textarea><br/>';
         
         $Html .= '<div id="Routine1Label"></div>';
         $Html .= '<div id="Routine1Round1Label"></div>';       

@@ -5,10 +5,8 @@ $LeftMargin = floor((((LAYOUT_WIDTH - 396)*$ratio) / 4) / 2);
 $GridIconSize = floor((SCREENWIDTH - (((LAYOUT_WIDTH - 396)*$ratio) / 4)) / 3);
 
 echo $Display->FirstTimeMessage();
-
 ?>
 
-<div id="random"><?php echo $Display->Message();?></div>
 <div id="gridcontainer" style="margin:<?php echo $TopMargin;?>px 0 <?php echo $TopMargin;?>px <?php echo $LeftMargin;?>px">
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;">
 <a href="#" onclick="OpenThisPage('index.php?module=wod');">
