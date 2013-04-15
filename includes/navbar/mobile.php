@@ -9,7 +9,7 @@ $('#back').html('<img alt="Back" onclick="goBack();" <?php echo $RENDER->NewImag
 
 <div id="nav" style="height:<?php echo floor(72*$ratio);?>px; margin-bottom:<?php echo floor(8*$ratio);?>px;">
 		
-<div class="grid" style="float:left;width:<?php echo floor($NavIconSize+(32*ratio));?>px;height:<?php echo $NavIconSize;?>px;margin:0;">
+<div class="grid" style="float:left;width:<?php echo floor($NavIconSize+(32*$ratio));?>px;height:<?php echo $NavIconSize;?>px;margin:0;">
 	<img class="ShowSlideMenu" id="menuselect" alt="Menu" <?php echo $RENDER->NewImage('menu.png');?> src="<?php echo IMAGE_RENDER_PATH;?>menu.png"/>
 </div>
  
