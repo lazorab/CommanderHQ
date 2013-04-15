@@ -1,5 +1,9 @@
-<div id="slidemenu">
-    <?php if(isset($_COOKIE['UID'])){?>
+<div id="slidemenu"
+    <?php if($Device->IsGoogleAndroidDevice()) { ?>
+        class="overthrow"
+<?php } ?>
+     >
+<?php if(isset($_COOKIE['UID'])){?>
 <ul>
     <li style="<?php echo $Display->NewLineHeight('80')?>"<?php if($Module == 'profile'){?> class="active"<?php } ?>><img  alt="Menu" <?php echo $RENDER->NewImage('menu/profile.png');?> src="<?php echo IMAGE_RENDER_PATH;?>menu/profile.png"/><a href="" onclick="OpenThisPage('?module=profile');" class="contentLink" style="<?php echo $Display->NewFontSize('24')?>"><?php echo $Display->UsersName();?></a></li>
 </ul>

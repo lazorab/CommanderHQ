@@ -1,9 +1,3 @@
-<?php
-$Device = new DeviceManager;
-if($Device->IsGoogleAndroidDevice()) { ?>
-        <script src="/js/overthrow.js"></script>
-<?php } ?>
-     
 <script type="text/javascript">
 
 $(document).ready(function() {

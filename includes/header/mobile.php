@@ -28,7 +28,9 @@
 <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="js/stopwatch.js"></script>
 <script type="text/javascript" src="http://www.be-mobile.co.za/framework/js/device.js"></script>
-
+<?php if($Device->IsGoogleAndroidDevice()) { ?>
+        <script src="/js/overthrow.js"></script>
+<?php } ?>
 <style type="text/css">
 body { width: <?php echo SCREENWIDTH;?>px;}
 #header{width: <?php echo SCREENWIDTH;?>px;}

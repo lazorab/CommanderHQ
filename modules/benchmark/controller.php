@@ -255,7 +255,7 @@ else if(isset($_REQUEST['cat']) && $_REQUEST['cat'] != '')
     */
     $Workouts = $Model->getBMWS($_REQUEST['cat']);
     $Overthrow='';
-    $Device = new DeviceManager;
+    $Device = new DeviceManager();
     if($Device->IsGoogleAndroidDevice()) {
         $Overthrow='class="overthrow"';
 }
