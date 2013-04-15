@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2011 Google Inc.
  *
@@ -14,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 require 'config/functions.php';
 require_once 'src/Google_Client.php';
 require_once 'src/contrib/Google_PlusService.php';
@@ -33,55 +35,63 @@ $client->setApplicationName("Commander HQ");
 $plus = new Google_PlusService($client);
 
 if (isset($_REQUEST['logout'])) {
-  unset($_SESSION['access_token']);
+    unset($_SESSION['access_token']);
 }
 
-if (isset($_GET['code'])) {
-  $client->authenticate($_GET['code']);
-  $_SESSION['access_token'] = $client->getAccessToken();
-  header('Location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
-}
+if (isset($_GET['error']) && $_GET['error'] == 'access_denied') {
 
-if (isset($_SESSION['access_token'])) {
-  $client->setAccessToken($_SESSION['access_token']);
-}
+    unset($_SESSION['access_token']);
+    unset($_SESSION['oauth_id']);
+    unset($_SESSION['oauth_provider']);
+    header('Location: index.php?module=logout');
+    
+} else {
+    if (isset($_GET['code'])) {
+        $client->authenticate($_GET['code']);
+        $_SESSION['access_token'] = $client->getAccessToken();
+        header('Location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
+    }
 
+    if (isset($_SESSION['access_token'])) {
+        $client->setAccessToken($_SESSION['access_token']);
+    }
 
-if ($client->getAccessToken()) {
-    $me = $plus->people->get('me');
-    $user_info = new UserObject($me);
+    if ($client->getAccessToken()) {
+        $me = $plus->people->get('me');
+        $user_info = new UserObject($me);
 
-  // The access token may have been updated lazily.
-  $_SESSION['token'] = $client->getAccessToken();
-  
+        // The access token may have been updated lazily.
+        $_SESSION['token'] = $client->getAccessToken();
+
         $google_user = new User();
         $userdata = $google_user->checkUser($user_info, 'google');
-        if(!empty($userdata)){
+        if (!empty($userdata)) {
             session_start();
             $_SESSION['oauth_id'] = $uid;
             $_SESSION['oauth_provider'] = $userdata->oauth_provider;
             $Redirect = $userdata->redirect;
-            header("Location: index.php?module=".$Redirect."");
-        } 
-  
-  
-} else {
-  $authUrl = $client->createAuthUrl();
-  header("Location: ".$authUrl."");
+            header("Location: index.php?module=" . $Redirect . "");
+        }
+    } else {
+        $authUrl = $client->createAuthUrl();
+        header("Location: " . $authUrl . "");
+    }
 }
 
-class UserObject{
+class UserObject {
+
     var $id;
     var $name;
     var $email;
     var $gender;
-    
-    function __construct($Array)
-    {
+
+    function __construct($Array) {
         $this->id = $Array['id'];
         $this->name = $Array['displayName'];
         $this->email = $Array['email'];
         $this->gender = $Array['gender'];
     }
+
 }
+
 ?>
