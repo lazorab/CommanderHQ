@@ -6,13 +6,13 @@ define("SUBSCRIPTION", false);
 
 define('FORCEMOBILE',false);
 
-define('HOST','Local');
-//define('HOST','Remote');
+//define('HOST','Local');
+define('HOST','Remote');
 
 if(HOST == 'Remote'){
   define('FRAMEWORK_URL','http://framework.be-mobile.co.za'); 
   define('FRAMEWORK_PATH','/Sites/framework'); 
-}else{
+}else {
   define('FRAMEWORK_URL','http://localhost/Framework');  
   define('FRAMEWORK_PATH',''.$_SERVER['DOCUMENT_ROOT'].'/framework'); 
 }
