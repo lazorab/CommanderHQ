@@ -25,10 +25,8 @@
 <div class="menusection">MY GYM</div>
 	<ul>
 		<li style="<?php echo $Display->NewLineHeight('80')?>"<?php if($Module == 'registergym'){?> class="active"<?php } ?>><img  alt="Menu" <?php echo $RENDER->NewImage('menu/register.png');?> src="<?php echo IMAGE_RENDER_PATH;?>menu/register.png"/><a href="" onclick="OpenThisPage('?module=registergym');" class="contentLink" style="<?php echo $Display->NewFontSize('32')?>">
-                        <?php if(!$Display->UserGym()){ ?>
-                            Register my gym
-                        <?php }else{ ?>
-                            Change my Gym
+                        <?php if(!$Display->UserGym()){ ?>Register my gym
+                        <?php }else{ ?>Change my Gym
                         <?php } ?>
                     </a></li>
 <!--		<li style="<?php echo $Display->NewLineHeight('80')?>"<?php if($Module == 'book'){?> class="active"<?php } ?>><img  alt="Menu" <?php echo $RENDER->NewImage('menu/schedule.png');?> src="<?php echo IMAGE_RENDER_PATH;?>menu/schedule.png" style="<?php echo $Display->NewFontSize('32')?>"/>Schedule</li>-->
