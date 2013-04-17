@@ -1,6 +1,16 @@
 
 <div id="loginback">
-<?php echo $Display->Message;?><br/>
+<?php 
+
+if (isset($Display->Message) && strlen($Display->Message) > 0) {
+	?>
+	<script language="javascript">
+       alert("<?php echo $Display->Message; ?>");
+	</script> 
+<?php 
+}
+
+;?><br/>
 
 <div id="container" style="color:#fff;height:350px;padding-left:20%">
 <br/><br/>

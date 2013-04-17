@@ -1,4 +1,12 @@
-<?php echo $Display->Message;?>
+<?php 
+if (isset($Display->Message) && strlen($Display->Message) > 0) {
+	?>
+	<script language="javascript">
+       alert("<?php echo $Display->Message; ?>");
+	</script> 
+<?php 
+}
+;?>
 <br/><br/>
 <form action="index.php" method="post">
 <input type="hidden" name="module" value="login"/>
