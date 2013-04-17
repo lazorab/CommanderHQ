@@ -71,7 +71,7 @@ echo $Display->FirstTimeMessage();
 <div class="grid" style="float:left;width:<?php echo $GridIconSize;?>px;height:<?php echo $GridIconSize;?>px;">
 <a href="#" onclick="OpenThisPage('?module=about');">
 <img class="Aicon" alt="About" <?php echo $RENDER->NewImage('crossfit.png');?> src="<?php echo IMAGE_RENDER_PATH;?>crossfit.png"/><br />
-<div class="tagIcon" style="<?php echo $Display->NewFontSize('28')?>">CrossFit</div>
+<div class="tagIcon" style="<?php echo $Display->NewFontSize('28')?>">About Us</div>
 </a>
 </div>
 </div>

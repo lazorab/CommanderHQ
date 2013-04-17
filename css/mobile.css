@@ -140,13 +140,13 @@ p{
 
 .menusection{
   margin: 0px 0;
-  width:98%;
+  width:96%;
   background: url(../images/640/secHd.png) repeat-x top left #4d4d4d;
   height:16px;
-  color: #969696;
+  color: #aaa;
   font-size: 1em;
   font-weight:bold; 
-  padding: 1% 0 1% 2%;
+  padding: 2% 0 2% 4%;
   border-top: 1px solid #494949;
   border-bottom: 1px solid #2b2b2b;
   text-shadow:none;
