@@ -418,13 +418,25 @@ class Model
         function getExerciseHistory($Id)
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            
+            $SQL='SELECT DISTINCT TimeCreated AS ListItem
+                FROM WODLog 
+                WHERE ExerciseId = '.$Id.'
+                AND MemberId = "'.$_COOKIE['UID'].'" 
+                ORDER BY TimeCreated DESC LIMIT 3';
+            $db->setQuery($SQL);
+            $LastThreeRecords = $db->loadList();
+
             $SQL='SELECT E.Exercise, 
                 A.Attribute, 
                 WL.AttributeValue, 
                 UOM.UnitOfMeasure,
                 WL.RoundNo,
                 WL.OrderBy,
-                TimeCreated
+                TimeCreated,
+                (SELECT MAX(TimeCreated) FROM WODLog WL WHERE WL.ExerciseId = '.$Id.'
+                AND (Attribute = "Reps" OR SystemOfMeasure = "'.$this->getSystemOfMeasure().'")    
+                AND MemberId = "'.$_COOKIE['UID'].'") AS LastRecord
                 FROM WODLog WL 
                 LEFT JOIN Attributes A ON A.recid = WL.AttributeId
                 LEFT JOIN UnitsOfMeasure UOM ON UOM.recid = WL.UnitOfMeasureId
@@ -432,7 +444,8 @@ class Model
                 WHERE WL.ExerciseId = '.$Id.'
                 AND (Attribute = "Reps" OR SystemOfMeasure = "'.$this->getSystemOfMeasure().'")    
                 AND MemberId = "'.$_COOKIE['UID'].'"
-                ORDER BY TimeCreated DESC, RoundNo, OrderBy, Attribute';
+                AND TimeCreated IN '.$LastThreeRecords.' 
+                ORDER BY TimeCreated, RoundNo, OrderBy, Attribute';
             //var_dump($SQL);
             $db->setQuery($SQL);
             return $db->loadObjectList();

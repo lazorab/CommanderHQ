@@ -69,7 +69,17 @@ class DatabaseManager {
 		}
 		mysql_free_result( $cur );
 		return $array;       
-    }         
+    } 
+    
+    public function loadArrayList()
+    {
+        if (!($cur = $this->Query())) {
+            return null;
+	}        
+        $array = mysql_fetch_array($cur);
+ 	mysql_free_result( $cur );
+	return $array;       
+    }
     
     public function getNumRows()
     {

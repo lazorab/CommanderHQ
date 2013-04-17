@@ -284,28 +284,30 @@ return $html;
         $Model = new BenchmarkModel;
         $Attributes = $Model->getExerciseIdAttributes($ExerciseId);
         $ExerciseHistory = $Model->getExerciseHistory($ExerciseId);
-        $html.='<p style="color:red">';
-   
+        $html ='';
             if(count($ExerciseHistory) == 0){
-                $html.='No History for activity';
-            }
+                $html='<p style="color:red">No History for activity</p>';
+            }else{
             $j=0;
             $NumAttributes = count($Attributes);
-            $t=0;
+            $NumRows = count($ExerciseHistory);
+            $i=1;
             foreach($ExerciseHistory as $Detail){
-                if($t < 3){
+                if($i < $NumRows)
+                    $html.='<p style="color:red;font-size:16px;">';
+                else
+                    $html.='<p style="color:green;font-size:16px;">';
                     $html.=''.$Detail->Attribute.' : '.$Detail->AttributeValue.''.$Detail->UnitOfMeasure.'';
                     $j++;
                     if($j == $NumAttributes){
-                        $html.='<br/>';
+                        $html.='</p>';
                         $j = 0;
-                        $t++;
                     }else{
                         $html.=' | ';
                     }
-                }
-            }        
-        $html.='</p>'; 
+                    $i++;
+                } 
+            }
         return $html;
     }         
         
@@ -313,30 +315,32 @@ return $html;
         {
             $Html='';
             $ExplodedExercise = explode('_',$ThisExercise);
-            $ThisRoundNo = $ExplodedExercise[0];
             $ThisExerciseId = $ExplodedExercise[1];
             $Model = new BenchmarkModel;
             $ExerciseHistory = $Model->getExerciseHistory($ThisExerciseId);
-            //var_dump($ThisExerciseId);
-            if(count($ExerciseHistory) == 0){
-                $Html.='No History for activity';
-            }
-            $i=0;
-            $j=0;
-            $TheseAttributes='';
             $Attributes = $Model->getExerciseIdAttributes($ThisExerciseId);
+            $TheseAttributes='';
+            if(count($ExerciseHistory) == 0){
+                $Html='<p style="color:red">No History for activity</p>';
+            }else{
+            $j=0;
             $NumAttributes = count($Attributes);
+            $NumRows = count($ExerciseHistory);
+            $i=1;
             foreach($ExerciseHistory as $Detail){
-                if($i < 3){
+                if($i < $NumRows)
+                    $Html.='<p style="color:red;font-size:16px;">';
+                else
+                    $Html.='<p style="color:green;font-size:16px;">';
                     $Html.=''.$Detail->Attribute.' : '.$Detail->AttributeValue.''.$Detail->UnitOfMeasure.'';
                     $j++;
                     if($j == $NumAttributes){
-                        $Html.='<br/>';
+                        $Html.='</p>';
                         $j = 0;
-                        $i++;
                     }else{
                         $Html.=' | ';
                     }
+                    $i++;
                 }
             }
             $i=0;
@@ -427,9 +431,8 @@ return $html;
 	{
             $Model = new BenchmarkModel;
             $Description = $Model->getBenchmarkDescription($this->Benchmark->Id);
-            $Html .= '<li>';
-            $Html .= ''.$this->Benchmark->WorkoutName.':<br/><span style="font-size:small">'.$Description.'</span>';
-            $Html .= '</li>';
+            $Html = 'WOD: '.$this->Benchmark->WorkoutName.'<br/>';
+            $Html .= '<span style="font-size:small">'.$Description.'</span>';
             return $Html;	
 	}	
 }

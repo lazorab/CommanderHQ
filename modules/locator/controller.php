@@ -151,7 +151,7 @@ return $html;
                 $Affiliates=$Model->getAffiliates();
                 if(count($Affiliates) > 0){
                     $html.='<div '.$Overthrow.'>';
-                    $html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';               
+                    $html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
                     foreach($Affiliates AS $Affiliate){
                         $html .= '<li>';
                         $html .= '<a href="" onclick="getDetails('.$Affiliate->AffiliateId.');">'.$Affiliate->GymName.':<br/><span style="font-size:small">'.$Affiliate->Region.'</span></a>';
@@ -171,18 +171,22 @@ return $html;
         
  	function TopSelection()
 	{
-            $validate = new ValidationUtils;
             $Model = new LocatorModel;
             $Affiliate=$Model->getAffiliate($_REQUEST['topselection']);
-            $Html = '<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-                <li><a href="'.$Affiliate->URL.'" target="_blank">'.$Affiliate->GymName.'</a></ul>';
-                $Html.='<br/>
-                '.$Affiliate->Address.'<br/>
-                '.$Affiliate->Region.'<br/>';
-            if($FormattedNumber = $validate->GeneralNumberCheck($Affiliate->TelNo)) {
-                $Html.='Tel: <a href="tel:'.$FormattedNumber.'">
-                        '.$Affiliate->TelNo.'</a>';
-            }    
+            $Html = '<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d"><li>';
+            if($Affiliate->URL != '')     
+                $Html.='<a href="http://'.$Affiliate->URL.'">';
+            $Html.=''.$Affiliate->GymName.'';
+            if($Affiliate->URL != '')   
+                $Html.='</a>';
+            $Html.='</ul>';
+                $Html.='<br/>';
+            if($Affiliate->Address != '')     
+                $Html.=''.$Affiliate->Address.'<br/>';
+            if($Affiliate->Region != '')  
+                $Html.=''.$Affiliate->Region.'<br/>';
+            if($Affiliate->TelNo != '')
+                $Html.='Tel: '.$Affiliate->TelNo.'<br/>';    
             return $Html;	
 	}       
 }

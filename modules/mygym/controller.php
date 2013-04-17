@@ -298,28 +298,30 @@ class MygymController extends Controller
         $Model = new MygymModel;
         $Attributes = $Model->getExerciseIdAttributes($ExerciseId);
         $ExerciseHistory = $Model->getExerciseHistory($ExerciseId);
-        $html.='<p style="color:red">';
-   
+        $html ='';
             if(count($ExerciseHistory) == 0){
-                $html.='No History for activity';
-            }
+                $html='<p style="color:red">No History for activity</p>';
+            }else{
             $j=0;
             $NumAttributes = count($Attributes);
-            $t=0;
+            $NumRows = count($ExerciseHistory);
+            $i=1;
             foreach($ExerciseHistory as $Detail){
-                if($t < 3){
+                if($i < $NumRows)
+                    $html.='<p style="color:red;font-size:16px;">';
+                else
+                    $html.='<p style="color:green;font-size:16px;">';
                     $html.=''.$Detail->Attribute.' : '.$Detail->AttributeValue.''.$Detail->UnitOfMeasure.'';
                     $j++;
                     if($j == $NumAttributes){
-                        $html.='<br/>';
+                        $html.='</p>';
                         $j = 0;
-                        $t++;
                     }else{
                         $html.=' | ';
                     }
-                }
-            }        
-        $html.='</p>'; 
+                    $i++;
+                } 
+            } 
         return $html;
     }       
         

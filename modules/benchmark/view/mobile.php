@@ -58,7 +58,7 @@ function messagedisplay(message)
 
 function getBenchmarks(cat)
 {
-    $('.toplist').html('');
+    $('#topselection').html('');
     $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=benchmark\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
     $.ajax({url:'ajax.php?module=benchmark',data:{cat:cat},dataType:"html",success:display});
 }
@@ -86,9 +86,9 @@ function topselectiondisplay(data)
     codes += '<div class="ui-block-c"><input type="text" data-role="none" style="width:80%;color:white;font-weight:bold;background-color:#6f747a" value="Distance" readonly="readonly"/></div>';
     codes += '<div class="ui-block-d"><input type="text" data-role="none" style="width:80%;color:black;font-weight:bold;background-color:#ccff66" value="Reps" readonly="readonly"/></div>';
     codes += '</div>';
-    $('.toplist').html(data);
-    $('.toplist').listview();
-    $('.toplist').listview('refresh');    
+    $('#topselection').html(data);
+    $('#topselection').listview();
+    $('#topselection').listview('refresh');    
     $('#colorcodes').html(codes);
 }
 
@@ -154,7 +154,7 @@ function SaveTheseResults(WOD,ActivityForm)
 <br/>
 
 <div id="topselection">
-    <ul class="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d"></ul>
+
 </div> 
 
 <div id="video"></div>

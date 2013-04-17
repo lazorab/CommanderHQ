@@ -50,11 +50,11 @@ class ProfileController extends Controller
                 $Message = 'Error - Date of Birth Required';				
             else if($_REQUEST['Weight'] == '')
                 $Message = 'Error - Weight Required';
-            else if(!is_int($_REQUEST['Weight']))
+            else if(!is_numeric($_REQUEST['Weight']))
                 $Message = 'Error - Invalid Weight';            
             else if($_REQUEST['Height'] == '')
                 $Message = 'Error - Height Required';
-            else if(!is_int($_REQUEST['Height']))
+            else if(!is_numeric($_REQUEST['Height']))
                 $Message = 'Error - Invalid Height';            
             else if($_REQUEST['Gender'] == '')		
                 $Message = 'Error - Select Gender';
