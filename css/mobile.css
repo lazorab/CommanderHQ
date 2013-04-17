@@ -107,6 +107,13 @@ p{
 	font-weight: normal;   
 }
 
+.ui-panel-inner ul{
+    list-style-type: none;
+    padding:0;
+    margin: 0;
+    width:100%;
+}
+
 #slidemenu ul li.active {
   background-color: #333;
 }
@@ -115,53 +122,15 @@ p{
   color:#CA3C32;
 }
 
-#slidemenu.active
-{ 
-	display:block;
-}
-
-#slidemenu {
-  width: 62%;
-  height: 400px;
-
-  float: left;
-  overflow: scroll;
-}
-
-#slidemenu h3{
-	font-family:arial;
-	font-size:12px;
-	color:#fff;
-	margin:0;
-	background-color:#5a5959;
-	padding:4px 0 4px 10px;
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(5%,rgba(90,89,89,1)), color-stop(85%,rgba(66,65,65,1)));
-	border-top:solid #6b6b6b 1px;
-	border-bottom:solid #3d3d3d 1px;
-	text-shadow: 0px -1px 1px #333;
-}
-
-#slidemenu ul {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  vertical-align:middle;  
-}
-
 #slidemenu ul li {
-  list-style-type: none;
-  margin: 0px 0;
   background-color: #3d3d3d;
-  height: 40px;
   width:100%;
-  line-height: 40px;
   color: #999;
   border-top: 2px solid #494949;
   border-bottom: 2px solid #2b2b2b;
 }
 
 #slidemenu ul li a{
-  
   font-size: 1.2em;
   color:#999;
   text-shadow: 0.125em 0.125em 0 #000;
@@ -789,18 +758,12 @@ a {
 
 /*main footer*/
 #footer{
-	background-color:#6f747a;
-	font-family:Arial, Helvetica, sans-serif;
-	font-size: 14px;
-	color:#fff;
-	margin:0;
-	padding-top:4px;
-	text-align:center;
-	background-repeat:no-repeat;
-}
-
-#footer img{
-	vertical-align:middle;
+    background:url(../../images/640/navBk.png) repeat-x top left #fff;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:12px;
+    color:#fff;
+    margin:0;
+    text-align:center;
 }
 
 .FooterIcons{

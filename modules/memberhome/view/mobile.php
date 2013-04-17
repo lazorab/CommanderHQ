@@ -1,6 +1,6 @@
 <?php 
 $ratio = SCREENWIDTH / LAYOUT_WIDTH;
-$TopMargin = floor(((LAYOUT_WIDTH - 396)*$ratio) / 4);
+$TopMargin = floor(((LAYOUT_WIDTH - 444)*$ratio) / 4);
 $LeftMargin = floor((((LAYOUT_WIDTH - 396)*$ratio) / 4) / 2);
 $GridIconSize = floor((SCREENWIDTH - (((LAYOUT_WIDTH - 396)*$ratio) / 4)) / 3);
 

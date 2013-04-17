@@ -1,8 +1,4 @@
-<div id="slidemenu"
-    <?php if($Device->IsGoogleAndroidDevice()) { ?>
-        class="overthrow"
-<?php } ?>
-     >
+<div id="slidemenu" class="jqm-navmenu-panel" data-role="panel" data-position="left" data-display="push">
 <?php if(isset($_COOKIE['UID'])){?>
 <ul>
     <li style="<?php echo $Display->NewLineHeight('80')?>"<?php if($Module == 'profile'){?> class="active"<?php } ?>><img  alt="Menu" <?php echo $RENDER->NewImage('menu/profile.png');?> src="<?php echo IMAGE_RENDER_PATH;?>menu/profile.png"/><a href="" onclick="OpenThisPage('?module=profile');" class="contentLink" style="<?php echo $Display->NewFontSize('24')?>"><?php echo $Display->UsersName();?></a></li>
@@ -49,5 +45,6 @@
 <div class="menusection"></div>
 	<ul>
 		<li style="<?php echo $Display->NewLineHeight('80')?>"><img  alt="Menu" <?php echo $RENDER->NewImage('menu/logout.png');?> src="<?php echo IMAGE_RENDER_PATH;?>menu/logout.png"/><a href="" onclick="OpenThisPage('?module=logout');" class="contentLink" style="<?php echo $Display->NewFontSize('24')?>">Logout</a></li>
+                <li style="<?php echo $Display->NewLineHeight('80')?>"><img  alt="Menu" <?php echo $RENDER->NewImage('menu/logout.png');?> src="<?php echo IMAGE_RENDER_PATH;?>menu/logout.png"/><a href="" onclick="OpenThisPage('?module=terms');" class="contentLink" style="<?php echo $Display->NewFontSize('24')?>">Terms &amp; Conditions</a></li>
 	</ul>
 </div>

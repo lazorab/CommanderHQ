@@ -20,7 +20,8 @@
 <!-- startup image for web apps (320x460) -->
 <link rel="apple-touch-startup-image" href="images/splashscreen.png" media="screen and (max-device-width: 320px)" />
 
-<link type="text/css" rel="stylesheet" href="css/jquery.mobile-1.1.0.css" />
+<link type="text/css" rel="stylesheet" href="css/jquery.mobile-1.3.0.css" />
+<link type="text/css" rel="stylesheet" href="css/jqm-demos.css" />
 <link type="text/css" rel="stylesheet" href="css/mobile.css" />
 <link type="text/css" rel="stylesheet" href="css/clock.css" />
 <link rel="stylesheet" href="css/add2home.css">
@@ -37,7 +38,7 @@ body { width: <?php echo SCREENWIDTH;?>px;}
 #nav{width: <?php echo SCREENWIDTH;?>px;}
 #menu{width: <?php echo SCREENWIDTH;?>px;}
 #content{width: <?php echo SCREENWIDTH;?>px;}
-#footer{<?php echo $RENDER->BackgroundImage('purple.png',0,0);?>}
+#footer{width: <?php echo (SCREENWIDTH - 16);?>px;padding:8px;}
 </style>
 
 <script type="text/javascript">
@@ -68,45 +69,10 @@ document.location.href = noddy.href;
 }
 </script>
 <script type="text/javascript">
-$(function(){
-	var menuStatus;
-	
-	$(".ShowSlideMenu").click(function(){
-		if(menuStatus != true){				
-		$(".ui-page-active").animate({marginLeft: "62%"}, 300, function(){menuStatus = true;
-                  //$("#slidemenu").addClass('active');
-                  });
-		  return false;
-		  } else {
-			$(".ui-page-active").animate({
-			marginLeft: "0px"}, 300, function(){menuStatus = false;
-                  //$("#slidemenu").removeClass('active');
-                  });
-                  return false;
-		  }
-	});
-
-	$('.pages').live("swipeleft", function(){
-		if (menuStatus == true){	
-		$(".ui-page-active").animate({
-			marginLeft: "0px"}, 300, function(){menuStatus = false});
-		  }
-	});
-	
-	$('.pages').live("swiperight", function(){
-		if (menuStatus == false){	
-		$(".ui-page-active").animate({marginLeft: "62%"}, 300, function(){menuStatus = true});
-		  }
-	});
-	
-	$("#menu li a").click(function(){
-		var p = $(this).parent();
-		if($(p).hasClass('active')){
-			$("#menu li").removeClass('active');
-		} else {
-			$("#menu li").removeClass('active');
-			$(p).addClass('active');
-		}
+$( document ).on( "pageinit", ".pages", function() {
+	var page = $(this);
+	$( ".jqm-navmenu-link" ).on( "click", function() {
+            page.find(".jqm-navmenu-panel").panel( "open" );
 	});
 		
 });	
@@ -197,7 +163,7 @@ function SubmitFeedback()
 
 </script>
 
-<script src="http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
 
 <script type="text/javascript">
 $( document ).bind( 'mobileinit', function(){

@@ -34,7 +34,7 @@ class ProfileController extends Controller
                 $Message = 'Error - Username already exists. Please choose another.';
             else if($_REQUEST['UserName'] == '')
                 $Message = 'Error - Invalid Username!';
-            else if($_REQUEST['Password'] == '')
+            else if($_REQUEST['PassWord'] == '')
                 $Message = 'Error - Invalid Password!';
             else if(trim($_REQUEST['PassWord']) != trim($_REQUEST['ConfirmPassWord']))
                 $Message = 'Error - Passwords do not match!';
