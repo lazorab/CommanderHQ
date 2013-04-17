@@ -124,16 +124,18 @@ p{
 
 #slidemenu ul li {
   background-color: #3d3d3d;
-  width:100%;
+  width:98%;
   color: #999;
   border-top: 2px solid #494949;
   border-bottom: 2px solid #2b2b2b;
+  padding-left: 3%;
 }
 
 #slidemenu ul li a{
   font-size: 1.2em;
   color:#999;
-  text-shadow: 0.125em 0.125em 0 #000;
+  text-shadow: 1px 1px 0 #000;
+  padding-left:1%;
 }
 
 .menusection{
@@ -146,7 +148,8 @@ p{
   font-weight:bold; 
   padding: 1% 0 1% 2%;
   border-top: 2px solid #494949;
-  border-bottom: 2px solid #2b2b2b;  
+  border-bottom: 2px solid #2b2b2b;
+  text-shadow:none;
 }
 
 #menu

@@ -3223,8 +3223,7 @@ div.ui-slider-switch.ui-mini {
 	box-shadow: 5px 0px 5px rgba(0,0,0,.15);
 }
 .ui-panel-display-push.ui-panel-open.ui-panel-position-left {
-	border-right-width: 1px;
-	margin-right: -1px;
+
 }
 .ui-panel-animate.ui-panel-content-fixed-toolbar-position-left.ui-panel-content-fixed-toolbar-open.ui-panel-content-fixed-toolbar-display-push {
 	margin-left: 1px;
