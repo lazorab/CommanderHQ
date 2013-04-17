@@ -27,8 +27,6 @@ $Environment = 'mobile';
 /*HEADER*/
 if (file_exists("includes/header/$Environment.php"))
 include("includes/header/$Environment.php");
-
-//echo $HtmlOutput->GetOpenBodyTag();
   
     $Banner = 'header';//default
     if(isset($_REQUEST['banner']))
@@ -38,13 +36,15 @@ include("includes/header/$Environment.php");
         $Banner = ''.$_REQUEST['module'].'_header';
     }
 ?>
-<body onorientationchange="updateOrientation();">
+<body onorientationchange="updateOrientation();">   
+    
+    
+<div data-role="page" class="pages" data-theme="c">
 <?php
 /*SLIDE MENU*/        
 if (file_exists("includes/menu/$Environment.php"))
-include("includes/menu/$Environment.php");?>
-        
-<div data-role="page" class="pages" data-theme="c">
+include("includes/menu/$Environment.php");?> 
+      
 
 <div id="header">
 <img alt="Header" <?php echo $RENDER->NewImage(''.$Banner.'.png');?> src="<?php echo IMAGE_RENDER_PATH.$Banner;?>.png"/>
@@ -71,7 +71,8 @@ else if (file_exists("modules/$Module/view/$Environment.php"))
     if (file_exists("includes/footer/$Environment.php"))
 include("includes/footer/$Environment.php");
 ?>
+
 </div><!-- /page -->
-<?php //echo $HtmlOutput->GetCloseBodyTag();?>
+
     </body>
 </html>
