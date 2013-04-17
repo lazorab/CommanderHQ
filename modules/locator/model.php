@@ -38,7 +38,9 @@ class LocatorModel extends Model {
             Address,
             City,
             Region,
-            TelNo
+            TelNo,
+        	Longitude,
+        	Latitude		
             FROM Affiliates
             WHERE (Longitude BETWEEN "'.$StartLatitude.'" AND "'.$EndLatitude.'")
             AND (Latitude BETWEEN "'.$StartLongitude.'" AND "'.$EndLongitude.'")
