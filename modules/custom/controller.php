@@ -36,14 +36,14 @@ class CustomController extends Controller
 
         $ActivityFields = $Model->getActivityFields();
         //$HistoryAttributes = $Model->getExerciseIdAttributes($ActivityFields[0]->ExerciseId);
-        $ExerciseHistory = $Model->getExerciseHistory($ActivityFields[0]->ExerciseId);
+        //$ExerciseHistory = $Model->getExerciseHistory($ActivityFields[0]->ExerciseId);
         //var_dump($ExerciseHistory);
         $Attributes = array();
         $i=0;
         //var_dump($ActivityFields);
-        $html .= '<div id="RoutineNo_RoundNo_RowNo" data-role="collapsible-set" data-iconpos="right">'; 
-        $html .= '<div data-role="collapsible">';
-        $html .= '<h2>'.$ActivityFields[0]->Exercise.'<input class="delete" type="button" onClick="RemoveFromList(\'RoutineNo_RoundNo_RowNo\');" value="Delete"/><br/>';  
+        $html .= '<ul id="RoutineNo_RoundNo_RowNo" class="listview" data-role="listview" data-inset="true" data-iconpos="right">'; 
+        //$html .= '<div data-role="collapsible">';
+        $html .= '<li>'.$ActivityFields[0]->Exercise.'<input class="delete" type="button" onClick="RemoveFromList(\'RoutineNo_RoundNo_RowNo\');" value="Delete"/><br/>';  
         
         foreach($ActivityFields as $Activity){
             
@@ -76,57 +76,8 @@ class CustomController extends Controller
             $Attributes[''.$Activity->Attribute.''] = $AttributeValue != "-" ? $AttributeValue : "";
         }  
         $i=0;
-        $html.='</h2><div id="RoutineNo_RoundNo_OrderBy_'.$Activity->ExerciseId.'_History"><p style="color:red">';
-   
-            if(count($ExerciseHistory) == 0){
-                $html.='No History for activity';
-            }
-            $j=0;
-            $NumAttributes = count($Attributes);
-            $t=0;
-            foreach($ExerciseHistory as $Detail){
-                if($t < 3){
-                    $html.=''.$Detail->Attribute.' : '.$Detail->AttributeValue.''.$Detail->UnitOfMeasure.'';
-                    $j++;
-                    if($j == $NumAttributes){
-                        $html.='<br/>';
-                        $j = 0;
-                        $t++;
-                    }else{
-                        $html.=' | ';
-                    }
-                }
-            }        
-        $html.='</p></div>';        
-        $html .= '<div class="clear"></div><div class="ActivityAttributes"><form id="RoutineNo_RoundNo_OrderBy_'.$Activity->ExerciseId.'" name="RoutineNo_RoundNo_OrderBy_'.$Activity->ExerciseId.'">';
-        $TheseAttributes='';
-        //var_dump($Attributes);
-        foreach($Attributes as $Attribute=>$Val){
-            if($i > 0)
-                $TheseAttributes.='_';
-            $TheseAttributes.=$Attribute;
-            $html .= '<div style="float:left;margin:0 25px 0 25px"">'.$Attribute.'<br/><input value="'.$Val.'" style="width:80px" type="number" id="RoutineNo_RoundNo_OrderBy_'.$Activity->ExerciseId.'_'.$Attribute.'_new" name="RoutineNo_RoundNo_'.$Activity->ExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_OrderBy"/></div>';    
-            if($Attribute == 'Distance'){
-                    $html .= '<div style="float:left;margin:18px 25px 0 25px"><select id="RoutineNo_RoundNo_OrderBy_'.$Activity->ExerciseId.'_Distance_UOM" name="RoutineNo_RoundNo_OrderBy_'.$Activity->ExerciseId.'_Distance_UOM">';
-            if($this->SystemOfMeasure() == 'Metric'){
-                $html .= '<option value="2">Metres</option>';
-                $html .= '<option value="1">Kilometres</option>';
-                $html .= '</select>';               
-            }else{
-                $html .= '<option value="3">Miles</option>';
-                $html .= '<option value="4">Yards</option>';
-                $html .= '</select>';                
-            } 
-            $html .= '</div>';                
-            }else if($Attribute == 'Height'){
-                $html .= '<input type="hidden" value="'.$Model->getUnitOfMeasureId('Height').'" id="RoutineNo_RoundNo_OrderBy_'.$Activity->ExerciseId.'_Height_UOM" name="RoutineNo_RoundNo_OrderBy_'.$Activity->ExerciseId.'_Height_UOM"/>';
-            }
-            $i++;
-        }
-        $html .= '<div style="float:right;margin:10px 30px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="UpdateActivity(\'RoutineNo_RoundNo_OrderBy_'.$Activity->ExerciseId.'\', \''.$TheseAttributes.'\');" value="Update Values"/></div>';
-        $html .= '</form></div><div class="clear"></div>';
-        $html .= '</div>';
-        $html .= '</div>';
+        $html.='</li></ul>';  
+
         return $html;
     }    
     
@@ -230,18 +181,17 @@ class CustomController extends Controller
         $Html .= '</div><div class="ui-block-b" style="width:45%;float:right">';
         $Html .= '<input class="textinput" type="date" name="WodDate" id="WodDate" placeholder="WOD Date" value="'.date('Y-m-d').'"/>';        
         $Html .= '</div></div>';  
-        $Html .= '<br/><br/><br/>'; 
-        $Html .= '<textarea name="descr" placeholder="Describe your wod"></textarea><br/>';
-        
-        $Html .= '<div id="Routine1Label"></div>';
-        $Html .= '<div id="Routine1Round1Label"></div>';       
+        $Html .= '<textarea name="descr" placeholder="Describe Your WOD"></textarea><br/>';
+        $Html .= 'Routine 1';
+        $Html .= '<textarea name="RoutineDescr" placeholder="Describe Your Routine"></textarea><br/>';
+        $Html .= 'Round 1';       
         $Html .= '<div id="activity1list">'.$this->ChosenExercises().'</div>';
         
         $Html .= '<div id="Routines"></div>';
         
-        $Html .= '<div class="ui-grid-b">';
+        //$Html .= '<div class="ui-grid-b">';
         $Html .= '<div id="add_exercise">'.$this->AddExercise().'</div>';
-        $Html .= '</div>';       
+        //$Html .= '</div>';       
         
         $Html .= '<div id="SelectActivities">';
         
@@ -256,17 +206,23 @@ class CustomController extends Controller
         $Html .= '<br/><br/>';     
         $Html .= '</div>';
         $Html .= '</div>';
-        $Html .= '<div id="HideAfterSave">';
-        $Html .= $this->getExercises('');
-        $Html .= '<div class="StopwatchButton"><input class="buttongroup StopwatchButton" id="DuplicateActivity" type="button" onClick="DuplicateLastActivity();" value="Copy Activity"/></div>';              
-        $Html .= '<div style="float:right" class="StopwatchButton"><input class="buttongroup" type="button" onClick="addRound();" value="Add a Round"/></div>';  
-        $Html .= '<br/><br/><br/>';
-        $Html .= $this->getBenchmarks('');        
-        $Html .= '<br/><br/><br/>';
-        $Html .= '<div class="StopwatchButton"><input class="buttongroup StopwatchButton" type="button" onClick="addRoutine();" value="Add a Routine"/></div>';
-        //$Html .= '<div style="margin:0 6px 0 6px" class="StopwatchButton"><input class="buttongroup" id="ShowHideClock" type="button" onClick="ShowHideStopwatch();" value="Time Workout"/></div>';
-        $Html .= '<div style="float:right" class="StopwatchButton"><input class="buttongroup" type="button" value="Save Wod" onClick="Save();"/></div>';       
+        $Html .= '<div id="CenterButtonText">';
+        $Html .= '<br/><br/>';   
+        $Html .= '<ul id="autocomplete" data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="Add Activity..." data-filter-theme="d"></ul>';
+        $Html .= '<div id="ExerciseInputs"></div>';
+        $Html .= '<br/><br/>';   
+        $Html .= '<div class="ui-grid-a">
+	<div class="ui-block-a"><button id="DuplicateActivity" type="button" onClick="DuplicateLastActivity();">Copy Activity</button></div>
+	<div class="ui-block-b"><button type="button" onClick="addRound();">Add a Round</button></div>
+</div><br/>';
         
+        $Html .= $this->getBenchmarks('');
+        
+        $Html .= '<div class="clear"></div><br/><div class="ui-grid-a">
+	<div class="ui-block-a"><button type="button" onClick="addRoutine();">Add a Routine</button></div>
+	<div class="ui-block-b"><button type="button" onClick="Save();">Save Wod</button></div>
+</div>';        
+
         $Html .= '</div><div class="clear"></div>'; 
         $Html .= '</div>'; 
         $Html .= '</form>';
@@ -307,7 +263,7 @@ class CustomController extends Controller
 			
 			if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0 && $ThisRound != $Detail->RoundNo){
                             if($ThisExerciseId != null && $i > 0){
-                                $html.='</h2><div id="RoutineNo_'.$ThisRound.'_'.$OrderBy.'_'.$ThisExerciseId.'_History"><p style="color:red">'.$this->UpdateHistory($ThisExerciseId).'</p></div>';
+                                $html.='</h2>';
             $i=0;
             $html .= '<div class="ActivityAttributes"><form id="RoutineNo_'.$ThisRound.'_'.$OrderBy.'_'.$ThisExerciseId.'" name="RoutineNo_'.$ThisRound.'_'.$OrderBy.'_'.$ThisExerciseId.'">';
             //var_dump($Attributes);
@@ -334,7 +290,7 @@ class CustomController extends Controller
 			else if($ThisExerciseId != $Detail->ExerciseId){
 
                             if($ThisExerciseId != null && $i > 0){
-                                $html.='</h2><div id="RoutineNo_'.$ThisRound.'_'.$OrderBy.'_'.$ThisExerciseId.'_History"><p style="color:red">'.$this->UpdateHistory($ThisExerciseId).'</p></div>';
+                                $html.='</h2>';
             $i=0;
             $html .= '<div class="ActivityAttributes"><form id="RoutineNo_'.$ThisRound.'_'.$OrderBy.'_'.$ThisExerciseId.'" name="RoutineNo_'.$ThisRound.'_'.$OrderBy.'_'.$ThisExerciseId.'">';
             //var_dump($Attributes);
@@ -369,7 +325,7 @@ class CustomController extends Controller
         $i++;
 	}
                             if($ThisExerciseId != null && $i > 0){
-                                $html.='</h2><div id="RoutineNo_'.$ThisRound.'_'.$OrderBy.'_'.$ThisExerciseId.'_History"><p style="color:red">'.$this->UpdateHistory($ThisExerciseId).'</p></div>';
+                                $html.='</h2>';
             $i=0;
             $html .= '<div class="ActivityAttributes"><form id="RoutineNo_'.$ThisRound.'_'.$OrderBy.'_'.$ThisExerciseId.'" name="RoutineNo_'.$ThisRound.'_'.$OrderBy.'_'.$ThisExerciseId.'">';
             //var_dump($Attributes);
@@ -399,7 +355,7 @@ class CustomController extends Controller
         $Model = new CustomModel;
         $Benchmarks = $Model->getBenchmarks();   
         $Selected='';
-        $Html .= '<br/><select style="float:right;width:200px" class="select buttongroup" data-role="none" id="benchmark" name="benchmark" onChange="AddBenchmark(this.value)">
+        $Html .= '<select style="float:right;width:200px" class="select buttongroup" data-role="none" id="benchmark" name="benchmark" onChange="AddBenchmark(this.value)">
          <option value="none">Add Benchmark</option>';
 	foreach($Benchmarks AS $Benchmark){
             if($Benchmark->WorkoutName == $SelectedExercise)
@@ -412,7 +368,7 @@ class CustomController extends Controller
 	return $Html;        
     }
     
-    function getExercises($SelectedExercise)
+    function _getExercises($SelectedExercise)
     {
         $Html='';
         $Model = new CustomModel;
@@ -455,10 +411,15 @@ class CustomController extends Controller
             if(isset($_REQUEST['benchmarkId'])){   
                 $html = $this->getBenchmark();
             }else if(isset($_REQUEST['chosenexercise'])){
-		$html = $Model->getExerciseAttributes($_REQUEST['chosenexercise']);              
+		$html = $Model->getExerciseIdAttributes($_REQUEST['chosenexercise']);              
             }
-            else if($_REQUEST['dropdown'] == 'refresh'){
-                $html = $this->getExercises($_REQUEST['selectedexercise']);
+            else if(isset($_REQUEST['q'])){
+            $Affiliates = $Model->getExercises($_REQUEST['q']);
+            $Json = array();
+            foreach($Affiliates AS $Affiliate){
+                $Json[] = $Affiliate;
+            }
+            $html = ''.$_REQUEST['callback'].'('.json_encode($Json).');';
             }
             else if($_REQUEST['history'] == 'refresh'){
                 $html = $this->UpdateHistory($_REQUEST['ExerciseId']);

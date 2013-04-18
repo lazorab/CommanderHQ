@@ -84,12 +84,15 @@ function DisplayStopwatch(Module, RoutineId)
     if($('#'+RoutineNo+'_timerContainer').html() != ''){
         SaveRoutineTime(Module, RoutineId);
     }else{  
-        $('#'+RoutineNo+'_ShowHideClock').val('Save Time');
+        $('#'+RoutineNo+'_ShowHideClock').val('Save');
         var Html = '<div class="clear"></div><div id="clock" onClick="EnterRoutineTime(\''+RoutineId+'\');">00:00:0</div>';
         Html+='<input type="hidden" id="TimeToComplete" name="TimeToComplete" value="00:00:0">';
-        Html+='<div class="StopwatchButton"><input id="resetbutton" class="buttongroup" onClick="resetclock();" type="button" value="Reset"/></div>';
-        Html+='<div class="StopwatchButton"><input class="buttongroup" type="button" onClick="Start();" value="Start"/></div>';
-        Html+='<div class="StopwatchButton"><input class="buttongroup" type="button" onClick="Stop();" value="Stop"/></div><div class="clear"></div>';
+        Html+='<div class="ui-grid-b">';
+        Html+='<div class="ui-block-a"><button data-icon="refresh" id="resetbutton" class="buttongroup" onClick="resetclock();"></button></div>';
+        Html+='<div class="ui-block-b"><button data-icon="arrow-r" class="buttongroup" onClick="Start();"></button></div>';
+        Html+='<div class="ui-block-c"><button data-icon="grid" class="buttongroup" onClick="Stop();"></button></div>';
+        Html+='</div>';
+        Html+='<div class="clear"></div>';
         $('#'+RoutineNo+'_timerContainer').html(Html);        
         $('.buttongroup').button();
         $('.buttongroup').button('refresh');        
@@ -102,7 +105,7 @@ function SaveRoutineTime(Module, RoutineId)
     var RoutineNo = ExplodedRoutineId[2];    
     var FieldName = ''+RoutineId+'_TimeToComplete';
     var RoutineTime = $('#clock').html();
-         $('#'+RoutineNo+'_ShowHideClock').val('Time Routine');
+         $('#'+RoutineNo+'_ShowHideClock').val('Timer');
         $('#'+RoutineNo+'_timerContainer').html('');
         $('.buttongroup').button();
         $('.buttongroup').button('refresh');   
@@ -152,7 +155,6 @@ function goBack()
 
 function OpenThisPage(page)
 {
-    $('#AjaxLoading').html('<img <?php echo $RENDER->NewImage("ajax-loader.gif");?> src="/css/images/ajax-loader.gif" />');
     window.location = page;
 }
 

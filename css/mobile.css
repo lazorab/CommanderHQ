@@ -8,6 +8,16 @@ body {
     font-weight: normal; 
 }
 
+/* custom JQM styling */
+#CenterButtonText .ui-btn-inner{
+    text-overflow: initial; /* Get rid of the ellipsis */
+    text-align:center; /* Play with padding to make max use of available button width */
+}
+#CenterButtonText .ui-btn-text {
+    font-size: 14px; /* Play with font size of the text */
+}
+
+
 /* main menu items */
 
 #gridcontainer{

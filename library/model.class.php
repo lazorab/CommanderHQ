@@ -185,6 +185,22 @@ class Model
             $db->setQuery($SQL);
             return $db->loadResult();
         }
+        
+        function getAffiliates($Search = '') {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT AffiliateId,
+            GymName
+            FROM Affiliates
+            WHERE GymName <> ""';
+            if($Search != '')
+                $SQL .= ' AND GymName LIKE "'.$Search.'%"';
+            $SQL .= ' ORDER BY GymName';
+            if($Search != '')
+                $SQL .= ' LIMIT 30';            
+	$db->setQuery($SQL);
+		
+	return $db->loadObjectList();
+    }        
     
     	function getMemberGym()
 	{
@@ -240,19 +256,21 @@ class Model
             return $db->loadResult();	
 	}    
         
-        function getExercises()
+        function getExercises($Search = '')
 	{
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
 
-        $SQL = 'SELECT DISTINCT E.recid AS ExerciseId, 
-            E.Exercise AS ActivityName,
-            E.Acronym
-            FROM Exercises E
-            LEFT JOIN ExerciseAttributes EA ON EA.ExerciseId = E.recid
-            WHERE CustomOption = 0
-            OR CustomOption = "'.$_COOKIE['UID'].'"
-            OR GymOption = "'.$this->getMemberGym()->AffiliateId.'"
-            ORDER BY ActivityName';
+            $SQL = 'SELECT DISTINCT E.recid AS ExerciseId, 
+                    E.Exercise AS ActivityName,
+                    E.Acronym
+                    FROM Exercises E
+                    LEFT JOIN ExerciseAttributes EA ON EA.ExerciseId = E.recid
+                    WHERE (CustomOption = 0
+                    OR CustomOption = "'.$_COOKIE['UID'].'"
+                    OR GymOption = "'.$this->getMemberGym()->AffiliateId.'")';
+            if($Search != '')
+                $SQL .= ' AND Exercise LIKE "'.$Search.'%"';                
+            $SQL .= ' ORDER BY ActivityName';
             $db->setQuery($SQL);
 		
             return $db->loadObjectList();	
@@ -418,15 +436,18 @@ class Model
         function getExerciseHistory($Id)
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            
+            $LastThreeRecords = '';
             $SQL='SELECT DISTINCT TimeCreated AS ListItem
                 FROM WODLog 
                 WHERE ExerciseId = '.$Id.'
                 AND MemberId = "'.$_COOKIE['UID'].'" 
                 ORDER BY TimeCreated DESC LIMIT 3';
             $db->setQuery($SQL);
-            $LastThreeRecords = $db->loadList();
-
+             $db->Query();
+            if($db->getNumRows() > 0){           
+                $LastThreeRecords = $db->loadList();
+            }
+            if($LastThreeRecords != ''){
             $SQL='SELECT E.Exercise, 
                 A.Attribute, 
                 WL.AttributeValue, 
@@ -449,6 +470,7 @@ class Model
             //var_dump($SQL);
             $db->setQuery($SQL);
             return $db->loadObjectList();
+            }
         }
         
 	function getBenchmarks()
@@ -708,6 +730,7 @@ class Model
                 M.oauth_provider AS LoginType,
 		MD.SkillLevel,
                 MD.GymId,
+                A.GymName,
 		MD.Gender,
 		MD.DOB,
                 MD.SystemOfMeasure,
@@ -719,6 +742,7 @@ class Model
                 MD.RecHR
                 FROM Members M 
                 LEFT JOIN MemberDetails MD ON MD.MemberId = M.UserId 
+                LEFT JOIN Affiliates A ON MD.GymId = A.AffiliateId
                 WHERE M.UserId = "'.$Id.'"';           
 
             $db->setQuery($SQL);

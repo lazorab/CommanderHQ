@@ -48,18 +48,6 @@ class ProfileModel extends Model
                         $db->setQuery($SQL);
                         $db->Query();
 	}
-        
-        function getAffiliates() {
-            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT AffiliateId,
-            GymName
-            FROM Affiliates
-            WHERE GymName <> ""
-            ORDER BY GymName';
-	$db->setQuery($SQL);
-		
-	return $db->loadObjectList();
-    }
     
         function SendEmail($Name, $Email, $UserName, $Password)
         {

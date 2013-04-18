@@ -21,11 +21,8 @@ $('#back').html('<img alt="Back" onclick="goBack();" <?php echo $RENDER->NewImag
 
 <div id="menuvideo" class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:0;"></div>	
 
-<div id="back" class="grid" style="float:left;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:0%;">
-	
-</div>
+<div id="back" class="grid" style="float:right;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:0%;"></div>
 
-<div id="AjaxLoading" class="grid" style="float:right;width:<?php echo $NavIconSize;?>px;height:<?php echo $NavIconSize;?>px;margin:0;"></div>
 </div>
 <div class="clear"></div>
 
@@ -33,12 +30,13 @@ $('#back').html('<img alt="Back" onclick="goBack();" <?php echo $RENDER->NewImag
 
 <div data-role="popup" id="popupFeedback" data-theme="a" class="ui-corner-all">
 <form id="feedbackform">
-<div style="padding:10px 20px;">
+<div style="padding:2%">
 <h3>Successfully Saved</h3>
-<textarea id="feedback" name="Comments" cols="10" rows="50" placeholder="Send us your comments"></textarea>
-<a style="width:40%;margin:4%;float:left" href="#" data-role="button" data-inline="true" onClick="SubmitFeedback();" data-theme="c">Submit</a>
-<a style="width:40%;margin:4%;float:right" href="#" data-role="button" data-inline="true" data-rel="back" data-theme="c">Cancel</a>
-<br/><br/><br/>
+<textarea id="feedback" name="Comments" cols="10" rows="50" placeholder="Comments?"></textarea>
+<div class="ui-grid-a">
+<div class="ui-block-a"><a href="#" data-mini="true" data-role="button" data-inline="true" onClick="SubmitFeedback();" data-theme="c">Send</a></div>
+<div class="ui-block-b"><a href="#" data-mini="true" data-role="button" data-inline="true" data-rel="back" data-theme="c">Close</a></div>
+</div>
 </div>
 </form>
 </div>
