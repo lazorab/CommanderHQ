@@ -66,6 +66,7 @@ class UploadController extends Controller
     }
     
     function ValidateNew(){
+        $Model = new UploadModel;
         $Message = '';
         if(isset($_REQUEST['NewExercise']) && $_REQUEST['NewExercise'] == ''){
             $Message = 1;//'Must Enter Exercise Name!';            
@@ -73,6 +74,8 @@ class UploadController extends Controller
             $Message = 2;//'Must Have at least one Attribute!';
         }else if(in_array('Distance', $_REQUEST['attributes']) && in_array('Height', $_REQUEST['attributes'])){
             $Message = 4;//'Can't have distance and height!';
+        }else if($Model->CheckExerciseNameExists()){
+            $Message = 6;//"Error - Exercise already exists!";
         }
         return $Message;        
     }

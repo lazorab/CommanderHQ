@@ -250,6 +250,8 @@ function wresult(message)
 {
     if($('#select_exercise').hasClass('inactive'))
         $('#select_exercise').removeClass('inactive');
+    if(message == 5)
+        alert('New Activity Successfully added!');
     if(message == 1){
         alert('Must Enter Exercise Name!');
     }else if(message == 2){
@@ -258,6 +260,8 @@ function wresult(message)
         alert('Must Select Exercise!');
     }else if(message == 4){
         alert('Can\'t have distance and height!');
+    }else if(message == 6){
+        alert('Error - Exercise already exists!');        
     }else{
     document.getElementById('rowcounter').value++; 
     var ThisRoutineNumber = $('#RoutineCounter').val();
@@ -425,6 +429,8 @@ function aresult(message)
 {
     if($('#aselect_exercise').hasClass('inactive'))
         $('#aselect_exercise').removeClass('inactive');
+    if(message == 5)
+        alert('New Activity Successfully added!');
     if(message == 1){
         alert('Must Enter Exercise Name!');
     }else if(message == 2){
@@ -433,6 +439,8 @@ function aresult(message)
         alert('Must Select Exercise!');
     }else if(message == 4){
         alert('Can\'t have distance and height!');
+    }else if(message == 6){
+        alert('Error - Exercise already exists!');        
     }else{
         LastAdvancedActivity = message;
     document.getElementById('arowcounter').value++; 
@@ -557,11 +565,11 @@ function aDuplicateLastActivity()
 <input type="hidden" name="Routine1Counter" id="aRoutine1Counter" value="0"/>
 <input type="hidden" name="Routine1RoundCounter" id="aRoutine1RoundCounter" value="1"/>
 <p>WOD Name:<input name="WodName" type="text"/> WOD Date:<input class="inputbox-required" type="text" name="WodDate" id="aWodDate" maxlength="25" placeholder="Use Calendar" value=""/>
-<img src="images/calendar-blue.gif" alt="calendar" id="Start_trigger"/></p>
+<img src="images/calendar-blue.gif" alt="calendar" id="aStart_trigger"/></p>
 <script type="text/javascript">
       Calendar.setup({
         inputField : "WodDate",
-        trigger    : "Start_trigger",
+        trigger    : "aStart_trigger",
         onSelect   : function() { this.hide() },
         dateFormat : "%Y-%m-%d"
       });
@@ -588,6 +596,6 @@ function aDuplicateLastActivity()
 <input type="button" style="float:right" name="btnsubmit" value="Save WOD" onClick="PublishAdvancedWod()"/>
 </form><br/>
 </div>
-<div id="add_exercise"></div>   
+<div id="aadd_exercise"></div>   
 </div>
 </div>

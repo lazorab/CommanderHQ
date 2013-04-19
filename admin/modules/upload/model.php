@@ -125,10 +125,21 @@ class UploadModel extends Model
                         VALUES("'.$ExerciseId.'","'.$this->getAttributeId('Reps').'")';
                     $db->setQuery($SQL);
                     $db->Query(); 
-                }      
-
-            return $this->AddExercise($ExerciseId);
+                }     
+                return '5';//New Activity Successfully added!
         }
+        
+         function CheckExerciseNameExists()
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL='SELECT Exercise FROM Exercises WHERE GymOption = "'.$_COOKIE['GID'].'" AND Exercise = "'.trim($_REQUEST['NewExercise']).'"';
+            $db->setQuery($SQL);
+            $db->Query();
+            if($db->getNumRows() > 0)
+                return true;
+            else 
+                return false;            
+        }        
         
 	function getAttributes()
 	{
