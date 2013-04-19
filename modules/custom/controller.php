@@ -181,40 +181,23 @@ class CustomController extends Controller
         $Html .= '</div><div class="ui-block-b" style="width:45%;float:right">';
         $Html .= '<input class="textinput" type="date" name="WodDate" id="WodDate" placeholder="WOD Date" value="'.date('Y-m-d').'"/>';        
         $Html .= '</div></div>';  
-        $Html .= '<textarea name="descr" placeholder="Describe Your WOD"></textarea><br/>';
-        $Html .= 'Routine 1';
-        $Html .= '<textarea name="RoutineDescr" placeholder="Describe Your Routine"></textarea><br/>';
-        $Html .= 'Round 1';       
+        $Html .= '<textarea name="descr" placeholder="Describe Your WOD"></textarea>';
+        $Html .= '<h3>Routine 1</h3>';
+        $Html .= '<h3>Round 1</h3>';       
         $Html .= '<div id="activity1list">'.$this->ChosenExercises().'</div>';
         
         $Html .= '<div id="Routines"></div>';
         
-        //$Html .= '<div class="ui-grid-b">';
         $Html .= '<div id="add_exercise">'.$this->AddExercise().'</div>';
-        //$Html .= '</div>';       
-        
-        $Html .= '<div id="SelectActivities">';
-        
-        $Html .= '<div id="timerContainer">';
-        $Html .= '<div class="clear"></div>';
-        $Html .= '<div id="clock" onClick="EnterTime();">00:00:0</div>';
-        $Html .= '<input type="hidden" id="TimeToComplete" name="TimeToComplete" value="00:00:0">';
-        $Html .= '<div class="StopwatchButton"><input id="resetbutton" class="buttongroup" onClick="resetclock();" type="button" value="Reset"/></div>';
-        $Html .= '<div class="StopwatchButton"><input class="buttongroup" type="button" onClick="Start();" value="Start"/></div>';
-        $Html .= '<div class="StopwatchButton"><input class="buttongroup" type="button" onClick="Stop();" value="Stop"/>';  
-        $Html .= '<div class="clear"></div>';
-        $Html .= '<br/><br/>';     
-        $Html .= '</div>';
-        $Html .= '</div>';
-        $Html .= '<div id="CenterButtonText">';
-        $Html .= '<br/><br/>';   
+
+        $Html .= '<div id="CenterButtonText">';  
         $Html .= '<ul id="autocomplete" data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="Add Activity..." data-filter-theme="d"></ul>';
-        $Html .= '<div id="ExerciseInputs"></div>';
-        $Html .= '<br/><br/>';   
+        $Html .= '<div id="ExerciseInputs"></div>';  
+        $Html .= '<button type="button" onClick="addNewExercise();">Create New Activity</button>';
         $Html .= '<div class="ui-grid-a">
 	<div class="ui-block-a"><button id="DuplicateActivity" type="button" onClick="DuplicateLastActivity();">Copy Activity</button></div>
 	<div class="ui-block-b"><button type="button" onClick="addRound();">Add a Round</button></div>
-</div><br/>';
+        </div><br/>';
         
         $Html .= $this->getBenchmarks('');
         
@@ -223,7 +206,7 @@ class CustomController extends Controller
 	<div class="ui-block-b"><button type="button" onClick="Save();">Save Wod</button></div>
 </div>';        
 
-        $Html .= '</div><div class="clear"></div>'; 
+        $Html .= '<div class="clear"></div>'; 
         $Html .= '</div>'; 
         $Html .= '</form>';
         $Html .= '<div class="clear"></div><br/>';

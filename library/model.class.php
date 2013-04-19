@@ -265,7 +265,8 @@ class Model
                     E.Acronym
                     FROM Exercises E
                     LEFT JOIN ExerciseAttributes EA ON EA.ExerciseId = E.recid
-                    WHERE (CustomOption = 0
+                    WHERE recid > 0
+                    AND (CustomOption = 0
                     OR CustomOption = "'.$_COOKIE['UID'].'"
                     OR GymOption = "'.$this->getMemberGym()->AffiliateId.'")';
             if($Search != '')

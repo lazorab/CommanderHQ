@@ -48,7 +48,7 @@ var OrderBy=0;
   $ul.trigger( "updatelayout");
   $('.activity').click(function(){
     var id = $(this).attr('id');  
-    SelectionControl(id);
+    ExerciseInputs(id);
     $input.val($('#'+id+'').html());
   $ul.html('');
   $ul.listview( "refresh" );
@@ -82,19 +82,8 @@ function messagedisplay(message)
             reset();
         }
     }  
-    else if(message.substring(0,5) == 'Error'){
+    else
         alert(message); 
-    }
-     else{
-        var exercise = message;
-        SelectionControl(exercise);
-        $.ajax({url:'ajax.php?module=custom',data:{dropdown:'refresh',selectedexercise:exercise},dataType:"html",success:dropdownrefresh});  
-    }   
-}
-
-function dropdownrefresh(data)
-{
-    $('#exercises').html(data);
 }
 
 function display(data)
@@ -107,17 +96,6 @@ function display(data)
     $('.textinput').textinput();
     $('.numberinput').textinput();
     el.find('div[data-role=collapsible]').collapsible({theme:'c',refresh:true});    
-}
-
-function SelectionControl(ExerciseId)
-{
-    $('#add_exercise').html('');
-    if(ExerciseId == 0)
-        addNewExercise();
-    else{
-        //LastActivity = exercise;
-        ExerciseInputs(ExerciseId); 
-    }
 }
 
 function DuplicateLastActivity()
@@ -152,6 +130,9 @@ function AddBenchmark(Id)
 
 function addNewExercise()
 {
+    if($('#add_exercise').html() != ''){
+        $('#add_exercise').html('');
+    }else{
     var RoutineNo = $('#RoutineCounter').val();
     var RoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();
     //var OrderBy = $('#Round' + RoundNo + 'Counter').val();
@@ -183,6 +164,7 @@ function addNewExercise()
 
     $('.textinput').textinput();
     $('.numberinput').textinput();
+    }
 }
 
 function addactivitydisplay(data)
@@ -232,6 +214,7 @@ function ExerciseInputs(ExerciseId)
     InputFieldName
     Attribute     
     */
+   $('#add_exercise').html('');
     $.ajax({url:'ajax.php?module=custom',data:{chosenexercise:ExerciseId,encode:'json'},dataType:"json",success:function(json) { 
         var Html = '<div class="ActivityAttributes">';    
         Html += '<form id="activityform" name="activityform">';
@@ -369,7 +352,7 @@ function addRound()
     }else if($('#Routine' + RoutineNo + 'Round' + PrevRoundNo + 'Counter').val() == 0){
         alert('No Exercises selected for round ' + PrevRoundNo + '!');
     }else{
-        var ThisRound ='<br/><div class="RoundLabel" id="Routine' + RoutineNo + 'Round' + RoundNo + 'Label">Round ' + RoundNo + '</div>';
+        var ThisRound ='<br/><div class="RoundLabel" id="Routine' + RoutineNo + 'Round' + RoundNo + 'Label"><h3>Round ' + RoundNo + '</h3></div>';
         ThisRound +='<input type="hidden" name="Routine' + RoutineNo + 'Round' + RoundNo + 'Counter" id="Routine' + RoutineNo + 'Round' + RoundNo + 'Counter" value="'+NewRoundCounter+'"/>';
         ThisRound+=DuplicateRound.replace(/RoutineNo/g, RoutineNo);
         ThisRound=ThisRound.replace(/RoundNo/g, RoundNo);
@@ -401,7 +384,7 @@ function addRoutine()
     }else{
         document.getElementById('RoutineCounter').value++;
         var RoutineNo = $('#RoutineCounter').val();
-        var ThisRoutine ='<br/><div class="RoutineLabel" id="Routine' + RoutineNo + 'Label">Routine ' + RoutineNo + '</div>';
+        var ThisRoutine ='<br/><div class="RoutineLabel" id="Routine' + RoutineNo + 'Label"><h3>Routine ' + RoutineNo + '</h3></div>';
         ThisRoutine += '<div class="RoundLabel" id="Routine' + RoutineNo + 'Round1Label"></div>';
         ThisRoutine += '<input type="hidden" name="Routine' + RoutineNo + 'RoundCounter" id="Routine' + RoutineNo + 'RoundCounter" value="1"/>';
         ThisRoutine += '<input type="hidden" name="Routine' + RoutineNo + 'Round1Counter" id="Routine' + RoutineNo + 'Round1Counter" value="0"/>';       

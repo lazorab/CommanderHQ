@@ -124,8 +124,8 @@ if(isset($_REQUEST['benchmarkId']) && $_REQUEST['benchmarkId'] > 0)
             $html.='<div style="float:left;width:65%" id="'.$ThisRoutine.'_timerContainer"></div>';                       
             $html.='<div style="width:30%;float:right;margin:10px 4px 0 0"><input class="buttongroup" id="'.$ThisRoutine.'_ShowHideClock" type="button" onClick="DisplayStopwatch(\'benchmark\', \''.$WorkoutTypeId.'_'.$WorkoutId.'_'.$ThisRoutine.'\');" value="Time Routine"/></div><div class="clear"></div>';                                                                    
                             } 
-                            $html.= '<h2>Routine '.$Detail->RoutineNo.'</h2>';
-                            $html.= '<h2>Round '.$Detail->RoundNo.'</h2>';
+                            $html.= '<h3>Routine '.$Detail->RoutineNo.'</h3>';
+                            $html.= '<h3>Round '.$Detail->RoundNo.'</h3>';
                             $html.= '<div data-role="collapsible">';
                             $html.= '<h2>'.$Detail->Exercise.'<br/>';             
 			}                    
@@ -155,7 +155,7 @@ if(isset($_REQUEST['benchmarkId']) && $_REQUEST['benchmarkId'] > 0)
                             }
                             //if($i > 0)
                             //    $html.= '<br/><br/>';                            
-                            $html.= '<h2>Round '.$Detail->RoundNo.'</h2>';
+                            $html.= '<h3>Round '.$Detail->RoundNo.'</h3>';
                             $html.= '<div data-role="collapsible">';
                             $html.= '<h2>'.$Detail->Exercise.'<br/>';             
 			}
