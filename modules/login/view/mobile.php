@@ -24,20 +24,17 @@ Remember me
        checked="checked"
 <?php } ?>
 />
-
-<img onclick="document.login.submit();" alt="Login" <?php echo $RENDER->NewImage('login.png');?> src="<?php echo IMAGE_RENDER_PATH;?>login.png"/>
+<button onclick="document.login.submit();" data-mini="true">Log In</button>
 </form>
 
 <br/>
 Not a member yet?
-<a href="?module=signup" style="margin-left:0.1%">
-<img alt="Signup" <?php echo $RENDER->NewImage('register.png');?> src="<?php echo IMAGE_RENDER_PATH;?>register.png"/>
+<a href="?module=signup">
+<button data-mini="true">Sign Up</button>
 </a>
 <br/>
 
-<br/>
-<br/>
-<div style="margin:0 20% 2% 20%">Login with</div>
+<div style="margin:0 20% 0 20%">Login with</div>
 
 <div style="padding:0 5% 0 5%">
 <!--
