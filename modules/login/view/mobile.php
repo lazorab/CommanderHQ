@@ -8,8 +8,8 @@ if (isset($Display->Message) && strlen($Display->Message) > 0) {?>
 	</script> 
 <?php } ?><br/>
 
-<div id="container" style="color:#fff;height:350px;padding:0 20% 0 20%">
-<br/><br/>
+<div id="container" style="color:#fff;height:350px;padding:0 10% 0 10%">
+<br/>
 <form action="index.php" name="login" method="post">
 <input type="hidden" name="module" value="login"/>
 <input type="hidden" name="action" value="Login"/>
