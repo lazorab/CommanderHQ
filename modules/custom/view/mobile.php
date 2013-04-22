@@ -40,6 +40,7 @@ var OrderBy=0;
 						}
 					})
 .then( function ( response ) {
+    html += '<br/><li style="font-style:italic;color:blue" class="activity" id="0">Create New Activity</li>';
   $.each( response, function ( i, val ) {
     html += '<li class="activity" id="' + val.ExerciseId + '">' + val.ActivityName + '</li>';
   });
@@ -48,7 +49,10 @@ var OrderBy=0;
   $ul.trigger( "updatelayout");
   $('.activity').click(function(){
     var id = $(this).attr('id');  
-    ExerciseInputs(id);
+    if(id == 0)
+        addNewExercise()
+    else    
+        ExerciseInputs(id);
     $input.val($('#'+id+'').html());
   $ul.html('');
   $ul.listview( "refresh" );
@@ -138,12 +142,12 @@ function addNewExercise()
     //var OrderBy = $('#Round' + RoundNo + 'Counter').val();
     var Html ='<div class="AddNewActivityAttributes">';
     Html += '<h2>New Activity</h2>';
-    Html += '<div style="float:left;margin:0 0 0 0"><input style="width:225px" type="text" id="NewExercise" name="NewExercise" value="" placeholder="Activity Name"/></div>';
+    Html += '<div style="float:left;margin:0"><input style="width:225px" type="text" id="NewExercise" name="NewExercise" value="" placeholder="Activity Name"/></div>';
     Html += '<div style="float:left;margin:20px 0 0"><input style="width:225px" type="text" id="Acronym" name="Acronym" value="" placeholder="Acronym for Activity?"/></div>';
-    Html += '<div style="float:left;margin:20px 30px 0 0"><input style="width:80px" placeholder="Weight in <?php echo $Display->UserUnitOfMeasure('Weight');?>" type="number" id="NewActivityWeight" name="NewActivityWeight"/></div>';
-    Html += '<div style="float:left;margin:20px 0 0 25px"><input style="width:80px" placeholder="Height in <?php echo $Display->UserUnitOfMeasure('Height');?>" type="number" id="NewActivityHeight" name="NewActivityHeight"/></div>';
-    Html += '<div style="float:left;margin:20px 30px 0 0"><input style="width:80px" placeholder="Distance" type="number" id="NewActivityDistance" name="NewActivityDistance"/></div>';
-    Html += '<div style="float:left;margin:20px 0 0 25px"><select style="width:90px" id="NewActivityDistanceUOM" name="NewActivityDistanceUOM">';
+    Html += '<div style="float:left;margin:20px 15px 0 0"><input style="width:85px" placeholder="Weight(<?php echo $Display->UserUnitOfMeasure('Weight');?>)" type="number" id="NewActivityWeight" name="NewActivityWeight"/></div>';
+    Html += '<div style="float:left;margin:20px 0 0 25px"><input style="width:85px" placeholder="Height(<?php echo $Display->UserUnitOfMeasure('Height');?>)" type="number" id="NewActivityHeight" name="NewActivityHeight"/></div>';
+    Html += '<div style="float:left;margin:20px 15px 0 0"><input style="width:85px" placeholder="Distance" type="number" id="NewActivityDistance" name="NewActivityDistance"/></div>';
+    Html += '<div style="float:left;margin:20px 0 0 25px"><select style="width:85px" id="NewActivityDistanceUOM" name="NewActivityDistanceUOM">';
     if('<?php echo $Display->SystemOfMeasure();?>' == 'Metric'){
         Html += '<option value="2">Metres</option>';
         Html += '<option value="1">Kilometres</option>';
@@ -155,13 +159,14 @@ function addNewExercise()
     } 
     Html += '</div><div class="clear"></div>';
 
-    Html += '<div style="float:left;margin:20px 25px 0 0"><input style="width:80px" type="number" id="NewActivityReps" placeholder="Reps" name="NewActivityReps"/></div>';
+    Html += '<div style="float:left;margin:20px 0 0 0"><input style="width:85px" type="number" id="NewActivityReps" placeholder="Reps" name="NewActivityReps"/></div>';
 
-    Html += '<div style="float:right;margin:20px 5px 0 0"><input class="buttongroup" type="button" id="" name="btn" onClick="addnew(\''+RoundNo+'\', \''+OrderBy+'\');" value="Add Activity"/></div>';
-    Html += '</div><div class="clear"></div>';
+    Html += '<div style="float:right;margin:20px 0 0 0"><button class="controlbutton" data-inline="true" onClick="addnew(\''+RoundNo+'\', \''+OrderBy+'\');">Add Activity</button></div>';
+    Html += '</div><br/><div class="clear"></div>';
 
     $('#add_exercise').html(Html);
-
+    $('.controlbutton').button();
+    $('.controlbutton').button('refresh');
     $('.textinput').textinput();
     $('.numberinput').textinput();
     }

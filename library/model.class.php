@@ -269,8 +269,9 @@ class Model
                     AND (CustomOption = 0
                     OR CustomOption = "'.$_COOKIE['UID'].'"
                     OR GymOption = "'.$this->getMemberGym()->AffiliateId.'")';
-            if($Search != '')
+            if($Search != ''){
                 $SQL .= ' AND Exercise LIKE "'.$Search.'%"';                
+            }
             $SQL .= ' ORDER BY ActivityName';
             $db->setQuery($SQL);
 		

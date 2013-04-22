@@ -5,8 +5,8 @@ class CustomController extends Controller
     var $SaveMessage;
     var $ChosenExercises;
     
-	function __construct()
-	{
+function __construct()
+{
             parent::__construct();
             session_start();
             if(!isset($_COOKIE['UID'])){
@@ -15,8 +15,8 @@ class CustomController extends Controller
             $this->Origin = $_REQUEST['origin'];
             $this->SaveMessage = '';
             if(!isset($_REQUEST['form']) && !isset($_REQUEST['NewExercise']))
-                $this->ChosenExercises = array();    
-	}
+                $this->ChosenExercises = array();
+}
         
     function Message()
     {
@@ -27,9 +27,9 @@ class CustomController extends Controller
             $Message = $this->AddActivity();
         }else{
             $Message = $Model->Save();
-        }       
+        }
         return $Message;
-    }  
+    }
     
     function AddActivity(){
         $Model = new CustomModel;
@@ -41,9 +41,9 @@ class CustomController extends Controller
         $Attributes = array();
         $i=0;
         //var_dump($ActivityFields);
-        $html .= '<ul id="RoutineNo_RoundNo_RowNo" class="listview" data-role="listview" data-inset="true" data-iconpos="right">'; 
+        $html .= '<ul id="RoutineNo_RoundNo_RowNo" class="listview" data-role="listview" data-inset="true" data-iconpos="right">';
         //$html .= '<div data-role="collapsible">';
-        $html .= '<li>'.$ActivityFields[0]->Exercise.'<input class="delete" type="button" onClick="RemoveFromList(\'RoutineNo_RoundNo_RowNo\');" value="Delete"/><br/>';  
+        $html .= '<li>'.$ActivityFields[0]->Exercise.'<input class="delete" type="button" onClick="RemoveFromList(\'RoutineNo_RoundNo_RowNo\');" value="Delete"/><br/>';
         
         foreach($ActivityFields as $Activity){
             
@@ -62,7 +62,7 @@ class CustomController extends Controller
                 $AttributeValue = '-';
             }else{
                 $AttributeValue = $Activity->AttributeValue * $ConversionFactor;
-            }            
+            }
                                   
             if($i > 0)
                 $html.=' | ';
@@ -74,12 +74,12 @@ class CustomController extends Controller
             //}
             $i++;
             $Attributes[''.$Activity->Attribute.''] = $AttributeValue != "-" ? $AttributeValue : "";
-        }  
+        }
         $i=0;
-        $html.='</li></ul>';  
+        $html.='</li></ul>';
 
         return $html;
-    }    
+    }
     
     function UpdateHistory($ExerciseId){
         $Model = new CustomModel;
@@ -105,8 +105,8 @@ class CustomController extends Controller
                         $html.=' | ';
                     }
                 }
-            }        
-        $html.='</p>'; 
+            }
+        $html.='</p>';
         return $html;
     }
     
@@ -150,7 +150,7 @@ class CustomController extends Controller
             }
             if($Result > 0){
                 //Now for a mind f***:
-         $WeightUOMId = $Model->getUnitOfMeasureId('Weight');   
+         $WeightUOMId = $Model->getUnitOfMeasureId('Weight');
          $HeightUOMId = $Model->getUnitOfMeasureId('Height');
          $_REQUEST[''.$_REQUEST['RoundNo'].'_'.$Result.'_Weight_'.$WeightUOMId.'_'.$_REQUEST['OrderBy'].''] = $_REQUEST['NewActivityWeight'];
          
@@ -167,56 +167,52 @@ class CustomController extends Controller
     
     function MainOutput()
     {
-	$Html = '';
+$Html = '';
         $Html .= '<form action="index.php" id="customform" name="form">
-        <input type="hidden" name="form" value="submitted"/>
-        <input type="hidden" name="origin" value="'.$this->Origin.'"/>
-        <input type="hidden" name="rowcount" id="rowcounter" value="0"/>
-        <input type="hidden" name="Routine1Round1Counter" id="Routine1Round1Counter" value="0"/>
-        <input type="hidden" name="Routine1RoundCounter" id="Routine1RoundCounter" value="1"/>
-        <input type="hidden" name="RoutineCounter" id="RoutineCounter" value="1"/>';
+<input type="hidden" name="form" value="submitted"/>
+<input type="hidden" name="origin" value="'.$this->Origin.'"/>
+<input type="hidden" name="rowcount" id="rowcounter" value="0"/>
+<input type="hidden" name="Routine1Round1Counter" id="Routine1Round1Counter" value="0"/>
+<input type="hidden" name="Routine1RoundCounter" id="Routine1RoundCounter" value="1"/>
+<input type="hidden" name="RoutineCounter" id="RoutineCounter" value="1"/>';
         $Html .= '<div class="ui-grid-a">';
         $Html .= '<div class="ui-block-a" style="width:45%;">';
         $Html .= '<input class="textinput" type="text" name="CustomName" id="CustomName" placeholder="WOD Name" value=""/>';
         $Html .= '</div><div class="ui-block-b" style="width:45%;float:right">';
-        $Html .= '<input class="textinput" type="date" name="WodDate" id="WodDate" placeholder="WOD Date" value="'.date('Y-m-d').'"/>';        
-        $Html .= '</div></div>';  
+        $Html .= '<input class="textinput" type="date" name="WodDate" id="WodDate" placeholder="WOD Date" value="'.date('Y-m-d').'"/>';
+        $Html .= '</div></div>';
         $Html .= '<textarea name="descr" placeholder="Describe Your WOD"></textarea>';
         $Html .= '<h3>Routine 1</h3>';
-        $Html .= '<h3>Round 1</h3>';       
+        $Html .= '<h3>Round 1</h3>';
         $Html .= '<div id="activity1list">'.$this->ChosenExercises().'</div>';
         
         $Html .= '<div id="Routines"></div>';
         
         $Html .= '<div id="add_exercise">'.$this->AddExercise().'</div>';
 
-        $Html .= '<div id="CenterButtonText">';  
+        $Html .= '<div id="CenterButtonText">';
         $Html .= '<ul id="autocomplete" data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="Add Activity..." data-filter-theme="d"></ul>';
-        $Html .= '<div id="ExerciseInputs"></div>';  
-        $Html .= '<br/>'; 
-        $Html .= '<div class="ui-grid-a">
-	<div class="ui-block-a"><button id="DuplicateActivity" type="button" onClick="DuplicateLastActivity();">Copy Activity</button></div>
-	<div class="ui-block-b"><button type="button" onClick="addRound();">Add a Round</button></div>
-        </div>';
-        $Html .= '<div class="ui-grid-a">';
-        $Html .= '<div class="ui-block-a">';
-        $Html .= '<button type="button" onClick="addNewExercise();">Create Activity</button>';
-        $Html .= '</div>'; 
-        $Html .= '<div class="ui-block-b">';
+        $Html .= '<div id="ExerciseInputs"></div>';
+        //$Html .= '<button type="button" onClick="addNewExercise();">Create New Activity</button>';
+        $Html .= '<br/><div class="ui-grid-a">
+<div class="ui-block-a"><button id="DuplicateActivity" type="button" onClick="DuplicateLastActivity();">Copy Activity</button></div>
+<div class="ui-block-b"><button type="button" onClick="addRound();">Add a Round</button></div>
+</div><br/>';
+        
         $Html .= $this->getBenchmarks('');
-        $Html .= '</div>'; 
-        $Html .= '</div>'; 
-        $Html .= '<div class="ui-grid-a">
-	<div class="ui-block-a"><button type="button" onClick="addRoutine();">Add a Routine</button></div>
-	<div class="ui-block-b"><button type="button" onClick="Save();">Save Wod</button></div>
-</div>';        
+        
+        $Html .= '<div class="clear"></div><br/><div class="ui-grid-a">
+<div class="ui-block-a"><button type="button" onClick="addRoutine();">Add a Routine</button></div>
+<div class="ui-block-b"><button type="button" onClick="Save();">Save Wod</button></div>
+</div>';
 
-        $Html .= '<div class="clear"></div>'; 
-        $Html .= '</div>'; 
+        $Html .= '<div class="clear"></div>';
+        $Html .= '</div>';
         $Html .= '</form>';
-     	
-	return $Html;
-    }    
+        $Html .= '<div class="clear"></div><br/>';
+     
+return $Html;
+    }
     
     function getBenchmark()
     {
@@ -225,11 +221,11 @@ class CustomController extends Controller
         $Attributes = array();
         $ThisRound = 0;
         $OrderBy = 0;
-	$ThisExerciseId = 0;
-        $i = 0;       
+$ThisExerciseId = 0;
+        $i = 0;
         $html .= '<div data-role="collapsible-set" data-iconpos="right">';
         //var_dump($this->Workout);
-	foreach($Benchmark as $Detail){
+foreach($Benchmark as $Detail){
             if($Detail->UnitOfMeasureId == null || $Detail->UnitOfMeasureId == 0){
                 $UnitOfMeasureId = 0;
                 $ConversionFactor = 1;
@@ -245,10 +241,10 @@ class CustomController extends Controller
                 $AttributeValue = '-';
             }else{
                 $AttributeValue = $Detail->AttributeValue * $ConversionFactor;
-            }            
-		if($Detail->Attribute != 'TimeToComplete'){
-			
-			if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0 && $ThisRound != $Detail->RoundNo){
+            }
+if($Detail->Attribute != 'TimeToComplete'){
+
+if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0 && $ThisRound != $Detail->RoundNo){
                             if($ThisExerciseId != null && $i > 0){
                                 $html.='</h2>';
             $i=0;
@@ -258,7 +254,7 @@ class CustomController extends Controller
                 $UOM = $Model->getUserUnitOfMeasure($Attribute);
                 $UnitOfMeasureId = $Model->getUnitOfMeasureId($Attribute);
                 if($UnitOfMeasureId == '')
-                    $UnitOfMeasureId = 0;   
+                    $UnitOfMeasureId = 0;
                 if($i > 0)
                     $TheseAttributes.='_';
                 $TheseAttributes.=$Attribute;
@@ -267,14 +263,14 @@ class CustomController extends Controller
             }
 
             $html .= '<div style="float:right;margin:10px 30px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="UpdateActivity(\'RoutineNo_'.$ThisRound.'_'.$ThisExerciseId.'\', \''.$TheseAttributes.'\');" value="Update Values"/></div>';
-            $html .= '</form></div><div class="clear"></div></div>';                                
+            $html .= '</form></div><div class="clear"></div></div>';
                                 $Attributes = array();
-                            }                           	
+                            }
                             $html.= '<h2>Round '.$Detail->RoundNo.'</h2>';
                             $html.= '<div data-role="collapsible">';
-                            $html.= '<h2>'.$Detail->Exercise.'<br/>';             
-			}
-			else if($ThisExerciseId != $Detail->ExerciseId){
+                            $html.= '<h2>'.$Detail->Exercise.'<br/>';
+}
+else if($ThisExerciseId != $Detail->ExerciseId){
 
                             if($ThisExerciseId != null && $i > 0){
                                 $html.='</h2>';
@@ -285,7 +281,7 @@ class CustomController extends Controller
                 $UOM = $Model->getUserUnitOfMeasure($Attribute);
                 $UnitOfMeasureId = $Model->getUnitOfMeasureId($Attribute);
                 if($UnitOfMeasureId == '')
-                    $UnitOfMeasureId = 0;   
+                    $UnitOfMeasureId = 0;
                 if($i > 0)
                     $TheseAttributes.='_';
                 $TheseAttributes.=$Attribute;
@@ -294,23 +290,23 @@ class CustomController extends Controller
             }
 
             $html .= '<div style="float:right;margin:10px 30px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="UpdateActivity(\'RoutineNo_'.$ThisRound.'_'.$ThisExerciseId.'\', \''.$TheseAttributes.'\');" value="Update Values"/></div>';
-            $html .= '</form></div><div class="clear"></div></div>';                                
+            $html .= '</form></div><div class="clear"></div></div>';
                                 $Attributes = array();
-                            }       
+                            }
                             $html.= '<div data-role="collapsible">';
-                            $html.= '<h2>'.$Detail->Exercise.'<br/>';                           
+                            $html.= '<h2>'.$Detail->Exercise.'<br/>';
                         }else{
                             $html.=' | ';
                         }
                         $html.=''.$Detail->Attribute.' : <span id="RoutineNo_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_html">'.$AttributeValue.'</span>'.$UOM.'';
                         $html.='<input type="hidden" id="RoutineNo_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'" name="RoutineNo_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_'.$UnitOfMeasureId.'_'.$Detail->OrderBy.'" value="'.$AttributeValue.'"/>';
                 }
-        $Attributes[''.$Detail->Attribute.''] = $AttributeValue != "-" ? $AttributeValue : "";        
-	$ThisRound = $Detail->RoundNo;
+        $Attributes[''.$Detail->Attribute.''] = $AttributeValue != "-" ? $AttributeValue : "";
+$ThisRound = $Detail->RoundNo;
         $OrderBy = $Detail->OrderBy;
-	$ThisExerciseId = $Detail->ExerciseId;
+$ThisExerciseId = $Detail->ExerciseId;
         $i++;
-	}
+}
                             if($ThisExerciseId != null && $i > 0){
                                 $html.='</h2>';
             $i=0;
@@ -320,7 +316,7 @@ class CustomController extends Controller
                 $UOM = $Model->getUserUnitOfMeasure($Attribute);
                 $UnitOfMeasureId = $Model->getUnitOfMeasureId($Attribute);
                 if($UnitOfMeasureId == '')
-                    $UnitOfMeasureId = 0;   
+                    $UnitOfMeasureId = 0;
                 if($i > 0)
                     $TheseAttributes.='_';
                 $TheseAttributes.=$Attribute;
@@ -329,9 +325,9 @@ class CustomController extends Controller
             }
 
             $html .= '<div style="float:right;margin:10px 30px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="UpdateActivity(\'RoutineNo_'.$ThisRound.'_'.$ThisExerciseId.'\', \''.$TheseAttributes.'\');" value="Update Values"/></div>';
-            $html .= '</form></div><div class="clear"></div></div>';                                
+            $html .= '</form></div><div class="clear"></div></div>';
                                 $Attributes = array();
-                            }             
+                            }
         $html.='</div>';
     
         return $html;
@@ -340,20 +336,39 @@ class CustomController extends Controller
     function getBenchmarks($SelectedExercise)
     {
         $Model = new CustomModel;
-        $Benchmarks = $Model->getBenchmarks();   
+        $Benchmarks = $Model->getBenchmarks();
         $Selected='';
-        $Html .= '<select class="select buttongroup" data-role="none" id="benchmark" name="benchmark" onChange="AddBenchmark(this.value)">
-         <option value="none">Add Benchmark</option>';
-	foreach($Benchmarks AS $Benchmark){
+        $Html .= '<select style="float:right;width:200px" class="select buttongroup" data-role="none" id="benchmark" name="benchmark" onChange="AddBenchmark(this.value)">
+<option value="none">Add Benchmark</option>';
+foreach($Benchmarks AS $Benchmark){
             if($Benchmark->WorkoutName == $SelectedExercise)
                 $Selected='selected="selected"';
             else
                 $Selected='';
             $Html .= '<option value="'.$Benchmark->Id.'" '.$Selected.'>'.$Benchmark->WorkoutName.'</option>';
-	}
+}
         $Html .= '</select>';
-	return $Html;        
-    } 
+return $Html;
+    }
+    
+    function _getExercises($SelectedExercise)
+    {
+        $Html='';
+        $Model = new CustomModel;
+        $Exercises = $Model->getExercises();
+        $Selected='';
+        $Html .= '<br/><select style="width:99%" class="select buttongroup" data-role="none" id="exercises" name="exercise" onChange="SelectionControl(this.value)">
+<option value="none">Add Activity</option>';
+foreach($Exercises AS $Exercise){
+            if($Exercise->ActivityName == $SelectedExercise)
+                $Selected='selected="selected"';
+            else
+                $Selected='';
+            $Html .= '<option value="'.$Exercise->ActivityName.'" '.$Selected.'>'.$Exercise->ActivityName.'</option>';
+}
+        $Html .= '</select><br/><div id="ExerciseInputs"></div>';
+return $Html;
+    }
     
     function WorkoutTypes($Type){
         $Html='';
@@ -368,18 +383,18 @@ class CustomController extends Controller
                 $Html .='selected="selected"';
             $Html .= '>'.$WorkoutType->ActivityType.'</option>';
         }
-	$Html .= '</select>';
+$Html .= '</select>';
         }
         return $Html;
     }
-	
-	function Output()
-	{
+
+function Output()
+{
             $Model = new CustomModel;
-            if(isset($_REQUEST['benchmarkId'])){   
+            if(isset($_REQUEST['benchmarkId'])){
                 $html = $this->getBenchmark();
             }else if(isset($_REQUEST['chosenexercise'])){
-		$html = $Model->getExerciseIdAttributes($_REQUEST['chosenexercise']);              
+$html = $Model->getExerciseIdAttributes($_REQUEST['chosenexercise']);
             }
             else if(isset($_REQUEST['q'])){
             $Affiliates = $Model->getExercises($_REQUEST['q']);
@@ -391,12 +406,12 @@ class CustomController extends Controller
             }
             else if($_REQUEST['history'] == 'refresh'){
                 $html = $this->UpdateHistory($_REQUEST['ExerciseId']);
-            }           
+            }
             else{
                 $html = $this->MainOutput();
             }
             return $html;
-	}      
+}
         
         function ChosenExercises()
         {
@@ -418,32 +433,32 @@ class CustomController extends Controller
                 else if($_REQUEST['workouttype'] == 'AMRAP Rounds'){
                     $Html.= $this->getRoundCounter();
                     $Html.= $this->getStopWatch();
-                }  
+                }
                 else if($_REQUEST['workouttype'] == 'AMRAP Reps'){
                     $Html.=$this->getCountDown('mm:ss:0');
                 }
                 
                 if($_REQUEST['workouttype'] != 'AMRAP Rounds'){
                     $Html.='<input class="buttongroup" type="button" name="btnsubmit" value="Save" onclick="customsubmit();"/>';
-                }               
-            } 
+                }
+            }
             return $Html;
         }
         
     
     function getCustomActivities()
-    {        
+    {
         $Model = new CustomModel;
         $InputFields = $Model->getInputFields();
         foreach($InputFields AS $Field){
             $Html.='<div class="ui-block-a">
-            <input class="textinput" style="width:75%" type="text" data-inline="true" name="Activity" value="Squat"/>
-            </div>
-            <div class="ui-block-b"></div>
-            <div class="ui-block-c">
-            <input class="textinput" style="width:75%" type="text" data-inline="true" name="Reps" value="40"/>
-            </div>';        
-        }   
+<input class="textinput" style="width:75%" type="text" data-inline="true" name="Activity" value="Squat"/>
+</div>
+<div class="ui-block-b"></div>
+<div class="ui-block-c">
+<input class="textinput" style="width:75%" type="text" data-inline="true" name="Reps" value="40"/>
+</div>';
+        }
     }
     
     function getMemberActivities()
@@ -451,21 +466,21 @@ class CustomController extends Controller
         $Model = new CustomModel;
         $Activities = $Model->getMemberActivities();
         $Html.='<div class="ui-grid-b">
-        <div class="ui-block-a">
-        Activity
-        </div>
-        <div class="ui-block-b">
-        Distance
-        </div>
-        <div class="ui-block-c">
-        Reps
-        </div>';
+<div class="ui-block-a">
+Activity
+</div>
+<div class="ui-block-b">
+Distance
+</div>
+<div class="ui-block-c">
+Reps
+</div>';
         
 
         foreach($Activities AS $Activity){
             $Html.='<div class="ui-block-a">
-            <input class="textinput" style="width:75%" readonly="readonly" type="text" data-inline="true" name="'.$Activity->recid.'" value="'.$Activity->ActivityName.'"/>
-            </div>';
+<input class="textinput" style="width:75%" readonly="readonly" type="text" data-inline="true" name="'.$Activity->recid.'" value="'.$Activity->ActivityName.'"/>
+</div>';
             $Html.='<div class="ui-block-b">';
             if($Activity->Attribute == 'Distance')
                 $Html.='<input class="textinput" style="width:75%" type="text" data-inline="true" name="'.$Activity->recid.'___Distance" value="'.$Activity->AttributeValue.'"/>';
@@ -473,50 +488,50 @@ class CustomController extends Controller
             $Html.='<div class="ui-block-c">';
             if($Activity->Attribute == 'Reps')
                 $Html.='<input class="textinput" style="width:75%" type="text" data-inline="true" name="'.$Activity->recid.'___Reps" value="'.$Activity->AttributeValue.'"/>';
-            $Html.='</div>';        
-        }        
+            $Html.='</div>';
+        }
         
         $Html.='</div>';
         
         return $Html;
     }
-	
+
     function CustomDetails($Id)
     {
         $Model = new CustomModel;
         $Details = $Model->getCustomDetails($Id);
-		$SubmitOption = false;
+$SubmitOption = false;
         $Html = '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">
-		<li>'.$Details[0]->ActivityName.'</li>
-		</ul><br/>
+<li>'.$Details[0]->ActivityName.'</li>
+</ul><br/>
 
-		<form name="customform" action="index.php">
-        <input type="hidden" name="module" value="custom"/>
-		<input type="hidden" name="exercise" value="'.$_REQUEST['customexercise'].'"/>
-		<input type="hidden" name="origin" value="'.$this->Origin.'"/>';
+<form name="customform" action="index.php">
+<input type="hidden" name="module" value="custom"/>
+<input type="hidden" name="exercise" value="'.$_REQUEST['customexercise'].'"/>
+<input type="hidden" name="origin" value="'.$this->Origin.'"/>';
 
-		foreach($Details AS $Detail){
- 		if($_REQUEST['wodtype'] == 'Timed'){
+foreach($Details AS $Detail){
+  if($_REQUEST['wodtype'] == 'Timed'){
             $AddLast = $this->getStopWatch();
-		$SubmitOption = true;	
+$SubmitOption = true;	
         }
         if($_REQUEST['wodtype'] == 'AMRAP Rounds'){
             $AddLast = $this->getCountDown($Detail);
-		$SubmitOption = true;
+$SubmitOption = true;
         }
         
         if($_REQUEST['wodtype'] == 'EMOM'){
             $AddLast = $this->getCountDown('01:00:0');
-		$SubmitOption = true;
+$SubmitOption = true;
         }
-		
+
         if($Detail->ActivityType == 'Weight'){
             $Html .= '<label for="'.$Detail->Attribute.'">Weight</label>
-			<input id="Weight" type="number" name="Weight" value="'.$Detail->AttributeValue.'"/><br/><br/>';
+<input id="Weight" type="number" name="Weight" value="'.$Detail->AttributeValue.'"/><br/><br/>';
         }
         if($Detail->ActivityType == 'Reps'){
             $Html .= '<label for="'.$Detail->Attribute.'">Reps</label>
-			<input id="Reps" type="number" name="Reps" value="'.$Detail->AttributeValue.'"/><br/><br/>';
+<input id="Reps" type="number" name="Reps" value="'.$Detail->AttributeValue.'"/><br/><br/>';
         }
         if($Detail->ActivityType == 'Tabata'){
             $Html .= $this->getTabata($Detail);
@@ -525,27 +540,27 @@ class CustomController extends Controller
             $Html .= '?';
         }
 
-		}
-			$Html.= $AddLast;
-		if(!$SubmitOption)
-			$Html.='<input class="buttongroup" type="button" onclick="savecustom();" value="Save"/>';
-		$Html.='</form>';
+}
+$Html.= $AddLast;
+if(!$SubmitOption)
+$Html.='<input class="buttongroup" type="button" onclick="savecustom();" value="Save"/>';
+$Html.='</form>';
         return $Html;
     }
     
     function getWeight($exerciseId)
     {
-		$RENDER = new Image();
-		$Save = $RENDER->NewImage('save.png', SCREENWIDTH);
+$RENDER = new Image();
+$Save = $RENDER->NewImage('save.png', SCREENWIDTH);
         $Html='<form name="form" action="index.php">
-        <input type="hidden" name="module" value="baseline"/>
-        <input type="hidden" name="baseline" value="'.$_REQUEST['baseline'].'"/>
-        <input type="hidden" name="exercise" value="'.$exerciseId.'"/>
-		<input type="number" name="Weight" value="" placeholder="Weight"/><br/><br/>
-        <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="document.form.submit();"/>
-        </form>';
+<input type="hidden" name="module" value="baseline"/>
+<input type="hidden" name="baseline" value="'.$_REQUEST['baseline'].'"/>
+<input type="hidden" name="exercise" value="'.$exerciseId.'"/>
+<input type="number" name="Weight" value="" placeholder="Weight"/><br/><br/>
+<img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="document.form.submit();"/>
+</form>';
         
-        return $Html;        
+        return $Html;
     }
     
     function getRoundCounter()
@@ -559,33 +574,33 @@ class CustomController extends Controller
     
     function getReps($exerciseId)
     {
-		$RENDER = new Image();
-		$Save = $RENDER->NewImage('save.png', SCREENWIDTH);
+$RENDER = new Image();
+$Save = $RENDER->NewImage('save.png', SCREENWIDTH);
         $Html='<form name="form" action="index.php">
-        <input type="hidden" name="module" value="baseline"/>
-        <input type="hidden" name="baseline" value="'.$_REQUEST['baseline'].'"/>
-        <input type="hidden" name="exercise" value="'.$exerciseId.'"/>
-		<input type="number" name="Reps" value="" placeholder="Total Reps"/><br/><br/>
-        <img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="document.form.submit();"/>
-        </form>';
+<input type="hidden" name="module" value="baseline"/>
+<input type="hidden" name="baseline" value="'.$_REQUEST['baseline'].'"/>
+<input type="hidden" name="exercise" value="'.$exerciseId.'"/>
+<input type="number" name="Reps" value="" placeholder="Total Reps"/><br/><br/>
+<img alt="Save" '.$Save.' src="'.ImagePath.'save.png" onclick="document.form.submit();"/>
+</form>';
         
-        return $Html;         
+        return $Html;
     }
     
     function getTabata()
     {
         $Html='<div id="timerContainer"><div id="timerLoading"></div></div>';
         
-        return $Html;       
+        return $Html;
     }
     
     function getCountDown($Time)
     {
         $Placeholder = '';
-	$RoundNo = 0;
+$RoundNo = 0;
         $ExerciseId = 63;
         if($Time == 'mm:ss'){
-           $Placeholder = 'placeholder="'.$Time.'"';  
+           $Placeholder = 'placeholder="'.$Time.'"';
         }
         else{
             $TimeToComplete = $Time;
@@ -596,7 +611,7 @@ class CustomController extends Controller
             if($TimeToComplete != $Time)
                 $StartStopButton = 'Stop';
         }
-	$Html ='<input type="hidden" name="'.$ExerciseId.'___CountDown[]" id="CountDown" value="'.$Time.'"/>';
+$Html ='<input type="hidden" name="'.$ExerciseId.'___CountDown[]" id="CountDown" value="'.$Time.'"/>';
         $Html.='<input id="clock" type="text" name="timer" value="'.$TimeToComplete.'" '.$Placeholder.'/>';
         $Html.='<input id="startstopbutton" class="buttongroup" type="button" onClick="startstopcountdown();" value="'.$StartStopButton.'"/>';
         $Html.='<input id="resetbutton" class="buttongroup" type="button" onClick="resetcountdown();" value="Reset"/>';
@@ -611,7 +626,7 @@ class CustomController extends Controller
         $Html='<select class="select" id="clock" name="timer">';
         $Html.='<option value="">00:00:0</option>';
         for($i=0;$i<60;$i++){
-           $Html.='<option value="'.$i.':00:0">'.$i.':00:0</option>'; 
+           $Html.='<option value="'.$i.':00:0">'.$i.':00:0</option>';
         }
         $Html.='</select>';
         $Html .='<input type="hidden" name="'.$RoundNo.'___'.$ExerciseId.'___CountDown" id="CountDown" value="00:00:0"/>';
