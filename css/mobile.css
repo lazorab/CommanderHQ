@@ -8,6 +8,16 @@ body {
     font-weight: normal; 
 }
 
+/* custom JQM styling */
+#CenterButtonText .ui-btn-inner{
+    text-overflow: initial; /* Get rid of the ellipsis */
+    text-align:center; /* Play with padding to make max use of available button width */
+}
+#CenterButtonText .ui-btn-text {
+    font-size: 14px; /* Play with font size of the text */
+}
+
+
 /* main menu items */
 
 #gridcontainer{
@@ -124,29 +134,32 @@ p{
 
 #slidemenu ul li {
   background-color: #3d3d3d;
-  width:100%;
+  width:97%;
   color: #999;
-  border-top: 2px solid #494949;
-  border-bottom: 2px solid #2b2b2b;
+  border-top: 1px solid #494949;
+  border-bottom: 1px solid #2b2b2b;
+  padding-left: 3%;
 }
 
 #slidemenu ul li a{
   font-size: 1.2em;
   color:#999;
-  text-shadow: 0.125em 0.125em 0 #000;
+  text-shadow: 1px 1px 0 #000;
+  padding-left:2%;
 }
 
 .menusection{
   margin: 0px 0;
-  width:98%;
-  background-color: #4d4d4d;
+  width:96%;
+  background: url(../images/640/secHd.png) repeat-x top left #4d4d4d;
   height:16px;
-  color: #969696;
+  color: #aaa;
   font-size: 1em;
   font-weight:bold; 
-  padding: 1% 0 1% 2%;
-  border-top: 2px solid #494949;
-  border-bottom: 2px solid #2b2b2b;  
+  padding: 2% 0 2% 4%;
+  border-top: 1px solid #494949;
+  border-bottom: 1px solid #2b2b2b;
+  text-shadow:none;
 }
 
 #menu
@@ -159,7 +172,7 @@ p{
 	display:none;
 	color:#fff;
 	background-color:#3f2b44;
-	z-index:100;
+	z-index:-5;
 }
 
 #menu.active
@@ -187,7 +200,7 @@ p{
 
 #loginback
 {
-	background-color:#252525;
+	background-color:#333;
 	min-height: 326px;
 }
 
@@ -758,7 +771,7 @@ a {
 
 /*main footer*/
 #footer{
-    background:url(../../images/640/navBk.png) repeat-x top left #fff;
+    background:url(../../images/640/helloBk.png) repeat-x top left #fff;
     font-family:Arial, Helvetica, sans-serif;
     font-size:12px;
     color:#fff;

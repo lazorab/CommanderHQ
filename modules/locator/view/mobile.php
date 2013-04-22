@@ -89,7 +89,7 @@ $("#listitem").swiperight(function() {
 
 </script>
 
-<div data-role="page" id="mainPage">
+<div id="mainPage">
 	<div data-role="content">
 		<form action="#" method="post" name="searchform" id="searchform">
 			<div style="padding: 2%; float: left; width: 70%;">
@@ -104,7 +104,7 @@ $("#listitem").swiperight(function() {
 </div>
 
 <div class="clear"></div>
-<div data-role="page" id="topselection">
+<div id="topselection">
 	<div data-role="content">
 		<ul id="toplist" data-role="listview" data-inset="true" data-theme="c"
 			data-dividertheme="d">
@@ -117,7 +117,7 @@ $("#listitem").swiperight(function() {
     <?php echo $Display->Output();?>
 </div>
 
-<div data-role="page" id="pageMap">
+<div id="pageMap">
 	<div data-role="header">
 		<h1>Map</h1>
 	</div>

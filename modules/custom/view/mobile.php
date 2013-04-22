@@ -21,72 +21,43 @@ var DuplicateRound;
 var DuplicateRoutine;
 var OrderBy=0;
 
-//onClick="RemoveFromList(' + i + ')"
-
-			
-			function swipeleftaction(direction) {
-				
-				alert(direction);
-			}
-	//$(document).bind('pageinit',function(){
-        $(document).bind('pageinit',function() {    
-            
-             $(".swipeleft").unbindSwipe().touchSwipeLeft(swipeleftaction);
-            $(document).on("click","#tabata",function(){
-            document.getElementById('clockType').value = 'tabata'; 
-		var timer = new STTabataTimerViewControllerNew();
-		timer.setValues({
-			userId: 0,
-			presetId: 0,
-			presetName: "Tabata",
-			prep: 10,
-			work: 20,
-			rest: 10,
-			cycles: 8,
-			tabatas: 1,
-			soundsOn: 1
+		$( document ).on( "pageinit", ".pages", function() {
+			$( "#autocomplete" ).on( "listviewbeforefilter", function ( e, data ) {
+				var $ul = $( this ),
+					$input = $( data.input ),
+					value = $input.val(),
+					html = "";
+				$ul.html( "" );
+				if ( value && value.length > 0 ) {
+					//$ul.html( "<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>" );
+					//$ul.listview( "refresh" );
+					$.ajax({
+						url: "ajax.php?module=custom",
+						dataType: "jsonp",
+						crossDomain: true,
+						data: {
+							q: $input.val()
+						}
+					})
+.then( function ( response ) {
+  $.each( response, function ( i, val ) {
+    html += '<li class="activity" id="' + val.ExerciseId + '">' + val.ActivityName + '</li>';
+  });
+  $ul.html( html );
+  $ul.listview( "refresh" );
+  $ul.trigger( "updatelayout");
+  $('.activity').click(function(){
+    var id = $(this).attr('id');  
+    ExerciseInputs(id);
+    $input.val($('#'+id+'').html());
+  $ul.html('');
+  $ul.listview( "refresh" );
+  $ul.trigger( "updatelayout");    
+  });
+});
+				}
+			});
 		});
-                
-		timer.setLabels({
-			myPresets: "My Presets",
-			newPreset: "Create a New Preset",
-			save: "Save",
-			workout : "workout",
-			tabata : "Tabata",
-			prepare : "prepare",
-			work : "work",
-			rest : "rest",
-			cycles : "Cycles",
-			tabatas : "Tabatas",
-			cyclesl : "cycles",
-			tabatasl : "tabatas",
-			start : "start",
-			stop : "stop",
-			pause : "pause",
-			resume : "resume",
-			preset : "Preset",
-			sound : "Sound",
-			on : "On",
-			off : "Off"
-		});
-                
-		timer.setSounds({
-			pausingSession : "PausingSession",
-			rest : "Rest",
-			sessionComplete : "SessionComplete",
-			soundOn : "SoundOn",
-			startingSession : "StartingSession",
-			stoppingSession : "StoppingSession",
-			tabataComplete : "TabataComplete",
-			work : "Work",
-			warning : "Warning2"
-		});
-                
-		timer.loadSounds(function(){
-			timer.drawTimer("#timerContainer");
-		});
-            });
-        });
 
 function getContent(selection)
 {  
@@ -111,19 +82,8 @@ function messagedisplay(message)
             reset();
         }
     }  
-    else if(message.substring(0,5) == 'Error'){
+    else
         alert(message); 
-    }
-     else{
-        var exercise = message;
-        SelectionControl(exercise);
-        $.ajax({url:'ajax.php?module=custom',data:{dropdown:'refresh',selectedexercise:exercise},dataType:"html",success:dropdownrefresh});  
-    }   
-}
-
-function dropdownrefresh(data)
-{
-    $('#exercises').html(data);
 }
 
 function display(data)
@@ -136,17 +96,6 @@ function display(data)
     $('.textinput').textinput();
     $('.numberinput').textinput();
     el.find('div[data-role=collapsible]').collapsible({theme:'c',refresh:true});    
-}
-
-function SelectionControl(exercise)
-{
-    $('#add_exercise').html('');
-    if(exercise == 'Add New Activity')
-        addNewExercise();
-    else{
-        //LastActivity = exercise;
-        ExerciseInputs(exercise); 
-    }
 }
 
 function DuplicateLastActivity()
@@ -181,6 +130,9 @@ function AddBenchmark(Id)
 
 function addNewExercise()
 {
+    if($('#add_exercise').html() != ''){
+        $('#add_exercise').html('');
+    }else{
     var RoutineNo = $('#RoutineCounter').val();
     var RoundNo = $('#Routine' + RoutineNo + 'RoundCounter').val();
     //var OrderBy = $('#Round' + RoundNo + 'Counter').val();
@@ -212,6 +164,7 @@ function addNewExercise()
 
     $('.textinput').textinput();
     $('.numberinput').textinput();
+    }
 }
 
 function addactivitydisplay(data)
@@ -237,9 +190,7 @@ function addactivitydisplay(data)
     Html = Html.replace(/RoundNo/g, RoundNo);
     
     $('#activity'+RoutineNo+'list').append(Html);
-    $("#exercises option[value='none']").attr("selected","selected");
-    var el = $('#AjaxOutput');
-    el.find('div[data-role=collapsible]').collapsible({theme:'c',refresh:true});
+
     $('.listview').listview();
     $('.listview').listview('refresh');
      }
@@ -254,7 +205,7 @@ function OpenHistory(ExerciseId)
     } 
 }
 
-function ExerciseInputs(exercise)
+function ExerciseInputs(ExerciseId)
 {
      /*
     Returned Values:
@@ -263,7 +214,8 @@ function ExerciseInputs(exercise)
     InputFieldName
     Attribute     
     */
-    $.ajax({url:'ajax.php?module=custom',data:{chosenexercise:exercise,encode:'json'},dataType:"json",success:function(json) { 
+   $('#add_exercise').html('');
+    $.ajax({url:'ajax.php?module=custom',data:{chosenexercise:ExerciseId,encode:'json'},dataType:"json",success:function(json) { 
         var Html = '<div class="ActivityAttributes">';    
         Html += '<form id="activityform" name="activityform">';
         //var i = document.getElementById('rowcounter').value;
@@ -400,10 +352,7 @@ function addRound()
     }else if($('#Routine' + RoutineNo + 'Round' + PrevRoundNo + 'Counter').val() == 0){
         alert('No Exercises selected for round ' + PrevRoundNo + '!');
     }else{
-        if($('#Routine' + RoutineNo + 'Round1Label').html() == '')
-            $('#Routine' + RoutineNo + 'Round1Label').html('Round 1');
-
-        var ThisRound ='<br/><div class="RoundLabel" id="Routine' + RoutineNo + 'Round' + RoundNo + 'Label">Round ' + RoundNo + '</div>';
+        var ThisRound ='<br/><div class="RoundLabel" id="Routine' + RoutineNo + 'Round' + RoundNo + 'Label"><h3>Round ' + RoundNo + '</h3></div>';
         ThisRound +='<input type="hidden" name="Routine' + RoutineNo + 'Round' + RoundNo + 'Counter" id="Routine' + RoutineNo + 'Round' + RoundNo + 'Counter" value="'+NewRoundCounter+'"/>';
         ThisRound+=DuplicateRound.replace(/RoutineNo/g, RoutineNo);
         ThisRound=ThisRound.replace(/RoundNo/g, RoundNo);
@@ -433,11 +382,9 @@ function addRoutine()
     }else if($('#Routine' + PrevRoutineNo + 'Counter').val() == 0){
         alert('No Exercises selected for routine ' + PrevRoutineNo + '!');
     }else{
-        if($('#Routine1Label').html() == '')
-            $('#Routine1Label').html('Routine 1');
         document.getElementById('RoutineCounter').value++;
         var RoutineNo = $('#RoutineCounter').val();
-        var ThisRoutine ='<br/><div class="RoutineLabel" id="Routine' + RoutineNo + 'Label">Routine ' + RoutineNo + '</div>';
+        var ThisRoutine ='<br/><div class="RoutineLabel" id="Routine' + RoutineNo + 'Label"><h3>Routine ' + RoutineNo + '</h3></div>';
         ThisRoutine += '<div class="RoundLabel" id="Routine' + RoutineNo + 'Round1Label"></div>';
         ThisRoutine += '<input type="hidden" name="Routine' + RoutineNo + 'RoundCounter" id="Routine' + RoutineNo + 'RoundCounter" value="1"/>';
         ThisRoutine += '<input type="hidden" name="Routine' + RoutineNo + 'Round1Counter" id="Routine' + RoutineNo + 'Round1Counter" value="0"/>';       

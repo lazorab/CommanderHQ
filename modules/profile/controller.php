@@ -50,11 +50,11 @@ class ProfileController extends Controller
                 $Message = 'Error - Date of Birth Required';				
             else if($_REQUEST['Weight'] == '')
                 $Message = 'Error - Weight Required';
-            else if(!is_int($_REQUEST['Weight']))
+            else if(!is_numeric($_REQUEST['Weight']))
                 $Message = 'Error - Invalid Weight';            
             else if($_REQUEST['Height'] == '')
                 $Message = 'Error - Height Required';
-            else if(!is_int($_REQUEST['Height']))
+            else if(!is_numeric($_REQUEST['Height']))
                 $Message = 'Error - Invalid Height';            
             else if($_REQUEST['Gender'] == '')		
                 $Message = 'Error - Select Gender';
@@ -153,18 +153,13 @@ $Html.='<input class="textinput" type="email" id="email" name="Email" placeholde
           
 $Html.='<input class="textinput" type="date" name="DOB" id="DOB" placeholder="Date of Birth" value="'.$MemberDetails->DOB.'"/>';
 
- $Html.='<br/><br/>Registered Gym';
- $Html.='<select class="chzn-select" name="AffiliateId" id="AffiliateId" tabindex="2">';
- $Html.='<option value="" data-placeholder="true">Select your Gym</option>';
-
-        foreach($Affiliates AS $Affiliate){
-            $Selected = '';
-            if($MemberDetails->GymId == $Affiliate->AffiliateId)
-                $Selected = 'selected="selected"';
-            $Html.='<option value="'.$Affiliate->AffiliateId.'" '.$Selected.'>'.$Affiliate->GymName.'</option>';
-        }
-        $Html.='</select><br/><br/>';
-        
+ $Html.='<br/><br/>Registered Gym<br/><br/><ul id="autocomplete" data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="';
+ if($MemberDetails->GymName != '')
+     $Html.= $MemberDetails->GymName;
+ else
+    $Html.='Find your Gym...';
+     $Html.='" data-filter-theme="d"></ul><br/>';
+        $Html.='<input type="hidden" name="AffiliateId" id="AffiliateId" value="'.$MemberDetails->GymId.'"/>';
 $Html.='System Of Measure
     <fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
     <input class="radioinput" type="radio" name="SystemOfMeasure" id="radio-choice-1" value="Metric" onclick="getSystem(\'Metric\');"';

@@ -2,23 +2,19 @@
 <div id="loginback">
 <?php 
 
-if (isset($Display->Message) && strlen($Display->Message) > 0) {
-	?>
+if (isset($Display->Message) && strlen($Display->Message) > 0) {?>
 	<script language="javascript">
        alert("<?php echo $Display->Message; ?>");
 	</script> 
-<?php 
-}
+<?php } ?><br/>
 
-;?><br/>
-
-<div id="container" style="color:#fff;height:350px;padding-left:20%">
-<br/><br/>
+<div id="container" style="color:#fff;height:350px;padding:0 10% 0 10%">
+<br/>
 <form action="index.php" name="login" method="post">
 <input type="hidden" name="module" value="login"/>
 <input type="hidden" name="action" value="Login"/>
-<input style="margin:0 5% 2% 5%;width:50%;" type="text" name="username" placeholder="Username" data-mini="true"/>
-<input style="margin:0 5% 10% 5%;width:50%;" type="password" name="password" placeholder="Password" data-mini="true"/>
+<input type="text" name="username" placeholder="Username" data-mini="true"/>
+<input type="password" name="password" placeholder="Password" data-mini="true"/>
 <a href="?module=forgot">forgot password?</a>
 <br/>
 
@@ -28,20 +24,17 @@ Remember me
        checked="checked"
 <?php } ?>
 />
-
-<img onclick="document.login.submit();" alt="Login" <?php echo $RENDER->NewImage('login.png');?> src="<?php echo IMAGE_RENDER_PATH;?>login.png"/>
+<button onclick="document.login.submit();" data-mini="true">Log In</button>
 </form>
 
 <br/>
 Not a member yet?
-<a href="?module=signup" style="margin-left:0.1%">
-<img alt="Signup" <?php echo $RENDER->NewImage('register.png');?> src="<?php echo IMAGE_RENDER_PATH;?>register.png"/>
+<a href="?module=signup">
+<button data-mini="true">Sign Up</button>
 </a>
 <br/>
 
-<br/>
-<br/>
-<div style="margin:0 20% 2% 20%">Login with</div>
+<div style="margin:0 20% 0 20%">Login with</div>
 
 <div style="padding:0 5% 0 5%">
 <!--
