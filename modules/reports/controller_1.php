@@ -108,112 +108,21 @@ $XML .= "</chart>";
             $html .= $this->BaselineChart($_REQUEST['BaselineId']); 
         }else if(isset($_REQUEST['ExerciseId'])){
             $html .= $this->ExerciseChart($_REQUEST['ExerciseId']);           
-        }else{   
-            $Model=new ReportsModel();
-            $CompletedWodCount = $Model->getCompletedWodCount();
-            $CompletedActivityCount = $Model->getCompletedActivityCount();
-            $TimeSpent = $this->getTimeSpent();
-            $WeightLifted = $this->getWeightLifted();
-            $DistanceCovered = $this->getDistanceCovered();
-            $CaloriesConsumed = $Model->getCaloriesConsumed();
-            $Strength = $Model->getStrength();
+        }else{    
             $html.='<div style="padding:2%">';
-            $html.='<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';       
-            $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getCompletedWODs();"><div style="height:26px;width:1px;float:left"></div>WODs Completed<br/><span class="ui-li-count">'.$CompletedWodCount.'</span></a></li>';          
-            $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getCompletedActivities();"><div style="height:26px;width:1px;float:left"></div>Activities Done<br/><span class="ui-li-count">'.$CompletedActivityCount.'</span></a></li>';
-            $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getTimeSpent();"><div style="height:26px;width:1px;float:left"></div>Time Spent<br/><span class="ui-li-count">'.$TimeSpent.'</span></a></li>';
-            $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getWeightLifted();"><div style="height:26px;width:1px;float:left"></div>Weight Lifted<br/><span class="ui-li-count">'.$WeightLifted.'</span></a></li>';         
-            $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getDistanceCovered();"><div style="height:26px;width:1px;float:left"></div>Distance Covered<br/><span class="ui-li-count">'.$DistanceCovered.'</span></a></li>';         
-            //$html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getCaloriesConsumed();"><div style="height:26px;width:1px;float:left"></div>Calories Consumed<br/><span class="ui-li-count"></span></a></li>';         
-            //$html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getStrength();"><div style="height:26px;width:1px;float:left"></div>Strength<br/><span class="ui-li-count"></span></a></li>';         
+            $html.='<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
+            $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getDummyReport();"><div style="height:26px;width:1px;float:left"></div>Dummy Graph<br/><span style="font-size:small"></span></a></li>';                    
+            $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getReport(\'WOD\');"><div style="height:26px;width:1px;float:left"></div>WOD<br/><span style="font-size:small"></span></a></li>';          
+            $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getReport(\'Benchmarks\');"><div style="height:26px;width:1px;float:left"></div>Benchmarks<br/><span style="font-size:small"></span></a></li>';
+            $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getBaselineReport();"><div style="height:26px;width:1px;float:left"></div>Baseline<br/><span style="font-size:small"></span></a></li>';         
+            $html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getReport(\'Exercises\')"><div style="height:26px;width:1px;float:left"></div>Activities<br/><span style="font-size:small"></span></a></li>';         
             $html.='</ul></div>';  
             $html.='<div class="clear"></div><br/>';                
             }
             return $html;
     }
     
-    function getTimeSpent()
-    {
-        $Model=new ReportsModel();
-        $TimesSpent = $Model->getTimesSpent();
-        $TotalTime = '';
-        $Minutes = 0;
-        $Seconds = 0;
-        $SplitSeconds = 0;
-        $TotalMinutes = 0;
-        $TotalSeconds = 0;
-        $TotalSplitSeconds = 0;
-        foreach($TimesSpent AS $Time){
-            $Time = explode(':',$Time->LoggedTime);
-            //$Hours=$Time[0];
-            $Minutes = $Time[0];
-            $Seconds = $Time[1];
-            $SplitSeconds = $Time[2];
-            
-            $TotalMinutes = $TotalMinutes + $Minutes;  
-            $TotalSeconds = $TotalSeconds + $Seconds;  
-            $TotalSplitSeconds = $TotalSplitSeconds + $SplitSeconds;           
-        }
-        $NewTotalSeconds = $TotalSeconds + floor($TotalSplitSeconds / 10);
-        $NewTotalMinutes = $TotalMinutes + floor($NewTotalSeconds / 60);
-        $TotalTime = ''.$this->number_pad($NewTotalMinutes,2).':'.$this->number_pad($NewTotalSeconds - floor($TotalSeconds / 60),2).':'.$this->number_pad($TotalSplitSeconds - floor($TotalSplitSeconds / 10),2).'';
-        return $TotalTime;
-    }
-    
-    private function number_pad($number,$n) {
-        return str_pad((int) $number,$n,"0",STR_PAD_LEFT);
-    }
-    
-    function getWeightLifted()
-    {
-        $Model=new ReportsModel();
-        $WeightsLifted = $Model->getWeightsLifted();
-        $TotalWeight = 0;
-        $TotalMetricWeight = 0;
-        $TotalImperialWeight = 0;
-        foreach($WeightsLifted AS $Weight){
-            if($Weight->UnitOfMeasure == 'kg'){
-                $TotalMetricWeight = $TotalMetricWeight + $Weight->LoggedWeight;
-            }else if($Weight->UnitOfMeasure == 'lbs'){
-                $TotalImperialWeight = $TotalImperialWeight + $Weight->LoggedWeight;
-            }           
-        }
-        if($this->SystemOfMeasure() == 'Metric'){
-            $TotalWeight = $TotalMetricWeight + ($TotalImperialWeight * 0.45).'kg';
-        }else{
-            $TotalWeight = $TotalImperialWeight + ($TotalMetricWeight * 2.20).'lbs';
-        }
-        return $TotalWeight;
-    }
-    
-    function getDistanceCovered()
-    {
-        $Model=new ReportsModel();
-        $DistancesCovered = $Model->getDistancesCovered();
-        $TotalDistance = 0;
-        $TotalDistanceM = 0;
-        $TotalDistanceKm = 0;
-        $TotalDistanceMi = 0;
-        $TotalDistanceYd = 0;
-        foreach($DistancesCovered AS $Distance){
-            if($Distance->UnitOfMeasure == 'm'){
-                $TotalDistanceM = $TotalDistanceM + $Distance->LoggedDistance;
-            }else if($Distance->UnitOfMeasure == 'km'){
-                $TotalDistanceKm = $TotalDistanceKm + $Distance->LoggedDistance;
-            }else if($Distance->UnitOfMeasure == 'mi'){
-                $TotalDistanceMi = $TotalDistanceMi + $Distance->LoggedDistance;
-            }else if($Distance->UnitOfMeasure == 'yd'){
-                $TotalDistanceYd = $TotalDistanceYd + $Distance->LoggedDistance;
-            }
-        }
-        if($this->SystemOfMeasure() == 'Metric'){
-            $TotalDistance = $TotalDistanceKm + floor($TotalDistanceM / 1000).'km';
-        }else{
-            $TotalDistance = $TotalDistanceMi + floor($TotalDistanceYd / 1760).'mi';
-        }        
-        return $TotalDistance;
-    }
-    
+	
     function Details()
     {
         $Model=new ReportsModel();

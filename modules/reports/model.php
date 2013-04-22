@@ -6,6 +6,158 @@ class ReportsModel extends Model
 	{
 	
 	}
+        
+        function getCompletedWODs()
+        {
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+	$SQL = 'SELECT COUNT(DISTINCT L.TimeCreated) AS NumberCompleted,
+B.recid AS WodId,
+        WT.recid AS WodTypeId,
+        WT.WorkoutType,
+        B.WorkoutName
+        FROM WODLog L
+        LEFT JOIN CustomWorkouts B ON B.recid = L.WorkoutId
+        LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
+        WHERE L.MemberId = '.$_COOKIE['UID'].'
+        AND WorkoutType = "Custom"
+UNION        
+ SELECT COUNT(DISTINCT L.TimeCreated) AS NumberCompleted,
+ B.recid AS WodId,
+        WT.recid AS WodTypeId,
+        WT.WorkoutType,
+        B.WorkoutName
+        FROM WODLog L
+        LEFT JOIN BenchmarkWorkouts B ON B.recid = L.WorkoutId
+        LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
+        WHERE L.MemberId = '.$_COOKIE['UID'].'
+        AND WorkoutType = "Benchmark" 
+UNION
+SELECT COUNT(DISTINCT L.TimeCreated) AS NumberCompleted,
+B.recid AS WodId,
+        WT.recid AS WodTypeId,
+        WT.WorkoutType,
+        B.WorkoutName
+        FROM WODLog L
+        LEFT JOIN WodWorkouts B ON B.recid = L.WorkoutId
+        LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
+        WHERE L.MemberId = '.$_COOKIE['UID'].'
+        AND WorkoutType = "My Gym"   
+UNION
+SELECT COUNT(DISTINCT L.TimeCreated) AS NumberCompleted,
+ B.WorkoutId AS WodId,
+        WT.recid AS WodTypeId,
+        WT.WorkoutType,
+        "Baseline" AS WorkoutName
+        FROM WODLog L
+        LEFT JOIN MemberBaseline B ON B.WorkoutId = L.WorkoutId
+        LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
+        WHERE L.MemberId = '.$_COOKIE['UID'].'
+        AND WorkoutType = "Baseline"           
+GROUP BY WorkoutType
+ORDER BY WorkoutType';
+        $db->setQuery($SQL);
+		
+        return $db->loadObjectList();    
+        }
+        
+        function getCompletedWodCount()
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT COUNT(DISTINCT L.TimeCreated) AS NumberCompleted
+                FROM WODLog L
+                WHERE L.MemberId';
+            $db->setQuery($SQL);
+            return $db->loadResult();       
+        }            
+
+        function getCompletedActivities()
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT COUNT(L.ExerciseId) AS NumberCompleted,
+                E.Exercise
+                FROM WODLog L
+                LEFT JOIN Exercises E ON E.recid = L.ExerciseId
+                WHERE L.MemberId = '.$_COOKIE['UID'].'
+                GROUP BY Exercise
+                ORDER BY Exercise'; 
+            $db->setQuery($SQL);
+		
+            return $db->loadObjectList();       
+        }
+        
+        function getCompletedActivityCount()
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT COUNT(L.ExerciseId) AS NumberCompleted
+                FROM WODLog L
+                LEFT JOIN Exercises E ON E.recid = L.ExerciseId
+                WHERE L.MemberId = '.$_COOKIE['UID'].''; 
+            $db->setQuery($SQL);
+            return $db->loadResult();       
+        }        
+
+        function getTimesSpent()
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT E.Exercise,
+                L.AttributeValue AS LoggedTime
+                FROM WODLog L 
+                LEFT JOIN Attributes A ON A.recid = L.AttributeId
+                LEFT JOIN Exercises E ON E.recid = L.ExerciseId
+                WHERE A.Attribute = "TimeToComplete"
+                AND L.MemberId = '.$_COOKIE['UID'].'
+                AND L.ExerciseId > 0
+                AND AttributeValue <> ""'; 
+            $db->setQuery($SQL);
+		
+            return $db->loadObjectList();
+        }
+
+        function getWeightsLifted()
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT E.Exercise,
+                L.AttributeValue AS LoggedWeight,
+                U.UnitOfMeasure
+                FROM WODLog L 
+                LEFT JOIN Attributes A ON A.recid = L.AttributeId
+                LEFT JOIN Exercises E ON E.recid = L.ExerciseId
+                LEFT JOIN UnitsOfMeasure U ON U.recid = L.UnitOfMeasureId
+                WHERE A.Attribute = "Weight"
+                AND L.MemberId = '.$_COOKIE['UID'].'
+                AND L.ExerciseId > 0'; 
+            $db->setQuery($SQL);
+		
+            return $db->loadObjectList();    
+        }
+
+        function getDistancesCovered()
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT E.Exercise,
+                L.AttributeValue AS LoggedDistance,
+                U.UnitOfMeasure
+                FROM WODLog L 
+                LEFT JOIN Attributes A ON A.recid = L.AttributeId
+                LEFT JOIN Exercises E ON E.recid = L.ExerciseId
+                LEFT JOIN UnitsOfMeasure U ON U.recid = L.UnitOfMeasureId
+                WHERE A.Attribute = "Distance"
+                AND L.MemberId = '.$_COOKIE['UID'].'
+                AND L.ExerciseId > 0'; 
+            $db->setQuery($SQL);
+		
+            return $db->loadObjectList();    
+        }
+
+        function getCaloriesConsumed()
+        {
+    
+        }
+
+        function getStrength()
+        {
+    
+        }        
 	
 	function getDetails()
 	{

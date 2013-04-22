@@ -333,7 +333,7 @@ input
 
 .AddNewActivityAttributes{
     height:300px;
-    padding:5px 25px 5px 25px;
+    padding:5px 0 5px 25px;
     background-color: #EEE;
     border-radius: 5px; 
     -moz-border-radius: 5px; 

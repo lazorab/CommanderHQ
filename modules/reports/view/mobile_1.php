@@ -182,40 +182,6 @@ function getReport(val)
    $.ajax({url:'ajax.php?module=reports',data:{report:val},dataType:"html",success:display}); 
 }
 
-function getCompletedWODs()
-{
-    
-}
-
-function getCompletedActivities()
-{
-    
-}
-
-function getTimeSpent()
-{
-    
-}
-
-function getWeightLifted()
-{
-    
-}
-
-function getDistanceCovered()
-{
-    
-}
-
-function getCaloriesBurned()
-{
-    
-}
-
-function getStrength()
-{
-    
-}
 var i = 1;//prevent double rendering problem
 </script>
 
