@@ -45,6 +45,9 @@ $Module = $_REQUEST['module'];
         else if(isset($_REQUEST['getMap'])){
         	echo $Ajax->getMap();
         }
+        else if (isset($_REQUEST['getDriveInsructions'])) {
+        	echo $Ajax->getDriveInsructions();
+        }
         else{
             echo $Ajax->Output();
         }

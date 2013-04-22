@@ -16,9 +16,59 @@ class LocatorController extends Controller {
 			$this->getMap ($_REQUEST ['Id']);
 		}*/
 	}
+	
+	function getDriveInsructions() {
+		$Model = new LocatorModel ();
+		$Affiliate = $Model->getAffiliate ( $_REQUEST["getDriveInsructions"] ); 
+		$Origin = '' . $_REQUEST ["lat"] . ',' . $_REQUEST ["lng"] . '';
+		$URL = 'http://maps.googleapis.com/maps/api/directions/xml?origin=' . $Origin . '&destination=' . $Affiliate->Longitude . ',' . $Affiliate->Latitude . '&sensor=true';
+		// echo $URL;
+		$params = '';
+		$ch = curl_init ();
+		curl_setopt ( $ch, CURLOPT_URL, $URL );
+		curl_setopt ( $ch, CURLOPT_TIMEOUT, 180 );
+		curl_setopt ( $ch, CURLOPT_HEADER, 0 );
+		curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, 1 );
+		curl_setopt ( $ch, CURLOPT_POST, 1 );
+		curl_setopt ( $ch, CURLOPT_POSTFIELDS, $params );
+		$data = curl_exec ( $ch );
+		curl_close ( $ch );
+		
+		$xml = new SimpleXMLElement ( $data );
+		$dir = '';
+		$i = 0;
+		$gps_pos = array ();
+		
+		$str = '<br/>';
+		foreach ( $xml as $step ) {
+			foreach ( $step as $loc ) {
+				foreach ( $loc as $gps ) {
+						
+					// print_r($gps);
+					if ($gps->start_location->lat != '') {
+		
+						if ($dir != '')
+							$dir .= '|';
+						$str .= $gps->html_instructions;
+						$str .= '<br/>';
+						array_push ( $gps_pos, '' . $gps->start_location->lat . ',' . $gps->start_location->lng . '' );
+						$i ++;
+						$dir .= '' . $gps->start_location->lat . ',' . $gps->start_location->lng . '';
+					}
+				}
+			}
+		}
+		
+		//$html = '<button onclick="closeDriveInstructions('.$Affiliate->AffiliateId .');">Close Driving Instructions</button>';
+		//$html .= '<br/>';
+		$html .= $str;		
+		return $html;
+	}
+	
+	
 	function getMap() {
 		$Model = new LocatorModel ();
-		$Affiliate = $Model->getAffiliate ( $_REQUEST["getMap"] ); // $_REQUEST ['Id']
+		$Affiliate = $Model->getAffiliate ( $_REQUEST["getMap"] ); 
 		$Origin = '' . $_REQUEST ["lat"] . ',' . $_REQUEST ["lng"] . '';
 		$URL = 'http://maps.googleapis.com/maps/api/directions/xml?origin=' . $Origin . '&destination=' . $Affiliate->Longitude . ',' . $Affiliate->Latitude . '&sensor=true';
 		// echo $URL;
@@ -61,7 +111,7 @@ class LocatorController extends Controller {
 		$first = $gps_pos [0];
 		$last = $gps_pos [$i - 1];
 
-		$html .= '<b><button onclick="closeMap('.$Affiliate->AffiliateId .');">Close Map</button></b>';
+		//$html .= '<button onclick="closeMap('.$Affiliate->AffiliateId .');">Close Map</button>';
 		
 		$html .= '
 		
@@ -103,6 +153,7 @@ var polyline = new google.maps.Polyline({
         strokeWeight: 2
     });
 }
+				
 </script>';
 
 		return $html;
@@ -183,8 +234,12 @@ var polyline = new google.maps.Polyline({
 			$Html .= 'Tel: <a href="tel:' . $FormattedNumber . '">
                         ' . $Affiliate->TelNo . '</a>';
 		}
-		$Html .= '<br/><br/><button onclick="openMap('.$Affiliate->AffiliateId .');">Open Map</button>';
-		
+		$Html .= '<br/><br/>';
+		$Html .= '<div id="options">';
+		$Html .= '<button onclick="openMap('.$Affiliate->AffiliateId .');">Map</button>';
+		$Html .= '<button onclick="openDriveInstructions('.$Affiliate->AffiliateId .');">Driving Instructions</button>';
+		$Html .= '<button onclick="closeBoth('.$Affiliate->AffiliateId .');">Close</button>';
+		$Html .= '</div>';
 		return $Html;
 	}
 }

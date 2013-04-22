@@ -10,20 +10,17 @@ function findLocation(position)
     lat = position.coords.latitude;
     lng = position.coords.longitude;
     $.ajax({url:'ajax.php?module=locator',data:{latitude:lat,longitude:lng},dataType:"html",success:display}); 
-    //$.getJSON("ajax.php?module=locator",{latitude:lat,longitude:lng},display);
 }
 
 function noLocation()
 {
     $.ajax({url:'ajax.php?module=locator',data:{latitude:null,longitude:null},dataType:"html",success:display}); 
-    //$.getJSON("ajax.php?module=locator",{latitude:null,longitude:null},display);
 }
 
 function GymSearch()
 {
     $("#map_canvas").removeClass("active");
     $.ajax({url:'ajax.php?module=locator',data:$("#searchform").serialize(),dataType:"html",success:display});
-    //$.getJSON('ajax.php?module=locator', $("#searchform").serialize(),display);
     $('#topselection').html('<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d"><li>Search Results</li></ul>');
     $('#toplist').listview(); 
     $('#toplist').listview('refresh');   
@@ -35,7 +32,6 @@ function goBackTo()
     $("#map_canvas").html("");
     $("#map_canvas").removeClass("active");
     topselectiondisplay('<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d"><li>Affiliate Gyms Near you</li></ul>');
-    //$.getJSON("ajax.php?module=locator",{latitude:lat,longitude:lng},display);
 }
 
 function getDetails(id)
@@ -43,12 +39,11 @@ function getDetails(id)
     $('#back').html('<img alt="Back" onclick="goBackTo();" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
     $.ajax({url:'ajax.php?module=locator',data:{Id:id,lat:lat,lng:lng},dataType:"html",success:display});
     $.ajax({url:'ajax.php?module=locator',data:{topselection:id},dataType:"html",success:topselectiondisplay});
-    //$.getJSON("ajax.php?module=locator",{Id:id,lat:lat,lng:lng},display);
-    //$.getJSON("ajax.php?module=locator",{topselection:id},topselectiondisplay);
 }
 
 function openMap(id)
 {
+	closeDriveInstructions(id);
 	$.ajax({url:'ajax.php?module=locator',data:{getMap:id,lat:lat,lng:lng},dataType:"html",success:displayMap});
 	$('#back').html('<img alt="Back" onclick="closeMap(' + id + ');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
 }
@@ -57,15 +52,25 @@ function closeMap(id) {
 	$('#mapPlaceOlder').html("");
 	$('#map_canvas').html("");
 	$('#pageMap').html('<div id="pageMap"><div id="mapPlaceOlder"></div><div id="map_canvas"></div></div>');
-	getDetails(id);
 }
 
 function displayMap(data) {
 	$('#mapPlaceOlder').html(data);
-	$("#topselection").html("");
-    $('#toplist').listview(); 
-    $('#toplist').listview('refresh');
     initMap();
+}
+
+function openDriveInstructions(id) {
+	closeMap(id);
+	$.ajax({url:'ajax.php?module=locator',data:{getDriveInsructions:id,lat:lat,lng:lng},dataType:"html",success:displayDriveInstructions});
+	$('#back').html('<img alt="Back" onclick="closeDriveInstructions(' + id + ');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
+}
+
+function displayDriveInstructions(data) {
+	$('#driveInstructions').html(data);
+}
+
+function closeDriveInstructions(id) {
+	$("#pageDriveInstructions").html('<div id="pageDriveInstructions"><div id="driveInstructions"></div></div>');
 }
 
 function topselectiondisplay(data)
@@ -81,6 +86,11 @@ function display(data)
     $('#listview').listview();
     $('#listview').listview('refresh');
     $('#AjaxLoading').html('');	
+}
+
+function closeBoth(id) {
+	closeMap(id);
+	closeDriveInstructions(id);
 }
 
 </script>
@@ -118,6 +128,8 @@ function display(data)
 	<div id="map_canvas"></div>
 </div>
 
-<div id="pageInstructions">
-	<div id="map_instructions"></div>
+<div id="pageDriveInstructions">
+	<div data-role="content">
+		<div id="driveInstructions"></div>
+	</div>
 </div>
