@@ -1,7 +1,6 @@
 <?php
 
 require 'library/metrix.class.php';
-
 class LocatorController extends Controller {
 	var $Directions;
 	var $GPS_Points;
@@ -13,14 +12,13 @@ class LocatorController extends Controller {
 		if (! isset ( $_COOKIE ['UID'] )) {
 			header ( 'location: index.php?module=login' );
 		}
-		if (isset ( $_REQUEST ['Id'] )) {
-			$this->getMap ();
-		}
+		/*if (isset ( $_REQUEST ['Id'] )) {
+			$this->getMap ($_REQUEST ['Id']);
+		}*/
 	}
-
 	function getMap() {
 		$Model = new LocatorModel ();
-		$Affiliate = $Model->getAffiliate ( $_REQUEST ['Id'] );
+		$Affiliate = $Model->getAffiliate ( $_REQUEST["getMap"] ); // $_REQUEST ['Id']
 		$Origin = '' . $_REQUEST ["lat"] . ',' . $_REQUEST ["lng"] . '';
 		$URL = 'http://maps.googleapis.com/maps/api/directions/xml?origin=' . $Origin . '&destination=' . $Affiliate->Longitude . ',' . $Affiliate->Latitude . '&sensor=true';
 		// echo $URL;
@@ -40,7 +38,7 @@ class LocatorController extends Controller {
 		$i = 0;
 		$gps_pos = array ();
 		
-		$str = '<br/><br/>';
+		$str = '<br/>';
 		foreach ( $xml as $step ) {
 			foreach ( $step as $loc ) {
 				foreach ( $loc as $gps ) {
@@ -59,11 +57,14 @@ class LocatorController extends Controller {
 				}
 			}
 		}
+		
 		$first = $gps_pos [0];
 		$last = $gps_pos [$i - 1];
 		
 		$html .= '
+						
 <script type="text/javascript">
+			
 $("#map_canvas").addClass("active");
 $("#map_canvas").html("<br/><br/><center>Retrieving map data...</center>");
 var latlng1 = new google.maps.LatLng(' . $first . ');
@@ -98,11 +99,12 @@ var polyline = new google.maps.Polyline({
         strokeOpacity: 0.8,
         strokeWeight: 2
     });
+
 </script>';
 		
-		$html .= $str;
 		return $html;
 	}
+	
 	function Output() {
 		$html = '';
 		$Overthrow = '';
@@ -128,9 +130,9 @@ var polyline = new google.maps.Polyline({
 			} else {
 				$html = 'No Affiliate Gyms match your search';
 			}
-		} else if (isset ( $_REQUEST ['Id'] )) {
+			 //} else if (isset ( $_REQUEST ['Id'] )) {
 			
-			$html .= $this->getMap ();
+			 //$html .= $this->getMap ($_REQUEST ['Id']);
 		} else {
 			if (isset ( $_REQUEST ['latitude'] ) && isset ( $_REQUEST ['longitude'] )) {
 				if ($_REQUEST ['latitude'] == null || $_REQUEST ['longitude'] == null) {
@@ -140,12 +142,12 @@ var polyline = new google.maps.Polyline({
 					$Model = new LocatorModel ();
 					$Affiliates = $Model->getAffiliates ();
 					$distanceAway = "0";
-					$metrixCalc = new Metrix();
+					$metrixCalc = new Metrix ();
 					if (count ( $Affiliates ) > 0) {
 						$html .= '<div ' . $Overthrow . '>';
 						$html .= '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d" data-icon="none">';
 						foreach ( $Affiliates as $currentAffiliate ) {
-							$distanceAway = $metrixCalc->DistanceBetweenPoints($currentAffiliate->Longitude, $currentAffiliate->Latitude, $_REQUEST ['latitude'], $_REQUEST['longitude']);
+							$distanceAway = $metrixCalc->DistanceBetweenPoints ( $currentAffiliate->Longitude, $currentAffiliate->Latitude, $_REQUEST ['latitude'], $_REQUEST ['longitude'] );
 							$html .= '<li>';
 							$html .= '<a href="" onclick="getDetails(' . $currentAffiliate->AffiliateId . ');">' . $currentAffiliate->GymName . ':<br/>';
 							$html .= '<span style="font-size:small">' . $currentAffiliate->Address . '</span><br/>';
@@ -178,6 +180,7 @@ var polyline = new google.maps.Polyline({
 			$Html .= 'Tel: <a href="tel:' . $FormattedNumber . '">
                         ' . $Affiliate->TelNo . '</a>';
 		}
+		$Html .= '<br/><br/><a href="#" onclick="openMap('.$Affiliate->AffiliateId .');">Open Map</a>';
 		return $Html;
 	}
 }

@@ -42,6 +42,9 @@ $Module = $_REQUEST['module'];
         }else if(isset($_REQUEST['encode']) && $_REQUEST['encode'] == 'json'){
             echo json_encode($Ajax->Output());
         }
+        else if(isset($_REQUEST['getMap'])){
+        	echo $Ajax->getMap();
+        }
         else{
             echo $Ajax->Output();
         }
