@@ -49,14 +49,14 @@ function getDetails(id)
 
 function openMap(id)
 {
-	$.mobile.changePage("#pageMap");
 	$.ajax({url:'ajax.php?module=locator',data:{getMap:id,lat:lat,lng:lng},dataType:"html",success:displayMap});
-	$('#back').html('<img alt="Back" onclick="FromMapBackToDetails(' + id + ');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
+	$('#back').html('<img alt="Back" onclick="closeMap(' + id + ');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
 }
 
-function FromMapBackToDetails(id) {
-	$('#mapPlaceOlder').html("<br>");
-	$('#map_canvas').html("<br>");
+function closeMap(id) {
+	$('#mapPlaceOlder').html("");
+	$('#map_canvas').html("");
+	$('#pageMap').html('<div id="pageMap"><div id="mapPlaceOlder"></div><div id="map_canvas"></div></div>');
 	getDetails(id);
 }
 
@@ -65,7 +65,7 @@ function displayMap(data) {
 	$("#topselection").html("");
     $('#toplist').listview(); 
     $('#toplist').listview('refresh');
-	//initMap();
+    initMap();
 }
 
 function topselectiondisplay(data)
@@ -82,10 +82,6 @@ function display(data)
     $('#listview').listview('refresh');
     $('#AjaxLoading').html('');	
 }
-
-$("#listitem").swiperight(function() {
-    alert("swipe");
-});
 
 </script>
 
@@ -118,19 +114,9 @@ $("#listitem").swiperight(function() {
 </div>
 
 <div id="pageMap">
-	<div data-role="header">
-		<h1>Map</h1>
-	</div>
-	<div data-role="content">
-		swipe me
-		<div id="mapPlaceOlder"></div>
-		<div id="map_canvas"></div>
-		<ul data-role="listview" data-inset="true" data-theme="c">
-			<li id="listitem">Swipe Right to view Page 1</li>
-		</ul>
-	</div>
+	<div id="mapPlaceOlder"></div>
+	<div id="map_canvas"></div>
 </div>
-
 
 <div id="pageInstructions">
 	<div id="map_instructions"></div>

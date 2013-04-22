@@ -60,11 +60,14 @@ class LocatorController extends Controller {
 		
 		$first = $gps_pos [0];
 		$last = $gps_pos [$i - 1];
+
+		$html .= '<b><button onclick="closeMap('.$Affiliate->AffiliateId .');">Close Map</button></b>';
 		
 		$html .= '
-						
+		
 <script type="text/javascript">
 			
+function initMap() {
 $("#map_canvas").addClass("active");
 $("#map_canvas").html("<br/><br/><center>Retrieving map data...</center>");
 var latlng1 = new google.maps.LatLng(' . $first . ');
@@ -99,9 +102,9 @@ var polyline = new google.maps.Polyline({
         strokeOpacity: 0.8,
         strokeWeight: 2
     });
-
+}
 </script>';
-		
+
 		return $html;
 	}
 	
@@ -180,7 +183,8 @@ var polyline = new google.maps.Polyline({
 			$Html .= 'Tel: <a href="tel:' . $FormattedNumber . '">
                         ' . $Affiliate->TelNo . '</a>';
 		}
-		$Html .= '<br/><br/><a href="#" onclick="openMap('.$Affiliate->AffiliateId .');">Open Map</a>';
+		$Html .= '<br/><br/><button onclick="openMap('.$Affiliate->AffiliateId .');">Open Map</button>';
+		
 		return $Html;
 	}
 }
