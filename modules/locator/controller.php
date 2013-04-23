@@ -171,11 +171,11 @@ var polyline = new google.maps.Polyline({
         		center: latlngPos,
         		mapTypeId: google.maps.MapTypeId.ROADMAP
     		};
-			var theMap = new google.maps.Map(document.getElementById("map_canvas"), myOptions);		
-
-			var myMarker = new google.maps.Marker({
+			var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);		
+			var marker = new google.maps.Marker({
             position: latlngPos,
-            map: theMap
+            map: map,
+			title: "Gym"
             });
 					';
 		}
