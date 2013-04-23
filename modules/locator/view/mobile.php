@@ -85,6 +85,8 @@ function display(data)
     $('#AjaxOutput').html(data);
     $('#listview').listview();
     $('#listview').listview('refresh');
+    $('.buttongroup').button();
+    $('.buttongroup').button('refresh');
     $('#AjaxLoading').html('');	
 }
 

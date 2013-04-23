@@ -166,7 +166,9 @@ var polyline = new google.maps.Polyline({
 		if ($Device->IsGoogleAndroidDevice ()) {
 			$Overthrow = 'class="overthrow"';
 		}
-		if (isset ( $_REQUEST ['keyword'] )) {
+                if(isset($_REQUEST["getDriveInsructions"])){
+                    $html = $this->getDriveInsructions();
+                }else if (isset ( $_REQUEST ['keyword'] )) {
 			$Model = new LocatorModel ();
 			$Affiliates = $Model->getAffiliatesFromSearch ();
 			if (count ( $Affiliates ) > 0) {
@@ -235,10 +237,14 @@ var polyline = new google.maps.Polyline({
                         ' . $Affiliate->TelNo . '</a>';
 		}
 		$Html .= '<br/><br/>';
-		$Html .= '<div id="options">';
-		$Html .= '<button onclick="openMap('.$Affiliate->AffiliateId .');">Map</button>';
-		$Html .= '<button onclick="openDriveInstructions('.$Affiliate->AffiliateId .');">Driving Instructions</button>';
-		$Html .= '<button onclick="closeBoth('.$Affiliate->AffiliateId .');">Close</button>';
+		$Html .= '<div id="CenterButtonText" class="ui-grid-b">';
+                $Html .= '<div class="ui-block-a">';
+		$Html .= '<button class="buttongroup" onclick="openMap('.$Affiliate->AffiliateId .');">Map</button>';
+                $Html .= '</div><div class="ui-block-b">';
+		$Html .= '<button class="buttongroup" onclick="openDriveInstructions('.$Affiliate->AffiliateId .');">Directions</button>';
+                $Html .= '</div><div class="ui-block-c">';
+		$Html .= '<button class="buttongroup" onclick="closeBoth('.$Affiliate->AffiliateId .');">Close</button>';
+                $Html .= '</div>';
 		$Html .= '</div>';
 		return $Html;
 	}
