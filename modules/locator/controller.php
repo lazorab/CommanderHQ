@@ -107,7 +107,8 @@ class LocatorController extends Controller {
 			}
 		}
 		
-		$affilateLocation = $Affiliate->Latitude.','.$Affiliate->Longitude;
+		$affilateLocation = '' . $Affiliate->Latitude . ',' . $Affiliate->Longitude . '' ;
+		 
 		$first = $gps_pos [0];
 		$last = $gps_pos [$i - 1];
 		
@@ -166,14 +167,14 @@ var polyline = new google.maps.Polyline({
 			$html .= '
 			var latlngPos = new google.maps.LatLng(' . $affilateLocation . ');
 			var myOptions = {
-        		zoom: 12,
+        		zoom: 13,
         		center: latlngPos,
         		mapTypeId: google.maps.MapTypeId.ROADMAP
     		};
 			var theMap = new google.maps.Map(document.getElementById("map_canvas"),
 			myOptions);		
 
-			var marker = new google.maps.Marker({
+			var myMarker = new google.maps.Marker({
             position: latlngPos,
             map: theMap,
             title: "A"
