@@ -167,24 +167,22 @@ var polyline = new google.maps.Polyline({
 			$html .= '
 			var latlngPos = new google.maps.LatLng(' . $affilateLocation . ');
 			var myOptions = {
-        		zoom: 13,
+        		zoom: 14,
         		center: latlngPos,
         		mapTypeId: google.maps.MapTypeId.ROADMAP
     		};
-			var theMap = new google.maps.Map(document.getElementById("map_canvas"),
-			myOptions);		
+			var theMap = new google.maps.Map(document.getElementById("map_canvas"), myOptions);		
 
 			var myMarker = new google.maps.Marker({
             position: latlngPos,
-            map: theMap,
-            title: "A"
+            map: theMap
             });
-					
 					';
 		}
 		
 		$html .= '
 }				
+
 </script>';
 		
 		return $html;
