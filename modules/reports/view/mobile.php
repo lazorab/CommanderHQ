@@ -221,6 +221,24 @@ function getStrength()
 {
     
 }
+
+function getWOD(typeid, id)
+{
+    $('#back').html('<img alt="Back" onclick="getCompletedWODs();" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
+    $.ajax({url:'ajax.php?module=reports',data:{report:'WOD', typeid:typeid, id:id},dataType:"html",success:display});    
+}
+
+function getActivity(id, source)
+{
+    if(source == 'activities'){
+        $('#back').html('<img alt="Back" onclick="getCompletedActivities();" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
+    }else if(source == 'weights'){
+        $('#back').html('<img alt="Back" onclick="getWeightLifted();" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
+    }else if(source == 'distances'){
+        $('#back').html('<img alt="Back" onclick="getDistanceCovered();" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
+    }
+    $.ajax({url:'ajax.php?module=reports',data:{report:'Activity', id:id},dataType:"html",success:display});    
+}
 var i = 1;//prevent double rendering problem
 </script>
 

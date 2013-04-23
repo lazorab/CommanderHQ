@@ -75,12 +75,13 @@ ORDER BY WorkoutType';
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $SQL = 'SELECT COUNT(L.ExerciseId) AS NumberCompleted,
+                L.ExerciseId,
                 E.Exercise
                 FROM WODLog L
                 LEFT JOIN Exercises E ON E.recid = L.ExerciseId
                 WHERE L.MemberId = '.$_COOKIE['UID'].'
                 GROUP BY Exercise
-                ORDER BY Exercise'; 
+                ORDER BY NumberCompleted DESC'; 
             $db->setQuery($SQL);
 		
             return $db->loadObjectList();       
@@ -89,7 +90,8 @@ ORDER BY WorkoutType';
         function getCompletedActivityCount()
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT COUNT(L.ExerciseId) AS NumberCompleted
+            $SQL = 'SELECT COUNT(L.ExerciseId) AS NumberCompleted,
+                L.ExerciseId
                 FROM WODLog L
                 LEFT JOIN Exercises E ON E.recid = L.ExerciseId
                 WHERE L.MemberId = '.$_COOKIE['UID'].''; 
@@ -101,6 +103,7 @@ ORDER BY WorkoutType';
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $SQL = 'SELECT E.Exercise,
+                L.ExerciseId,
                 L.AttributeValue AS LoggedTime
                 FROM WODLog L 
                 LEFT JOIN Attributes A ON A.recid = L.AttributeId
@@ -117,7 +120,9 @@ ORDER BY WorkoutType';
         function getWeightsLifted()
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT E.Exercise,
+            $SQL = 'SELECT COUNT(L.ExerciseId) AS NumberCompleted,
+                L.ExerciseId,
+                E.Exercise,
                 L.AttributeValue AS LoggedWeight,
                 U.UnitOfMeasure
                 FROM WODLog L 
@@ -126,7 +131,8 @@ ORDER BY WorkoutType';
                 LEFT JOIN UnitsOfMeasure U ON U.recid = L.UnitOfMeasureId
                 WHERE A.Attribute = "Weight"
                 AND L.MemberId = '.$_COOKIE['UID'].'
-                AND L.ExerciseId > 0'; 
+                AND L.ExerciseId > 0
+                ORDER BY NumberCompleted DESC'; 
             $db->setQuery($SQL);
 		
             return $db->loadObjectList();    
@@ -135,7 +141,9 @@ ORDER BY WorkoutType';
         function getDistancesCovered()
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT E.Exercise,
+            $SQL = 'SELECT COUNT(L.ExerciseId) AS NumberCompleted,
+                L.ExerciseId,
+                E.Exercise,
                 L.AttributeValue AS LoggedDistance,
                 U.UnitOfMeasure
                 FROM WODLog L 
@@ -144,7 +152,8 @@ ORDER BY WorkoutType';
                 LEFT JOIN UnitsOfMeasure U ON U.recid = L.UnitOfMeasureId
                 WHERE A.Attribute = "Distance"
                 AND L.MemberId = '.$_COOKIE['UID'].'
-                AND L.ExerciseId > 0'; 
+                AND L.ExerciseId > 0
+                ORDER BY NumberCompleted DESC'; 
             $db->setQuery($SQL);
 		
             return $db->loadObjectList();    
@@ -241,14 +250,19 @@ ORDER BY WorkoutType';
         return $db->loadObjectList();        
     }
     
-    function getWODHistory($WorkoutId, $WorkoutTypeId)
+    function getWODHistory($WorkoutTypeId, $WorkoutId)
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
 	$SQL = 'SELECT WT.WODType,
-            CASE WHEN WODType = "Custom" 
-            THEN (SELECT WorkoutName FROM CustomWorkouts WHERE recid = L.WorkoutId)           
+            CASE 
+            WHEN WODType = "Custom" 
+                THEN (SELECT WorkoutName FROM CustomWorkouts WHERE recid = L.WorkoutId)           
+            WHEN WODType = "Baseline" 
+                THEN "Baseline" 
+            WHEN WODType = "Benchmark" 
+                THEN (SELECT WorkoutName FROM BenchmarkWorkouts WHERE recid = L.WorkoutId)          
             ELSE
-            (SELECT WorkoutName FROM WodWorkouts WHERE recid = L.WorkoutId) 
+                (SELECT WorkoutName FROM WodWorkouts WHERE recid = L.WorkoutId) 
             END
             AS WorkoutName,
             E.Exercise, 
@@ -257,13 +271,30 @@ ORDER BY WorkoutType';
             LEFT JOIN WODTypes WT ON WT.recid = L.WODTypeId
             LEFT JOIN Exercises E ON E.recid = L.ExerciseId
             LEFT JOIN Attributes A ON A.recid = L.AttributeId
-            WHERE L.MemberId = '.$_COOKIE['UID'].'
-            AND L.WorkoutId = '.$WorkoutId.'
+            WHERE L.MemberId = '.$_COOKIE['UID'].' 
+            AND L.WorkoutId = '.$WorkoutId.' 
             AND L.WODTypeId = '.$WorkoutTypeId.'  
+            GROUP BY TimeCreated 
             ORDER BY TimeCreated';// AND L.ExerciseId = '.$_REQUEST['WODId'].'';
         $db->setQuery($SQL);
 		
         return $db->loadObjectList();       
+    }
+    
+    function getActivityHistory($Id)
+    {
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+	$SQL = 'SELECT E.Exercise, 
+            A.Attribute AS Attribute, L.AttributeValue AS AttributeValue, L.TimeCreated 
+            FROM WODLog L 
+            LEFT JOIN Exercises E ON E.recid = L.ExerciseId
+            LEFT JOIN Attributes A ON A.recid = L.AttributeId
+            WHERE L.MemberId = '.$_COOKIE['UID'].'
+            AND L.ExerciseId = '.$Id.'
+            ORDER BY TimeCreated';// AND L.ExerciseId = '.$_REQUEST['WODId'].'';
+        $db->setQuery($SQL);
+		
+        return $db->loadObjectList();        
     }
     
         function getBenchmarkHistory($Id)

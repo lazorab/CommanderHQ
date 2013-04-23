@@ -89,18 +89,15 @@ $XML .= "</chart>";
             {
                 $html .= $this->getDistancesCovered();	
             }
-	}
-	else if(isset($_REQUEST['PerformanceId'])){
-            $html .= $this->PerformanceHistory();
-        }else if(isset($_REQUEST['WodId'])){
-            $html .= $this->WODChart($_REQUEST['WodId'], $_REQUEST['WodTypeId']);
-        }else if(isset($_REQUEST['BenchmarkId'])){
-            $html .= $this->BenchmarkChart($_REQUEST['BenchmarkId']);
-        }else if(isset($_REQUEST['BaselineId'])){
-            $html .= $this->BaselineChart($_REQUEST['BaselineId']); 
-        }else if(isset($_REQUEST['ExerciseId'])){
-            $html .= $this->ExerciseChart($_REQUEST['ExerciseId']);           
-        }else{   
+            else if($_REQUEST['report'] == 'WOD')
+            {
+                $html .= $this->getWODHistory($_REQUEST['typeid'], $_REQUEST['id']);	
+            }            
+            else if($_REQUEST['report'] == 'Activity')
+            {
+                $html .= $this->getActivityHistory($_REQUEST['id']);	
+            }
+	}else{   
             $Model=new ReportsModel();
             $CompletedWodCount = $Model->getCompletedWodCount();
             $CompletedActivityCount = $Model->getCompletedActivityCount();
@@ -124,6 +121,25 @@ $XML .= "</chart>";
             return $html;
     }
     
+    function getWODHistory($TypeId, $Id)
+    {
+        $Model=new ReportsModel();
+        $WODs = $Model->getWODHistory($TypeId, $Id);
+        $Html = '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">'; 
+        foreach($WODs AS $Wod){
+            $Html.='<li><a style="font-size:large;margin-top:10px" href="#"><div style="height:26px;width:1px;float:left"></div>'.$Wod->WorkoutName.'<br/><span style="font-size:small">'.$Wod->TimeCreated.'</span></a></li>';          
+        }
+        $Html.='</ul>';
+        return $Html;
+    }
+    
+    function getActivityHistory($Id)
+    {
+        $Model=new ReportsModel();
+        $WODs = $Model->getActivityHistory($Id);
+        $Html = '';       
+    }
+    
     function getCompletedWods()
     {
         $Model=new ReportsModel();
@@ -132,9 +148,11 @@ $XML .= "</chart>";
         if(count($WODs) > 0){
             $Html.='<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
         foreach($WODs AS $Wod){
-            $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getWOD();"><div style="height:26px;width:1px;float:left"></div>'.$Wod->WorkoutType.'<br/><span class="ui-li-count">'.$Wod->NumberCompleted.'</span></a></li>';          
+            $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getWOD(\''.$Wod->WodTypeId.'\', \''.$Wod->WodId.'\');"><div style="height:26px;width:1px;float:left"></div>'.$Wod->WorkoutType.'<br/><span class="ui-li-count">'.$Wod->NumberCompleted.'</span></a></li>';          
         }
-        $Html .= '</ul>';
+            $Html .= '</ul>';
+        }else{
+            $Html = 'No complted WODs yet';
         }
         
         return $Html;
@@ -145,6 +163,16 @@ $XML .= "</chart>";
         $Model=new ReportsModel();
         $Activities = $Model->getCompletedActivities();
         $Html = '';
+        if(count($Activities) > 0){
+            $Html.='<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
+        foreach($Activities AS $Activity){
+            $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getActivity(\''.$Wod->ExerciseId.'\', \'activities\');"><div style="height:26px;width:1px;float:left"></div>'.$Activity->Exercise.'<br/><span class="ui-li-count">'.$Activity->NumberCompleted.'</span></a></li>';          
+        }
+        $Html .= '</ul>';
+        }else{
+            $Html = 'No logged activities yet';
+        }
+        
         return $Html;
     }
     
@@ -193,6 +221,16 @@ $XML .= "</chart>";
         $Model=new ReportsModel();
         $WeightsLifted = $Model->getWeightsLifted(); 
         $Html = '';
+        if(count($WeightsLifted) > 0){
+            $Html.='<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
+        foreach($WeightsLifted AS $Weight){
+            $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getActivity(\''.$Wod->ExerciseId.'\', \'weights\');"><div style="height:26px;width:1px;float:left"></div>'.$Weight->Exercise.'<br/><span class="ui-li-count">'.$Weight->NumberCompleted.'</span></a></li>';          
+        }
+        $Html .= '</ul>';
+        }else{
+            $Html = 'No logged weights yet';
+        }
+        
         return $Html;        
     }
     
@@ -223,6 +261,16 @@ $XML .= "</chart>";
         $Model=new ReportsModel();
         $DistancesCovered = $Model->getDistancesCovered();  
         $Html = '';
+        if(count($DistancesCovered) > 0){
+            $Html.='<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
+        foreach($DistancesCovered AS $Distance){
+            $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getActivity(\''.$Wod->ExerciseId.'\', \'distances\');"><div style="height:26px;width:1px;float:left"></div>'.$Distance->Exercise.'<br/><span class="ui-li-count">'.$Distance->NumberCompleted.'</span></a></li>';          
+        }
+        $Html .= '</ul>';
+        }else{
+            $Html = 'No logged distances yet';
+        }
+                
         return $Html;        
     }
     
