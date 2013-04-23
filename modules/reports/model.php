@@ -63,9 +63,10 @@ ORDER BY WorkoutType';
         function getCompletedWodCount()
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT COUNT(DISTINCT L.TimeCreated) AS NumberCompleted
+            $SQL = 'SELECT COUNT(DISTINCT TimeCreated) AS NumberCompleted
                 FROM WODLog L
-                WHERE L.MemberId';
+                WHERE MemberId = '.$_COOKIE['UID'].'
+                AND WODTypeId > 0';
             $db->setQuery($SQL);
             return $db->loadResult();       
         }            

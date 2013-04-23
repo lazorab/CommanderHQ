@@ -184,27 +184,32 @@ function getReport(val)
 
 function getCompletedWODs()
 {
-    
+    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=reports\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
+    $.ajax({url:'ajax.php?module=reports',data:{report:'wods'},dataType:"html",success:display}); 
 }
 
 function getCompletedActivities()
 {
-    
+    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=reports\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');    
+    $.ajax({url:'ajax.php?module=reports',data:{report:'activities'},dataType:"html",success:display}); 
 }
 
 function getTimeSpent()
 {
-    
+    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=reports\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
+    $.ajax({url:'ajax.php?module=reports',data:{report:'time'},dataType:"html",success:display}); 
 }
 
 function getWeightLifted()
 {
-    
+    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=reports\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
+    $.ajax({url:'ajax.php?module=reports',data:{report:'weight'},dataType:"html",success:display}); 
 }
 
 function getDistanceCovered()
 {
-    
+    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=reports\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
+    $.ajax({url:'ajax.php?module=reports',data:{report:'distance'},dataType:"html",success:display}); 
 }
 
 function getCaloriesBurned()

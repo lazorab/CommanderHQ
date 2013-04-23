@@ -69,33 +69,25 @@ $XML .= "</chart>";
         $html='';
 	if(isset($_REQUEST['report']))
 	{
-            if($_REQUEST['report'] == 'Pending')
+            if($_REQUEST['report'] == 'wods')
             {
-                $html .= $this->PendingExercises();
+                $html .= $this->getCompletedWODs();	
             }
-            else if($_REQUEST['report'] == 'Performance')
+            else if($_REQUEST['report'] == 'activities')
             {
-                $html .= $this->CompletedExercises();	
+                $html .= $this->getCompletedActivities();	
             }
-            else if($_REQUEST['report'] == 'WOD')
+            else if($_REQUEST['report'] == 'time')
             {
-                $html .= $this->getWODs();	
+                $html .= $this->getTimesSpent();	
             }
-            else if($_REQUEST['report'] == 'Benchmarks')
+            else if($_REQUEST['report'] == 'weight')
             {
-                $html .= $this->getBenchmarks();	
-            }
-            else if($_REQUEST['report'] == 'Baseline')
-            {
-                $html .= $this->BaselineHistory();	
-            }
-            else if($_REQUEST['report'] == 'Exercises')
-            {
-                $html .= $this->getCompletedExercises();	
+                $html .= $this->getWeightsLifted();	
             }            
-            else if($_REQUEST['report'] == 'Weight')
+            else if($_REQUEST['report'] == 'distance')
             {
-                $html .= $this->WeightHistory($this->MemberDetails->SystemOfMeasure);	
+                $html .= $this->getDistancesCovered();	
             }
 	}
 	else if(isset($_REQUEST['PerformanceId'])){
@@ -132,6 +124,38 @@ $XML .= "</chart>";
             return $html;
     }
     
+    function getCompletedWods()
+    {
+        $Model=new ReportsModel();
+        $WODs = $Model->getCompletedWods();
+        $Html = '';
+        if(count($WODs) > 0){
+            $Html.='<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
+        foreach($WODs AS $Wod){
+            $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getWOD();"><div style="height:26px;width:1px;float:left"></div>'.$Wod->WorkoutType.'<br/><span class="ui-li-count">'.$Wod->NumberCompleted.'</span></a></li>';          
+        }
+        $Html .= '</ul>';
+        }
+        
+        return $Html;
+    }
+    
+    function getCompletedActivities()
+    {
+        $Model=new ReportsModel();
+        $Activities = $Model->getCompletedActivities();
+        $Html = '';
+        return $Html;
+    }
+    
+    function getTimesSpent()
+    {
+        $Model=new ReportsModel();
+        $TimesSpent = $Model->getTimesSpent(); 
+        $Html = '';
+        return $Html;        
+    }
+    
     function getTimeSpent()
     {
         $Model=new ReportsModel();
@@ -164,6 +188,14 @@ $XML .= "</chart>";
         return str_pad((int) $number,$n,"0",STR_PAD_LEFT);
     }
     
+    function getWeightsLifted()
+    {
+        $Model=new ReportsModel();
+        $WeightsLifted = $Model->getWeightsLifted(); 
+        $Html = '';
+        return $Html;        
+    }
+    
     function getWeightLifted()
     {
         $Model=new ReportsModel();
@@ -184,6 +216,14 @@ $XML .= "</chart>";
             $TotalWeight = $TotalImperialWeight + ($TotalMetricWeight * 2.20).'lbs';
         }
         return $TotalWeight;
+    }
+    
+    function getDistancesCovered()
+    {
+        $Model=new ReportsModel();
+        $DistancesCovered = $Model->getDistancesCovered();  
+        $Html = '';
+        return $Html;        
     }
     
     function getDistanceCovered()

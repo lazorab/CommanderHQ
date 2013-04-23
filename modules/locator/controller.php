@@ -237,7 +237,7 @@ var polyline = new google.maps.Polyline({
                         ' . $Affiliate->TelNo . '</a>';
 		}
 		$Html .= '<br/><br/>';
-		$Html .= '<div id="CenterButtonText" class="ui-grid-b">';
+		$Html .= '<div class="ui-grid-b">';
                 $Html .= '<div class="ui-block-a">';
 		$Html .= '<button class="buttongroup" onclick="openMap('.$Affiliate->AffiliateId .');">Map</button>';
                 $Html .= '</div><div class="ui-block-b">';
