@@ -250,16 +250,16 @@ ORDER BY WorkoutType';
         return $db->loadObjectList();        
     }
     
-    function getWODHistory($WorkoutTypeId, $WorkoutId)
+    function getWODHistory($WorkoutTypeId)
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-	$SQL = 'SELECT WT.WODType,
+	$SQL = 'SELECT WT.WorkoutType,
             CASE 
-            WHEN WODType = "Custom" 
+            WHEN WorkoutType = "Custom" 
                 THEN (SELECT WorkoutName FROM CustomWorkouts WHERE recid = L.WorkoutId)           
-            WHEN WODType = "Baseline" 
+            WHEN WorkoutType = "Baseline" 
                 THEN "Baseline" 
-            WHEN WODType = "Benchmark" 
+            WHEN WorkoutType = "Benchmark" 
                 THEN (SELECT WorkoutName FROM BenchmarkWorkouts WHERE recid = L.WorkoutId)          
             ELSE
                 (SELECT WorkoutName FROM WodWorkouts WHERE recid = L.WorkoutId) 
@@ -268,11 +268,10 @@ ORDER BY WorkoutType';
             E.Exercise, 
             A.Attribute AS Attribute, L.AttributeValue AS AttributeValue, L.TimeCreated 
             FROM WODLog L 
-            LEFT JOIN WODTypes WT ON WT.recid = L.WODTypeId
+            LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
             LEFT JOIN Exercises E ON E.recid = L.ExerciseId
             LEFT JOIN Attributes A ON A.recid = L.AttributeId
-            WHERE L.MemberId = '.$_COOKIE['UID'].' 
-            AND L.WorkoutId = '.$WorkoutId.' 
+            WHERE L.MemberId = '.$_COOKIE['UID'].'  
             AND L.WODTypeId = '.$WorkoutTypeId.'  
             GROUP BY TimeCreated 
             ORDER BY TimeCreated';// AND L.ExerciseId = '.$_REQUEST['WODId'].'';
@@ -291,6 +290,7 @@ ORDER BY WorkoutType';
             LEFT JOIN Attributes A ON A.recid = L.AttributeId
             WHERE L.MemberId = '.$_COOKIE['UID'].'
             AND L.ExerciseId = '.$Id.'
+            GROUP BY TimeCreated     
             ORDER BY TimeCreated';// AND L.ExerciseId = '.$_REQUEST['WODId'].'';
         $db->setQuery($SQL);
 		

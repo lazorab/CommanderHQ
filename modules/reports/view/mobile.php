@@ -176,6 +176,15 @@ function display(data)
     $('#listview').listview('refresh');
 }
 
+function displayTimeGraph(data)
+{
+    var chartObj = new FusionCharts( "includes/FusionCharts/Pie2D.swf","FirstChartId", "300", "250", "0", "1" );
+
+    chartObj.setXMLData(''+data+'');
+
+    chartObj.render("AjaxOutput");
+}
+
 function getReport(val)
 {
    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=reports\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
@@ -197,7 +206,8 @@ function getCompletedActivities()
 function getTimeSpent()
 {
     $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=reports\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
-    $.ajax({url:'ajax.php?module=reports',data:{report:'time'},dataType:"html",success:display}); 
+    $.ajax({url:'ajax.php?module=reports',data:{report:'time'},dataType:"html",success:displayTimeGraph}); 
+    
 }
 
 function getWeightLifted()
@@ -222,10 +232,10 @@ function getStrength()
     
 }
 
-function getWOD(typeid, id)
+function getWOD(typeid)
 {
     $('#back').html('<img alt="Back" onclick="getCompletedWODs();" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
-    $.ajax({url:'ajax.php?module=reports',data:{report:'WOD', typeid:typeid, id:id},dataType:"html",success:display});    
+    $.ajax({url:'ajax.php?module=reports',data:{report:'WOD', typeid:typeid},dataType:"html",success:display});    
 }
 
 function getActivity(id, source)

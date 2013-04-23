@@ -121,10 +121,10 @@ $XML .= "</chart>";
             return $html;
     }
     
-    function getWODHistory($TypeId, $Id)
+    function getWODHistory($TypeId)
     {
         $Model=new ReportsModel();
-        $WODs = $Model->getWODHistory($TypeId, $Id);
+        $WODs = $Model->getWODHistory($TypeId);
         $Html = '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">'; 
         foreach($WODs AS $Wod){
             $Html.='<li><a style="font-size:large;margin-top:10px" href="#"><div style="height:26px;width:1px;float:left"></div>'.$Wod->WorkoutName.'<br/><span style="font-size:small">'.$Wod->TimeCreated.'</span></a></li>';          
@@ -136,8 +136,13 @@ $XML .= "</chart>";
     function getActivityHistory($Id)
     {
         $Model=new ReportsModel();
-        $WODs = $Model->getActivityHistory($Id);
-        $Html = '';       
+        $Activities = $Model->getActivityHistory($Id);
+        $Html = '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">'; 
+        foreach($Activities AS $Activity){
+            $Html.='<li><a style="font-size:large;margin-top:10px" href="#"><div style="height:26px;width:1px;float:left"></div>'.$Activity->TimeCreated.'<br/></a></li>';          
+        }
+        $Html.='</ul>';
+        return $Html;       
     }
     
     function getCompletedWods()
@@ -166,7 +171,7 @@ $XML .= "</chart>";
         if(count($Activities) > 0){
             $Html.='<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
         foreach($Activities AS $Activity){
-            $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getActivity(\''.$Wod->ExerciseId.'\', \'activities\');"><div style="height:26px;width:1px;float:left"></div>'.$Activity->Exercise.'<br/><span class="ui-li-count">'.$Activity->NumberCompleted.'</span></a></li>';          
+            $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getActivity(\''.$Activity->ExerciseId.'\', \'activities\');"><div style="height:26px;width:1px;float:left"></div>'.$Activity->Exercise.'<br/><span class="ui-li-count">'.$Activity->NumberCompleted.'</span></a></li>';          
         }
         $Html .= '</ul>';
         }else{
@@ -179,8 +184,33 @@ $XML .= "</chart>";
     function getTimesSpent()
     {
         $Model=new ReportsModel();
+        /*
+        $TotalTimeSpent = $this->getTimeSpent();
+        $Time = explode(':',$TotalTimeSpent);
+        $Hours=$Time[0];
+        $Minutes = $Time[1];
+        $Seconds = $Time[2];
+        $SplitSeconds = $Time[3]; 
+        $TotalSeconds =($Hours*60*60) + ($Minutes*60) + $Seconds;
+         */
         $TimesSpent = $Model->getTimesSpent(); 
         $Html = '';
+        if(count($TimesSpent) > 0){   
+            $Html .= '<chart showvalues="1" caption="Time Spent" showlegend="1" enablesmartlabels="0" showlabels="0" showpercentvalues="1" animation="0">'; 
+            foreach($TimesSpent AS $Time){
+                $LoggedTime = explode(':',$Time->LoggedTime);
+                //$Hours=$Time[0];
+                $Minutes = $LoggedTime[0];
+                $Seconds = $LoggedTime[1];
+                $SplitSeconds = $LoggedTime[2];
+                $ActivitySeconds = ($Minutes*60) + $Seconds + ($SplitSeconds/10);
+            
+                $Html.='<set value="'.$ActivitySeconds.'" label="'.$Time->Exercise.'"/>';
+            }
+            $Html.='</chart>';
+        }else{
+            $Html = 'No logged times yet';
+        }       
         return $Html;        
     }
     
@@ -193,6 +223,7 @@ $XML .= "</chart>";
         $Seconds = 0;
         $SplitSeconds = 0;
         $TotalMinutes = 0;
+        $TotalHours = 0;
         $TotalSeconds = 0;
         $TotalSplitSeconds = 0;
         foreach($TimesSpent AS $Time){
@@ -208,7 +239,8 @@ $XML .= "</chart>";
         }
         $NewTotalSeconds = $TotalSeconds + floor($TotalSplitSeconds / 10);
         $NewTotalMinutes = $TotalMinutes + floor($NewTotalSeconds / 60);
-        $TotalTime = ''.$this->number_pad($NewTotalMinutes,2).':'.$this->number_pad($NewTotalSeconds - floor($TotalSeconds / 60),2).':'.$this->number_pad($TotalSplitSeconds - floor($TotalSplitSeconds / 10),2).'';
+        $TotalHours = $TotalHours + floor($NewTotalMinutes / 60);
+        $TotalTime = ''.$this->number_pad($TotalHours,2).':'.$this->number_pad($NewTotalMinutes - floor($TotalMinutes / 60),2).':'.$this->number_pad($NewTotalSeconds - floor($TotalSeconds / 60),2).':'.$this->number_pad($TotalSplitSeconds - floor($TotalSplitSeconds / 10),2).'';
         return $TotalTime;
     }
     
@@ -224,7 +256,7 @@ $XML .= "</chart>";
         if(count($WeightsLifted) > 0){
             $Html.='<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
         foreach($WeightsLifted AS $Weight){
-            $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getActivity(\''.$Wod->ExerciseId.'\', \'weights\');"><div style="height:26px;width:1px;float:left"></div>'.$Weight->Exercise.'<br/><span class="ui-li-count">'.$Weight->NumberCompleted.'</span></a></li>';          
+            $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getActivity(\''.$Weight->ExerciseId.'\', \'weights\');"><div style="height:26px;width:1px;float:left"></div>'.$Weight->Exercise.'<br/><span class="ui-li-count">'.$Weight->NumberCompleted.'</span></a></li>';          
         }
         $Html .= '</ul>';
         }else{
@@ -264,7 +296,7 @@ $XML .= "</chart>";
         if(count($DistancesCovered) > 0){
             $Html.='<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
         foreach($DistancesCovered AS $Distance){
-            $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getActivity(\''.$Wod->ExerciseId.'\', \'distances\');"><div style="height:26px;width:1px;float:left"></div>'.$Distance->Exercise.'<br/><span class="ui-li-count">'.$Distance->NumberCompleted.'</span></a></li>';          
+            $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getActivity(\''.$Distance->ExerciseId.'\', \'distances\');"><div style="height:26px;width:1px;float:left"></div>'.$Distance->Exercise.'<br/><span class="ui-li-count">'.$Distance->NumberCompleted.'</span></a></li>';          
         }
         $Html .= '</ul>';
         }else{
