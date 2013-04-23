@@ -38,7 +38,7 @@ function getDetails(id)
 {
     $('#back').html('<img alt="Back" onclick="goBackTo();" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
     $.ajax({url:'ajax.php?module=locator',data:{Id:id,lat:lat,lng:lng},dataType:"html",success:display});
-    $.ajax({url:'ajax.php?module=locator',data:{topselection:id},dataType:"html",success:topselectiondisplay});
+    $.ajax({url:'ajax.php?module=locator',data:{topselection:id,lat:lat,lng:lng},dataType:"html",success:topselectiondisplay});
 }
 
 function openMap(id)
@@ -55,13 +55,14 @@ function closeMap(id) {
 }
 
 function displayMap(data) {
+	//alert(data); // debug
 	$('#mapPlaceOlder').html(data);
     initMap();
 }
 
 function openDriveInstructions(id) {
 	closeMap(id);
-	$.ajax({url:'ajax.php?module=locator',data:{getDriveInsructions:id,lat:lat,lng:lng},dataType:"html",success:displayDriveInstructions});
+	$.ajax({url:'ajax.php?module=locator',data:{getDriveInstructions:id,lat:lat,lng:lng},dataType:"html",success:displayDriveInstructions});
 	$('#back').html('<img alt="Back" onclick="closeDriveInstructions(' + id + ');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
 }
 
