@@ -165,18 +165,21 @@ var polyline = new google.maps.Polyline({
 		} else { 
 			
 			$html .= '
-			var latlngPos = new google.maps.LatLng(' . $affilateLocation . ');
+			var latlngPos = new google.maps.LatLng('.$affilateLocation.');
+			// Set up options for the Google map
 			var myOptions = {
-        		zoom: 14,
-        		center: latlngPos,
-        		mapTypeId: google.maps.MapTypeId.ROADMAP
-    		};
-			var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);		
+				zoom: 14,
+				center: latlngPos,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			};
+			// Define the map
+			map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+			// Add the marker
 			var marker = new google.maps.Marker({
-            position: latlngPos,
-            map: map,
-			title: "Gym"
-            });
+				position: latlngPos,
+				map: map,
+				title: "Gym"
+			});
 					';
 		}
 		
