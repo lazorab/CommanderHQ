@@ -43,7 +43,7 @@ function getWODReport(id,type)
 
         chartObj.setXMLData(strXML);
 
-        chartObj.render("AjaxOutput");
+        chartObj.render("graph");
     }});
 }
 
@@ -74,17 +74,60 @@ function getBenchmarkReport(id)
 
         chartObj.setXMLData(strXML);
 
-        chartObj.render("AjaxOutput");
+        chartObj.render("graph");
     }});
 }
 
-function getExerciseReport(id)
+function getWodsByMonthGraph()
 {
-    $('#back').html('<img alt="Back" onclick="getReport(\'Exercises\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
+    $.ajax({url:'ajax.php?module=reports',data:{Graph:'Wods'},dataType:"json",success:function(json) {
+        var strXML = '<chart caption="Completed WODs" xAxisName="Month" yAxisName="# of WODs" showValues="0">';
+        $.each(json, function() { 
+           strXML += '<set label="' + this.Month + '" value="' + this.NumberCompleted + '"/>';
+        }); 
+        strXML += '</chart>';
 
+        //$("#graph").insertFusionCharts({swfUrl: "includes/FusionCharts/Column2D.swf", dataSource: strXML, dataFormat: "xml", width: "<?php echo SCREENWIDTH - 25;?>", height: "<?php echo SCREENWIDTH - 75;?>", id: "WodChartId"});
+
+        var chartObj = new FusionCharts( "includes/FusionCharts/Column2D.swf","WodChartId", "<?php echo SCREENWIDTH - 25;?>", "<?php echo SCREENWIDTH - 75;?>", "0", "1" );
+
+        chartObj.setXMLData(strXML);
+
+        chartObj.render("graph");    
+    }});        
+}
+
+function getWodDetail(typeid, id)
+{
+    $.ajax({url:'ajax.php?module=reports',data:{WodTypeId:typeid, WodId:id},dataType:"html",success:WodDetailDisplay}); 
+}
+
+function WodDetailDisplay(data)
+{
+    $('#WodDetail').html(data);
+}
+
+function getActivitiesGraph()
+{
+    $.ajax({url:'ajax.php?module=reports',data:{Graph:'Activities'},dataType:"json",success:function(json) {
+        var strXML = '<chart caption="Completed Activities" xAxisName="Activity" yAxisName="#" showValues="0">';
+        $.each(json, function() { 
+           strXML += '<set label="' + this.Exercise + '" value="' + this.NumberCompleted + '"/>';
+        }); 
+        strXML += '</chart>';
+
+        var chartObj = new FusionCharts( "includes/FusionCharts/Column2D.swf","ActivityChartId", "<?php echo SCREENWIDTH - 25;?>", "<?php echo SCREENWIDTH - 75;?>", "0", "1" );
+
+        chartObj.setXMLData(strXML);
+
+        chartObj.render("graph");    
+    }});        
+}
+
+function getActivityGraph(id)
+{
     $.ajax({url:'ajax.php?module=reports',data:{ExerciseId:id},dataType:"json",success:function(json) { 
        //Storage for XML data document
-       var Attribute = '';
        var strXML = '';
        var RepsData = '';
        var WeightData = '';
@@ -126,7 +169,6 @@ function getExerciseReport(id)
                     DistanceData += '<set  value="' + this.AttributeValue + '"/>';
                 }               
             first = false;
-            Attribute = this.Attribute;
         });
         //Closing Chart Element
         if(RepsData != '')
@@ -139,11 +181,11 @@ function getExerciseReport(id)
             DistanceData += '</dataset>';            
         strXML += ''+Categories+'</categories>'+RepsData+''+WeightData+''+HeightData+''+DistanceData+'</chart>';
       
-        var chartObj = new FusionCharts( "includes/FusionCharts/MSLine.swf","ExerciseChartId", "300", "250", "0", "1" );
+        var chartObj = new FusionCharts( "includes/FusionCharts/MSLine.swf","ExerciseChartId", "<?php echo SCREENWIDTH - 25;?>", "<?php echo SCREENWIDTH - 75;?>", "0", "1" );
 
         chartObj.setXMLData(strXML);
 
-        chartObj.render("AjaxOutput");
+        chartObj.render("graph");
     }});
 }
 
@@ -155,7 +197,7 @@ function getBaselineReport()
 
     chartObj.setXMLData('<?php echo $Display->BaselineChart();?>');
 
-    chartObj.render("AjaxOutput");
+    chartObj.render("graph");
 }
 
 function getDummyReport()
@@ -166,7 +208,7 @@ function getDummyReport()
 
     chartObj.setXMLData('<?php echo $Display->DummyData();?>');
 
-    chartObj.render("AjaxOutput");
+    chartObj.render("graph");
 }
 
 function display(data)
@@ -182,7 +224,7 @@ function displayTimeGraph(data)
 
     chartObj.setXMLData(''+data+'');
 
-    chartObj.render("AjaxOutput");
+    chartObj.render("graph");
 }
 
 function getReport(val)
@@ -195,12 +237,14 @@ function getCompletedWODs()
 {
     $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=reports\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
     $.ajax({url:'ajax.php?module=reports',data:{report:'wods'},dataType:"html",success:display}); 
+    getWodsByMonthGraph();
 }
 
 function getCompletedActivities()
 {
     $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=reports\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');    
-    $.ajax({url:'ajax.php?module=reports',data:{report:'activities'},dataType:"html",success:display}); 
+    $.ajax({url:'ajax.php?module=reports',data:{report:'activities'},dataType:"html",success:display});
+    getActivitiesGraph();
 }
 
 function getTimeSpent()
@@ -247,7 +291,8 @@ function getActivity(id, source)
     }else if(source == 'distances'){
         $('#back').html('<img alt="Back" onclick="getDistanceCovered();" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
     }
-    $.ajax({url:'ajax.php?module=reports',data:{report:'Activity', id:id},dataType:"html",success:display});    
+    $.ajax({url:'ajax.php?module=reports',data:{report:'Activity', id:id},dataType:"html",success:display}); 
+    getActivityGraph(id);
 }
 var i = 1;//prevent double rendering problem
 </script>

@@ -235,6 +235,21 @@ ORDER BY WorkoutType';
         return $db->loadObjectList();        
     }
     
+    function getCompletedWodsByMonth()
+    {
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+	$SQL = 'SELECT COUNT(DISTINCT TimeCreated) AS NumberCompleted,
+        MONTHNAME(TimeCreated) AS Month
+        FROM WODLog
+        WHERE MemberId = '.$_COOKIE['UID'].'
+        AND WODTypeId > 0           
+        GROUP BY Month
+        ORDER BY Month';
+        $db->setQuery($SQL);
+		
+        return $db->loadObjectList();        
+    }
+    
     function getWODs()
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
@@ -255,28 +270,72 @@ ORDER BY WorkoutType';
     function getWODHistory($WorkoutTypeId)
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-	$SQL = 'SELECT WT.WorkoutType,
-            CASE 
-            WHEN WorkoutType = "Custom" 
-                THEN (SELECT WorkoutName FROM CustomWorkouts WHERE recid = L.WorkoutId)           
-            WHEN WorkoutType = "Baseline" 
-                THEN "Baseline" 
-            WHEN WorkoutType = "Benchmark" 
-                THEN (SELECT WorkoutName FROM BenchmarkWorkouts WHERE recid = L.WorkoutId)          
-            ELSE
-                (SELECT WorkoutName FROM WodWorkouts WHERE recid = L.WorkoutId) 
-            END
+        $WorkoutType = $this->getWorkoutType($WorkoutTypeId);
+        if($WorkoutType == "Custom"){
+            $SQL = 'SELECT L.WODTypeId AS WorkoutTypeId,
+            (SELECT WorkoutName FROM CustomWorkouts WHERE recid = L.WorkoutId)           
             AS WorkoutName,
+            CW.recid AS WorkoutId,            
             E.Exercise, 
             A.Attribute AS Attribute, L.AttributeValue AS AttributeValue, L.TimeCreated 
             FROM WODLog L 
             LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
+            LEFT JOIN CustomWorkouts CW ON CW.recid = L.WorkoutId
             LEFT JOIN Exercises E ON E.recid = L.ExerciseId
             LEFT JOIN Attributes A ON A.recid = L.AttributeId
             WHERE L.MemberId = '.$_COOKIE['UID'].'  
             AND L.WODTypeId = '.$WorkoutTypeId.'  
             GROUP BY TimeCreated 
-            ORDER BY TimeCreated';// AND L.ExerciseId = '.$_REQUEST['WODId'].'';
+            ORDER BY TimeCreated';
+        }else if($WorkoutType == "Baseline"){
+            $SQL = 'SELECT L.WODTypeId AS WorkoutTypeId,
+            "Baseline" AS WorkoutName,
+            MB.WorkoutId AS WorkoutId,            
+            E.Exercise, 
+            A.Attribute AS Attribute, L.AttributeValue AS AttributeValue, L.TimeCreated 
+            FROM WODLog L 
+            LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
+            LEFT JOIN MemberBaseline MB ON MB.WorkoutId = L.WorkoutId
+            LEFT JOIN Exercises E ON E.recid = L.ExerciseId
+            LEFT JOIN Attributes A ON A.recid = L.AttributeId
+            WHERE L.MemberId = '.$_COOKIE['UID'].'  
+            AND L.WODTypeId = '.$WorkoutTypeId.'  
+            GROUP BY TimeCreated 
+            ORDER BY TimeCreated';
+        }else if($WorkoutType == "Benchmark"){
+            $SQL = 'SELECT L.WODTypeId AS WorkoutTypeId,
+            (SELECT WorkoutName FROM BenchmarkWorkouts WHERE recid = L.WorkoutId)       
+            AS WorkoutName,
+            BW.recid AS WorkoutId,            
+            E.Exercise, 
+            A.Attribute AS Attribute, L.AttributeValue AS AttributeValue, L.TimeCreated 
+            FROM WODLog L 
+            LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
+            LEFT JOIN BenchmarkWorkouts BW ON BW.recid = L.WorkoutId
+            LEFT JOIN Exercises E ON E.recid = L.ExerciseId
+            LEFT JOIN Attributes A ON A.recid = L.AttributeId
+            WHERE L.MemberId = '.$_COOKIE['UID'].'  
+            AND L.WODTypeId = '.$WorkoutTypeId.'  
+            GROUP BY TimeCreated 
+            ORDER BY TimeCreated';
+        }else{
+            $SQL = 'SELECT L.WODTypeId AS WorkoutTypeId,
+            (SELECT WorkoutName FROM WodWorkouts WHERE recid = L.WorkoutId)   
+            AS WorkoutName,
+            WW.recid AS WorkoutId,            
+            E.Exercise, 
+            A.Attribute AS Attribute, L.AttributeValue AS AttributeValue, L.TimeCreated 
+            FROM WODLog L 
+            LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
+            LEFT JOIN WodWorkouts WW ON WW.recid = L.WorkoutId
+            LEFT JOIN Exercises E ON E.recid = L.ExerciseId
+            LEFT JOIN Attributes A ON A.recid = L.AttributeId
+            WHERE L.MemberId = '.$_COOKIE['UID'].'  
+            AND L.WODTypeId = '.$WorkoutTypeId.'  
+            GROUP BY TimeCreated 
+            ORDER BY TimeCreated';
+        }
+
         $db->setQuery($SQL);
 		
         return $db->loadObjectList();       
@@ -286,10 +345,11 @@ ORDER BY WorkoutType';
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
 	$SQL = 'SELECT E.Exercise, 
-            A.Attribute AS Attribute, L.AttributeValue AS AttributeValue, L.TimeCreated 
+            A.Attribute AS Attribute, L.AttributeValue AS AttributeValue, L.TimeCreated, UOM.UnitOfMeasure 
             FROM WODLog L 
             LEFT JOIN Exercises E ON E.recid = L.ExerciseId
             LEFT JOIN Attributes A ON A.recid = L.AttributeId
+            LEFT JOIN UnitsOfMeasure UOM ON UOM.recid = L.UnitOfMeasureId
             WHERE L.MemberId = '.$_COOKIE['UID'].'
             AND L.ExerciseId = '.$Id.'
             GROUP BY TimeCreated     

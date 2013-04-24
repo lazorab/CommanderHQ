@@ -228,7 +228,7 @@ class BaselineModel extends Model
         $db->setQuery($SQL);
         return $db->loadResult();
     }
-                       
+                    
     function getBaselineDetails()
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
@@ -257,7 +257,7 @@ class BaselineModel extends Model
             $BaselineObject = $this->getDefaultBaseline();      
         }
         return $BaselineObject;
-    } 
+    }
     
     function getDefaultBaseline()
     {

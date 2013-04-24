@@ -170,6 +170,15 @@ class Model
         return $db->loadResult();
     }
     
+    function getWorkoutType($TypeId)
+    {
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+        $SQL = 'SELECT WorkoutType FROM WorkoutTypes WHERE recid = "'.$TypeId.'"';
+        $db->setQuery($SQL);
+            
+        return $db->loadResult();
+    }
+    
 	function getWODTypes()
 	{
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);

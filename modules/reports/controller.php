@@ -97,7 +97,20 @@ $XML .= "</chart>";
             {
                 $html .= $this->getActivityHistory($_REQUEST['id']);	
             }
-	}else{   
+        }
+        else if(isset($_REQUEST['ExerciseId']))
+        {
+            $html .= $this->ExerciseChart($_REQUEST['ExerciseId']);
+        }
+        else if(isset($_REQUEST['Graph']))
+        {
+            $html .= $this->Graph($_REQUEST['Graph']);
+        }
+        else if(isset($_REQUEST['WodTypeId']))
+        {
+            $html .= $this->getWodDetail($_REQUEST['WodTypeId'], $_REQUEST['WodId']);
+        }
+        else{    
             $Model=new ReportsModel();
             $CompletedWodCount = $Model->getCompletedWodCount();
             $CompletedActivityCount = $Model->getCompletedActivityCount();
@@ -121,13 +134,111 @@ $XML .= "</chart>";
             return $html;
     }
     
+    function getWodDetail($TypeId, $Id)
+    {
+        $Model=new ReportsModel();
+        $WorkoutType = $Model->getWorkoutType($TypeId);
+        if($WorkoutType == "Custom"){
+            $Details = $Model->getCustomDetails($Id);
+        }else if($WorkoutType == "Baseline"){
+            $NewModel = new BaselineModel();
+            $Details = $NewModel->getBaselineDetails();
+        }else if($WorkoutType == "Benchmark"){
+            $Details = $Model->getBenchmarkDetails($Id);
+        }else{
+            $Details = $Model->getMyGymDetails($Id);
+        }
+        $html .= '<div data-role="collapsible-set" data-iconpos="right">';
+        $ThisRoutine = '';
+        $ThisRound = '';
+        $OrderBy = '';
+        $Attributes = array();   
+	$ThisExerciseId = 0;
+        $i=0;
+        $j=0;
+        //var_dump($this->Workout);
+	foreach($Details as $Detail){
+            if($Detail->UnitOfMeasureId == null || $Detail->UnitOfMeasureId == 0){
+                $UnitOfMeasureId = 0;
+                $ConversionFactor = 1;
+            }else{
+                $UnitOfMeasureId = $Detail->UnitOfMeasureId;
+                if($Detail->ConversionFactor == null || $Detail->ConversionFactor == 0){
+                    $ConversionFactor = 1;
+                }else{
+                    $ConversionFactor = $Detail->ConversionFactor;
+                }
+            }
+            if($Detail->AttributeValue == '' || $Detail->AttributeValue == 0 || $Detail->AttributeValue == '-'){
+                $AttributeValue = 'Max ';
+            }else{
+                $AttributeValue = $Detail->AttributeValue * $ConversionFactor;
+            }   
+            
+		if($Detail->Attribute != 'TimeToComplete'){          
+			if($ThisRoutine != $Detail->RoutineNo){
+                            if($Detail->ExerciseId != null && $i > 0){
+                                $html.='</h2>';
+                                                                    
+                            } 
+                            $html.= '<h3>Routine '.$Detail->RoutineNo.'</h3>';
+                            $html.= '<h3>Round '.$Detail->RoundNo.'</h3>';
+                            $html.= '<div data-role="collapsible">';
+                            $html.= '<h2>'.$Detail->Exercise.'<br/>';             
+			}                    
+			else if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0 && $ThisRound != $Detail->RoundNo){
+                            if($Detail->ExerciseId != null && $i > 0){
+                                $html.='</h2>';
+                                
+                                         
+                            }
+                            //if($i > 0)
+                            //    $html.= '<br/><br/>';                            
+                            $html.= '<h3>Round '.$Detail->RoundNo.'</h3>';
+                            $html.= '<div data-role="collapsible">';
+                            $html.= '<h2>'.$Detail->Exercise.'<br/>';             
+			}
+			else if($ThisExerciseId != $Detail->ExerciseId || $OrderBy != $Detail->OrderBy){
+                            if($Detail->ExerciseId != null && $i > 0){
+                                $html.='</h2>';
+                              
+                                
+                            }       
+                            $html.= '<div data-role="collapsible">';
+                            $html.= '<h2>'.$Detail->Exercise.'<br/>';                          
+                        }else{
+                            $html.=' | ';
+                        }
+                        $html.=''.$Detail->Attribute.' : <span id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_html">'.$AttributeValue.'</span>'.$Detail->UnitOfMeasure.'';
+                        $html.='<input type="hidden" id="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'" name="'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Detail->Attribute.'_'.$UnitOfMeasureId.'_'.$Detail->OrderBy.'"';
+                        if($AttributeValue == 'Max'){
+                            $html.='placeholder="'.$AttributeValue.'" value="">';
+                        }else{
+                            $html.='value="'.$AttributeValue.'">';
+                        } 
+                   $Attributes[''.$Detail->Attribute.''] = $AttributeValue != "-" ? $AttributeValue : "";                        
+                }
+              
+        $ThisRoutine = $Detail->RoutineNo;        
+	$ThisRound = $Detail->RoundNo;
+        $OrderBy = $Detail->OrderBy;
+	$ThisExerciseId = $Detail->ExerciseId;
+        $i++;
+	}
+                                
+
+                              
+
+        return $html;
+    }
+    
     function getWODHistory($TypeId)
     {
         $Model=new ReportsModel();
         $WODs = $Model->getWODHistory($TypeId);
-        $Html = '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">'; 
+        $Html = '<div id="WodDetail"></div><ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">'; 
         foreach($WODs AS $Wod){
-            $Html.='<li><a style="font-size:large;margin-top:10px" href="#"><div style="height:26px;width:1px;float:left"></div>'.$Wod->WorkoutName.'<br/><span style="font-size:small">'.$Wod->TimeCreated.'</span></a></li>';          
+            $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getWodDetail(\''.$Wod->WorkoutTypeId.'\', \''.$Wod->WorkoutId.'\')"><div style="height:26px;width:1px;float:left"></div>'.$Wod->WorkoutName.'<br/><span style="font-size:small">'.$Wod->TimeCreated.'</span></a></li>';          
         }
         $Html.='</ul>';
         return $Html;
@@ -137,7 +248,7 @@ $XML .= "</chart>";
     {
         $Model=new ReportsModel();
         $Activities = $Model->getActivityHistory($Id);
-        $Html = '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">'; 
+        $Html = '<div id="graph"></div><ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">'; 
         foreach($Activities AS $Activity){
             $Html.='<li><a style="font-size:large;margin-top:10px" href="#"><div style="height:26px;width:1px;float:left"></div>'.$Activity->TimeCreated.'<br/></a></li>';          
         }
@@ -151,7 +262,7 @@ $XML .= "</chart>";
         $WODs = $Model->getCompletedWods();
         $Html = '';
         if(count($WODs) > 0){
-            $Html.='<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
+            $Html.='<div id="graph"></div><ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
         foreach($WODs AS $Wod){
             $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getWOD(\''.$Wod->WodTypeId.'\', \''.$Wod->WodId.'\');"><div style="height:26px;width:1px;float:left"></div>'.$Wod->WorkoutType.'<br/><span class="ui-li-count">'.$Wod->NumberCompleted.'</span></a></li>';          
         }
@@ -169,7 +280,7 @@ $XML .= "</chart>";
         $Activities = $Model->getCompletedActivities();
         $Html = '';
         if(count($Activities) > 0){
-            $Html.='<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
+            $Html.='<div id="graph"></div><ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
         foreach($Activities AS $Activity){
             $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getActivity(\''.$Activity->ExerciseId.'\', \'activities\');"><div style="height:26px;width:1px;float:left"></div>'.$Activity->Exercise.'<br/><span class="ui-li-count">'.$Activity->NumberCompleted.'</span></a></li>';          
         }
@@ -254,7 +365,7 @@ $XML .= "</chart>";
         $WeightsLifted = $Model->getWeightsLifted(); 
         $Html = '';
         if(count($WeightsLifted) > 0){
-            $Html.='<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
+            $Html.='<div id="graph"></div><ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
         foreach($WeightsLifted AS $Weight){
             $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getActivity(\''.$Weight->ExerciseId.'\', \'weights\');"><div style="height:26px;width:1px;float:left"></div>'.$Weight->Exercise.'<br/><span class="ui-li-count">'.$Weight->NumberCompleted.'</span></a></li>';          
         }
@@ -294,7 +405,7 @@ $XML .= "</chart>";
         $DistancesCovered = $Model->getDistancesCovered();  
         $Html = '';
         if(count($DistancesCovered) > 0){
-            $Html.='<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
+            $Html.='<div id="graph"></div><ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
         foreach($DistancesCovered AS $Distance){
             $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getActivity(\''.$Distance->ExerciseId.'\', \'distances\');"><div style="height:26px;width:1px;float:left"></div>'.$Distance->Exercise.'<br/><span class="ui-li-count">'.$Distance->NumberCompleted.'</span></a></li>';          
         }
@@ -459,10 +570,21 @@ $XML .= "</chart>";
     function ExerciseChart($Id)
     {
         $Model=new ReportsModel();
-        $Data = $Model->getExerciseHistory($Id);
+        $Data = $Model->getActivityHistory($Id);
            
         return json_encode($Data);
     }    
+    
+    function Graph($type)
+    {
+        $Model=new ReportsModel();
+        if($type == 'Activities')
+            $Data = $Model->getCompletedActivities();
+        else if($type == 'Wods')
+            $Data = $Model->getCompletedWodsByMonth();
+           
+        return json_encode($Data);
+    }
 	
 	function PerformanceHistory($Id)
 	{

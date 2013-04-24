@@ -10,6 +10,7 @@ class VideosController extends Controller
 			header('location: index.php?module=login');		
 			
 	$i=1;
+        if(isset($_REQUEST['keyword'])){
 	$keyword = $_REQUEST['keyword'];
 	$Model = new VideosModel;
 
@@ -53,6 +54,7 @@ $this->Html.='
 '.$pageNav->getPagesLinks().'
 </div>
 </center>';
+        }
 
 	}
      }
