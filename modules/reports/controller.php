@@ -240,7 +240,7 @@ $XML .= "</chart>";
         $NewTotalSeconds = $TotalSeconds + floor($TotalSplitSeconds / 10);
         $NewTotalMinutes = $TotalMinutes + floor($NewTotalSeconds / 60);
         $TotalHours = $TotalHours + floor($NewTotalMinutes / 60);
-        $TotalTime = ''.$this->number_pad($TotalHours,2).':'.$this->number_pad($NewTotalMinutes - floor($TotalMinutes / 60),2).':'.$this->number_pad($NewTotalSeconds - floor($TotalSeconds / 60),2).':'.$this->number_pad($TotalSplitSeconds - floor($TotalSplitSeconds / 10),2).'';
+        $TotalTime = ''.$this->number_pad($TotalHours,2).':'.$this->number_pad($NewTotalMinutes - floor($TotalMinutes / 60),2).':'.$this->number_pad($NewTotalSeconds - floor($TotalSeconds / 60),2).'';
         return $TotalTime;
     }
     

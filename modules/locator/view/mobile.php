@@ -41,37 +41,22 @@ function getDetails(id)
     $.ajax({url:'ajax.php?module=locator',data:{topselection:id,lat:lat,lng:lng},dataType:"html",success:topselectiondisplay});
 }
 
-function openMap(id)
-{
-	closeDriveInstructions(id);
-	$.ajax({url:'ajax.php?module=locator',data:{getMap:id,lat:lat,lng:lng},dataType:"html",success:displayMap});
-	$('#back').html('<img alt="Back" onclick="closeMap(' + id + ');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
+function DisplayMap() {
+    $('#driveInstructions').removeClass("active");
+    if($("#map_canvas").hasClass("active")){
+        $("#map_canvas").removeClass("active");
+    }else{
+        $("#map_canvas").addClass("active");
+    }
 }
 
-function closeMap(id) {
-	$('#mapPlaceOlder').html("");
-	$('#map_canvas').html("");
-	$('#pageMap').html('<div id="pageMap"><div id="mapPlaceOlder"></div><div id="map_canvas"></div></div>');
-}
-
-function displayMap(data) {
-	//alert(data); // debug
-	$('#mapPlaceOlder').html(data);
-    initMap();
-}
-
-function openDriveInstructions(id) {
-	closeMap(id);
-	$.ajax({url:'ajax.php?module=locator',data:{getDriveInstructions:id,lat:lat,lng:lng},dataType:"html",success:displayDriveInstructions});
-	$('#back').html('<img alt="Back" onclick="closeDriveInstructions(' + id + ');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');
-}
-
-function displayDriveInstructions(data) {
-	$('#driveInstructions').html(data);
-}
-
-function closeDriveInstructions(id) {
-	$("#pageDriveInstructions").html('<div id="pageDriveInstructions"><div id="driveInstructions"></div></div>');
+function DisplayDriveInstructions() {
+    $("#map_canvas").removeClass("active");
+    if($("#driveInstructions").hasClass("active")){
+        $("#driveInstructions").removeClass("active");
+    }else{
+        $("#driveInstructions").addClass("active");
+    }    
 }
 
 function topselectiondisplay(data)
@@ -91,9 +76,9 @@ function display(data)
     $('#AjaxLoading').html('');	
 }
 
-function closeBoth(id) {
-	closeMap(id);
-	closeDriveInstructions(id);
+function CloseBoth() {
+	
+	$('#driveInstructions').removeClass("active");
 }
 
 </script>
@@ -122,17 +107,8 @@ function closeBoth(id) {
 	</div>
 </div>
 
-<div id="AjaxOutput">       
+<div id="AjaxOutput">
     <?php echo $Display->Output();?>
 </div>
 
-<div id="pageMap">
-	<div id="mapPlaceOlder"></div>
-	<div id="map_canvas"></div>
-</div>
-
-<div id="pageDriveInstructions">
-	<div data-role="content">
-		<div id="driveInstructions"></div>
-	</div>
-</div>
+<div id="map_canvas"></div>

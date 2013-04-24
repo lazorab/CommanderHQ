@@ -22,6 +22,12 @@ Total registered Athletes:<?php echo $Display->RegisteredAthleteCount();?>
 <input type="submit" name="report" value="Registered Athletes"/>
 <br/>
 <br/>
-<input type="submit" name="report" value="WOD Results"/><?php echo $Display->RegisteredAthletes();?><select name="wod" id="wod"><option value="">Completed Wods</option></select>
+<input type="submit" name="report" value="WOD Results"/>
+<br/>
+<br/>    
+    <?php echo $Display->RegisteredAthletes();?>
+<br/>
+<br/>
+<select name="wod" id="wod"><option value="">Completed Wods</option></select>
 
 </form>

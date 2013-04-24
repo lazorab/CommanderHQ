@@ -80,6 +80,7 @@ ORDER BY WorkoutType';
                 FROM WODLog L
                 LEFT JOIN Exercises E ON E.recid = L.ExerciseId
                 WHERE L.MemberId = '.$_COOKIE['UID'].'
+                AND ExerciseId > 0    
                 GROUP BY Exercise
                 ORDER BY NumberCompleted DESC'; 
             $db->setQuery($SQL);
@@ -94,7 +95,8 @@ ORDER BY WorkoutType';
                 L.ExerciseId
                 FROM WODLog L
                 LEFT JOIN Exercises E ON E.recid = L.ExerciseId
-                WHERE L.MemberId = '.$_COOKIE['UID'].''; 
+                WHERE L.MemberId = '.$_COOKIE['UID'].'
+                AND L.ExerciseId > 0'; 
             $db->setQuery($SQL);
             return $db->loadResult();       
         }        

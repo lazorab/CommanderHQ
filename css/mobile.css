@@ -277,6 +277,18 @@ background-color:#fff;
     display:block;
 }
 
+#driveInstructions
+{
+    width:90%;
+    margin:5%;
+    display:none;
+}
+
+#driveInstructions.active
+{
+    display:block;
+}
+
 #random
 {
 	background-color:#3f2b44;

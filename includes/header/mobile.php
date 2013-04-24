@@ -167,12 +167,4 @@ function SubmitFeedback()
 
 <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
 
-<script type="text/javascript">
-$( document ).bind( 'mobileinit', function(){
-$.mobile.loader.prototype.options.text = "loading";
-$.mobile.loader.prototype.options.textVisible = false;
-$.mobile.loader.prototype.options.theme = "a";
-$.mobile.loader.prototype.options.html = '<img <?php echo $RENDER->NewImage("ajax-loader.gif");?> src="/css/images/ajax-loader.gif" />';
-});
-</script>
 </head>

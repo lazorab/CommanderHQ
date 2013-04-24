@@ -13,7 +13,7 @@ if(HOST == 'Remote'){
 //define("FRAMEWORK_ROOT", $_SERVER['DOCUMENT_ROOT']);
 //define("THIS_ROOT", ''.$_SERVER['DOCUMENT_ROOT'].'/crossfit');
   define('FRAMEWORK_URL','http://framework.be-mobile.co.za'); 
-  define('FRAMEWORK_PATH','/home/bemobile/public_html/framework'); 
+  define('FRAMEWORK_PATH','/Sites/framework'); 
   define('GLOBAL_LIBRARY','/home/bemobile/public_html/global/library/2_0/'); 
 }else{
   define('FRAMEWORK_URL','http://localhost/framework/new');  
