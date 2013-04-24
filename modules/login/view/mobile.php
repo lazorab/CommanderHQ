@@ -56,7 +56,7 @@ Not a member yet?
 </a>
 <br/>
 
-<div style="margin:0 20% 0 20%">Login with</div>
+<div style="margin:0 10% 0 10%">Login with</div>
 
 <div style="padding:0 5% 0 5%">
 <!--
