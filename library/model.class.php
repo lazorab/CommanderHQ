@@ -254,7 +254,16 @@ class Model
             $db->setQuery($SQL);
             
             return $db->loadResult();
-        }        
+        }      
+        
+        function getExerciseId($Exercise)
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT recid FROM Exercises WHERE Exercise  = "'.$Exercise.'"';
+            $db->setQuery($SQL);
+            
+            return $db->loadResult();
+        } 
 	
 	function getAttributeId($attribute)
 	{

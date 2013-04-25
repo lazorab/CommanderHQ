@@ -341,6 +341,28 @@ ORDER BY WorkoutType';
         return $db->loadObjectList();       
     }
     
+    function getWodDetail($Time)
+    {
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+	$SQL = 'SELECT L.WODTypeId AS WorkoutTypeId,
+            L.WorkoutId AS WorkoutId,            
+            E.Exercise,
+            L.RoutineNo,
+            L.RoundNo,
+            L.OrderBy,
+            A.Attribute AS Attribute, L.AttributeValue AS AttributeValue, L.TimeCreated 
+            FROM WODLog L 
+            LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
+            LEFT JOIN Exercises E ON E.recid = L.ExerciseId
+            LEFT JOIN Attributes A ON A.recid = L.AttributeId
+            WHERE L.MemberId = '.$_COOKIE['UID'].'  
+            AND L.TimeCreated = "'.$Time.'"
+            ORDER BY RoutineNo, RoundNo, OrderBy, Exercise, Attribute';
+        $db->setQuery($SQL);
+		
+        return $db->loadObjectList();        
+    }
+    
     function getActivityHistory($Id)
     {
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);

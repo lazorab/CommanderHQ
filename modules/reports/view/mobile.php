@@ -1,4 +1,4 @@
-<script type='text/javascript' src='/includes/FusionCharts/FusionCharts.js'></script>	
+<script src="http://d3js.org/d3.v3.min.js"></script>	
 <script type="text/javascript">
 
 function getOptions(action,date)
@@ -97,14 +97,17 @@ function getWodsByMonthGraph()
     }});        
 }
 
-function getWodDetail(typeid, id)
+function getWodDetail(timestamp)
 {
-    $.ajax({url:'ajax.php?module=reports',data:{WodTypeId:typeid, WodId:id},dataType:"html",success:WodDetailDisplay}); 
+    $.ajax({url:'ajax.php?module=reports',data:{TimeStamp:timestamp},dataType:"html",success:WodDetailDisplay}); 
 }
 
 function WodDetailDisplay(data)
 {
     $('#WodDetail').html(data);
+    $('#toplist').listview();
+    $('#toplist').listview('refresh');
+    window.location.hash = '#WodDetail';
 }
 
 function getActivitiesGraph()
@@ -200,15 +203,26 @@ function getBaselineReport()
     chartObj.render("graph");
 }
 
-function getDummyReport()
+function getDummyLineGraph()
 {
     $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=reports\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
 
     var chartObj = new FusionCharts( "includes/FusionCharts/MSLine.swf","FirstChartId", "300", "250", "0", "1" );
 
-    chartObj.setXMLData('<?php echo $Display->DummyData();?>');
+    chartObj.setXMLData('<?php echo $Display->DummyLineGraph();?>');
 
-    chartObj.render("graph");
+    chartObj.render("AjaxOutput");
+}
+
+function getDummyColumnGraph()
+{
+    $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=reports\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
+
+    var chartObj = new FusionCharts( "includes/FusionCharts/Column2D.swf","FirstChartId", "300", "250", "0", "1" );
+
+    chartObj.setXMLData('<?php echo $Display->DummyColumnGraph();?>');
+
+    chartObj.render("AjaxOutput");
 }
 
 function display(data)
@@ -237,14 +251,14 @@ function getCompletedWODs()
 {
     $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=reports\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
     $.ajax({url:'ajax.php?module=reports',data:{report:'wods'},dataType:"html",success:display}); 
-    getWodsByMonthGraph();
+    //getWodsByMonthGraph();
 }
 
 function getCompletedActivities()
 {
     $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=reports\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');    
     $.ajax({url:'ajax.php?module=reports',data:{report:'activities'},dataType:"html",success:display});
-    getActivitiesGraph();
+    //getActivitiesGraph();
 }
 
 function getTimeSpent()
@@ -297,10 +311,6 @@ function getActivity(id, source)
 var i = 1;//prevent double rendering problem
 </script>
 
-<br/>
-<div id="topselection">
-
-</div>
 
 <div id="AjaxOutput">
     <?php echo $Display->Output();?>
