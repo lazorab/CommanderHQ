@@ -109,7 +109,7 @@ class SkillsController extends Controller
         function getHips($level)
         {
             $Model = new SkillsModel();
-            
+            $Html='<div data-role="collapsible-set" data-iconpos="right">';
             if($level == 1){
                 $Activity = 'Air Squats';
                 $Attributes['Reps'] = ($Model->getGender() == 'M') ? "50" : "50";  
@@ -233,23 +233,279 @@ class SkillsController extends Controller
                 $Html .= $this->DrawActivity($Activity, $Attributes);
                 $Attributes = array();
             }   
-            
+            $Html.='</div>';
             return $Html;
         }
         
         function getPush($level)
         {
-            
+            $Model = new SkillsModel();
+            $Html='<div data-role="collapsible-set" data-iconpos="right">';
+            if($level == 1){
+                $Activity = 'Push-Ups';
+                $Attributes['Reps'] = "10";  
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Dips';
+                if($Model->getGender() == 'M'){
+                $Attributes['Reps'] = "3";  
+                }else{
+                $Attributes['Reps'] = "1"; 
+                }
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Press';
+                $Attributes['Reps'] = "1";
+                $Attributes['Weight'] = "Bodyweight";
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+            }else if($level == 2){
+                $Activity = 'Push-Ups';
+                if($Model->getGender() == 'M'){
+                $Attributes['Reps'] = "30";  
+                }else{
+                $Attributes['Reps'] = "20"; 
+                }
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Dips';
+                if($Model->getGender() == 'M'){
+                $Attributes['Reps'] = "20";  
+                }else{
+                $Attributes['Reps'] = "10"; 
+                }
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Handstand Hold';
+                $Attributes['Reps'] = "1";  
+                $Html .= $this->DrawActivity($Activity, $Attributes); 
+                $Attributes = array();
+                $Activity = 'Press Bench';
+                $Attributes['Reps'] = "1";
+                $Attributes['Weight'] = "Bodyweight";
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Press';
+                $Attributes['Reps'] = "1";
+                $Attributes['Weight'] = "Bodyweight";
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();  
+                $Activity = 'Dips';
+                $Attributes['Reps'] = "1";
+                $Attributes['Weight'] = "1/3xBodyweight";
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();               
+            }else if($level == 3){
+                $Activity = 'Push-Ups Ring';
+                if($Model->getGender() == 'M'){
+                $Attributes['Reps'] = "40";  
+                }else{
+                $Attributes['Reps'] = "25"; 
+                }
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Push-Ups Handstand';
+                if($Model->getGender() == 'M'){
+                $Attributes['Reps'] = "10";  
+                }else{
+                $Attributes['Reps'] = "5"; 
+                }
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Dips Ring';
+                if($Model->getGender() == 'M'){
+                $Attributes['Reps'] = "30";  
+                }else{
+                $Attributes['Reps'] = "20"; 
+                }  
+                $Html .= $this->DrawActivity($Activity, $Attributes); 
+                $Attributes = array();
+                $Activity = 'Press Bench';
+                $Attributes['Reps'] = "1";
+                $Attributes['Weight'] = "Bodyweight";
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Press';
+                $Attributes['Reps'] = "1";
+                $Attributes['Weight'] = "Bodyweight";
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();  
+                $Activity = 'Dips';
+                $Attributes['Reps'] = "1";
+                $Attributes['Weight'] = "1xBodyweight";
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+            }else if($level == 4){
+                $Activity = 'Push-Ups Ring';
+                if($Model->getGender() == 'M'){
+                $Attributes['Reps'] = "60";  
+                }else{
+                $Attributes['Reps'] = "40"; 
+                }
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Push-Ups Handstand';
+                if($Model->getGender() == 'M'){
+                $Attributes['Reps'] = "20";  
+                }else{
+                $Attributes['Reps'] = "10"; 
+                }
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Dips Ring';
+                if($Model->getGender() == 'M'){
+                $Attributes['Reps'] = "50";  
+                }else{
+                $Attributes['Reps'] = "30"; 
+                }  
+                $Html .= $this->DrawActivity($Activity, $Attributes); 
+                $Attributes = array();
+                $Activity = 'Press Bench';
+                $Attributes['Reps'] = "1";
+                $Attributes['Weight'] = "Bodyweight";
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Press';
+                $Attributes['Reps'] = "1";
+                $Attributes['Weight'] = "Bodyweight";
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();  
+                $Activity = 'Dips';
+                $Attributes['Reps'] = "1";
+                $Attributes['Weight'] = "1xBodyweight";
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+            }   
+            $Html.='</div>';
+            return $Html;            
         }
         
         function getPull($level)
         {
-            
+            $Model = new SkillsModel();
+            $Html='<div data-role="collapsible-set" data-iconpos="right">';
+            if($level == 1){
+                $Activity = 'Static Hang';
+                $Attributes['Duration'] = "00:03:0";  
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Pull-Ups';
+                if($Model->getGender() == 'M'){
+                    $Attributes['Reps'] = "3"; 
+                }else{
+                    $Attributes['Reps'] = "1";
+                }
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'SDHP';
+                $Attributes['Reps'] = "10";
+                if($Model->getGender() == 'M'){
+                    if($Model->getSystemOfMeasure() == 'Metric'){
+                        $Attributes['Weight'] = "33";
+                    }else{
+                        $Attributes['Height'] = "73";
+                    }
+                }else{
+                    if($Model->getSystemOfMeasure() == 'Metric'){
+                        $Attributes['Height'] = "24";
+                    }else{
+                        $Attributes['Height'] = "53";
+                    }                   
+                }       
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+            }else if($level == 2){
+                $Activity = 'Rope Climb';
+                $Attributes['Reps'] = "2";
+                $Attributes['Height'] = "3";
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Cleans';
+                $Attributes['Reps'] = "1";
+                $Attributes['Weight'] = "Bodyweight";
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Pull-Ups';
+                $Attributes['Reps'] = "1";
+                $Attributes['Weight'] = "1/3xBodyweight";  
+                $Html .= $this->DrawActivity($Activity, $Attributes); 
+                $Attributes = array();
+                $Activity = 'Pull-Ups';
+                if($Model->getGender() == 'M'){
+                    $Attributes['Reps'] = "20"; 
+                }else{
+                    $Attributes['Reps'] = "15";
+                }       
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Muscle Ups';
+                $Attributes['Reps'] = "1";  
+                $Html .= $this->DrawActivity($Activity, $Attributes); 
+                $Attributes = array();               
+            }else if($level == 3){
+                $Activity = 'Pull-Ups';
+                if($Model->getGender() == 'M'){
+                    $Attributes['Reps'] = "40"; 
+                }else{
+                    $Attributes['Reps'] = "30";
+                }
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Muscle Ups';
+                $Attributes['Reps'] = "10";
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Rope Climb';
+                $Attributes['Reps'] = "2";
+                $Attributes['Height'] = "3";
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Cleans';
+                $Attributes['Reps'] = "1";
+                $Attributes['Weight'] = "Bodyweight";      
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Pull-Ups';
+                $Attributes['Reps'] = "1";
+                $Attributes['Weight'] = "Bodyweight";  
+                $Html .= $this->DrawActivity($Activity, $Attributes); 
+                $Attributes = array();               
+            }else if($level == 4){
+                $Activity = 'Pull-Ups';
+                if($Model->getGender() == 'M'){
+                    $Attributes['Reps'] = "40"; 
+                }else{
+                    $Attributes['Reps'] = "30";
+                }
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Muscle Ups';
+                $Attributes['Reps'] = "15";
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Rope Climb';
+                $Attributes['Reps'] = "4";
+                $Attributes['Height'] = "3";
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Cleans';
+                $Attributes['Reps'] = "1";
+                $Attributes['Weight'] = "Bodyweight";      
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Pull-Ups';
+                $Attributes['Reps'] = "1";
+                $Attributes['Weight'] = "Bodyweight";  
+                $Html .= $this->DrawActivity($Activity, $Attributes); 
+                $Attributes = array();
+            }   
+            $Html.='</div>';
+            return $Html;            
         }
         
         function getCore($level)
         {
-            
+           
         }
         
         function getWork($level)
@@ -265,15 +521,15 @@ class SkillsController extends Controller
         function DrawActivity($Activity, $Attributes){
             $Model = new SkillsModel();
             $ExerciseId = $Model->getExerciseId($Activity);
-            $Html='<div data-role="collapsible-set" data-iconpos="right">';
-            $Html.='<div data-role="collapsible">';
+            
+            $Html='<div data-role="collapsible">';
             $Html.='<h2>'.$Activity.'<br/>';
             $i=0;
             foreach($Attributes as $Attribute=>$Val){
                 if($i > 0){
                    $Html.=' | '; 
                 }
-                if($Val != 'Bodyweight')
+                if(substr($Val, -10) != 'Bodyweight')
                 $UOM = $Model->getUserUnitOfMeasure($Attribute);
                 $UnitOfMeasureId = $Model->getUnitOfMeasureId($Attribute);
                 if($UnitOfMeasureId == '')
@@ -309,12 +565,12 @@ class SkillsController extends Controller
             $Html .= '<input type="hidden" id="1_1_'.$ExerciseId.'_TimeToComplete_0_1" name="1_1_'.$ExerciseId.'_TimeToComplete_0_1" value=""/>';
             $Html .= '<div class="clear"></div>';
             $Html .= '<div style="width:100%">';
-            $Html .= '<div style="float:left;margin:10px 0 10px 20px"><input data-mini="true" type="button" id="" name="timebtn" onClick="EnterActivityTime(\'1_1_'.$ExerciseId.'_TimeToComplete_0_1\');" value="Add Time"/></div>';
-            $Html .= '<div style="float:right;margin:10px 20px 10px 0"><input type="button" id="" name="btn" data-mini="true" onClick="SaveTheseResults(\'0_0\', \'1_1_1_'.$ExerciseId.'\');" value="Add Results"/></div>';
+            $Html .= '<div style="float:left;margin:10px 0 10px 20px"><input class="buttongroup" data-mini="true" type="button" id="" name="timebtn" onClick="EnterActivityTime(\'1_1_'.$ExerciseId.'_TimeToComplete_0_1\');" value="Add Time"/></div>';
+            $Html .= '<div style="float:right;margin:10px 20px 10px 0"><input class="buttongroup" type="button" id="" name="btn" data-mini="true" onClick="SaveTheseResults(\'0_0\', \'1_1_1_'.$ExerciseId.'\');" value="Add Results"/></div>';
             $Html .= '</div>';
-            $Html .= '</form></div>';
-            $Html .= '<div class="clear"></div>';            
-            $Html.='</div></div>';
+            $Html .= '</form></div>';            
+            $Html.='</div>';
+            $Html .= '<div class="clear"></div>';  
             return $Html;
         }       
         

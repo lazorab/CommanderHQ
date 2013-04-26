@@ -18,7 +18,7 @@ class ForgotModel extends Model
 
         }
 	
-	function RetrievePassword()
+	function RetrieveDetails()
 	{
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $message = '';
@@ -30,14 +30,15 @@ class ForgotModel extends Model
 		
                 $Row = $db->loadObject();
                    
-                    $message .= 'Hi '.$Row->FirstName.',<br/><br/>So you forgot your password?<br/>Well just to remind you again...<br/>';
-                    if($row['oauth_provider'] == ''){
-                        $message .= ' your Password for accessing Commander is "'.$Row->PassWord.'"<br/>';
-                    }else if($row['oauth_provider'] == 'google'){
+                    $message .= 'Hi '.$Row->FirstName.',<br/><br/>So you forgot your Login details?<br/>Well just to remind you again...<br/>';
+                    if($Row->oauth_provider == ''){
+                        $message .= ' Username : "'.$Row->UserName.'"<br/>';
+                        $message .= ' Password : "'.$Row->PassWord.'"<br/>';
+                    }else if($Row->oauth_provider == 'google'){
                         $message .= ' you access Commander with your Google account<br/>';  
-                    }else if($row['oauth_provider'] == 'twitter'){
+                    }else if($Row->oauth_provider == 'twitter'){
                         $message .= ' you access Commander with your Twitter account<br/>';
-                    }else if($row['oauth_provider'] == 'facebook'){
+                    }else if($Row->oauth_provider == 'facebook'){
                         $message .= ' you access Commander with your Facebook account<br/>';
                     }
                       $message .= '<br/><br/>Train hard!<br/><br/>Commander support team';  
@@ -49,7 +50,7 @@ class ForgotModel extends Model
 			$mail->setPriority('normal');
 			$mail->setHTML($message);
 			$mail->send(array($_REQUEST['email']));
-                        return 'Success';
+                        $Status = 'Success';
 		}
                 else if($num_rows > 1){
                     $Rows = $db->loadObjectList();
@@ -58,7 +59,7 @@ class ForgotModel extends Model
                     {
                         $i++;
                         if($i == 1)
-                            $message .= 'Hi '.$Row->FirstName.',<br/><br/>So you forgot your password?<br/>Well just to remind you again...<br/><br/>You have multiple accounts with Commander:<br/>';
+                            $message .= 'Hi '.$Row->FirstName.',<br/><br/>So you forgot your Login details?<br/>Well just to remind you again...<br/><br/>You have multiple accounts with Commander:<br/>';
 
                         if($Row->oauth_provider == ''){
                             $message .= '<br/>Username:'.$Row->UserName.'<br/>';
@@ -79,11 +80,12 @@ class ForgotModel extends Model
 			$mail->setPriority('normal');
 			$mail->setHTML($message);
 			$mail->send(array($_REQUEST['email']));
-                        return 'Success';
+                        $Status = 'Success';
                 }
 		else{
-			return 'Email Address does not exist!';
+			$Status = 'Email Address does not exist!';
 		}
+                return $Status;
 	}
 }
 

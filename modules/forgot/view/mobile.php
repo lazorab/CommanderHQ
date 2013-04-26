@@ -2,19 +2,16 @@
 
 function forgotsubmit()
 {
-    $.getJSON('ajax.php?module=forgot', $("#forgotform").serialize(),display);
+    $.ajax({url:'ajax.php?module=forgot&action=formsubmit',data:$("#forgotform").serialize(),dataType:"html",success:display});
 }
 
-function display(data)
+function display(message)
 {
-
-    if(data == 'Success'){
+    if(message == 'Success'){
+        alert('You have been sent an email with your login details');
         window.location = 'index.php?module=login';
     }else{
-    $('#AjaxOutput').html(data);
-    window.location.hash = '#message'; 
-    $('.textinput').textinput();
-    $('#AjaxLoading').html('');
+        alert(message);
     }
 }
 </script>
@@ -22,5 +19,9 @@ function display(data)
 <br/>
 
 <div id="AjaxOutput">
-    <?php echo $Display->Output();?>
+<br/>
+            <form action="index.php" name="forgot" id="forgotform" method="post">
+            <input type="email" name="email" placeholder="Email Address"/>
+            <input type="button" onClick="forgotsubmit();" value="Submit"/>
+            </form>
 </div>
