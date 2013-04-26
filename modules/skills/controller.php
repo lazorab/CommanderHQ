@@ -403,13 +403,13 @@ class SkillsController extends Controller
                     if($Model->getSystemOfMeasure() == 'Metric'){
                         $Attributes['Weight'] = "33";
                     }else{
-                        $Attributes['Height'] = "73";
+                        $Attributes['Weight'] = "73";
                     }
                 }else{
                     if($Model->getSystemOfMeasure() == 'Metric'){
-                        $Attributes['Height'] = "24";
+                        $Attributes['Weight'] = "24";
                     }else{
-                        $Attributes['Height'] = "53";
+                        $Attributes['Weight'] = "53";
                     }                   
                 }       
                 $Html .= $this->DrawActivity($Activity, $Attributes);
@@ -505,17 +505,516 @@ class SkillsController extends Controller
         
         function getCore($level)
         {
-           
+            $Model = new SkillsModel();
+            $Html='<div data-role="collapsible-set" data-iconpos="right">';
+            if($level == 1){
+                $Activity = 'Sit-Ups';
+                $Attributes['Reps'] = "30";  
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Knees to Chest';
+                $Attributes['Reps'] = "10";  
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Hold L';
+                $Attributes['Duration'] = "00:10:0";      
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+            }else if($level == 2){
+                $Activity = 'Knees to Elbow';
+                $Attributes['Reps'] = "15";  
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Hold L';
+                $Attributes['Duration'] = "00:30:0";  
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Squats Overhead';
+                $Attributes['Reps'] = "15";   
+                $Attribute['Weight'] = 'Bodyweight';
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+            }else if($level == 3){
+                $Activity = 'Straight Leg Raise';
+                $Attributes['Reps'] = "20";
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Hold L';
+                $Attributes['Duration'] = "01:00:0"; 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Squats Overhead';
+                $Attributes['Reps'] = "15";   
+                $Attribute['Weight'] = 'Bodyweight';
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+            }else if($level == 4){
+                $Activity = 'Hold L';
+                $Attributes['Duration'] = "01:30:0"; 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Squats Overhead';
+                $Attributes['Reps'] = "15";   
+                $Attribute['Weight'] = 'Bodyweight';
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Leg Lever';
+                $Attributes['Reps'] = "1";
+                $Attributes['Duration'] = "00:15:0"; 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+            }   
+            $Html.='</div>';
+            return $Html;           
         }
         
         function getWork($level)
         {
-            
+            $Model = new SkillsModel();
+            $Html='<div data-role="collapsible-set" data-iconpos="right">';
+            if($level == 1){
+                $Activity = 'Cindy';
+                $Attributes['Rounds'] = "7";  
+                $Attributes['TimeToComplete'] = "20:00:0";  
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Baseline';
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "06:15:0"; 
+                }else{
+                    $Attributes['TimeToComplete'] = "07:30:0";
+                }   
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Wall Ball';
+                $Attributes['Reps'] = "25"; 
+                if($Model->getGender() == 'M'){
+                    if($Model->getSystemOfMeasure() == 'Metric'){
+                        $Attributes['Weight'] = "6";
+                    }else{
+                        $Attributes['Weight'] = "13";
+                    }
+                }else{
+                    if($Model->getSystemOfMeasure() == 'Metric'){
+                        $Attributes['Weight'] = "3";
+                    }else{
+                        $Attributes['Weight'] = "7";
+                    }                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Kettlebell Swings';
+                $Attributes['Reps'] = "25"; 
+                if($Model->getGender() == 'M'){
+                    if($Model->getSystemOfMeasure() == 'Metric'){
+                        $Attributes['Weight'] = "24";
+                    }else{
+                        $Attributes['Weight'] = "53";
+                    }
+                }else{
+                    if($Model->getSystemOfMeasure() == 'Metric'){
+                        $Attributes['Weight'] = "16";
+                    }else{
+                        $Attributes['Weight'] = "35";
+                    }                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Row'; 
+                if($Model->getSystemOfMeasure() == 'Metric'){
+                    $Attributes['Distance'] = "2";
+                }else{
+                    $Attributes['Distance'] = "1.24";
+                }
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "08:10:0";
+                }else{
+                    $Attributes['TimeToComplete'] = "09:30:0";                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Run'; 
+                if($Model->getSystemOfMeasure() == 'Metric'){
+                    $Attributes['Distance'] = "5";
+                }else{
+                    $Attributes['Distance'] = "3.1";
+                }
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "25:00:0";
+                }else{
+                    $Attributes['TimeToComplete'] = "28:00:0";                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+            }else if($level == 2){
+                $Activity = 'Jackie';  
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "12:00:0";
+                }else{
+                    $Attributes['TimeToComplete'] = "15:00:0";                   
+                }   
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Baseline';
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "05:15:0"; 
+                }else{
+                    $Attributes['TimeToComplete'] = "06:30:0";
+                }   
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Thrusters';
+                $Attributes['Reps'] = "15"; 
+                $Attributes['Weight'] = "Bodyweight"; 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Snatch Kettle Bell';
+                $Attributes['Reps'] = "30"; 
+                if($Model->getGender() == 'M'){
+                    if($Model->getSystemOfMeasure() == 'Metric'){
+                        $Attributes['Weight'] = "24";
+                    }else{
+                        $Attributes['Weight'] = "53";
+                    }
+                }else{
+                    if($Model->getSystemOfMeasure() == 'Metric'){
+                        $Attributes['Weight'] = "16";
+                    }else{
+                        $Attributes['Weight'] = "35";
+                    }                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Row'; 
+                if($Model->getSystemOfMeasure() == 'Metric'){
+                    $Attributes['Distance'] = "2";
+                }else{
+                    $Attributes['Distance'] = "1.24";
+                }
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "07:30:0";
+                }else{
+                    $Attributes['TimeToComplete'] = "08:30:0";                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Run'; 
+                if($Model->getSystemOfMeasure() == 'Metric'){
+                    $Attributes['Distance'] = "5";
+                }else{
+                    $Attributes['Distance'] = "3.1";
+                }
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "22:30:0";
+                }else{
+                    $Attributes['TimeToComplete'] = "25:30:0";                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+            }else if($level == 3){
+                $Activity = 'Fran';  
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "05:00:0";
+                }else{
+                    $Attributes['TimeToComplete'] = "07:30:0";                   
+                }   
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Baseline';
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "04:30:0"; 
+                }else{
+                    $Attributes['TimeToComplete'] = "05:35:0";
+                }   
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Thrusters';
+                $Attributes['Reps'] = "15"; 
+                $Attributes['Weight'] = "Bodyweight"; 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Snatch Kettle Bell';
+                $Attributes['Reps'] = "30"; 
+                if($Model->getGender() == 'M'){
+                    if($Model->getSystemOfMeasure() == 'Metric'){
+                        $Attributes['Weight'] = "24";
+                    }else{
+                        $Attributes['Weight'] = "53";
+                    }
+                }else{
+                    if($Model->getSystemOfMeasure() == 'Metric'){
+                        $Attributes['Weight'] = "16";
+                    }else{
+                        $Attributes['Weight'] = "35";
+                    }                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Row'; 
+                if($Model->getSystemOfMeasure() == 'Metric'){
+                    $Attributes['Distance'] = "5";
+                }else{
+                    $Attributes['Distance'] = "3.1";
+                }
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "19:00:0";
+                }else{
+                    $Attributes['TimeToComplete'] = "22:00:0";                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Run'; 
+                if($Model->getSystemOfMeasure() == 'Metric'){
+                    $Attributes['Distance'] = "5";
+                }else{
+                    $Attributes['Distance'] = "3.1";
+                }
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "19:00:0";
+                }else{
+                    $Attributes['TimeToComplete'] = "22:00:0";                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+            }else if($level == 4){
+                $Activity = 'Fran';  
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "03:00:0";
+                }else{
+                    $Attributes['TimeToComplete'] = "05:00:0";                   
+                }   
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Baseline';
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "03:55:0"; 
+                }else{
+                    $Attributes['TimeToComplete'] = "04:40:0";
+                }   
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Thrusters';
+                $Attributes['Reps'] = "15"; 
+                $Attributes['Weight'] = "Bodyweight"; 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Clean & Jerk';
+                $Attributes['Reps'] = "150"; 
+                if($Model->getGender() == 'M'){
+                    if($Model->getSystemOfMeasure() == 'Metric'){
+                        $Attributes['Weight'] = "24";
+                    }else{
+                        $Attributes['Weight'] = "53";
+                    }
+                }else{
+                    if($Model->getSystemOfMeasure() == 'Metric'){
+                        $Attributes['Weight'] = "16";
+                    }else{
+                        $Attributes['Weight'] = "35";
+                    }                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Row'; 
+                if($Model->getSystemOfMeasure() == 'Metric'){
+                    $Attributes['Distance'] = "5";
+                }else{
+                    $Attributes['Distance'] = "3.1";
+                }
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "17:00:0";
+                }else{
+                    $Attributes['TimeToComplete'] = "20:00:0";                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Run'; 
+                if($Model->getSystemOfMeasure() == 'Metric'){
+                    $Attributes['Distance'] = "5";
+                }else{
+                    $Attributes['Distance'] = "3.1";
+                }
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "17:00:0";
+                }else{
+                    $Attributes['TimeToComplete'] = "20:00:0";                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+            }   
+            $Html.='</div>';
+            return $Html;            
         }
         
         function getSpeed($level)
         {
-            
+            $Model = new SkillsModel();
+            $Html='<div data-role="collapsible-set" data-iconpos="right">';
+            if($level == 1){
+                $Activity = 'Double Unders';
+                $Attributes['Reps'] = "1";  
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Snatches';
+                $Attributes['Reps'] = "10";  
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Run'; 
+                if($Model->getSystemOfMeasure() == 'Metric'){
+                    $Attributes['Distance'] = "400m";
+                }else{
+                    $Attributes['Distance'] = "437";
+                }
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "02:04:0";
+                }else{
+                    $Attributes['TimeToComplete'] = "02:14:0";                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Row'; 
+                if($Model->getSystemOfMeasure() == 'Metric'){
+                    $Attributes['Distance'] = "500m";
+                }else{
+                    $Attributes['Distance'] = "547";
+                }
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "01:55:0";
+                }else{
+                    $Attributes['TimeToComplete'] = "02:20:0";                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Rope Jump';
+                $Attributes['Reps'] = "100";  
+                $Attributes['TimeToComplete'] = "01:00:0";       
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+            }else if($level == 2){
+                $Activity = 'Double Unders';
+                $Attributes['Reps'] = "15";  
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Snatches';
+                $Attributes['Reps'] = "10";  
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Run'; 
+                if($Model->getSystemOfMeasure() == 'Metric'){
+                    $Attributes['Distance'] = "400m";
+                }else{
+                    $Attributes['Distance'] = "437";
+                }
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "01:34:0";
+                }else{
+                    $Attributes['TimeToComplete'] = "01:44:0";                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Row'; 
+                if($Model->getSystemOfMeasure() == 'Metric'){
+                    $Attributes['Distance'] = "500m";
+                }else{
+                    $Attributes['Distance'] = "547";
+                }
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "01:45:0";
+                }else{
+                    $Attributes['TimeToComplete'] = "02:00:0";                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Snatches';
+                $Attributes['Reps'] = "1";  
+                $Attributes['Weight'] = "Bodyweight";     
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+            }else if($level == 3){
+                $Activity = 'Double Unders';
+                $Attributes['Reps'] = "50";  
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Run'; 
+                if($Model->getSystemOfMeasure() == 'Metric'){
+                    $Attributes['Distance'] = "400m";
+                }else{
+                    $Attributes['Distance'] = "437";
+                }
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "01:19:0";
+                }else{
+                    $Attributes['TimeToComplete'] = "01:29:0";                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Row'; 
+                if($Model->getSystemOfMeasure() == 'Metric'){
+                    $Attributes['Distance'] = "500m";
+                }else{
+                    $Attributes['Distance'] = "547";
+                }
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "01:32:0";
+                }else{
+                    $Attributes['TimeToComplete'] = "01:50:0";                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Snatches';
+                $Attributes['Reps'] = "1";  
+                $Attributes['Weight'] = "Bodyweight";     
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Rope Jump';
+                $Attributes['Reps'] = "150";  
+                $Attributes['TimeToComplete'] = "01:00:0";     
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+            }else if($level == 4){
+                $Activity = 'Rope Jump Crossover';
+                $Attributes['Reps'] = "120"; 
+                $Attributes['TimeToComplete'] = "01:00:0";
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Run'; 
+                if($Model->getSystemOfMeasure() == 'Metric'){
+                    $Attributes['Distance'] = "400m";
+                }else{
+                    $Attributes['Distance'] = "437";
+                }
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "01:04:0";
+                }else{
+                    $Attributes['TimeToComplete'] = "01:14:0";                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Row'; 
+                if($Model->getSystemOfMeasure() == 'Metric'){
+                    $Attributes['Distance'] = "500m";
+                }else{
+                    $Attributes['Distance'] = "547";
+                }
+                if($Model->getGender() == 'M'){
+                    $Attributes['TimeToComplete'] = "01:40:0";
+                }else{
+                    $Attributes['TimeToComplete'] = "01:25:0";                   
+                } 
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Snatches';
+                $Attributes['Reps'] = "1";  
+                $Attributes['Weight'] = "Bodyweight";     
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+                $Activity = 'Double Unders Crossover';
+                $Attributes['Reps'] = "50";       
+                $Html .= $this->DrawActivity($Activity, $Attributes);
+                $Attributes = array();
+            }   
+            $Html.='</div>';
+            return $Html;            
         }        
 	
         function DrawActivity($Activity, $Attributes){
@@ -529,12 +1028,19 @@ class SkillsController extends Controller
                 if($i > 0){
                    $Html.=' | '; 
                 }
-                if(substr($Val, -10) != 'Bodyweight')
+                $UnitOfMeasureId = '';
+                $UOM = '';
+                if($Attribute == 'TimeToComplete'){$AttributeDisplay = 'Time';}else{$AttributeDisplay = $Attribute;}
+                if(substr($Val, -1) == 'm'){
+                $UOM = 'm';
+                $Val = str_replace('m','',$Val);
+                }else if(substr($Val, -10) != 'Bodyweight'){
                 $UOM = $Model->getUserUnitOfMeasure($Attribute);
+                }
                 $UnitOfMeasureId = $Model->getUnitOfMeasureId($Attribute);
                 if($UnitOfMeasureId == '')
                     $UnitOfMeasureId = 0;
-                $Html.=''.$Attribute.' : <span id="1_'.$ExerciseId.'_'.$Attribute.'_html">'.$Val.''.$UOM.'</span>';
+                $Html.=''.$AttributeDisplay.' : <span id="1_'.$ExerciseId.'_'.$Attribute.'_html">'.$Val.''.$UOM.'</span>';
                 $Html.='<input type="hidden" id="1_'.$ExerciseId.'_'.$Attribute.'" name="1_'.$ExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_1" value=""/>';
                 $i++;
             }
@@ -543,14 +1049,22 @@ class SkillsController extends Controller
             $Html .= '<div class="ActivityAttributes"><form id="1_1_1_'.$ExerciseId.'" name="1_1_1_'.$ExerciseId.'">';
             //var_dump($Attributes);
             foreach($Attributes as $Attribute=>$Val){
+                $UnitOfMeasureId = '';
+                $UOM = '';
+                if($Attribute == 'TimeToComplete'){$AttributeDisplay = 'Time';}else{$AttributeDisplay = $Attribute;}
+                if(substr($Val, -1) == 'm'){
+                $UOM = 'm';
+                $Val = str_replace('m','',$Val);
+                }else if(substr($Val, -10) != 'Bodyweight'){
                 $UOM = $Model->getUserUnitOfMeasure($Attribute);
+                }
                 $UnitOfMeasureId = $Model->getUnitOfMeasureId($Attribute);
                 if($UnitOfMeasureId == '')
                     $UnitOfMeasureId = 0;   
                 if($j > 0)
                     $TheseAttributes.='_';
                 $TheseAttributes.=$Attribute;
-                $Html .= '<div style="float:left;margin:0 25px 0 25px"">'.$Attribute.'';
+                $Html .= '<div style="float:left;margin:0 25px 0 25px"">'.$AttributeDisplay.'';
                 if($UOM != '')
                 $Html .= '('.$UOM.')';
                 $Html .= '<br/><input ';

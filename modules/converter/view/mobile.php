@@ -51,8 +51,8 @@ function getConversionValues(cat)
     }else if(cat == 'distance'){
         if($('#metric_distance_input').val() != ''){
             if(intRegex.test($('#metric_distance_input').val())){
-                imperialvalue = $('#metric_distance_input').val() * 1.61;
-                $('#imperial_distance').val(imperialvalue.toFixed(2) + 'm');
+                imperialvalue = $('#metric_distance_input').val() * 0.62;
+                $('#imperial_distance').val(imperialvalue.toFixed(2) + 'mi');
             }else{
                 alert('Invalid Value!');
                 return false;
@@ -60,7 +60,7 @@ function getConversionValues(cat)
         }
         if($('#imperial_distance_input').val() != ''){
             if(intRegex.test($('#imperial_distance_input').val())){
-                metricvalue = $('#imperial_distance_input').val() * 0.62;
+                metricvalue = $('#imperial_distance_input').val() * 1.61;
                 $('#metric_distance').val(metricvalue.toFixed(2) + 'km'); 
             }else{
                 alert('Invalid Value!');
