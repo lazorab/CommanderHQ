@@ -39,7 +39,7 @@ include("includes/header/$Environment.php");
 <body onorientationchange="updateOrientation();">   
     
     
-<div data-role="page" class="pages" data-theme="c">
+<div data-role="page" class="pages">
 <?php
 /*SLIDE MENU*/        
 if (file_exists("includes/menu/$Environment.php"))
