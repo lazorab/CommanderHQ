@@ -29,25 +29,35 @@ class ReportsController extends Controller
                 $Html .= $this->getMembers();
             }else if($_REQUEST['report'] == 'Activities'){
                 $Html .= $this->getCompletedActivities();
+            }else if(isset($_REQUEST['WodId'])){
+                $Html .= $this->getWodDetails($_REQUEST['WodId']);
             }else{
                 $Html .= '<h1>Reports</h1>
     <form action="index.php" name="reports">
     <input type="hidden" name="module" value="reports"/>
-    <br/>
-    <br/>
-    <div style="">'.$this->RegisteredAthleteCount().'</div>
+    <div id="CountContainer">
+    <div class="CountBox" style="border: 2px solid red;">'.$this->RegisteredAthleteCount().'</div>
+    <div class="CountBox" style="border: 2px solid blue;">'.$this->CompletedWodCount().'</div>
+    <div class="CountBox" style="border: 2px solid green;">'.$this->CompletedActivitiesCount().'</div>
+    </div>
     <input type="submit" name="report" value="Registered Members"/>
-    <br/>
-    <br/>
-    <div style="">'.$this->CompletedWodCount().'</div>
     <input type="submit" name="report" value="Wods"/>
-    <br/>
-    <br/>
-    <div style="">'.$this->CompletedActivitiesCount().'</div>
-    <input type="submit" name="report" value="Activities"/>    
+    <input type="submit" name="report" value="Activities"/>
     </form>';
             }
             return $Html;
+        }
+        
+        function getWodDetails($Id)
+        {
+            $Model = new ReportsModel;
+            $WodDetails = $Model->getWodDetails($Id);
+            $Html = '';
+            foreach($WodDetails AS $Detail)
+            {
+                $Html .= $Detail->Exercise;
+            }
+            return $Html;            
         }
         
         function CompletedActivitiesCount()
@@ -64,7 +74,7 @@ class ReportsController extends Controller
             $Activities = $Model->getCompletedActivities();
             $Html = '';
             foreach($Activities AS $Activity){
-                $Html.=''.$Activity->Exercise.' - '.$Activity->NumberCompleted.'<br/>';
+                $Html.=''.$Activity->Exercise.' | '.$Activity->NumberCompleted.'<br/>';
             }
             return $Html;            
         }
@@ -75,7 +85,7 @@ class ReportsController extends Controller
             $Wods = $Model->getCompletedWods();
             $Html = '';
             foreach($Wods AS $Wod){
-                $Html.=''.$Wod->WodName.' - '.$Wod->NumberCompleted.'<br/>';
+                $Html.='<a href="?module=reports&WodId='.$Wod->WodId.'">'.$Wod->DayName.' Week '.$Wod->WeekNumber.' | '.$Wod->NumberCompleted.'"</a><br/>';
             }
             return $Html;           
         }

@@ -33,7 +33,9 @@ class ReportsModel extends Model
             $SQL = 'SELECT COUNT(WW.WorkoutName) AS NumberCompleted,
                 WW.recid AS WodId, 
                 WW.WorkoutName AS WodName,
-                (SELECT recid FROM WorkoutTypes WHERE WorkoutType = "My Gym") AS WodTypeId
+                (SELECT recid FROM WorkoutTypes WHERE WorkoutType = "My Gym") AS WodTypeId,
+                DATE_FORMAT(TimeCreated,"%U") AS WeekNumber,
+                DATE_FORMAT(TimeCreated,"%W") AS DayName
                 FROM WODLog WL
                 LEFT JOIN WodWorkouts WW ON WW.recid = WL.WorkoutId
                 LEFT JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
@@ -41,7 +43,7 @@ class ReportsModel extends Model
                 LEFT JOIN Affiliates A ON A.AffiliateId = MD.GymId
                 WHERE A.AffiliateId = "'.$_COOKIE['GID'].'"
                 AND WT.WorkoutType = "My Gym"
-                GROUP BY WodId';
+                GROUP BY DATE_FORMAT(TimeCreated,"%Y-%m-%d")';
             $db->setQuery($SQL);
             return $db->loadObjectList();            
         }
@@ -102,6 +104,78 @@ class ReportsModel extends Model
                 if($AthleteId > 0)
                     $SQL .= ' AND WL.MemberId = "'.$AthleteId.'"'; 
                 $SQL .= ' ORDER BY LastName, TimeCreated'; 
+            $db->setQuery($SQL);
+            return $db->loadObjectList();            
+        }
+        
+        function getWodDetails($Id)
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+
+		$SQL = 'SELECT WW.recid AS Id,
+                        WW.WorkoutName, 
+                        E.Exercise, 
+                        E.recid AS ExerciseId, 
+                        CASE 
+                            WHEN E.Acronym <> ""
+                            THEN E.Acronym
+                            ELSE E.Exercise
+                        END
+                        AS InputFieldName,  
+                        A.Attribute, 
+                        AttributeValueFemale,
+                        AttributeValueMale,
+                        WD.UnitOfMeasureId,   
+                        UOM.UnitOfMeasure,
+                        UOM.ConversionFactor,
+                        WD.RoutineNo,
+                        WD.RoundNo,
+                        WD.OrderBy,
+                        (SELECT MAX(RoundNo) FROM WodDetails WHERE WodId = Id AND RoutineNo = WD.RoutineNo) AS TotalRounds,
+                        WW.WorkoutRoutineTypeId,
+                        WW.WodDate,
+                        WW.Notes
+			FROM WodDetails WD
+			LEFT JOIN WodWorkouts WW ON WW.recid = WD.WodId
+			LEFT JOIN Exercises E ON E.recid = WD.ExerciseId
+			LEFT JOIN Attributes A ON A.recid = WD.AttributeId
+                        LEFT JOIN UnitsOfMeasure UOM ON UOM.recid = WD.UnitOfMeasureId
+			WHERE WW.recid = '.$Id.'
+			UNION
+                        SELECT WW.recid AS Id,
+                        BW.WorkoutName, 
+                        E.Exercise,
+                        E.recid AS ExerciseId, 
+                        CASE 
+                            WHEN E.Acronym <> ""
+                            THEN E.Acronym
+                            ELSE E.Exercise
+                        END
+                        AS InputFieldName,
+                        A.Attribute, 
+                        AttributeValueFemale,
+                        AttributeValueMale, 
+                        BD.UnitOfMeasureId,    
+                        UOM.UnitOfMeasure,
+                        UOM.ConversionFactor,    
+                        WW.RoutineNo, 
+                        BD.RoundNo,
+                        BD.OrderBy,
+                        (SELECT MAX(RoundNo) FROM BenchmarkDetails WHERE BenchmarkId = WW.WorkoutName) AS TotalRounds,
+                        WW.WorkoutRoutineTypeId,
+                        WW.WodDate,
+                        WW.Notes                        
+			FROM BenchmarkDetails BD
+			LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
+			LEFT JOIN WodWorkouts WW ON WW.WorkoutName = BD.BenchmarkId
+			LEFT JOIN Exercises E ON E.recid = BD.ExerciseId
+			LEFT JOIN Attributes A ON A.recid = BD.AttributeId
+                        LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND BD.UnitOfMeasureId = UOM.recid
+			WHERE WW.recid = '.$Id.'
+                        AND (Attribute = "Reps" OR SystemOfMeasure = "Metric")			
+			ORDER BY RoutineNo, RoundNo, OrderBy, Exercise, Attribute';
+            //}
+            //    var_dump($SQL);
             $db->setQuery($SQL);
             return $db->loadObjectList();            
         }

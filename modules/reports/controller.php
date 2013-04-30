@@ -264,7 +264,7 @@ $XML .= "</chart>";
     {
         $Model=new ReportsModel();
         $Activities = $Model->getActivityHistory($Id);
-        $Html = '<div id="graph"></div><ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">'; 
+        $Html = '<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">'; 
         foreach($Activities AS $Activity){
             $Html.='<li><a style="font-size:large;margin-top:10px" href="#"><div style="height:26px;width:1px;float:left"></div>'.$Activity->TimeCreated.'<br/></a></li>';          
         }
@@ -296,7 +296,7 @@ $XML .= "</chart>";
         $Activities = $Model->getCompletedActivities();
         $Html = '';
         if(count($Activities) > 0){
-            $Html.='<div id="graph"></div><ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
+            $Html.='<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
         foreach($Activities AS $Activity){
             $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getActivity(\''.$Activity->ExerciseId.'\', \'activities\');"><div style="height:26px;width:1px;float:left"></div>'.$Activity->Exercise.'<br/><span class="ui-li-count">'.$Activity->NumberCompleted.'</span></a></li>';          
         }
@@ -381,7 +381,7 @@ $XML .= "</chart>";
         $WeightsLifted = $Model->getWeightsLifted(); 
         $Html = '';
         if(count($WeightsLifted) > 0){
-            $Html.='<div id="graph"></div><ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
+            $Html.='<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
         foreach($WeightsLifted AS $Weight){
             $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getActivity(\''.$Weight->ExerciseId.'\', \'weights\');"><div style="height:26px;width:1px;float:left"></div>'.$Weight->Exercise.'<br/><span class="ui-li-count">'.$Weight->NumberCompleted.'</span></a></li>';          
         }

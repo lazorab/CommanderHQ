@@ -9,6 +9,25 @@ body {
 	font-weight: normal;
 }
 
+
+#CountContainer{
+    width:100%;
+    height:100px;
+}
+
+.CountBox{
+    float:left;
+    width:50px;
+    height:30px;
+    padding:20px 10px 20px 10px;
+    border-radius: 5px; 
+    -moz-border-radius: 5px; 
+    -webkit-border-radius: 5px; 
+    font-size:xx-large;
+    text-align:center;
+    margin:10px;
+}
+
 table{
     border-collapse:collapse;
 }

@@ -18,6 +18,12 @@
   display: none;
 }
 
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
 </style>
 <script src="http://d3js.org/d3.v3.min.js"></script>	
 <script type="text/javascript">
@@ -270,7 +276,7 @@ var line = d3.svg.line()
     .x(function(d) { return x(d.TimeCreated); })
     .y(function(d) { return y(d.AttributeValue); });    
 
-var svg = d3.select("#graph").append("svg")
+var svg = d3.select("#graph").html("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
@@ -315,10 +321,54 @@ data.forEach(function(d) {
       .attr("height", function(d) { if(d.Attribute == 'Reps'){return height - y(d.AttributeValue);} })
 .text(function(d) { return d; });
 
-  
+});
+});
+}
 
-  x.domain(d3.extent(data, function(d) { return d.TimeCreated; }));
-  y.domain(d3.extent(data, function(d) { return d.AttributeValue; }));
+function getActivityLineGraph(id)
+{
+var margin = {top: 20, right: 20, bottom: 100, left: 40},
+    width = <?php echo SCREENWIDTH;?> - margin.left - margin.right,
+    height = <?php echo SCREENWIDTH;?> - margin.top - margin.bottom;
+
+var parseDate = d3.time.format("%d-%b-%y").parse;
+
+var x = d3.time.scale()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var line = d3.svg.line()
+    .x(function(d) { if(d.Attribute == 'Height'){return x(d.TimeCreated);} })
+    .y(function(d) { if(d.Attribute == 'Height'){return y(d.AttributeValue);} });
+
+var svg = d3.select("#graph").html("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.json("ajax.php?module=reports&ExerciseId="+id+"", function(error, data) {
+  
+  data.forEach(function(d) {
+      if(d.Attribute == 'Height'){
+    d.TimeCreated = parseDate(d.TimeCreated);
+    d.AttributeValue = +d.AttributeValue;
+      }
+});
+
+      
+  x.domain(d3.extent(data, function(d) { if(d.Attribute == 'Height'){return d.TimeCreated;} }));
+  y.domain(d3.extent(data, function(d) { if(d.Attribute == 'Height'){return d.AttributeValue;} }));
 
   svg.append("g")
       .attr("class", "x axis")
@@ -333,13 +383,14 @@ data.forEach(function(d) {
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Price ($)");
+      .text("Height");
 
   svg.append("path")
-      .datum(data)
+      .datum(d)
       .attr("class", "line")
       .attr("d", line);
-});
+     
+  
 });
 }
 
@@ -457,7 +508,8 @@ function getActivity(id, source)
         $('#back').html('<img alt="Back" onclick="getDistanceCovered();" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
     }
     $.ajax({url:'ajax.php?module=reports',data:{report:'Activity', id:id},dataType:"html",success:display}); 
-    getActivityGraph(id);
+    //getActivityGraph(id);
+    getActivityLineGraph(id);
 }
 var i = 1;//prevent double rendering problem
 </script>
