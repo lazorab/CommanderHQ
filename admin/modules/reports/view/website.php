@@ -1,33 +1,42 @@
 <script type="text/javascript">
 
-function getWods(id)
+function getMembers()
+{
+    $.ajax({url:'ajax.php?module=reports&action=formsubmit',data:{report:'Members'},dataType:"html",success:display});
+}
+
+function getMember(id)
 {
     $.ajax({url:'ajax.php?module=reports&action=formsubmit',data:{AthleteId:id},dataType:"html",success:display});
 }
 
-function display(options)
+function getWods()
 {
-    $('#wod').html(options);
+    $.ajax({url:'ajax.php?module=reports&action=formsubmit',data:{report:'Wods'},dataType:"html",success:display});
+}
+
+function getWod(id)
+{
+    $.ajax({url:'ajax.php?module=reports&action=formsubmit',data:{WodId:id},dataType:"html",success:display});
+}
+
+function getActivities()
+{
+    $.ajax({url:'ajax.php?module=reports&action=formsubmit',data:{report:'Activities'},dataType:"html",success:display});
+}
+
+function getActivity(id)
+{
+    $.ajax({url:'ajax.php?module=reports&action=formsubmit',data:{ActivityId:id},dataType:"html",success:display});
+}
+
+function display(data)
+{
+    $('#AjaxOutput').html(data);
 }
 
 </script>
 
-<h1>Reports</h1>
-
-Total registered Athletes:<?php echo $Display->RegisteredAthleteCount();?>
-<br/>
-<br/>
-<form action="index.php" name="reports">
-    <input type="hidden" name="module" value="reports"/>
-<input type="submit" name="report" value="Registered Athletes"/>
-<br/>
-<br/>
-<input type="submit" name="report" value="WOD Results"/>
-<br/>
-<br/>    
-    <?php echo $Display->RegisteredAthletes();?>
-<br/>
-<br/>
-<select name="wod" id="wod"><option value="">Completed Wods</option></select>
-
-</form>
+<div id="AjaxOutput">
+<?php echo $Display->Output();?>
+</div>

@@ -1,3 +1,24 @@
+<style>
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+    padding: 3px;
+  margin: 1px;
+  color: white;
+  width:50px;
+}
+
+.x.axis path {
+  display: none;
+}
+
+</style>
 <script src="http://d3js.org/d3.v3.min.js"></script>	
 <script type="text/javascript">
 
@@ -16,7 +37,7 @@ function AttributeExists(obj, val)
     return false;
 }
 
-function getWODReport(id,type)
+function _getWODReport(id,type)
 {
     $('#back').html('<img alt="Back" onclick="getReport(\'WOD\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
 
@@ -45,6 +66,70 @@ function getWODReport(id,type)
 
         chartObj.render("graph");
     }});
+}
+
+function getWodsByMonthGraph()
+{
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = <?php echo SCREENWIDTH;?> - margin.left - margin.right,
+    height = <?php echo SCREENWIDTH;?> - margin.top - margin.bottom;
+
+var formatPercent = d3.format(".0%");
+
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+
+var svg = d3.select("#graph").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.json("ajax.php?module=reports&Graph=Wods", function(error, data) {
+  
+data.forEach(function(d) {
+   d.NumberCompleted = +d.NumberCompleted;
+  });
+
+  x.domain(data.map(function(d) { return d.Month; }));
+  y.domain([0, d3.max(data, function(d) { return d.NumberCompleted; })]);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+
+  svg.selectAll(".bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.Month); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.NumberCompleted); })
+      .attr("height", function(d) { return height - y(d.NumberCompleted); })
+.text(function(d) { return d; });
+});  
+
 }
 
 function getBenchmarkReport(id)
@@ -78,25 +163,6 @@ function getBenchmarkReport(id)
     }});
 }
 
-function getWodsByMonthGraph()
-{
-    $.ajax({url:'ajax.php?module=reports',data:{Graph:'Wods'},dataType:"json",success:function(json) {
-        var strXML = '<chart caption="Completed WODs" xAxisName="Month" yAxisName="# of WODs" showValues="0">';
-        $.each(json, function() { 
-           strXML += '<set label="' + this.Month + '" value="' + this.NumberCompleted + '"/>';
-        }); 
-        strXML += '</chart>';
-
-        //$("#graph").insertFusionCharts({swfUrl: "includes/FusionCharts/Column2D.swf", dataSource: strXML, dataFormat: "xml", width: "<?php echo SCREENWIDTH - 25;?>", height: "<?php echo SCREENWIDTH - 75;?>", id: "WodChartId"});
-
-        var chartObj = new FusionCharts( "includes/FusionCharts/Column2D.swf","WodChartId", "<?php echo SCREENWIDTH - 25;?>", "<?php echo SCREENWIDTH - 75;?>", "0", "1" );
-
-        chartObj.setXMLData(strXML);
-
-        chartObj.render("graph");    
-    }});        
-}
-
 function getWodDetail(timestamp)
 {
     $.ajax({url:'ajax.php?module=reports',data:{TimeStamp:timestamp},dataType:"html",success:WodDetailDisplay}); 
@@ -112,84 +178,169 @@ function WodDetailDisplay(data)
 
 function getActivitiesGraph()
 {
-    $.ajax({url:'ajax.php?module=reports',data:{Graph:'Activities'},dataType:"json",success:function(json) {
-        var strXML = '<chart caption="Completed Activities" xAxisName="Activity" yAxisName="#" showValues="0">';
-        $.each(json, function() { 
-           strXML += '<set label="' + this.Exercise + '" value="' + this.NumberCompleted + '"/>';
-        }); 
-        strXML += '</chart>';
 
-        var chartObj = new FusionCharts( "includes/FusionCharts/Column2D.swf","ActivityChartId", "<?php echo SCREENWIDTH - 25;?>", "<?php echo SCREENWIDTH - 75;?>", "0", "1" );
+var margin = {top: 20, right: 20, bottom: 100, left: 40},
+    width = <?php echo SCREENWIDTH;?> - margin.left - margin.right,
+    height = <?php echo SCREENWIDTH;?> - margin.top - margin.bottom;
 
-        chartObj.setXMLData(strXML);
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
 
-        chartObj.render("graph");    
-    }});        
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+
+var svg = d3.select("#graph").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.json("ajax.php?module=reports&Graph=Activities", function(error, data) {
+  
+data.forEach(function(d) {
+   d.NumberCompleted = +d.NumberCompleted;
+  });
+
+  x.domain(data.map(function(d) { return d.Exercise; }));
+  y.domain([0, d3.max(data, function(d) { return d.NumberCompleted; })]);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      .selectAll("text")  
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", function(d) {
+                return "rotate(-65)" 
+                });
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+
+  svg.selectAll(".bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.Exercise); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.NumberCompleted); })
+      .attr("height", function(d) { return height - y(d.NumberCompleted); })
+.text(function(d) { return d; });
+});       
 }
 
 function getActivityGraph(id)
 {
-    $.ajax({url:'ajax.php?module=reports',data:{ExerciseId:id},dataType:"json",success:function(json) { 
-       //Storage for XML data document
-       var strXML = '';
-       var RepsData = '';
-       var WeightData = '';
-       var HeightData = '';
-       var DistanceData = '';
-       var Categories='<categories>';
-       var first = true;
-       //Add <set> elements
-        $.each(json, function() {
-            if(first)
-            strXML += '<chart caption="' + this.Exercise + '" showLabels="0" canvasPadding="10" showYAxisValues="0" animation="0" lineColor="00008B" xAxisNamePadding="0" yAxisNamePadding="0" xAxisName="Time" yAxisName="Output" showToolTip="0" showValues="1">';
 
-                if(this.Attribute == 'Reps'){
-                    if(RepsData == ''){
-                        Categories+='<category Label="'+this.Attribute+'"/>';
-                        RepsData += '<dataset seriesName="'+this.Attribute+'" Color="00008B">';
-                    }
-                    RepsData += '<set  value="' + this.AttributeValue + '"/>';
-                }   
-                if(this.Attribute == 'Weight'){
-                    if(WeightData == ''){
-                        Categories+='<category Label="'+this.Attribute+'"/>';
-                        WeightData += '<dataset seriesName="'+this.Attribute+'('+this.UnitOfMeasure+')" Color="FF008B">';
-                    }
-                    WeightData += '<set  value="' + this.AttributeValue + '"/>';
-                }
-                 if(this.Attribute == 'Height'){
-                    if(HeightData == ''){
-                        Categories+='<category Label="'+this.Attribute+'"/>';
-                        HeightData += '<dataset seriesName="'+this.Attribute+'('+this.UnitOfMeasure+')" Color="FF008B">';
-                    }
-                    HeightData += '<set  value="' + this.AttributeValue + '"/>';
-                }
-                if(this.Attribute == 'Distance'){
-                    if(DistanceData == ''){
-                        Categories+='<category Label="'+this.Attribute+'"/>';
-                        DistanceData += '<dataset seriesName="'+this.Attribute+'('+this.UnitOfMeasure+')" Color="00008B">';
-                    }
-                    DistanceData += '<set  value="' + this.AttributeValue + '"/>';
-                }               
-            first = false;
-        });
-        //Closing Chart Element
-        if(RepsData != '')
-            RepsData += '</dataset>';
-        if(WeightData != '')
-            WeightData += '</dataset>';
-        if(HeightData != '')
-            HeightData += '</dataset>';
-        if(DistanceData != '')
-            DistanceData += '</dataset>';            
-        strXML += ''+Categories+'</categories>'+RepsData+''+WeightData+''+HeightData+''+DistanceData+'</chart>';
-      
-        var chartObj = new FusionCharts( "includes/FusionCharts/MSLine.swf","ExerciseChartId", "<?php echo SCREENWIDTH - 25;?>", "<?php echo SCREENWIDTH - 75;?>", "0", "1" );
+var margin = {top: 20, right: 20, bottom: 100, left: 40},
+    width = <?php echo SCREENWIDTH;?> - margin.left - margin.right,
+    height = <?php echo SCREENWIDTH;?> - margin.top - margin.bottom;
 
-        chartObj.setXMLData(strXML);
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
 
-        chartObj.render("graph");
-    }});
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var line = d3.svg.line()
+    .x(function(d) { return x(d.TimeCreated); })
+    .y(function(d) { return y(d.AttributeValue); });    
+
+var svg = d3.select("#graph").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.json("ajax.php?module=reports&ExerciseId="+id+"", function(error, data) {
+  
+data.forEach(function(d) {
+    
+  x.domain(data.map(function(d) { if(d.Attribute == 'Reps'){return d.TimeCreated;} }));
+  y.domain([0, d3.max(data, function(d) { if(d.Attribute == 'Reps'){return d.AttributeValue;} })]);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      .selectAll("text")  
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", function(d) {
+                return "rotate(-65)" 
+                });
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+
+
+  svg.selectAll(".bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { if(d.Attribute == 'Reps'){return x(d.TimeCreated);} })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { if(d.Attribute == 'Reps'){return y(d.AttributeValue);} })
+      .attr("height", function(d) { if(d.Attribute == 'Reps'){return height - y(d.AttributeValue);} })
+.text(function(d) { return d; });
+
+  
+
+  x.domain(d3.extent(data, function(d) { return d.TimeCreated; }));
+  y.domain(d3.extent(data, function(d) { return d.AttributeValue; }));
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Price ($)");
+
+  svg.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line);
+});
+});
 }
 
 function getBaselineReport()
@@ -251,14 +402,14 @@ function getCompletedWODs()
 {
     $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=reports\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
     $.ajax({url:'ajax.php?module=reports',data:{report:'wods'},dataType:"html",success:display}); 
-    //getWodsByMonthGraph();
+    getWodsByMonthGraph();
 }
 
 function getCompletedActivities()
 {
     $('#back').html('<img alt="Back" onclick="OpenThisPage(\'?module=reports\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>');    
     $.ajax({url:'ajax.php?module=reports',data:{report:'activities'},dataType:"html",success:display});
-    //getActivitiesGraph();
+    getActivitiesGraph();
 }
 
 function getTimeSpent()
@@ -310,7 +461,7 @@ function getActivity(id, source)
 }
 var i = 1;//prevent double rendering problem
 </script>
-
+<div id="graph"></div>
 
 <div id="AjaxOutput">
     <?php echo $Display->Output();?>

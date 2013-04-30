@@ -19,6 +19,86 @@ class ReportsController extends Controller
             }
 	}
         
+        function Output()
+        {
+            $Model = new ReportsModel();
+            $Html = '';
+            if($_REQUEST['report'] == 'Wods'){
+                $Html .= $this->getCompletedWods();
+            }else if($_REQUEST['report'] == 'Registered Members'){
+                $Html .= $this->getMembers();
+            }else if($_REQUEST['report'] == 'Activities'){
+                $Html .= $this->getCompletedActivities();
+            }else{
+                $Html .= '<h1>Reports</h1>
+    <form action="index.php" name="reports">
+    <input type="hidden" name="module" value="reports"/>
+    <br/>
+    <br/>
+    <div style="">'.$this->RegisteredAthleteCount().'</div>
+    <input type="submit" name="report" value="Registered Members"/>
+    <br/>
+    <br/>
+    <div style="">'.$this->CompletedWodCount().'</div>
+    <input type="submit" name="report" value="Wods"/>
+    <br/>
+    <br/>
+    <div style="">'.$this->CompletedActivitiesCount().'</div>
+    <input type="submit" name="report" value="Activities"/>    
+    </form>';
+            }
+            return $Html;
+        }
+        
+        function CompletedActivitiesCount()
+        {
+            $Model = new ReportsModel;
+            $Activities = $Model->getCompletedActivities();
+            $Html = count($Activities);
+            return $Html;            
+        }        
+        
+        function getCompletedActivities()
+        {
+            $Model = new ReportsModel;
+            $Activities = $Model->getCompletedActivities();
+            $Html = '';
+            foreach($Activities AS $Activity){
+                $Html.=''.$Activity->Exercise.' - '.$Activity->NumberCompleted.'<br/>';
+            }
+            return $Html;            
+        }
+        
+        function getCompletedWods()
+        {
+            $Model = new ReportsModel;
+            $Wods = $Model->getCompletedWods();
+            $Html = '';
+            foreach($Wods AS $Wod){
+                $Html.=''.$Wod->WodName.' - '.$Wod->NumberCompleted.'<br/>';
+            }
+            return $Html;           
+        }
+        
+        function CompletedWodCount()
+        {
+            $Model = new ReportsModel;
+            $Wods = $Model->getCompletedWods();
+            $Html = count($Wods);
+            return $Html;           
+        }        
+        
+        function getMembers()
+        {
+            $Model = new ReportsModel;
+            $Members = $Model->getRegisteredAthletes();
+            $Html = '';
+            foreach($Members AS $Member){
+                $Html.=''.$Member->FirstName.'<br/>';
+            }
+            return $Html;
+        }
+        
         function Message()
         {
             if(isset($_REQUEST['AthleteId'])){
@@ -26,11 +106,11 @@ class ReportsController extends Controller
             }
         }
         
-        function CompletedWods($Id)
+        function CompletedWods($MemberId)
         {
             if($Id > 0){
             $Model = new ReportsModel;
-            $CompletedWods = $Model->getCompletedWods($Id);
+            $CompletedWods = $Model->getCompletedMemberWods($MemberId);
             $Html = '';
             if(count($CompletedWods) == 0){
                 $Html.='<option value="">No Completed Daily WODs yet</option>';
@@ -79,10 +159,10 @@ class ReportsController extends Controller
             header("Content-Disposition: attachment;filename=".$filename."");
         }
         
-        function CompletedWodsCSV($Id)
+        function CompletedWodsCSV($MemberId)
         {
             $Model = new ReportsModel;
-            $CompletedGymWods = $Model->getCompletedGymWods($Id);
+            $CompletedGymWods = $Model->getCompletedGymWods($MemberId);
             $filename='CompletedWods.csv';
 
             $fp = fopen('php://output', 'w');

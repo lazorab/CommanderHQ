@@ -91,7 +91,11 @@ $XML .= "</chart>";
         $html='';
 	if(isset($_REQUEST['report']))
 	{
-            if($_REQUEST['report'] == 'wods')
+            if($_REQUEST['report'] == 'test')
+            {
+                $html = array(array('letter'=>'A','frequency'=>'.08167'),array('letter'=>'B','frequency'=>'.01492'));	
+            }
+            else if($_REQUEST['report'] == 'wods')
             {
                 $html .= $this->getCompletedWODs();	
             }
@@ -274,7 +278,7 @@ $XML .= "</chart>";
         $WODs = $Model->getCompletedWods();
         $Html = '';
         if(count($WODs) > 0){
-            $Html.='<div id="graph"></div><ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
+            $Html.='<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
         foreach($WODs AS $Wod){
             $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getWOD(\''.$Wod->WodTypeId.'\', \''.$Wod->WodId.'\');"><div style="height:26px;width:1px;float:left"></div>'.$Wod->WorkoutType.'<br/><span class="ui-li-count">'.$Wod->NumberCompleted.'</span></a></li>';          
         }
