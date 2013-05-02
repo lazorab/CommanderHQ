@@ -18,8 +18,11 @@
 <link rel="apple-touch-icon" sizes="72x72" href="images/touch-icon-ipad.png">
 <link rel="apple-touch-icon" sizes="114x114" href="images/touch-icon-iphone4.png">
 <!-- startup image for web apps (320x460) -->
-<link rel="apple-touch-startup-image" href="images/splashscreen.png" media="screen and (max-device-width: 320px)" />
-
+<link rel="apple-touch-startup-image" href="images/startup-320x460.png" />
+<link rel="apple-touch-startup-image" sizes="640x920" href="images/startup-640x920.png" />
+<link rel="apple-touch-startup-image" sizes="640x1096" href="images/startup-640x1096.png" />
+<link rel="apple-touch-startup-image" sizes="1024x748" href="images/startup-1024x748.png" />
+<link rel="apple-touch-startup-image" sizes="768x1004" href="images/startup-768x1004.png" />
 <link type="text/css" rel="stylesheet" href="css/jquery.mobile-1.3.0.css" />
 <link type="text/css" rel="stylesheet" href="css/jqm-demos.css" />
 <link type="text/css" rel="stylesheet" href="css/mobile.css" />

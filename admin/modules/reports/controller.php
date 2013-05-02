@@ -37,7 +37,7 @@ class ReportsController extends Controller
     <input type="hidden" name="module" value="reports"/>
     <div id="CountContainer">
     <div class="CountBox" style="border: 2px solid red;">'.$this->RegisteredAthleteCount().'</div>
-    <div class="CountBox" style="border: 2px solid blue;">'.$this->CompletedWodCount().'</div>
+    <div class="CountBox" style="border: 2px solid blue;">'.$this->CompletedWodsCount().'</div>
     <div class="CountBox" style="border: 2px solid green;">'.$this->CompletedActivitiesCount().'</div>
     </div>
     <input type="submit" name="report" value="Registered Members"/>
@@ -52,12 +52,100 @@ class ReportsController extends Controller
         {
             $Model = new ReportsModel;
             $WodDetails = $Model->getWodDetails($Id);
-            $Html = '';
+            $Html = '<div class="CountBox" style="border: 2px solid red;">'.$Model->getCompletedWodCount($Id).'</div>';
+            $Html .= '<div class="CountBox" style="border: 2px solid blue;">'.$this->AverageWodTime($Id).'</div><br/>';
+            
+            $Html .= '<div style="float:left">Wod Name: '.$WodDetails[0]->WodName.'</div>';
+            $Html .= '<div style="float:right">Wod Date: '.$WodDetails[0]->WodDate.'</div><br/>';
+            $Html .= 'Description: '.$WodDetails[0]->Description.'<br/>';
             foreach($WodDetails AS $Detail)
             {
-                $Html .= $Detail->Exercise;
+                $Html .= ''.$Detail->Exercise.'<br/>';
             }
+            $Html .= '<br/><button onclick="go(\'?module=reports&report=Wods\');">Back to Completed WODs</button><br/>';
             return $Html;            
+        }
+        
+        function AverageActivityReps($ActivityId)
+        {
+
+            $Model = new ReportsModel;
+            $ActivityReps = $Model->getAverageActivityReps($ActivityId);
+            $TotalReps = 0;
+            if(count($ActivityReps) > 0){
+                foreach($ActivityReps AS $These){
+                    if($These->Reps > 0){
+                        $TotalReps = $TotalReps + $These->Reps;
+                    }
+                }
+                $AverageReps = floor($TotalReps / count($ActivityReps));
+            }else{
+                $AverageReps = 0;
+            }
+            return $AverageReps;
+
+        }
+        
+        function AverageActivityWeight($ActivityId)
+        {
+            
+            $Model = new ReportsModel;
+            $Weights = $Model->getAverageActivityWeight($ActivityId); 
+                           
+            return 'Weight';
+                       
+        }
+        
+        function AverageActivityTime($ActivityId)
+        {
+            $Model = new ReportsModel;
+            $Times = $Model->getAverageActivityTimes($ActivityId);   
+            return $this->CalculateAverageTime($Times);
+
+         
+        }
+        
+        function AverageWodTime($WodId)
+        {
+            $Model = new ReportsModel;
+            $Times = $Model->getAverageWodTimes($WodId);
+            return $this->CalculateAverageTime($Times);
+        }
+         
+        function CalculateAverageTime($Times)
+        {
+            $NumberOfTimes = 0;
+            $AverageTime = 0;
+            $TotalSeconds = 0;
+            foreach($Times AS $time)
+            {
+                if($time->TimeToComplete != '')
+                {
+                    $Time = explode(':',$time->TimeToComplete);
+                    //$Hours=$Time[0];
+                    $Minutes = $Time[0];
+                    $Seconds = $Time[1];
+                    //$SplitSeconds = $Time[2];
+ 
+                    $TotalSeconds = $TotalSeconds + $Seconds + ($Minutes * 60);  
+                    //$TotalSplitSeconds = $TotalSplitSeconds + $SplitSeconds;
+                    $NumberOfTimes++;
+                }
+            }
+            if($NumberOfTimes > 0 && $TotalSeconds > 0){
+            $AverageSeconds = floor($TotalSeconds / $NumberOfTimes);
+            
+            $NewTotalMinutes = floor($AverageSeconds / 60);
+            $NewTotalSeconds = $AverageSeconds - floor($NewTotalMinutes * 60);
+
+            $AverageTime = ''.$this->number_pad($NewTotalMinutes,2).':'.$this->number_pad($NewTotalSeconds,2).'';
+            }
+
+            return $AverageTime;
+        }
+        
+        private function number_pad($number,$n) {
+            return str_pad((int) $number,$n,"0",STR_PAD_LEFT);
         }
         
         function CompletedActivitiesCount()
@@ -72,9 +160,10 @@ class ReportsController extends Controller
         {
             $Model = new ReportsModel;
             $Activities = $Model->getCompletedActivities();
-            $Html = '';
+            $Html = '<h2>Completed Activities | No. Activities | Avg. Reps | Avg. Weight | Avg. Time</h2>';
             foreach($Activities AS $Activity){
-                $Html.=''.$Activity->Exercise.' | '.$Activity->NumberCompleted.'<br/>';
+                if($Activity->NumberCompleted > 0)
+                $Html.='<button style="width:100%; text-align:left;"><h2>'.$Activity->Exercise.' | '.$Activity->NumberCompleted.' | '.$this->AverageActivityReps($Activity->ExerciseId).' | '.$this->AverageActivityWeight($Activity->ExerciseId).' | '.$this->AverageActivityTime($Activity->ExerciseId).'</h2></button><br/>';
             }
             return $Html;            
         }
@@ -83,28 +172,36 @@ class ReportsController extends Controller
         {
             $Model = new ReportsModel;
             $Wods = $Model->getCompletedWods();
-            $Html = '';
+            $Html = '<h2>Completed WODs | WOD Completed | Avg. Time</h2>';
             foreach($Wods AS $Wod){
-                $Html.='<a href="?module=reports&WodId='.$Wod->WodId.'">'.$Wod->DayName.' Week '.$Wod->WeekNumber.' | '.$Wod->NumberCompleted.'"</a><br/>';
+                if($Wod->NumberCompleted > 0)
+                $Html.='<button style="width:100%; text-align:left;" onclick="go(\'?module=reports&WodId='.$Wod->WodId.'\');"><h2>'.$Wod->DayName.' Week '.$Wod->WeekNumber.' | '.$Wod->NumberCompleted.' | '.$this->AverageWodTime($Wod->WodId).'</h2></button><br/>';
             }
             return $Html;           
         }
         
-        function CompletedWodCount()
+        function CompletedWodsCount()
         {
             $Model = new ReportsModel;
             $Wods = $Model->getCompletedWods();
             $Html = count($Wods);
             return $Html;           
-        }        
+        }       
         
         function getMembers()
         {
             $Model = new ReportsModel;
             $Members = $Model->getRegisteredAthletes();
-            $Html = '';
+            $Html = '<h2>Name | WODs Completed | Baseline Time</h2>';
             foreach($Members AS $Member){
-                $Html.=''.$Member->FirstName.'<br/>';
+                $NumberMemberWods = count($Model->getCompletedMemberWods($Member->UserId));
+                $MemberBaselineTime = $Model->getMemberBaselineTime($Member->UserId);
+                if($Member->Anon == 0){
+                   $MemberName = ''.$Member->FirstName.' '.$Member->LastName.'';
+                }else{
+                    $MemberName = 'Anon';
+                }
+                $Html.='<button style="width:100%; text-align:left;" onclick="go(\'?module=reports&MemberId='.$Member->UserId.'\');"><h2>'.$MemberName.' | '.$NumberMemberWods.' | '.$MemberBaselineTime.'</h2></button><br/>';
             }
             return $Html;
         }

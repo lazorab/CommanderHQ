@@ -1,3 +1,4 @@
+
 <script type="text/javascript">
 
 function getMembers()
@@ -32,11 +33,18 @@ function getActivity(id)
 
 function display(data)
 {
+    $('.buttongroup').button();
+    $('.buttongroup').button('refresh');
     $('#AjaxOutput').html(data);
 }
 
-</script>
+function go(url)
+{
+    window.location = url;
+}
 
+</script>
+<br/>
 <div id="AjaxOutput">
 <?php echo $Display->Output();?>
 </div>

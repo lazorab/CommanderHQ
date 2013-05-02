@@ -1,4 +1,5 @@
 <script type="text/javascript">
+$('#back').html('<img alt="Back" onclick="OpenThisPage(\'<?php echo $_SERVER ['HTTP_REFERER'];?>\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
 
 $(document).ready(function() {
 	//Trigger video

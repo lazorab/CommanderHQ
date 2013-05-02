@@ -41,7 +41,7 @@ class ProfileModel extends Model
 				Weight = '".$Weight."',
 				Height = '".$Height."',
 				SystemOfMeasure = '".$_REQUEST['SystemOfMeasure']."',
-                                CustomWorkouts = '".$_REQUEST['CustomWorkouts']."',
+                                Anon = '".$_REQUEST['Anon']."',
 				Gender = '".$_REQUEST['Gender']."',
 				BMI = '".$BMI."'		
 				WHERE MemberId = '".$Id."'";
@@ -79,7 +79,7 @@ class MemberObject
 	var $Weight;
 	var $Height;
 	var $SystemOfMeasure;
-        var $CustomWorkouts;
+        var $Anon;
 	var $BMI;
 	var $RestHR;
 	var $RecHR;
@@ -100,7 +100,7 @@ class MemberObject
 		$this->Gender = $Row['Gender'];
 		$this->DOB = $Row['DOB'];
                 $this->SystemOfMeasure = $Row['SystemOfMeasure'];
-		$this->CustomWorkouts = $Row['CustomWorkouts'];
+                $this->Anon = $Row['Anon'];
 		if($Row['SystemOfMeasure'] == 'Imperial'){
                     //convert to metric for storage in db. Displaying of values will be converted back.
                     $this->Weight = ceil($Row['Weight'] * 2.22);

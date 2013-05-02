@@ -362,7 +362,7 @@ class Model
                         $this->Message = 'Error - Invalid Value for '.$ExerciseName.' '.$Attribute.'!';
                 }
                 */
-                if($this->Message == ''){
+                if($this->Message == '' && $Value != ''){
                 $SQL='SELECT recid AS ExerciseId,
                         "'.$ExerciseName.'" AS Exercise,
                         (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS AttributeId,
@@ -402,7 +402,7 @@ class Model
                         $this->Message = 'Error - Invalid Value for '.$Attribute.'!';
                 }
                  */
-                if($this->Message == ''){
+                if($this->Message == '' && $Value != ''){
                 $SQL='SELECT recid AS ExerciseId,
                         "'.$ExerciseName.'" AS Exercise,
                         (SELECT recid FROM Attributes WHERE Attribute = "'.$Attribute.'") AS AttributeId,
@@ -754,7 +754,7 @@ class Model
 		MD.Gender,
 		MD.DOB,
                 MD.SystemOfMeasure,
-		MD.CustomWorkouts,
+		MD.Anon,
                 MD.Height,
                 MD.Weight,
                 MD.BMI,

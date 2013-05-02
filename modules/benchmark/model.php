@@ -167,7 +167,7 @@ class BenchmarkModel extends Model
                     $WorkoutTypeId = $_REQUEST['WodTypeId'];
                 }                
                 $WorkoutTypeId = $this->getWorkoutTypeId('Benchmark');
-
+        if(count($ActivityFields) > 0){
         foreach($ActivityFields AS $ActivityField)
         {
             if($_REQUEST['origin'] == 'baseline'){
@@ -182,6 +182,18 @@ class BenchmarkModel extends Model
                 $db->Query();
             
 		}
+            }else if(isset($_REQUEST['TimeFieldName'])){
+                //$WorkoutTypeId.'_'.$WorkoutId.'_'.$ThisRoutine_TimeToComplete
+                $ExplodedKey = explode('_', $_REQUEST['TimeFieldName']);
+                $WorkoutTypeId = $ExplodedKey[0];
+                $ThisId = $ExplodedKey[1];
+                $RoutineNo = $ExplodedKey[2];
+                $RoutineTime = $_REQUEST['RoutineTime'];
+                $SQL = 'INSERT INTO WODLog(MemberId, WorkoutId, WodTypeId, RoutineNo, AttributeId, AttributeValue) 
+                VALUES("'.$_COOKIE['UID'].'", "'.$ThisId.'", "'.$WorkoutTypeId.'", "'.$RoutineNo.'", "'.$this->getAttributeId('TimeToComplete').'", "'.$RoutineTime.'")';
+                $db->setQuery($SQL);
+                $db->Query();                
+            }
                 $this->Message = 'Success';
             }
             }else{

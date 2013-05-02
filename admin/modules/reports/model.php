@@ -9,7 +9,7 @@ class ReportsModel extends Model
         function getRegisteredAthletes()
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT M.UserId, M.FirstName, M.LastName
+            $SQL = 'SELECT M.UserId, M.FirstName, M.LastName, MD.Anon
                 FROM Members M JOIN MemberDetails MD ON MD.MemberId = M.UserId
                 WHERE MD.GymId = "'.$_COOKIE['GID'].'"
                 ORDER BY LastName';
@@ -48,6 +48,94 @@ class ReportsModel extends Model
             return $db->loadObjectList();            
         }
         
+        function getCompletedWodCount($Id)
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT COUNT(WW.WorkoutName) AS NumberCompleted
+                FROM WODLog WL
+                LEFT JOIN WodWorkouts WW ON WW.recid = WL.WorkoutId
+                LEFT JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
+                LEFT JOIN MemberDetails MD ON MD.MemberId = WL.MemberId
+                LEFT JOIN Affiliates A ON A.AffiliateId = MD.GymId
+                WHERE A.AffiliateId = "'.$_COOKIE['GID'].'"
+                AND WT.WorkoutType = "My Gym"
+                AND WL.WorkoutId = "'.$Id.'"';
+            $db->setQuery($SQL);
+            return $db->loadResult();            
+        }
+        
+        function getAverageWodTimes($WodId)
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT WL.AttributeValue AS TimeToComplete
+                FROM WODLog WL
+                LEFT JOIN Attributes Att ON Att.recid = WL.AttributeId
+                LEFT JOIN WodWorkouts WW ON WW.recid = WL.WorkoutId
+                LEFT JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
+                LEFT JOIN MemberDetails MD ON MD.MemberId = WL.MemberId
+                LEFT JOIN Affiliates A ON A.AffiliateId = MD.GymId
+                WHERE A.AffiliateId = "'.$_COOKIE['GID'].'"
+                AND WT.WorkoutType = "My Gym"
+                AND WL.WorkoutId = "'.$WodId.'"
+                AND Att.Attribute = "TimeToComplete"';
+            $db->setQuery($SQL);
+            return $db->loadObjectList();            
+        }
+        
+        function getAverageActivityTimes($ActivityId)
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT WL.AttributeValue AS TimeToComplete
+                FROM WODLog WL
+                LEFT JOIN Attributes Att ON Att.recid = WL.AttributeId
+                LEFT JOIN WodDetails WD ON WD.WodId = WL.WorkoutId  
+                LEFT JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
+                LEFT JOIN MemberDetails MD ON MD.MemberId = WL.MemberId
+                LEFT JOIN Affiliates A ON A.AffiliateId = MD.GymId
+                WHERE A.AffiliateId = "'.$_COOKIE['GID'].'"
+                AND WT.WorkoutType = "My Gym"
+                AND WL.ExerciseId = "'.$ActivityId.'"
+                AND Att.Attribute = "TimeToComplete"';
+            $db->setQuery($SQL);
+            return $db->loadObjectList();            
+        }
+        
+        function getAverageActivityReps($ActivityId)
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT WL.AttributeValue AS Reps
+                FROM WODLog WL
+                LEFT JOIN Attributes Att ON Att.recid = WL.AttributeId
+                LEFT JOIN WodDetails WD ON WD.WodId = WL.WorkoutId    
+                LEFT JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
+                LEFT JOIN MemberDetails MD ON MD.MemberId = WL.MemberId
+                LEFT JOIN Affiliates A ON A.AffiliateId = MD.GymId
+                WHERE A.AffiliateId = "'.$_COOKIE['GID'].'"
+                AND WT.WorkoutType = "My Gym"
+                AND WL.ExerciseId = "'.$ActivityId.'"
+                AND Att.Attribute = "Reps"';
+            $db->setQuery($SQL);
+            return $db->loadObjectList();            
+        }
+        
+        function getAverageActivityWeight($ActivityId)
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT WL.AttributeValue AS Weight
+                FROM WODLog WL
+                LEFT JOIN Attributes Att ON Att.recid = WL.AttributeId
+                LEFT JOIN WodDetails WD ON WD.WodId = WL.WorkoutId      
+                LEFT JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
+                LEFT JOIN MemberDetails MD ON MD.MemberId = WL.MemberId
+                LEFT JOIN Affiliates A ON A.AffiliateId = MD.GymId
+                WHERE A.AffiliateId = "'.$_COOKIE['GID'].'"
+                AND WT.WorkoutType = "My Gym"
+                AND WL.ExerciseId = "'.$ActivityId.'"
+                AND Att.Attribute = "Weight"';
+            $db->setQuery($SQL);
+            return $db->loadObjectList();            
+        }        
+        
         function getCompletedActivities()
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
@@ -82,6 +170,21 @@ class ReportsModel extends Model
             return $db->loadObjectList();             
         }
         
+        function getMemberBaselineTime($UserId)
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT WL.AttributeValue AS TimeToComplete
+                FROM WODLog WL
+                LEFT JOIN Attributes Att ON Att.recid = WL.AttributeId
+                LEFT JOIN WodDetails WD ON WD.WodId = WL.WorkoutId  
+                LEFT JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
+                WHERE WL.MemberId = "'.$UserId.'"
+                AND WT.WorkoutType = "Baseline"
+                ORDER BY TimeCreated DESC LIMIT 1';
+            $db->setQuery($SQL);
+            return $db->loadResult();           
+        }
+        
         function getCompletedGymWods($AthleteId)
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
@@ -113,7 +216,7 @@ class ReportsModel extends Model
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
 
 		$SQL = 'SELECT WW.recid AS Id,
-                        WW.WorkoutName, 
+                        WW.WorkoutName AS WodName, 
                         E.Exercise, 
                         E.recid AS ExerciseId, 
                         CASE 
@@ -134,7 +237,7 @@ class ReportsModel extends Model
                         (SELECT MAX(RoundNo) FROM WodDetails WHERE WodId = Id AND RoutineNo = WD.RoutineNo) AS TotalRounds,
                         WW.WorkoutRoutineTypeId,
                         WW.WodDate,
-                        WW.Notes
+                        WW.Notes AS Description
 			FROM WodDetails WD
 			LEFT JOIN WodWorkouts WW ON WW.recid = WD.WodId
 			LEFT JOIN Exercises E ON E.recid = WD.ExerciseId
@@ -143,7 +246,7 @@ class ReportsModel extends Model
 			WHERE WW.recid = '.$Id.'
 			UNION
                         SELECT WW.recid AS Id,
-                        BW.WorkoutName, 
+                        BW.WorkoutName AS WodName, 
                         E.Exercise,
                         E.recid AS ExerciseId, 
                         CASE 
@@ -164,7 +267,7 @@ class ReportsModel extends Model
                         (SELECT MAX(RoundNo) FROM BenchmarkDetails WHERE BenchmarkId = WW.WorkoutName) AS TotalRounds,
                         WW.WorkoutRoutineTypeId,
                         WW.WodDate,
-                        WW.Notes                        
+                        WW.Notes AS Description                      
 			FROM BenchmarkDetails BD
 			LEFT JOIN BenchmarkWorkouts BW ON BW.recid = BD.BenchmarkId
 			LEFT JOIN WodWorkouts WW ON WW.WorkoutName = BD.BenchmarkId

@@ -58,8 +58,6 @@ class ProfileController extends Controller
                 $Message = 'Error - Invalid Height';            
             else if($_REQUEST['Gender'] == '')		
                 $Message = 'Error - Select Gender';
-            else if($_REQUEST['CustomWorkouts'] == '')		
-                $Message = 'Error - Select access to your Custom Workouts';
 		
             return $Message;	
 	}
@@ -195,16 +193,16 @@ if($MemberDetails->Gender == 'F')
 $Html.='/>
 </fieldset><br/>';
      
-$Html.='Custom Workouts Visibility
+$Html.='Anonymous
 <fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
-<label for="private">Private</label>
-<input class="radioinput" id="private" type="radio" name="CustomWorkouts" value="Private"';
-if($MemberDetails->CustomWorkouts != 'Public') 
+<label for="private">Yes</label>
+<input class="radioinput" id="private" type="radio" name="Anon" value="1"';
+if($MemberDetails->Anon == '1') 
     $Html.='checked="checked"';
 $Html.='/>
-<label for="public">Public</label>
-<input class="radioinput" id="public" type="radio" name="CustomWorkouts" value="Public"';
-if($MemberDetails->CustomWorkouts == 'Public')
+<label for="public">No</label>
+<input class="radioinput" id="public" type="radio" name="Anon" value="0"';
+if($MemberDetails->Anon != '1')
     $Html.='checked="checked"';
 $Html.='/>
 </fieldset>

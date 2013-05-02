@@ -14,6 +14,7 @@
     <link rel="stylesheet" type="text/css" href="/admin/css/steel/steel.css" />
 <link rel="stylesheet" href="/admin/css/website.css">
  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+
 <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
 <script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
 <script type="text/javascript">
@@ -33,4 +34,5 @@ $( document ).bind( 'mobileinit', function(){
   $.mobile.loader.prototype.options.html = '<img src="/admin/css/images/ajax-loader.gif" />';
 });
 </script>
+
 </head>

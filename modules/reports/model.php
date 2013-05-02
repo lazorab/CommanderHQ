@@ -65,7 +65,7 @@ ORDER BY WorkoutType';
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
             $SQL = 'SELECT COUNT(DISTINCT TimeCreated) AS NumberCompleted
                 FROM WODLog L
-                WHERE MemberId = '.$_COOKIE['UID'].'
+                WHERE MemberId = '.$_COOKIE['UID'].'    
                 AND WODTypeId > 0';
             $db->setQuery($SQL);
             return $db->loadResult();       
@@ -350,13 +350,20 @@ ORDER BY WorkoutType';
             L.RoutineNo,
             L.RoundNo,
             L.OrderBy,
-            A.Attribute AS Attribute, L.AttributeValue AS AttributeValue, L.TimeCreated 
+            A.Attribute AS Attribute, L.AttributeValue AS AttributeValue, 
+            L.UnitOfMeasureId,
+            UOM.UnitOfMeasure,
+            UOM.ConversionFactor,
+            L.TimeCreated,
+            (SELECT MAX(RoundNo) FROM WODLog WHERE TimeCreated = "'.$Time.'") AS TotalRounds
             FROM WODLog L 
             LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
             LEFT JOIN Exercises E ON E.recid = L.ExerciseId
             LEFT JOIN Attributes A ON A.recid = L.AttributeId
+            LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND L.UnitOfMeasureId = UOM.recid
             WHERE L.MemberId = '.$_COOKIE['UID'].'  
             AND L.TimeCreated = "'.$Time.'"
+            AND (Attribute = "Reps" OR SystemOfMeasure = "'.$this->getSystemOfMeasure().'") 
             ORDER BY RoutineNo, RoundNo, OrderBy, Exercise, Attribute';
         $db->setQuery($SQL);
 		
@@ -374,7 +381,6 @@ ORDER BY WorkoutType';
             LEFT JOIN UnitsOfMeasure UOM ON UOM.recid = L.UnitOfMeasureId
             WHERE L.MemberId = '.$_COOKIE['UID'].'
             AND L.ExerciseId = '.$Id.'
-            GROUP BY TimeCreated     
             ORDER BY TimeCreated';// AND L.ExerciseId = '.$_REQUEST['WODId'].'';
         $db->setQuery($SQL);
 		
