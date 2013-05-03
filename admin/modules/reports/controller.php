@@ -36,13 +36,13 @@ class ReportsController extends Controller
     <form action="index.php" name="reports">
     <input type="hidden" name="module" value="reports"/>
     <div id="CountContainer">
-    <div class="CountBox" style="border: 2px solid red;">'.$this->RegisteredAthleteCount().'</div>
-    <div class="CountBox" style="border: 2px solid blue;">'.$this->CompletedWodsCount().'</div>
-    <div class="CountBox" style="border: 2px solid green;">'.$this->CompletedActivitiesCount().'</div>
-    </div>
-    <input type="submit" name="report" value="Registered Members"/>
-    <input type="submit" name="report" value="Wods"/>
-    <input type="submit" name="report" value="Activities"/>
+    <div class="CountBox" style="border: 2px solid red;"><br/><br/>'.$this->RegisteredAthleteCount().'</div>
+    <div class="CountBox" style="border: 2px solid blue;"><br/><br/>'.$this->CompletedWodsCount().'</div>
+    <div class="CountBox" style="border: 2px solid green;"><br/><br/>'.$this->CompletedActivitiesCount().'</div>
+    </div><div class="clear"></div>
+    <div style="height:50px;width:100%"><div class="boxlabel">Active Registered Members</div><div class="boxlabel">Recorded WODs</div><div class="boxlabel">Recorded Activities</div></div>
+    <br/>
+    <div style="height:50px;width:100%"><div class="boxlabel"><input type="submit" name="report" value="Registered Members"/></div><div class="boxlabel"><input type="submit" name="report" value="Wods"/></div><div class="boxlabel"><input type="submit" name="report" value="Activities"/></div></div>
     </form>';
             }
             return $Html;
@@ -52,22 +52,23 @@ class ReportsController extends Controller
         {
             $Model = new ReportsModel;
             $WodDetails = $Model->getWodDetails($Id);
-            $Html = '<div class="CountBox" style="border: 2px solid red;">'.$Model->getCompletedWodCount($Id).'</div>';
-            $Html .= '<div class="CountBox" style="border: 2px solid blue;">'.$this->AverageWodTime($Id).'</div>';
-            $Html .= '<br/><br/><div>';
+            $Html = '<div style="width:100%;height:150px"><div class="CountBox" style="border: 2px solid red;"><span style="font-size:small">Wod Completed</span><br/><br/>'.$Model->getCompletedWodCount($Id).'</div>';
+            $Html .= '<div class="CountBox" style="border: 2px solid blue;"><span style="font-size:small">Avg. Time</span><br/><br/>'.$this->AverageWodTime($Id).'</div>';
+            $Html .= '</div><div style="width:100%;height:100px"">';
             $Html .= '<div style="float:left">Wod Name: '.$WodDetails[0]->WodName.'</div>';
             $Html .= '<div style="float:right">Wod Date: '.$WodDetails[0]->WodDate.'</div><br/>';
-            $Html .= 'Description: '.$WodDetails[0]->Description.'<br/>';
+            $Html .= 'Description: '.$WodDetails[0]->Description.'</div>';
             $Exercise = '';
+            $Html .= '<div>';
             foreach($WodDetails AS $Detail)
             {
                 if($Exercise != $Detail->Exercise){
-                $Html .= '<br/>'.$Detail->Exercise.' '; 
+                $Html .= '</div><div style="width:100%"><div style="float:left;width:30%">'.$Detail->Exercise.'</div><div style="float:left;width:70%">'; 
                     }
                 $Html .= ' |  '.$Detail->Attribute.' : '.$Detail->AttributeValueFemale.'(f)  '.$Detail->AttributeValueMale.'(m) ';
                 $Exercise = $Detail->Exercise;
             }
-            $Html .= '</div><button onclick="go(\'?module=reports&report=Wods\');">Back to Completed WODs</button><br/>';
+            $Html .= '</div></div><br/><button style="float:right" onclick="go(\'?module=reports&report=Wods\');">Back to Completed WODs</button><br/><br/>';
             return $Html;            
         }
         

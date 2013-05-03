@@ -53,7 +53,10 @@ class MygymController extends Controller
                 $Message = $Model->MakeBaseline($_REQUEST['WorkoutId'], $_REQUEST['WodTypeId']);
             else if($_REQUEST['baseline'] == 'no')
                 $Message = $Model->ClearBaseline();
-            else
+            else if(isset($_REQUEST['RoutineTime'])){
+            //Save Routine Time  
+                $Message = $Model->SaveRoutineTime($_REQUEST['TimeFieldName']);
+            }else
                 $Message = $Model->Log();
 
             return $Message;
