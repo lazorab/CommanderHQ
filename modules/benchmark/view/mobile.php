@@ -106,14 +106,14 @@ function display(data)
     var el = $('#AjaxOutput');
     $('#AjaxOutput').html(data);
     $('.listview').listview();
-    $('.listview').listview('refresh'); 
+    $('.listview').listview('refresh');
     $('.controlbutton').button();
     $('.controlbutton').button('refresh');
     $('.buttongroup').button();
     $('.buttongroup').button('refresh');
     $('.textinput').textinput();
-    el.find('div[data-role=collapsible]').collapsible({theme:'c',refresh:true}); 
-    $('#AjaxLoading').html('');	
+    el.find('div[data-role=collapsible]').collapsible({theme:'c',refresh:true});
+    $('#AjaxLoading').html('');		
 }
 
 function addRound()

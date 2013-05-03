@@ -24,6 +24,7 @@ class BaselineModel extends Model
                     $WorkoutId = $_REQUEST['WorkoutId'];
                     $WorkoutTypeId = $_REQUEST['WodTypeId'];
                 }
+        if(count($ActivityFields) > 0){
         foreach($ActivityFields AS $Activity)
         {
             $AttributeValue = '';
@@ -68,8 +69,18 @@ class BaselineModel extends Model
             VALUES("'.$_COOKIE['UID'].'", "'.$WorkoutId.'", "'.$WorkoutTypeId.'", "'.$Activity->RoutineNo.'", "'.$Activity->RoundNo.'", "'.$Activity->ExerciseId.'", "'.$Activity->AttributeId.'", "'.$AttributeValue.'", "'.$Activity->UnitOfMeasureId.'", "'.$Activity->OrderBy.'")';
             $db->setQuery($SQL);
             $db->Query();
-            $this->Message = 'Success';
+            
         }
+            }else if(isset($_REQUEST['ActivityTime'])){
+                $ExplodedKey = explode('_', $_REQUEST['ActivityId']);
+                $ExerciseId = $ExplodedKey[2];
+                $ActivityTime = $_REQUEST['ActivityTime'];
+                $SQL = 'INSERT INTO WODLog(MemberId, ExerciseId, WodTypeId, AttributeId, AttributeValue) 
+                VALUES("'.$_COOKIE['UID'].'", "'.$ExerciseId.'", "'.$WorkoutTypeId.'", "'.$this->getAttributeId('TimeToComplete').'", "'.$ActivityTime.'")';
+                $db->setQuery($SQL);
+                $db->Query();   
+            } 
+            $this->Message = 'Success';
         }
             }else{
                 $this->Message = 'You are not subscribed!';
@@ -135,7 +146,9 @@ class BaselineModel extends Model
             $WorkoutId = '1';
             $RoutineNo = '1';
             $RoundNo = '1';
-            if($Row->Attribute == 'Distance'){$UnitOfMeasure = 2;}else{$UnitOfMeasure = 0;};
+            if($Row->Attribute == 'Distance'){$UnitOfMeasure = 2;}
+            else if($Row->Attribute == 'Weight'){$UnitOfMeasure = 7;}
+            else{$UnitOfMeasure = 0;}
             $SQL = 'INSERT INTO MemberBaseline(MemberId, BaselineTypeId, WorkoutId, RoutineNo, RoundNo, ExerciseId, AttributeId, AttributeValue, UnitOfMeasureId) 
                 VALUES("'.$_COOKIE['UID'].'", "'.$BaselineTypeId.'", "'.$WorkoutId.'", "'.$RoutineNo.'", "'.$RoundNo.'", "'.$Row->ExerciseId.'", "'.$Row->AttributeId.'", "'.$Row->AttributeValue.'", "'.$UnitOfMeasure.'")';
             $db->setQuery($SQL); 
@@ -269,6 +282,7 @@ class BaselineModel extends Model
             "Baseline" AS BaselineType,
             BaselineTypeId AS WodTypeId,
             MB.ExerciseId AS ExerciseId, 
+            MB.AttributeId,
             E.Exercise AS Exercise, 
             CASE 
             WHEN E.Acronym <> ""
@@ -277,16 +291,15 @@ class BaselineModel extends Model
             END
             AS InputFieldName,
             A.Attribute, MB.AttributeValue,
-            MB.UnitOfMeasureId,    
-            UOM.UnitOfMeasure,
-            UOM.ConversionFactor,    
+            MB.UnitOfMeasureId AS UnitOfMeasureId,    
+            (SELECT UnitOfMeasure FROM UnitsOfMeasure WHERE recid = MB.UnitOfMeasureId) AS UnitOfMeasure,
+            (SELECT ConversionFactor FROM UnitsOfMeasure WHERE recid = MB.UnitOfMeasureId) AS ConversionFactor,    
             "1" AS RoundNo,
             OrderBy,           
             "1" AS TotalRounds
             FROM MemberBaseline MB
             LEFT JOIN Exercises E ON E.recid = MB.ExerciseId
             LEFT JOIN Attributes A ON A.recid = MB.AttributeId
-            LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND MB.UnitOfMeasureId = UOM.recid
             WHERE MB.MemberId = "'.$_COOKIE['UID'].'"
             AND ExerciseId > 0
             ORDER BY RoutineNo, RoundNo, OrderBy, Exercise, Attribute';

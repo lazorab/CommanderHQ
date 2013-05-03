@@ -151,7 +151,7 @@ class PersonalModel extends Model
                     $ThisId = $_REQUEST['WorkoutId'];
                     $WorkoutTypeId = $_REQUEST['WodTypeId'];
                 }
-
+                if(count($ActivityFields) > 0){
                 foreach($ActivityFields AS $ActivityField)
                 {
                     $AttributeValue = '';
@@ -190,6 +190,16 @@ class PersonalModel extends Model
                         $db->setQuery($SQL);
                         $db->Query();
                         //var_dump($SQL);
+                }
+                }else if(isset($_REQUEST['ActivityTime'])){
+                $ExplodedKey = explode('_', $_REQUEST['ActivityId']);
+                $ExerciseId = $ExplodedKey[2];
+                $ActivityTime = $_REQUEST['ActivityTime'];
+                $SQL = 'INSERT INTO WODLog(MemberId, ExerciseId, WodTypeId, AttributeId, AttributeValue) 
+                VALUES("'.$_COOKIE['UID'].'", "'.$ExerciseId.'", "'.$WorkoutTypeId.'", "'.$this->getAttributeId('TimeToComplete').'", "'.$ActivityTime.'")';
+                $db->setQuery($SQL);
+                $db->Query();   
+            
                     $this->Message = 'Success';
 		}
             }

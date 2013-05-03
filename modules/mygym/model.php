@@ -19,8 +19,8 @@ class MygymModel extends Model
             if($this->Message == ''){
                     $ThisId = $_REQUEST['WorkoutId'];
                     $WorkoutTypeId = $_REQUEST['WodTypeId'];
-
-        foreach($ActivityFields AS $ActivityField)
+        if(count($ActivityFields) > 0)
+        foreach($ActivityFields AS $ActivityField){
         {
             if($_REQUEST['origin'] == 'baseline'){
                 $SQL = 'INSERT INTO BaselineLog(MemberId, BaselineTypeId, ExerciseId, RoundNo, ActivityId, AttributeId, AttributeValue) 
@@ -35,6 +35,15 @@ class MygymModel extends Model
                         $db->Query();
             
 		}
+                }else if(isset($_REQUEST['ActivityTime'])){
+                $ExplodedKey = explode('_', $_REQUEST['ActivityId']);
+                $ExerciseId = $ExplodedKey[2];
+                $ActivityTime = $_REQUEST['ActivityTime'];
+                $SQL = 'INSERT INTO WODLog(MemberId, ExerciseId, WodTypeId, AttributeId, AttributeValue) 
+                VALUES("'.$_COOKIE['UID'].'", "'.$ExerciseId.'", "'.$WorkoutTypeId.'", "'.$this->getAttributeId('TimeToComplete').'", "'.$ActivityTime.'")';
+                $db->setQuery($SQL);
+                $db->Query();   
+            }
                 $this->Message = 'Success';
             }
             }else{

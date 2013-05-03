@@ -10,6 +10,14 @@ class SkillsController extends Controller
 		if(!isset($_COOKIE['UID']))
 			header('location: index.php?module=login');
 	}
+        
+        function Message()
+        {
+            $Model = new SkillsModel;
+            $Message = $Model->Log();
+
+            return $Message;
+        }
     
     function getExercises()
     {
@@ -119,7 +127,7 @@ class SkillsController extends Controller
                 $Attributes['Weight'] = "Bodyweight";  
                 $Html .= $this->DrawActivity($Activity, $Attributes);
                 $Attributes = array();
-                $Activity = 'Box Jump';
+                $Activity = 'Box Jumps';
                 $Attributes['Reps'] = "1";
                 if($Model->getGender() == 'M'){
                     if($Model->getSystemOfMeasure() == 'Metric'){
@@ -151,7 +159,7 @@ class SkillsController extends Controller
                 $Attributes['Weight'] = "Bodyweight";  
                 $Html .= $this->DrawActivity($Activity, $Attributes); 
                 $Attributes = array();
-                $Activity = 'Box Jump';
+                $Activity = 'Box Jumps';
                 $Attributes['Reps'] = "15";
                 if($Model->getGender() == 'M'){
                     if($Model->getSystemOfMeasure() == 'Metric'){
@@ -183,7 +191,7 @@ class SkillsController extends Controller
                 $Attributes['Weight'] = "2xBodyweight";
                 $Html .= $this->DrawActivity($Activity, $Attributes);
                 $Attributes = array();
-                $Activity = 'Box Jump';
+                $Activity = 'Box Jumps';
                 $Attributes['Reps'] = "25";
                 if($Model->getGender() == 'M'){
                     if($Model->getSystemOfMeasure() == 'Metric'){
@@ -215,7 +223,7 @@ class SkillsController extends Controller
                 $Attributes['Weight'] = "2xBodyweight";
                 $Html .= $this->DrawActivity($Activity, $Attributes);
                 $Attributes = array();
-                $Activity = 'Box Jump';
+                $Activity = 'Box Jumps';
                 $Attributes['Reps'] = "30";
                 if($Model->getGender() == 'M'){
                     if($Model->getSystemOfMeasure() == 'Metric'){
@@ -1079,7 +1087,7 @@ class SkillsController extends Controller
             $Html .= '<input type="hidden" id="1_1_'.$ExerciseId.'_TimeToComplete_0_1" name="1_1_'.$ExerciseId.'_TimeToComplete_0_1" value=""/>';
             $Html .= '<div class="clear"></div>';
             $Html .= '<div style="width:100%">';
-            $Html .= '<div style="float:left;margin:10px 0 10px 20px"><input class="buttongroup" data-mini="true" type="button" id="" name="timebtn" onClick="EnterActivityTime(\'1_1_'.$ExerciseId.'_TimeToComplete_0_1\');" value="Add Time"/></div>';
+            $Html .= '<div style="float:left;margin:10px 0 10px 20px"><input class="buttongroup" data-mini="true" type="button" id="" name="timebtn" onClick="EnterActivityTime(\'skills\', \'1_1_'.$ExerciseId.'_TimeToComplete_0_1\');" value="Add Time"/></div>';
             $Html .= '<div style="float:right;margin:10px 20px 10px 0"><input class="buttongroup" type="button" id="" name="btn" data-mini="true" onClick="SaveTheseResults(\'0_0\', \'1_1_1_'.$ExerciseId.'\');" value="Add Results"/></div>';
             $Html .= '</div>';
             $Html .= '</form></div>';            
@@ -1106,10 +1114,5 @@ class SkillsController extends Controller
 		
         return $Html;
     }	
-	
-	function Message()
-	{
-		return $this->Message;
-	}
 }
 ?>

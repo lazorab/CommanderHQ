@@ -220,32 +220,35 @@ $XML .= "</chart>";
                 $AttributeValue = $Detail->AttributeValue * $ConversionFactor;
             }   
             
-		if($Detail->Attribute != 'TimeToComplete'){          
+		if($Detail->Attribute != 'TimeToComplete'){  
+        
 			if($ThisRoutine != $Detail->RoutineNo){
-                            if($Detail->ExerciseId != null && $i > 0){
+                            if($i > 0){
                                 $html.='</li></ul>';
                                                                     
                             } 
                             $html.= '<h3>Routine '.$Detail->RoutineNo.'</h3>';
                             $html.= '<h3>Round '.$Detail->RoundNo.'</h3>';
+                            
                             $html.= '<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
                             $html.= '<li><div style="height:26px;width:1px;float:left"></div>'.$Detail->Exercise.'<br/><span style="font-size:small">';             
 			}                    
 			else if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0 && $ThisRound != $Detail->RoundNo){
-                            if($Detail->ExerciseId != null && $i > 0){
-                                $html.='</li></ul>';
+                            if($i > 0){
+                                $html.='</li>';
                                 
                                          
                             }
                             //if($i > 0)
                             //    $html.= '<br/><br/>';                            
                             $html.= '<h3>Round '.$Detail->RoundNo.'</h3>';
+                            
                             $html.= '<ul id="toplist" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';
                             $html.= '<li><div style="height:26px;width:1px;float:left"></div>'.$Detail->Exercise.'<br/><span style="font-size:small">';             
 			}
 			else if($ThisExerciseId != $Detail->ExerciseId || $OrderBy != $Detail->OrderBy){
-                            if($Detail->ExerciseId != null && $i > 0){
-                                $html.='</li></ul>';
+                            if($i > 0){
+                                $html.='</li>';
                               
                                 
                             }       
@@ -260,17 +263,18 @@ $XML .= "</chart>";
                         }else{
                             $html.='value="'.$AttributeValue.'">';
                         } 
-                   $Attributes[''.$Detail->Attribute.''] = $AttributeValue != "-" ? $AttributeValue : "";                        
-                }
-              
         $ThisRoutine = $Detail->RoutineNo;        
 	$ThisRound = $Detail->RoundNo;
         $OrderBy = $Detail->OrderBy;
-	$ThisExerciseId = $Detail->ExerciseId;
+	$ThisExerciseId = $Detail->ExerciseId;                
+                } else{
+                    $Clock = $this->getStopWatchDisplay($Detail->AttributeValue);
+                }
+
         $i++;
 	}
                                 
-        $html.='</li></ul><br/><br/>';
+        $html.='</li></ul><br/>'.$Clock.'<br/>';
                               
 
         return $html;
@@ -314,6 +318,7 @@ $XML .= "</chart>";
         if(count($WODs) > 0){
             $Html.='<ul id="listview" data-role="listview" data-inset="true" data-theme="c" data-dividertheme="d">';               
         foreach($WODs AS $Wod){
+            if($Wod->NumberCompleted > 0)
             $Html.='<li><a style="font-size:large;margin-top:10px" href="#" onclick="getWOD(\''.$Wod->WodTypeId.'\', \''.$Wod->WodId.'\');"><div style="height:26px;width:1px;float:left"></div>'.$Wod->WorkoutType.'<br/><span class="ui-li-count">'.$Wod->NumberCompleted.'</span></a></li>';          
         }
             $Html .= '</ul>';

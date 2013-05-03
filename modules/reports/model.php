@@ -19,6 +19,7 @@ B.recid AS WodId,
         LEFT JOIN CustomWorkouts B ON B.recid = L.WorkoutId
         LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
         WHERE L.MemberId = '.$_COOKIE['UID'].'
+        AND L.ExerciseId = 0
         AND WorkoutType = "Custom"
 UNION        
  SELECT COUNT(DISTINCT L.TimeCreated) AS NumberCompleted,
@@ -30,6 +31,7 @@ UNION
         LEFT JOIN BenchmarkWorkouts B ON B.recid = L.WorkoutId
         LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
         WHERE L.MemberId = '.$_COOKIE['UID'].'
+        AND L.ExerciseId = 0
         AND WorkoutType = "Benchmark" 
 UNION
 SELECT COUNT(DISTINCT L.TimeCreated) AS NumberCompleted,
@@ -41,6 +43,7 @@ B.recid AS WodId,
         LEFT JOIN WodWorkouts B ON B.recid = L.WorkoutId
         LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
         WHERE L.MemberId = '.$_COOKIE['UID'].'
+        AND L.ExerciseId = 0
         AND WorkoutType = "My Gym"   
 UNION
 SELECT COUNT(DISTINCT L.TimeCreated) AS NumberCompleted,
@@ -52,6 +55,7 @@ SELECT COUNT(DISTINCT L.TimeCreated) AS NumberCompleted,
         LEFT JOIN MemberBaseline B ON B.WorkoutId = L.WorkoutId
         LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
         WHERE L.MemberId = '.$_COOKIE['UID'].'
+        AND L.ExerciseId = 0
         AND WorkoutType = "Baseline"           
 GROUP BY WorkoutType
 ORDER BY WorkoutType';
@@ -66,7 +70,8 @@ ORDER BY WorkoutType';
             $SQL = 'SELECT COUNT(DISTINCT TimeCreated) AS NumberCompleted
                 FROM WODLog L
                 WHERE MemberId = '.$_COOKIE['UID'].'    
-                AND WODTypeId > 0';
+                AND WODTypeId > 0
+                AND ExerciseId = 0';
             $db->setQuery($SQL);
             return $db->loadResult();       
         }            
@@ -242,7 +247,8 @@ ORDER BY WorkoutType';
         MONTHNAME(TimeCreated) AS Month
         FROM WODLog
         WHERE MemberId = '.$_COOKIE['UID'].'
-        AND WODTypeId > 0           
+        AND WODTypeId > 0 
+        AND ExerciseId = 0
         GROUP BY Month
         ORDER BY Month';
         $db->setQuery($SQL);
@@ -284,7 +290,8 @@ ORDER BY WorkoutType';
             LEFT JOIN Exercises E ON E.recid = L.ExerciseId
             LEFT JOIN Attributes A ON A.recid = L.AttributeId
             WHERE L.MemberId = '.$_COOKIE['UID'].'  
-            AND L.WODTypeId = '.$WorkoutTypeId.'  
+            AND L.WODTypeId = '.$WorkoutTypeId.' 
+            AND L.ExerciseId = 0
             GROUP BY TimeCreated 
             ORDER BY TimeCreated';
         }else if($WorkoutType == "Baseline"){
@@ -299,7 +306,8 @@ ORDER BY WorkoutType';
             LEFT JOIN Exercises E ON E.recid = L.ExerciseId
             LEFT JOIN Attributes A ON A.recid = L.AttributeId
             WHERE L.MemberId = '.$_COOKIE['UID'].'  
-            AND L.WODTypeId = '.$WorkoutTypeId.'  
+            AND L.WODTypeId = '.$WorkoutTypeId.' 
+            AND L.ExerciseId = 0
             GROUP BY TimeCreated 
             ORDER BY TimeCreated';
         }else if($WorkoutType == "Benchmark"){
@@ -315,7 +323,8 @@ ORDER BY WorkoutType';
             LEFT JOIN Exercises E ON E.recid = L.ExerciseId
             LEFT JOIN Attributes A ON A.recid = L.AttributeId
             WHERE L.MemberId = '.$_COOKIE['UID'].'  
-            AND L.WODTypeId = '.$WorkoutTypeId.'  
+            AND L.WODTypeId = '.$WorkoutTypeId.' 
+            AND L.ExerciseId = 0
             GROUP BY TimeCreated 
             ORDER BY TimeCreated';
         }else{
@@ -331,7 +340,8 @@ ORDER BY WorkoutType';
             LEFT JOIN Exercises E ON E.recid = L.ExerciseId
             LEFT JOIN Attributes A ON A.recid = L.AttributeId
             WHERE L.MemberId = '.$_COOKIE['UID'].'  
-            AND L.WODTypeId = '.$WorkoutTypeId.'  
+            AND L.WODTypeId = '.$WorkoutTypeId.'
+            AND L.ExerciseId = 0
             GROUP BY TimeCreated 
             ORDER BY TimeCreated';
         }
@@ -362,8 +372,7 @@ ORDER BY WorkoutType';
             LEFT JOIN Attributes A ON A.recid = L.AttributeId
             LEFT JOIN UnitsOfMeasure UOM ON UOM.AttributeId = A.recid AND L.UnitOfMeasureId = UOM.recid
             WHERE L.MemberId = '.$_COOKIE['UID'].'  
-            AND L.TimeCreated = "'.$Time.'"
-            AND (Attribute = "Reps" OR SystemOfMeasure = "'.$this->getSystemOfMeasure().'") 
+            AND L.TimeCreated = "'.$Time.'" 
             ORDER BY RoutineNo, RoundNo, OrderBy, Exercise, Attribute';
         $db->setQuery($SQL);
 		

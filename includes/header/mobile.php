@@ -105,6 +105,8 @@ function DisplayStopwatch(Module, RoutineId)
 function SaveRoutineTime(Module, RoutineId)
 {
     var ExplodedRoutineId = RoutineId.split('_');
+    var WodTypeId = ExplodedRoutineId[0]; 
+    var WodId = ExplodedRoutineId[1]; 
     var RoutineNo = ExplodedRoutineId[2];    
     var FieldName = ''+RoutineId+'_TimeToComplete';
     var RoutineTime = $('#clock').html();
@@ -113,6 +115,14 @@ function SaveRoutineTime(Module, RoutineId)
         $('.buttongroup').button();
         $('.buttongroup').button('refresh');   
     $.ajax({url:'ajax.php?module='+Module+'&action=formsubmit',data:{RoutineTime:RoutineTime,TimeFieldName:FieldName},dataType:"html",success:SaveRoutineTimeResult});      
+var formsCollection = document.getElementsByTagName("form");
+for(var i=0;i<formsCollection.length;i++)
+{
+    var Exploded = formsCollection[i].id.split('_');
+    if(Exploded[0] == RoutineNo){
+    $.ajax({url:'ajax.php?module='+Module+'&action=formsubmit&WorkoutId='+WodId+'&WodTypeId='+WodTypeId+'',data:$('#'+formsCollection[i].id+'').serialize(),dataType:"html"});
+    }
+}
 }
 
 function SaveRoutineTimeResult(message)
@@ -134,11 +144,12 @@ function EnterRoutineTime(WorkoutType, WorkoutId, RoutineNo)
     }
 }
 
-function EnterActivityTime(ActivityId)
+function EnterActivityTime(Module, ActivityId)
 {
     var time=prompt("Please enter time","00:00:0");
     if(time){
         $('#'+ActivityId+'').val(time); 
+        $.ajax({url:'ajax.php?module='+Module+'&action=formsubmit',data:{ActivityId:ActivityId, ActivityTime:time},dataType:"html",success:SaveRoutineTimeResult});      
     }
 }
 

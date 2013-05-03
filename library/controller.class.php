@@ -81,29 +81,33 @@ class Controller
             return $Model->UserIsSubscribed();           
         }
         
-        function getStopWatch()
+        function getStopWatch($Time = "00:00:0")
         {     
             $Html.='<div class="clear"></div>';
-            $Html.='<div id="clock" onClick="EnterRoutineTime();">00:00:0</div>';
-            $Html.='<input type="hidden" id="TimeToComplete" name="TimeToComplete" value="00:00:0">';
+            $Html.='<div id="clock" onClick="EnterRoutineTime();">'.$Time.'</div>';
+            if($Time == "00:00:0"){
+            $Html.='<input type="hidden" id="TimeToComplete" name="TimeToComplete" value="'.$Time.'">';
             $Html.='<div class="StopwatchButton"><input id="resetbutton" class="buttongroup" onClick="resetclock();" type="button" value="Reset"/></div>';
             $Html.='<div class="StopwatchButton"><input class="buttongroup" type="button" onClick="Start();" value="Start"/></div>';
             $Html.='<div class="StopwatchButton"><input class="buttongroup" type="button" onClick="Stop();" value="Stop"/></div>';
-            $Html.='<input class="buttongroup" type="button" onClick="Save();" value="Save"/>';   
+            $Html.='<input class="buttongroup" type="button" onClick="Save();" value="Save"/>'; 
+            }
             $Html.='<div class="clear"></div>';
             
             return $Html;
         }   
         
-        function getRoutineStopWatch()
+        function getStopWatchDisplay($Time = "00:00:0")
         {     
             $Html.='<div class="clear"></div>';
-            $Html.='<div id="clock" onClick="EnterTime();">00:00:0</div>';
-            $Html.='<input type="hidden" id="TimeToComplete" name="TimeToComplete" value="00:00:0">';
+            $Html.='<div id="clock">'.$Time.'</div>';
+            if($Time == "00:00:0"){
+            $Html.='<input type="hidden" id="TimeToComplete" name="TimeToComplete" value="'.$Time.'">';
             $Html.='<div class="StopwatchButton"><input id="resetbutton" class="buttongroup" onClick="resetclock();" type="button" value="Reset"/></div>';
             $Html.='<div class="StopwatchButton"><input class="buttongroup" type="button" onClick="Start();" value="Start"/></div>';
             $Html.='<div class="StopwatchButton"><input class="buttongroup" type="button" onClick="Stop();" value="Stop"/></div>'; 
-            $Html.='<input class="buttongroup" type="button" onClick="Save();" value="Save"/>'; 
+            $Html.='<input class="buttongroup" type="button" onClick="Save();" value="Save"/>';
+            }
             $Html.='<div class="clear"></div>';
             
             return $Html;

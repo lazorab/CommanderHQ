@@ -673,8 +673,8 @@ class Model
             $RoutineNo = $ExplodedDetails[2];
             $AttributeId = $this->getAttributeId('TimeToComplete');
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL='INSERT INTO WODLog(MemberId, WODTypeId, WorkoutId, RoutineNo, AttributeId, AttributeValue) 
-                VALUES("'.$_COOKIE['UID'].'", "'.$WODTypeId.'", "'.$WorkoutId.'", "'.$RoutineNo.'", "'.$AttributeId.'","'.$_REQUEST['RoutineTime'].'")';
+            $SQL='INSERT INTO WODLog(MemberId, WODTypeId, WorkoutId, RoutineNo, ExerciseId, AttributeId, AttributeValue) 
+                VALUES("'.$_COOKIE['UID'].'", "'.$WODTypeId.'", "'.$WorkoutId.'", "'.$RoutineNo.'", "0", "'.$AttributeId.'","'.$_REQUEST['RoutineTime'].'")';
             $db->setQuery($SQL);
             $db->Query();
             

@@ -53,16 +53,21 @@ class ReportsController extends Controller
             $Model = new ReportsModel;
             $WodDetails = $Model->getWodDetails($Id);
             $Html = '<div class="CountBox" style="border: 2px solid red;">'.$Model->getCompletedWodCount($Id).'</div>';
-            $Html .= '<div class="CountBox" style="border: 2px solid blue;">'.$this->AverageWodTime($Id).'</div><br/>';
-            
+            $Html .= '<div class="CountBox" style="border: 2px solid blue;">'.$this->AverageWodTime($Id).'</div>';
+            $Html .= '<br/><br/><div>';
             $Html .= '<div style="float:left">Wod Name: '.$WodDetails[0]->WodName.'</div>';
             $Html .= '<div style="float:right">Wod Date: '.$WodDetails[0]->WodDate.'</div><br/>';
             $Html .= 'Description: '.$WodDetails[0]->Description.'<br/>';
+            $Exercise = '';
             foreach($WodDetails AS $Detail)
             {
-                $Html .= ''.$Detail->Exercise.'<br/>';
+                if($Exercise != $Detail->Exercise){
+                $Html .= '<br/>'.$Detail->Exercise.' '; 
+                    }
+                $Html .= ' |  '.$Detail->Attribute.' : '.$Detail->AttributeValueFemale.'(f)  '.$Detail->AttributeValueMale.'(m) ';
+                $Exercise = $Detail->Exercise;
             }
-            $Html .= '<br/><button onclick="go(\'?module=reports&report=Wods\');">Back to Completed WODs</button><br/>';
+            $Html .= '</div><button onclick="go(\'?module=reports&report=Wods\');">Back to Completed WODs</button><br/>';
             return $Html;            
         }
         

@@ -121,9 +121,9 @@ class MygymController extends Controller
         $html.='Make this my baseline';   
         $html.='<p>'.$WodDetails[0]->Notes.'</p>';
         $html .= '<div data-role="collapsible-set" data-iconpos="right">';
-        $ThisRoutine = '';
-        $ThisRound = '';
-        $OrderBy = '';
+        $ThisRoutineNo = '';
+        $ThisRoundNo = '';
+        $ThisOrderBy = '';
         $Attributes = array();   
 	$ThisExerciseId = 0;
         $i=0;
@@ -148,11 +148,11 @@ class MygymController extends Controller
             }   
             
 		if($Detail->Attribute != 'TimeToComplete'){          
-			if($ThisRoutine != $Detail->RoutineNo){
+			if($ThisRoutineNo != $Detail->RoutineNo){
                             if($Detail->ExerciseId != null && $i > 0){
-                                $html.='</h2><div id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->OrderBy.'_'.$Detail->ExerciseId.'_History">'.$this->UpdateHistory($Detail->ExerciseId).'</div>';
+                                $html.='</h2><div id="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisOrderBy.'_'.$ThisExerciseId.'_History">'.$this->UpdateHistory($ThisExerciseId).'</div>';
             $j=0;
-            $html .= '<div class="ActivityAttributes"><form id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->OrderBy.'_'.$Detail->ExerciseId.'" name="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->OrderBy.'_'.$Detail->ExerciseId.'">';
+            $html .= '<div class="ActivityAttributes"><form id="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisOrderBy.'_'.$ThisExerciseId.'" name="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisOrderBy.'_'.$ThisExerciseId.'">';
             //var_dump($Attributes);
             foreach($Attributes as $Attribute=>$Val){
                 $UOM = $Model->getUserUnitOfMeasure($Attribute);
@@ -162,27 +162,27 @@ class MygymController extends Controller
                 if($j > 0)
                     $TheseAttributes.='_';
                 $TheseAttributes.=$Attribute;
-                $html .= '<div style="float:left;margin:0 20px 0 20px"">'.$Attribute.'<br/><input value="'.$Val.'" style="width:80px" type="number" id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Attribute.'_new" name="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_'.$Detail->OrderBy.'" placeholder="'.$UOM.'"/></div>';
+                $html .= '<div style="float:left;margin:0 20px 0 20px"">'.$Attribute.'<br/><input value="'.$Val.'" style="width:50px" type="number" id="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_'.$Attribute.'_new" name="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_'.$ThisOrderBy.'" placeholder="'.$UOM.'"/></div>';
                 $j++;
             }
             $Attributes = array();
-            $html.='<input type="hidden" id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_TimeToComplete_0_'.$Detail->OrderBy.'" name="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_TimeToComplete_0_'.$Detail->OrderBy.'" value=""/>';
-            $html.='<div class="clear"></div><div style="width:100%;height:25px"><div style="float:left;margin:10px 0 10px 20px"><input class="buttongroup" data-mini="true" type="button" id="" name="timebtn" onClick="EnterActivityTime(\\\''.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_TimeToComplete_0_'.$Detail->OrderBy.'\\\');" value="Add Time"/></div>';
-            $html.='<div style="float:right;margin:10px 20px 10px 0"><input class="buttongroup" type="button" id="" name="btn" data-mini="true" onClick="SaveTheseResults(\\\''.$WorkoutId.'_'.$WorkoutTypeId.'\\\', \\\''.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->OrderBy.'_'.$Detail->ExerciseId.'\\\');" value="Add Results"/></div>';
+            $html.='<input type="hidden" id="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$ThisOrderBy.'" name="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$ThisOrderBy.'" value=""/>';
+            $html .= '<div class="clear"></div><div style="width:100%;height:25px"><div style="float:left;margin:10px 0 10px 20px"><input class="buttongroup" type="button" id="" data-mini="true" name="timebtn" onClick="EnterActivityTime(\\\'mygym\\\', \\\''.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$ThisOrderBy.'\\\');" value="Add Time"/></div>';
+            $html .= '<div style="float:right;margin:10px 20px 10px 0"><input class="buttongroup" type="button" id="" name="btn" data-mini="true" onClick="SaveTheseResults(\\\''.$WorkoutId.'_'.$WorkoutTypeId.'\\\', \\\''.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisOrderBy.'_'.$ThisExerciseId.'\\\');" value="Add Results"/></div>';
             $html.='</div></form></div></div>'; 
-            $html.='<div style="float:left;width:65%" id="'.$ThisRoutine.'_timerContainer"></div>';                       
-            $html.='<div style="width:30%;float:right;margin:10px 4px 0 0"><input data-mini="true" class="buttongroup" id="'.$ThisRoutine.'_ShowHideClock" type="button" onClick="DisplayStopwatch(\\\'mygym\\\', \\\''.$WorkoutTypeId.'_'.$WorkoutId.'_'.$ThisRoutine.'\\\');" value="Timer"/></div><div class="clear"></div>';                                                                    
+            $html.='<div style="float:left;width:65%" id="'.$ThisRoutineNo.'_timerContainer"></div>';                       
+            $html.='<div style="width:30%;float:right;margin:10px 4px 0 0"><input class="buttongroup" id="'.$ThisRoutineNo.'_ShowHideClock" type="button" onClick="DisplayStopwatch(\\\'mygym\\\', \\\''.$WorkoutTypeId.'_'.$WorkoutId.'_'.$ThisRoutineNo.'\\\');" value="Timer"/></div><div class="clear"></div>';                                                                    
                             } 
                             $html.= '<h3>Routine '.$Detail->RoutineNo.'</h3>';
                             $html.= '<h3>Round '.$Detail->RoundNo.'</h3>';
                             $html.= '<div data-role="collapsible">';
                             $html.= '<h2>'.$Detail->Exercise.'<br/>';             
 			}                    
-			else if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0 && $ThisRound != $Detail->RoundNo){
+			else if($Detail->TotalRounds > 1 && $Detail->RoundNo > 0 && $ThisRoundNo != $Detail->RoundNo){
                             if($Detail->ExerciseId != null && $i > 0){
-                                $html.='</h2><div id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->OrderBy.'_'.$Detail->ExerciseId.'_History">'.$this->UpdateHistory($Detail->ExerciseId).'</div>';
+                                $html.='</h2><div id="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisOrderBy.'_'.$ThisExerciseId.'_History">'.$this->UpdateHistory($ThisExerciseId).'</div>';
             $j=0;
-            $html .= '<div class="ActivityAttributes"><form id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->OrderBy.'_'.$Detail->ExerciseId.'" name="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->OrderBy.'_'.$Detail->ExerciseId.'">';
+            $html .= '<div class="ActivityAttributes"><form id="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisOrderBy.'_'.$ThisExerciseId.'" name="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisOrderBy.'_'.$ThisExerciseId.'">';
             //var_dump($Attributes);
             foreach($Attributes as $Attribute=>$Val){
                 $UOM = $Model->getUserUnitOfMeasure($Attribute);
@@ -192,13 +192,13 @@ class MygymController extends Controller
                 if($j > 0)
                     $TheseAttributes.='_';
                 $TheseAttributes.=$Attribute;
-                $html .= '<div style="float:left;margin:0 20px 0 20px"">'.$Attribute.'<br/><input value="'.$Val.'" style="width:80px" type="number" id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Attribute.'_new" name="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_'.$Detail->OrderBy.'" placeholder="'.$UOM.'"/></div>';
+                $html .= '<div style="float:left;margin:0 20px 0 20px"">'.$Attribute.'<br/><input value="'.$Val.'" style="width:50px" type="number" id="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_'.$Attribute.'_new" name="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_'.$ThisOrderBy.'" placeholder="'.$UOM.'"/></div>';
                 $j++;
             }
             $Attributes = array();   
-            $html .= '<input type="hidden" id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_TimeToComplete_0_'.$Detail->OrderBy.'" name="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_TimeToComplete_0_'.$Detail->OrderBy.'" value=""/>';
-            $html .= '<div class="clear"></div><div style="width:100%;height:25px"><div style="float:left;margin:10px 0 10px 20px"><input class="buttongroup" type="button" id="" data-mini="true" name="timebtn" onClick="EnterActivityTime(\\\''.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_TimeToComplete_0_'.$Detail->OrderBy.'\\\');" value="Add Time"/></div>';
-            $html .= '<div style="float:right;margin:10px 20px 10px 0"><input class="buttongroup" type="button" id="" name="btn" data-mini="true" onClick="SaveTheseResults(\\\''.$WorkoutId.'_'.$WorkoutTypeId.'\\\', \\\''.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->OrderBy.'_'.$Detail->ExerciseId.'\\\');" value="Add Results"/></div>';
+            $html .= '<input type="hidden" id="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$ThisOrderBy.'" name="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$ThisOrderBy.'" value=""/>';
+            $html .= '<div class="clear"></div><div style="width:100%;height:25px"><div style="float:left;margin:10px 0 10px 20px"><input class="buttongroup" type="button" id="" data-mini="true" name="timebtn" onClick="EnterActivityTime(\\\'mygym\\\', \\\''.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$ThisOrderBy.'\\\');" value="Add Time"/></div>';
+            $html .= '<div style="float:right;margin:10px 20px 10px 0"><input class="buttongroup" type="button" id="" name="btn" data-mini="true" onClick="SaveTheseResults(\\\''.$WorkoutId.'_'.$WorkoutTypeId.'\\\', \\\''.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisOrderBy.'_'.$ThisExerciseId.'\\\');" value="Add Results"/></div>';
             $html .= '</div></form></div><div class="clear"></div></div>';                                
                                          
                             }
@@ -208,11 +208,11 @@ class MygymController extends Controller
                             $html.= '<div data-role="collapsible">';
                             $html.= '<h2>'.$Detail->Exercise.'<br/>';             
 			}
-			else if($ThisExerciseId != $Detail->ExerciseId || $OrderBy != $Detail->OrderBy){
+			else if($ThisExerciseId != $Detail->ExerciseId || $ThisOrderBy != $Detail->OrderBy){
                             if($Detail->ExerciseId != null && $i > 0){
-                                $html.='</h2><div id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->OrderBy.'_'.$Detail->ExerciseId.'_History">'.$this->UpdateHistory($Detail->ExerciseId).'</div>';
+                                $html.='</h2><div id="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisOrderBy.'_'.$ThisExerciseId.'_History">'.$this->UpdateHistory($ThisExerciseId).'</div>';
             $j=0;
-            $html .= '<div class="ActivityAttributes"><form id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->OrderBy.'_'.$Detail->ExerciseId.'" name="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->OrderBy.'_'.$Detail->ExerciseId.'">';
+            $html .= '<div class="ActivityAttributes"><form id="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisOrderBy.'_'.$ThisExerciseId.'" name="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisOrderBy.'_'.$ThisExerciseId.'">';
             //var_dump($Attributes);
             foreach($Attributes as $Attribute=>$Val){
                 $UOM = $Model->getUserUnitOfMeasure($Attribute);
@@ -222,13 +222,13 @@ class MygymController extends Controller
                 if($j > 0)
                     $TheseAttributes.='_';
                 $TheseAttributes.=$Attribute;
-                $html .= '<div style="float:left;margin:0 20px 0 20px"">'.$Attribute.'<br/><input value="'.$Val.'" style="width:80px" type="number" id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Attribute.'_new" name="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_'.$Detail->OrderBy.'" placeholder="'.$UOM.'"/></div>';
+                $html .= '<div style="float:left;margin:0 20px 0 20px"">'.$Attribute.'<br/><input value="'.$Val.'" style="width:50px" type="number" id="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_'.$Attribute.'_new" name="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_'.$ThisOrderBy.'" placeholder="'.$UOM.'"/></div>';
                 $j++;
             }
             $Attributes = array();
-            $html .= '<input type="hidden" id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_TimeToComplete_0_'.$Detail->OrderBy.'" name="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_TimeToComplete_0_'.$Detail->OrderBy.'" value=""/>';
-            $html .= '<div class="clear"></div><div style="width:100%;height:25px"><div style="float:left;margin:10px 0 10px 20px"><input class="buttongroup" data-mini="true" type="button" id="" name="timebtn" onClick="EnterActivityTime(\\\''.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->ExerciseId.'_TimeToComplete_0_'.$Detail->OrderBy.'\\\');" value="Add Time"/></div>';
-            $html .= '<div style="float:right;margin:10px 20px 10px 0"><input class="buttongroup" data-mini="true" type="button" id="" name="btn" onClick="SaveTheseResults(\\\''.$WorkoutId.'_'.$WorkoutTypeId.'\\\', \\\''.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->OrderBy.'_'.$Detail->ExerciseId.'\\\');" value="Add Results"/></div>';
+            $html .= '<input type="hidden" id="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$ThisOrderBy.'" name="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$ThisOrderBy.'" value=""/>';
+            $html .= '<div class="clear"></div><div style="width:100%;height:25px"><div style="float:left;margin:10px 0 10px 20px"><input class="buttongroup" type="button" id="" data-mini="true" name="timebtn" onClick="EnterActivityTime(\\\'mygym\\\', \\\''.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$ThisOrderBy.'\\\');" value="Add Time"/></div>';
+            $html .= '<div style="float:right;margin:10px 20px 10px 0"><input class="buttongroup" type="button" id="" name="btn" data-mini="true" onClick="SaveTheseResults(\\\''.$WorkoutId.'_'.$WorkoutTypeId.'\\\', \\\''.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisOrderBy.'_'.$ThisExerciseId.'\\\');" value="Add Results"/></div>';
             $html .= '</div></form></div><div class="clear"></div></div>';                               
                                 
                             }       
@@ -244,19 +244,18 @@ class MygymController extends Controller
                         }else{
                             $html.='value="'.$AttributeValue.'">';
                         } 
-                   $Attributes[''.$Detail->Attribute.''] = $AttributeValue != "-" ? $AttributeValue : "";                        
-                }
-              
-        $ThisRoutine = $Detail->RoutineNo;        
-	$ThisRound = $Detail->RoundNo;
-        $OrderBy = $Detail->OrderBy;
-	$ThisExerciseId = $Detail->ExerciseId;
+                   $Attributes[''.$Detail->Attribute.''] = $AttributeValue != "-" ? $AttributeValue : ""; 
+            $ThisRoutineNo = $Detail->RoutineNo;        
+            $ThisRoundNo = $Detail->RoundNo;
+            $ThisOrderBy = $Detail->OrderBy;
+            $ThisExerciseId = $Detail->ExerciseId;                   
+            }
         $i++;
 	}
                             if($ThisExerciseId != null && $i > 0 && $Attribute != 'TimeToComplete'){
-                                $html.='</h2><div id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->OrderBy.'_'.$ThisExerciseId.'_History">'.$this->UpdateHistory($ThisExerciseId).'</div>';
+                                $html.='</h2><div id="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisOrderBy.'_'.$ThisExerciseId.'_History">'.$this->UpdateHistory($ThisExerciseId).'</div>';
             $j=0;
-            $html .= '<div class="ActivityAttributes"><form id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->OrderBy.'_'.$ThisExerciseId.'" name="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->OrderBy.'_'.$ThisExerciseId.'">';
+            $html .= '<div class="ActivityAttributes"><form id="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisOrderBy.'_'.$ThisExerciseId.'" name="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisOrderBy.'_'.$ThisExerciseId.'">';
             //var_dump($Attributes);
             foreach($Attributes as $Attribute=>$Val){
                 $UOM = $Model->getUserUnitOfMeasure($Attribute);
@@ -274,19 +273,20 @@ class MygymController extends Controller
                     $html .= 'value="" placeholder="'.$Val.'"'; 
                 else      
                     $html .= 'value="'.$Val.'"'; 
-                $html .= ' style="width:60px" type="number" id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$ThisExerciseId.'_'.$Attribute.'_new" name="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$ThisExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_'.$Detail->OrderBy.'"/></div>';
+                $html .= ' style="width:50px" type="number" id="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_'.$Attribute.'_new" name="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_'.$Attribute.'_'.$UnitOfMeasureId.'_'.$ThisOrderBy.'"/></div>';
                 $j++;
             }
             $Attributes = array();
-            $html .= '<input type="hidden" id="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$Detail->OrderBy.'" name="'.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$Detail->OrderBy.'" value=""/>';
-            $html .= '<div class="clear"></div><div style="width:100%"><div style="float:left;margin:10px 0 10px 20px"><input class="buttongroup" data-mini="true" type="button" id="" name="timebtn" onClick="EnterActivityTime(\\\''.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$Detail->OrderBy.'\\\');" value="Add Time"/></div>';
-            $html .= '<div style="float:right;margin:10px 20px 10px 0"><input class="buttongroup" type="button" id="" name="btn" data-mini="true" onClick="SaveTheseResults(\\\''.$WorkoutId.'_'.$WorkoutTypeId.'\\\', \\\''.$Detail->RoutineNo.'_'.$Detail->RoundNo.'_'.$Detail->OrderBy.'_'.$ThisExerciseId.'\\\');" value="Add Results"/></div>';
+            $html .= '<input type="hidden" id="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$ThisOrderBy.'" name="'.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$ThisOrderBy.'" value=""/>';
+            $html .= '<div class="clear"></div><div style="width:100%;height:25px"><div style="float:left;margin:10px 0 10px 20px"><input class="buttongroup" type="button" id="" data-mini="true" name="timebtn" onClick="EnterActivityTime(\\\'mygym\\\', \\\''.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisExerciseId.'_TimeToComplete_0_'.$ThisOrderBy.'\\\');" value="Add Time"/></div>';
+            $html .= '<div style="float:right;margin:10px 20px 10px 0"><input class="buttongroup" type="button" id="" name="btn" data-mini="true" onClick="SaveTheseResults(\\\''.$WorkoutId.'_'.$WorkoutTypeId.'\\\', \\\''.$ThisRoutineNo.'_'.$ThisRoundNo.'_'.$ThisOrderBy.'_'.$ThisExerciseId.'\\\');" value="Add Results"/></div>';
             $html .= '</div></form></div><div class="clear"></div></div>';                                
 
                             }   
-           $html.='<div style="float:left;width:65%" id="'.$ThisRoutine.'_timerContainer"></div>';                       
-            $html.='<div style="width:30%;float:right;margin:10px 4px 0 0"><input data-mini="true" class="buttongroup" id="'.$ThisRoutine.'_ShowHideClock" type="button" onClick="DisplayStopwatch(\\\'mygym\\\', \\\''.$WorkoutTypeId.'_'.$WorkoutId.'_'.$ThisRoutine.'\\\');" value="Timer"/></div><div class="clear"></div>';                                                                    
-     $html.='</div><br/><br/>';	
+           $html.='<div style="float:left;width:65%" id="'.$ThisRoutineNo.'_timerContainer"></div>';                       
+            $html.='<div style="width:30%;float:right;margin:10px 4px 0 0"><input data-mini="true" class="buttongroup" id="'.$ThisRoutineNo.'_ShowHideClock" type="button" onClick="DisplayStopwatch(\\\'mygym\\\', \\\''.$WorkoutTypeId.'_'.$WorkoutId.'_'.$ThisRoutineNo.'\\\');" value="Timer"/></div><div class="clear"></div>';                                                                    
+     $html.='</div>';
+    $html.='<br/><br/>';	
     $html.='<div class="clear"></div><br/>';
 
             }
