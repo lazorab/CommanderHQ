@@ -268,7 +268,7 @@ $XML .= "</chart>";
         $OrderBy = $Detail->OrderBy;
 	$ThisExerciseId = $Detail->ExerciseId;                
                 } else{
-                    $Clock = $this->getStopWatchDisplay($Detail->AttributeValue);
+                    $Clock = '<div id="Time">'.$Detail->AttributeValue.'</div>';
                 }
 
         $i++;

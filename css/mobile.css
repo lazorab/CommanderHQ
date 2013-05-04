@@ -421,12 +421,23 @@ input
     background-color: #EEE;
     font-size: 30px;
     font-weight: bold;
-
     text-align: center;
     width: 96%;
     text-align:center;
-    font-weight:bold;
-    
+    font-weight:bold;  
+}
+
+#Time{
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    text-align:center;
+    font-weight:bold; 
+    border:2px solid #EEE;
+    border-radius: 5px; 
+    -moz-border-radius: 5px; 
+    -webkit-border-radius: 5px;
 }
 
 .ExerciseHistory{
