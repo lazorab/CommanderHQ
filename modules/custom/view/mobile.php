@@ -240,7 +240,7 @@ function ExerciseInputs(ExerciseId)
                 }
                 if(this.Attribute == 'Distance'){ 
                     Elements.push(''+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'');
-                    Html += '<div style="float:left;margin:10px 25px 10px 25px"><input placeholder="'+this.Attribute+'" style="width:80px" type="number" id="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'" name="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'"/></div>';
+                    Html += '<div style="float:left;margin:10px 25px 10px 25px">'+this.Attribute+'<br/><input placeholder="'+this.Attribute+'" style="width:50px" type="number" id="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'" name="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'"/></div>';
                     Elements.push(''+RoutineNo+'_'+RoundNo+'_'+OrderBy+'_'+this.ExerciseId+'_Distance_UOM');
                     Html += '<div style="float:left;margin:10px 25px 10px 25px"><select id="'+RoutineNo+'_'+RoundNo+'_'+OrderBy+'_'+this.ExerciseId+'_Distance_UOM" name="'+RoutineNo+'_'+RoundNo+'_'+OrderBy+'_'+this.ExerciseId+'_Distance_UOM">';
             if('<?php echo $Display->SystemOfMeasure();?>' == 'Metric'){
@@ -255,21 +255,24 @@ function ExerciseInputs(ExerciseId)
             Html += '</div>';
         }else{
                 Elements.push(''+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_'+UOMId+'_'+OrderBy+'');
-                Html += '<div style="float:left;margin:10px 25px 10px 25px">';
-                Html += '<input placeholder="'+this.Attribute+' '+UOM+'" style="width:80px" type="number" id="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_'+UOMId+'_'+OrderBy+'" name="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_'+UOMId+'_'+OrderBy+'"/>';
+                Html += '<div style="float:left;margin:10px 25px 10px 25px">'+this.Attribute+'<br/>';
+                Html += '<input placeholder="'+this.Attribute+' '+UOM+'" class="textinput" style="width:50px" type="number" id="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_'+UOMId+'_'+OrderBy+'" name="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_'+UOMId+'_'+OrderBy+'"/>';
                 if(this.Attribute == 'Height'){
-                    Html += '<input type="hidden" id="'+RoutineNo+'_'+RoundNo+'_'+OrderBy+'_'+this.ExerciseId+'_Height_UOM" name="'+RoutineNo+'_'+RoundNo+'_'+OrderBy+'_'+this.ExerciseId+'_Height_UOM" value="'+UOMId+'"/>';
+                    Html += '<input class="textinput" type="hidden" id="'+RoutineNo+'_'+RoundNo+'_'+OrderBy+'_'+this.ExerciseId+'_Height_UOM" name="'+RoutineNo+'_'+RoundNo+'_'+OrderBy+'_'+this.ExerciseId+'_Height_UOM" value="'+UOMId+'"/>';
                     Elements.push(''+RoutineNo+'_'+RoundNo+'_'+OrderBy+'_'+this.ExerciseId+'_Height_UOM');
                 }
                 Html += '</div>';
                }
             });
 
-            Html += '<div style="float:right;margin:10px 35px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="AddActivity(\''+Elements+'\');" value="Add Activity"/></div>';
+            Html += '<div style="float:right;margin:10px 20px 10px 0"><input class="buttongroup" type="button" id="" name="btn" onClick="AddActivity(\''+Elements+'\');" value="Add Activity"/></div>';
             Html += '</div></form><div class="clear"></div>';       
 
         $('#ExerciseInputs').html(Html);
-    }});  
+    }}); 
+        $('.buttongroup').button();
+        $('.buttongroup').button('refresh');
+        $('.textinput').textinput();
     return false;   
 }
 

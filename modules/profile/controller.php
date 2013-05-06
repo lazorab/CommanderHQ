@@ -194,6 +194,10 @@ $Html.='/>
 </fieldset><br/>';
      
 $Html.='Anonymous
+    <a href="#popupInfo" data-rel="popup"  data-role="button" class="ui-icon-alt" data-inline="true" data-transition="pop" data-icon="info" data-theme="e" data-iconpos="notext"></a>
+<div data-role="popup" id="popupInfo" class="ui-content" data-theme="e" style="max-width:'.SCREENWIDTH.'px;">
+<p>Share your data with your gym?</p>
+</div>
 <fieldset class="controlgroup" data-role="controlgroup" data-type="horizontal">
 <label for="private">Yes</label>
 <input class="radioinput" id="private" type="radio" name="Anon" value="1"';
@@ -206,6 +210,7 @@ if($MemberDetails->Anon != '1')
     $Html.='checked="checked"';
 $Html.='/>
 </fieldset>
+
 <br/>
 <input class="buttongroup" type="button" onclick="profilesubmit();" value="Save"/>
 </div>

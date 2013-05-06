@@ -17,6 +17,12 @@ body {
     font-size: 14px; /* Play with font size of the text */
 }
 
+#slidemenu .ui-panel-inner {
+	padding: 0;
+}
+#slidemenu .ui-content .ui-listview, .ui-panel-inner > .ui-listview { margin: -15px; }
+#slidemenu .ui-collapsible-content > .ui-listview { margin: -10px -15px; }
+#slidemenu .ui-content .ui-listview-inset, .ui-panel-inner .ui-listview-inset { margin: 1em 0; }
 
 /* main menu items */
 

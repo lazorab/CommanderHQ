@@ -33,7 +33,7 @@ if (isset($Display->Message) && strlen($Display->Message) > 0) {?>
 
 <div id="container" style="color:#fff;padding:0 10% 10% 10%">
 <br/>
-<form action="index.php" id="login" name="login" method="post">
+<form action="index.php" id="login" data-ajax="false" name="login" method="post">
 <input type="hidden" name="module" value="login"/>
 <input type="text" id="username" name="username" placeholder="Username" data-mini="true" value="<?php echo $_REQUEST['username'];?>"/>
 <input type="password" id="password" name="password" placeholder="Password" data-mini="true" value="<?php echo $_REQUEST['password'];?>"/>

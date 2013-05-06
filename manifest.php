@@ -22,5 +22,13 @@
           $hashes .= md5_file($file);
       }
   }
+  
+echo "  
+ # Resources that require the user to be online.\n
+NETWORK:\n
+http://code.jquery.com\n
+http://d3js.org\n
+http://www.be-mobile.co.za\n";
+    
   echo "# Hash: ".md5($hashes)."\n";
 ?>

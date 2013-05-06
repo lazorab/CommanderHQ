@@ -25,16 +25,19 @@ class ReportsController extends Controller
             $Html = '';
             if($_REQUEST['report'] == 'Wods'){
                 $Html .= $this->getCompletedWods();
-            }else if($_REQUEST['report'] == 'Registered Members'){
+            }else if($_REQUEST['Graph'] == 'Wods'){
+                $Html .= json_encode($Model->getCompletedWods());
+            }else if($_REQUEST['report'] == 'Members'){
                 $Html .= $this->getMembers();
             }else if($_REQUEST['report'] == 'Activities'){
                 $Html .= $this->getCompletedActivities();
+            }else if($_REQUEST['Graph'] == 'Activities'){
+                $Html .= json_encode($Model->getCompletedActivities());
             }else if(isset($_REQUEST['WodId'])){
                 $Html .= $this->getWodDetails($_REQUEST['WodId']);
             }else{
                 $Html .= '<h1>Reports</h1>
-    <form action="index.php" name="reports">
-    <input type="hidden" name="module" value="reports"/>
+
     <div id="CountContainer">
     <div class="CountBox" style="border: 2px solid red;"><br/><br/>'.$this->RegisteredAthleteCount().'</div>
     <div class="CountBox" style="border: 2px solid blue;"><br/><br/>'.$this->CompletedWodsCount().'</div>
@@ -42,8 +45,17 @@ class ReportsController extends Controller
     </div><div class="clear"></div>
     <div style="height:50px;width:100%"><div class="boxlabel">Active Registered Members</div><div class="boxlabel">Recorded WODs</div><div class="boxlabel">Recorded Activities</div></div>
     <br/>
-    <div style="height:50px;width:100%"><div class="boxlabel"><input type="submit" name="report" value="Registered Members"/></div><div class="boxlabel"><input type="submit" name="report" value="Wods"/></div><div class="boxlabel"><input type="submit" name="report" value="Activities"/></div></div>
-    </form>';
+    <div style="height:50px;width:100%">
+    <div class="boxlabel">
+    <button onClick="getMembers();">Registered Members</button>
+    </div>
+    <div class="boxlabel">
+    <button onClick="getWods();">WODs</button>
+    </div>
+    <div class="boxlabel">
+    <button onClick="getActivities();">Activities</button>
+    </div>
+    </div>';
             }
             return $Html;
         }

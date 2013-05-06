@@ -21,19 +21,26 @@ function messagedisplay(message)
 
 <div id="AjaxOutput">
 <p>
-This service is developed exclusively for you! 
-</p><p>
-Our job would not be complete if we have not provided you with the best possible experience.
-</p><p>
-Rate us here and please feel free to give us your ideas and thoughts on ways that this service could be improved upon.
+<a href="mailto:info@commanderhq.net?Subject=Information%20request">info@commanderhq.net</a>
 </p>
-            <form action="index.php" name="contact" id="contactform" method="post">
-            <input type="hidden" name="module" value="contact"/>
-            <input type="hidden" name="form" value="submitted"/>
-            <textarea name="Comments" cols="10" rows="20"></textarea>
-            <br/>
-            <input class="buttongroup" type="button" onClick="contactsubmit();" value="Submit"/>
-            </form>
+<p>
+<a href="mailto:unsubscribe@commanderhq.net?Subject=Information%20request">unsubscribe@commanderhq.net</a>
+</p>
+<p>
+<a href="mailto:subscriptions@commanderhq.net?Subject=Information%20request">subscriptions@commanderhq.net</a>
+</p>
+<p>
+<a href="mailto:stop@commanderhq.net?Subject=Information%20request">stop@commanderhq.net</a>
+</p>
+<p>
+<a href="mailto:finance@commanderhq.net?Subject=Information%20request">finance@commanderhq.net</a>
+</p>
+<p>
+<a href="mailto:support@commanderhq.net?Subject=Information%20request">support@commanderhq.net</a>
+</p>
+<p>
+<a href="mailto:thestore@commanderhq.net?Subject=Information%20request">thestore@commanderhq.net</a>
+</p>
 </div>
 
 

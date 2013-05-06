@@ -23,13 +23,13 @@
 <link rel="apple-touch-startup-image" sizes="640x1096" href="images/startup-640x1096.png" />
 <link rel="apple-touch-startup-image" sizes="1024x748" href="images/startup-1024x748.png" />
 <link rel="apple-touch-startup-image" sizes="768x1004" href="images/startup-768x1004.png" />
-<link type="text/css" rel="stylesheet" href="css/jquery.mobile-1.3.0.css" />
-<link type="text/css" rel="stylesheet" href="css/jqm-demos.css" />
+<link type="text/css" rel="stylesheet" href="css/jquery.mobile-1.3.0.min.css" />
+<link type="text/css" rel="stylesheet" href="css/nv.d3.css" />
 <link type="text/css" rel="stylesheet" href="css/mobile.css" />
 <link type="text/css" rel="stylesheet" href="css/clock.css" />
 <link rel="stylesheet" href="css/add2home.css">
 	
-<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+<script src="js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="js/stopwatch.js"></script>
 <script type="text/javascript" src="http://www.be-mobile.co.za/framework/js/device.js"></script>
 <?php if($Device->IsGoogleAndroidDevice()) { ?>
@@ -179,6 +179,6 @@ function SubmitFeedback()
 
 </script>
 
-<script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+<script src="js/jquery.mobile-1.3.1.min.js"></script>
 
 </head>

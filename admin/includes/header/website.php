@@ -7,14 +7,18 @@
 <meta http-equiv="expires" content="Fri, 30 Dec 2011 12:00:00 GMT" />
 <script type="text/javascript" src="/admin/js/jquery-1.7.1.min.js"></script>
 
-    <script src="/admin/js/jscal2.js"></script>
-    <script src="/admin/js/lang/en.js"></script>
-    <link rel="stylesheet" type="text/css" href="/admin/css/jscal2.css" />
-    <link rel="stylesheet" type="text/css" href="/admin/css/border-radius.css" />
-    <link rel="stylesheet" type="text/css" href="/admin/css/steel/steel.css" />
-<link rel="stylesheet" href="/admin/css/website.css">
- <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+<script src="/admin/js/jscal2.js"></script>
+<script src="/admin/js/lang/en.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="nvd3/nv.d3.js"></script>
+<script src="nvd3/src/models/linePlusBarChart.js"></script>
 
+<link rel="stylesheet" type="text/css" href="/admin/css/jscal2.css" />
+<link rel="stylesheet" type="text/css" href="/admin/css/border-radius.css" />
+<link rel="stylesheet" type="text/css" href="/admin/css/steel/steel.css" />
+<link rel="stylesheet" href="/admin/css/website.css">
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+<link type="text/css" rel="stylesheet" href="css/nv.d3.css" />
 <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
 <script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
 <script type="text/javascript">
