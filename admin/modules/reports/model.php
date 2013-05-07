@@ -43,7 +43,8 @@ class ReportsModel extends Model
                 LEFT JOIN Affiliates A ON A.AffiliateId = MD.GymId
                 WHERE A.AffiliateId = "'.$_COOKIE['GID'].'"
                 AND WT.WorkoutType = "My Gym"
-                GROUP BY DATE_FORMAT(TimeCreated,"%Y-%m-%d")';
+                GROUP BY DATE_FORMAT(TimeCreated,"%Y-%m-%d")
+                ORDER BY TimeCreated';
             $db->setQuery($SQL);
             return $db->loadObjectList();            
         }
@@ -134,7 +135,43 @@ class ReportsModel extends Model
                 AND Att.Attribute = "Weight"';
             $db->setQuery($SQL);
             return $db->loadObjectList();            
-        }        
+        }    
+        
+        function getTotalWeightLifted($AthleteId)
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT CASE WHEN SUM(L.AttributeValue) > 0
+                THEN SUM(L.AttributeValue)
+                ELSE "0" END AS LoggedWeight,
+                U.UnitOfMeasure
+                FROM WODLog L 
+                LEFT JOIN Attributes A ON A.recid = L.AttributeId
+                LEFT JOIN UnitsOfMeasure U ON U.recid = L.UnitOfMeasureId
+                LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
+                WHERE A.Attribute = "Weight"
+                AND WT.WorkoutType = "My Gym"
+                AND L.MemberId = "'.$AthleteId.'"
+                AND L.ExerciseId > 0
+                AND L.AttributeValue != "Max"';
+            $db->setQuery($SQL);
+            return $db->loadObject();           
+        }
+        
+        function getRecordedRepsCount($Id)
+        {
+            $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+            $SQL = 'SELECT SUM(L.AttributeValue) AS TotalReps
+                FROM WODLog L 
+                LEFT JOIN Attributes A ON A.recid = L.AttributeId
+                LEFT JOIN WorkoutTypes WT ON WT.recid = L.WODTypeId
+                WHERE A.Attribute = "Reps"
+                AND WT.WorkoutType = "My Gym"
+                AND L.MemberId = "'.$Id.'"
+                AND L.ExerciseId > 0
+                AND L.AttributeValue != "Max"';
+            $db->setQuery($SQL);
+            return $db->loadResult();            
+        }
         
         function getCompletedActivities()
         {
@@ -158,14 +195,15 @@ class ReportsModel extends Model
         function getCompletedMemberWods($AthleteId)
         {
             $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
-            $SQL = 'SELECT DISTINCT WW.recid AS WodId, 
+            $SQL = 'SELECT DISTINCT WW.recid AS WodId, WL.TimeCreated,
                 WW.WorkoutName AS WodName,
                 (SELECT recid FROM WorkoutTypes WHERE WorkoutType = "My Gym") AS WodTypeId
                 FROM WODLog WL
                 LEFT JOIN WodWorkouts WW ON WW.recid = WL.WorkoutId
                 LEFT JOIN WorkoutTypes WT ON WT.recid = WL.WODTypeId
                 WHERE WL.MemberId = "'.$AthleteId.'"
-                AND WT.WorkoutType = "My Gym"';
+                AND WT.WorkoutType = "My Gym"
+                ORDER BY TimeCreated';
             $db->setQuery($SQL);
             return $db->loadObjectList();             
         }

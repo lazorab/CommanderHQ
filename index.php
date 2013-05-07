@@ -36,7 +36,7 @@ include("includes/header/$Environment.php");
         $Banner = ''.$_REQUEST['module'].'_header';
     }
 ?>
-<body onorientationchange="updateOrientation();">   
+<body>   
     
     
 <div data-role="page" class="pages">

@@ -23,7 +23,7 @@
 <link rel="apple-touch-startup-image" sizes="640x1096" href="images/startup-640x1096.png" />
 <link rel="apple-touch-startup-image" sizes="1024x748" href="images/startup-1024x748.png" />
 <link rel="apple-touch-startup-image" sizes="768x1004" href="images/startup-768x1004.png" />
-<link type="text/css" rel="stylesheet" href="http://jquerymobile.com/demos/1.3.0/css/themes/default/jquery.mobile-1.3.0.min.css" />
+<link type="text/css" rel="stylesheet" href="css/jquery.mobile-1.3.1.css" />
 <link type="text/css" rel="stylesheet" href="css/nv.d3.css" />
 <link type="text/css" rel="stylesheet" href="css/mobile.css" />
 <link type="text/css" rel="stylesheet" href="css/clock.css" />
@@ -31,7 +31,6 @@
 	
 <script src="js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="js/stopwatch.js"></script>
-<script type="text/javascript" src="http://www.be-mobile.co.za/framework/js/device.js"></script>
 <?php if($Device->IsGoogleAndroidDevice()) { ?>
         <script src="/js/overthrow.js"></script>
 <?php } ?>
@@ -71,7 +70,20 @@ document.location.href = noddy.href;
 },false);
 }
 </script>
-<script type="text/javascript">
+<script type="text/javascript"> 
+$(document).ready(function(){
+  $(window).bind('orientationchange', function() {
+      if(window.orientation == 90 || window.orientation == -90){
+        var NewOrientation = window.location.href.replace('&orientation=portrait','');
+        window.location = ''+NewOrientation+'&orientation=landscape';
+      }
+      else{
+        var NewOrientation = window.location.href.replace('&orientation=landscape','');
+        window.location = ''+NewOrientation+'&orientation=portrait';
+      }
+  });
+});
+    
 $( document ).on( "pageinit", ".pages", function() {
 	var page = $(this);
 	$( ".jqm-navmenu-link" ).on( "click", function() {

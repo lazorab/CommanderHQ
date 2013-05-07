@@ -35,6 +35,8 @@ class ReportsController extends Controller
                 $Html .= json_encode($Model->getCompletedActivities());
             }else if(isset($_REQUEST['WodId'])){
                 $Html .= $this->getWodDetails($_REQUEST['WodId']);
+            }else if(isset($_REQUEST['MemberId'])){
+                $Html .= $this->CompletedMemberWods($_REQUEST['MemberId']);
             }else{
                 $Html .= '<h1>Reports</h1>
 
@@ -57,6 +59,23 @@ class ReportsController extends Controller
     </div>
     </div>';
             }
+            return $Html;
+        }
+        
+        function CompletedMemberWods($Id)
+        {
+            $Model = new ReportsModel;
+            $MemberHistory = $Model->getCompletedMemberWods($Id);
+            $TotalWeightLifted = $Model->getTotalWeightLifted($Id);
+            $Html = '<div id="CountContainer">
+    <div class="CountBox" style="border: 2px solid red;"><br/><br/>'.$Model->getRecordedRepsCount($Id).'</div>
+    <div class="CountBox" style="border: 2px solid blue;"><br/><br/>'.count($MemberHistory).'</div>
+    <div class="CountBox" style="border: 2px solid green;"><br/><br/>'.$TotalWeightLifted->LoggedWeight.' '.$TotalWeightLifted->UnitOfMeasure.'</div>
+    </div><div class="clear"></div>';
+            foreach($MemberHistory AS $Item){
+                $Html .= ''.$Item->WodName.' '.$Item->TimeCreated.'<br/>';
+            }
+            
             return $Html;
         }
         

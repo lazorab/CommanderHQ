@@ -98,7 +98,8 @@ function display(data)
     $('#AjaxOutput').html(data);
     $('#listview').listview();
     $('#listview').listview('refresh');
-
+    $("#benchmark").selectmenu();
+    $("#benchmark").selectmenu("refresh");
     $('.textinput').textinput();
     $('.numberinput').textinput();
     el.find('div[data-role=collapsible]').collapsible({theme:'c',refresh:true});    
@@ -144,6 +145,7 @@ function addNewExercise()
     //var OrderBy = $('#Round' + RoundNo + 'Counter').val();
     var Html ='<div class="AddNewActivityAttributes">';
     Html += '<h2>New Activity</h2>';
+    Html += '<form id="newactivityform">';
     Html += '<div style="float:left;margin:0"><input style="width:225px" type="text" id="NewExercise" name="NewExercise" value="" placeholder="Activity Name"/></div>';
     Html += '<div style="float:left;margin:20px 0 0"><input style="width:225px" type="text" id="Acronym" name="Acronym" value="" placeholder="Acronym for Activity?"/></div>';
     Html += '<div style="float:left;margin:20px 15px 0 0"><input style="width:85px" placeholder="Weight(<?php echo $Display->UserUnitOfMeasure('Weight');?>)" type="number" id="NewActivityWeight" name="NewActivityWeight"/></div>';
@@ -164,7 +166,7 @@ function addNewExercise()
     Html += '<div style="float:left;margin:20px 0 0 0"><input style="width:85px" type="number" id="NewActivityReps" placeholder="Reps" name="NewActivityReps"/></div>';
 
     Html += '<div style="float:right;margin:20px 0 0 0"><button class="controlbutton" data-inline="true" onClick="addnew(\''+RoundNo+'\', \''+OrderBy+'\');">Add Activity</button></div>';
-    Html += '</div><br/><div class="clear"></div>';
+    Html += '</form></div><br/><div class="clear"></div>';
 
     $('#add_exercise').html(Html);
     $('.controlbutton').button();
@@ -197,9 +199,10 @@ function addactivitydisplay(data)
     Html = Html.replace(/RoundNo/g, RoundNo);
     
     $('#activity'+RoutineNo+'list').append(Html);
-
     $('.listview').listview();
     $('.listview').listview('refresh');
+    $("#benchmark").selectmenu();
+    $("#benchmark").selectmenu("refresh");
      }
 }
 
@@ -240,7 +243,7 @@ function ExerciseInputs(ExerciseId)
                 }
                 if(this.Attribute == 'Distance'){ 
                     Elements.push(''+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'');
-                    Html += '<div style="float:left;margin:10px 25px 10px 25px">'+this.Attribute+'<br/><input placeholder="'+this.Attribute+'" style="width:50px" type="number" id="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'" name="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'"/></div>';
+                    Html += '<div style="float:left;margin:10px 25px 10px 25px">'+this.Attribute+'<br/><input class="textinput" placeholder="'+this.Attribute+'" style="width:50px" type="number" id="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'" name="'+RoutineNo+'_'+RoundNo+'_'+this.ExerciseId+'_'+this.Attribute+'_0_'+OrderBy+'"/></div>';
                     Elements.push(''+RoutineNo+'_'+RoundNo+'_'+OrderBy+'_'+this.ExerciseId+'_Distance_UOM');
                     Html += '<div style="float:left;margin:10px 25px 10px 25px"><select id="'+RoutineNo+'_'+RoundNo+'_'+OrderBy+'_'+this.ExerciseId+'_Distance_UOM" name="'+RoutineNo+'_'+RoundNo+'_'+OrderBy+'_'+this.ExerciseId+'_Distance_UOM">';
             if('<?php echo $Display->SystemOfMeasure();?>' == 'Metric'){
@@ -271,7 +274,6 @@ function ExerciseInputs(ExerciseId)
         $('#ExerciseInputs').html(Html);
     }}); 
         $('.buttongroup').button();
-        $('.buttongroup').button('refresh');
         $('.textinput').textinput();
     return false;   
 }
@@ -343,7 +345,9 @@ function ReturnWorkoutId(Id)
 
 function addnew(RoundNo, OrderBy)
 {
-    $.ajax({url:'ajax.php?module=custom&action=formsubmit&RoundNo='+RoundNo+'&OrderBy='+OrderBy+'',data:$("#customform").serialize(),dataType:"html",success:addactivitydisplay});          
+    //var Data = $("#newactivityform").serialize();
+    var Data = 'test';
+    $.ajax({url:'ajax.php?module=custom&action=formsubmit&RoundNo='+RoundNo+'&OrderBy='+OrderBy+'&'+Data+'',data:"",dataType:"html",success:addactivitydisplay});          
     $.ajax({url:'ajax.php?module=custom',data:{dropdown:'refresh'},dataType:"html",success:dropdownrefresh});  
 }
 
@@ -394,11 +398,11 @@ function addRoutine()
     }else{
         document.getElementById('RoutineCounter').value++;
         var RoutineNo = $('#RoutineCounter').val();
-        var ThisRoutine ='<br/><div class="RoutineLabel" id="Routine' + RoutineNo + 'Label"><h3>Routine ' + RoutineNo + '</h3></div>';
+        var ThisRoutine ='<div class="clear"></div><div class="RoutineLabel" id="Routine' + RoutineNo + 'Label"><div style="background-color:#EEE" class="RoutineBox"><h3>Routine ' + RoutineNo + '</h3></div>';
         ThisRoutine += '<div class="RoundLabel" id="Routine' + RoutineNo + 'Round1Label"></div>';
         ThisRoutine += '<input type="hidden" name="Routine' + RoutineNo + 'RoundCounter" id="Routine' + RoutineNo + 'RoundCounter" value="1"/>';
         ThisRoutine += '<input type="hidden" name="Routine' + RoutineNo + 'Round1Counter" id="Routine' + RoutineNo + 'Round1Counter" value="0"/>';       
-        ThisRoutine += '<div id="activity'+RoutineNo+'list"></div>';
+        ThisRoutine += '<div id="activity'+RoutineNo+'list"></div></div>';
 
         $(ThisRoutine).appendTo($('#Routines'));
     }

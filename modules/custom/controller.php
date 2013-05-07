@@ -58,7 +58,7 @@ function __construct()
                     $ConversionFactor = $Activity->ConversionFactor;
                 }
             }
-            if($Activity->AttributeValue == ''){
+            if($Activity->AttributeValue == 'Max'){
                 $AttributeValue = '-';
             }else{
                 $AttributeValue = $Activity->AttributeValue * $ConversionFactor;
@@ -178,36 +178,33 @@ $Html = '';
         $Html .= '<div class="ui-grid-a">';
         $Html .= '<div class="ui-block-a" style="width:45%;">';
         $Html .= '<input class="textinput" type="text" name="CustomName" id="CustomName" placeholder="WOD Name" value=""/>';
-        $Html .= '</div><div class="ui-block-b" style="width:45%;float:right">';
-        $Html .= '<input class="textinput" type="date" name="WodDate" id="WodDate" placeholder="WOD Date" value="'.date('Y-m-d').'"/>';
-        $Html .= '</div></div>';
+        $Html .= '</div><div class="ui-block-b" style="text-align:right;margin-top:20px;width:45%;float:right">'.date('Y-m-d').'</div>';
+        $Html .= '</div>';
         $Html .= '<textarea name="descr" placeholder="Describe Your WOD"></textarea>';
+        $Html .= '<div style="background-color:#EEE;padding:4px;" class="RoutineBox">';
         $Html .= '<h3>Routine 1</h3>';
         $Html .= '<h3>Round 1</h3>';
         $Html .= '<div id="activity1list">'.$this->ChosenExercises().'</div>';
+        $Html .= '</div><div style="background-color:#EEE;padding:4px;" class="RoutineBox">';
         
         $Html .= '<div id="Routines"></div>';
         
         $Html .= '<div id="add_exercise">'.$this->AddExercise().'</div>';
-
         $Html .= '<div id="CenterButtonText">';
         $Html .= '<ul id="autocomplete" data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="Add Activity..." data-filter-theme="d"></ul>';
         $Html .= '<div id="ExerciseInputs"></div>';
-        //$Html .= '<button type="button" onClick="addNewExercise();">Create New Activity</button>';
         $Html .= '<br/><div class="ui-grid-a">
 <div class="ui-block-a"><button id="DuplicateActivity" type="button" onClick="DuplicateLastActivity();">Copy Activity</button></div>
 <div class="ui-block-b"><button type="button" onClick="addRound();">Add a Round</button></div>
-</div><br/>';
+</div></div><br/>';
         
         $Html .= $this->getBenchmarks('');
-        
-        $Html .= '<div class="clear"></div><br/><div class="ui-grid-a">
+        $Html .= '<div class="clear"></div><br/>';
+        $Html .= '</div>';//close routine box
+        $Html .= '<div class="ui-grid-a">
 <div class="ui-block-a"><button type="button" onClick="addRoutine();">Add a Routine</button></div>
 <div class="ui-block-b"><button type="button" onClick="Save();">Save Wod</button></div>
 </div>';
-
-        $Html .= '<div class="clear"></div>';
-        $Html .= '</div>';
         $Html .= '</form>';
         $Html .= '<div class="clear"></div><br/>';
      
@@ -338,7 +335,7 @@ $ThisExerciseId = $Detail->ExerciseId;
         $Model = new CustomModel;
         $Benchmarks = $Model->getBenchmarks();
         $Selected='';
-        $Html .= '<select style="float:right;width:200px" class="select buttongroup" data-role="none" id="benchmark" name="benchmark" onChange="AddBenchmark(this.value)">
+        $Html .= '<select style="float:right;width:200px" id="benchmark" name="benchmark" onChange="AddBenchmark(this.value)">
 <option value="none">Add Benchmark</option>';
 foreach($Benchmarks AS $Benchmark){
             if($Benchmark->WorkoutName == $SelectedExercise)
@@ -348,25 +345,6 @@ foreach($Benchmarks AS $Benchmark){
             $Html .= '<option value="'.$Benchmark->Id.'" '.$Selected.'>'.$Benchmark->WorkoutName.'</option>';
 }
         $Html .= '</select>';
-return $Html;
-    }
-    
-    function _getExercises($SelectedExercise)
-    {
-        $Html='';
-        $Model = new CustomModel;
-        $Exercises = $Model->getExercises();
-        $Selected='';
-        $Html .= '<br/><select style="width:99%" class="select buttongroup" data-role="none" id="exercises" name="exercise" onChange="SelectionControl(this.value)">
-<option value="none">Add Activity</option>';
-foreach($Exercises AS $Exercise){
-            if($Exercise->ActivityName == $SelectedExercise)
-                $Selected='selected="selected"';
-            else
-                $Selected='';
-            $Html .= '<option value="'.$Exercise->ActivityName.'" '.$Selected.'>'.$Exercise->ActivityName.'</option>';
-}
-        $Html .= '</select><br/><div id="ExerciseInputs"></div>';
 return $Html;
     }
     

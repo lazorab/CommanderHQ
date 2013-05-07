@@ -34,11 +34,7 @@ function __construct()
 {
             if($this->UserIsSubscribed()){
                 if(isset($_REQUEST['CustomName']) && $_REQUEST['CustomName'] == ''){
-                    $this->Message = "Error - Name for WOD required!";
-                }else if($_REQUEST['WodDate'] == '' || $_REQUEST['WodDate'] < date('Y-m-d')){
-                    $this->Message = 'Error - Invalid Date!';                   
-                }else if($_REQUEST['WodDate'] > date('Y-m-d', strtotime("+30 days"))){
-                    $this->Message = 'Error - Date too far ahead!';     
+                    $this->Message = "Error - Name for WOD required!";                        
                 }else if($this->CheckCustomNameExists()){
                     $this->Message = "Error - WOD Name already exists!";
                 }else{    
@@ -53,7 +49,7 @@ function __construct()
                     
                 
                      $SQL = 'INSERT INTO CustomWorkouts(MemberId, WorkoutName, WorkoutRoutineTypeId, Notes, WorkoutDateTime)
-VALUES("'.$_COOKIE['UID'].'", "'.$_REQUEST['CustomName'].'", "'.$WorkoutRoutineTypeId.'", "'.$_REQUEST['descr'].'", "'.$_REQUEST['WodDate'].'")';
+VALUES("'.$_COOKIE['UID'].'", "'.$_REQUEST['CustomName'].'", "'.$WorkoutRoutineTypeId.'", "'.$_REQUEST['descr'].'", NOW())';
                     $db->setQuery($SQL);
                     $db->Query();
                     $CustomWorkoutId = $db->insertid();

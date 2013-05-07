@@ -346,7 +346,8 @@ class Model
                 $Attribute = $ExplodedKey[3];
                 $UOMId = $ExplodedKey[4];
                 $OrderBy = $ExplodedKey[5];
-                
+                if($Attribute != 'TimeToComplete' && $Value == '')
+                    $Value = 'Max';
                 $DetailsValue=$Value;
                 if(array_key_exists('6', $ExplodedKey))
                     $DetailsValue='Max';
