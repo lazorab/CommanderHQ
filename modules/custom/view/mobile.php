@@ -145,7 +145,6 @@ function addNewExercise()
     //var OrderBy = $('#Round' + RoundNo + 'Counter').val();
     var Html ='<div class="AddNewActivityAttributes">';
     Html += '<h2>New Activity</h2>';
-    Html += '<form id="newactivityform">';
     Html += '<div style="float:left;margin:0"><input style="width:225px" type="text" id="NewExercise" name="NewExercise" value="" placeholder="Activity Name"/></div>';
     Html += '<div style="float:left;margin:20px 0 0"><input style="width:225px" type="text" id="Acronym" name="Acronym" value="" placeholder="Acronym for Activity?"/></div>';
     Html += '<div style="float:left;margin:20px 15px 0 0"><input style="width:85px" placeholder="Weight(<?php echo $Display->UserUnitOfMeasure('Weight');?>)" type="number" id="NewActivityWeight" name="NewActivityWeight"/></div>';
@@ -165,8 +164,8 @@ function addNewExercise()
 
     Html += '<div style="float:left;margin:20px 0 0 0"><input style="width:85px" type="number" id="NewActivityReps" placeholder="Reps" name="NewActivityReps"/></div>';
 
-    Html += '<div style="float:right;margin:20px 0 0 0"><button class="controlbutton" data-inline="true" onClick="addnew(\''+RoundNo+'\', \''+OrderBy+'\');">Add Activity</button></div>';
-    Html += '</form></div><br/><div class="clear"></div>';
+    Html += '<div style="float:right;margin:20px 0 0 0"><a href="#" class="controlbutton" data-role="button" onClick="addnew(\''+RoundNo+'\', \''+OrderBy+'\');">Add Activity"</a></div>';
+    Html += '</div><br/><div class="clear"></div>';
 
     $('#add_exercise').html(Html);
     $('.controlbutton').button();
@@ -345,9 +344,21 @@ function ReturnWorkoutId(Id)
 
 function addnew(RoundNo, OrderBy)
 {
-    //var Data = $("#newactivityform").serialize();
-    var Data = 'test';
-    $.ajax({url:'ajax.php?module=custom&action=formsubmit&RoundNo='+RoundNo+'&OrderBy='+OrderBy+'&'+Data+'',data:"",dataType:"html",success:addactivitydisplay});          
+    var NewExercise = $('#NewExercise').val();
+    var Acronym = $('#NewExercise').val();
+    var NewActivityWeight = $('#NewExercise').val();
+    var NewActivityHeight = $('#NewExercise').val();
+    var NewActivityDistance = $('#NewExercise').val();
+    var NewActivityDistanceUOM = $('#NewExercise').val();
+    var NewActivityReps = $('#NewExercise').val();
+    var Parameters = 'NewExercise='+NewExercise+'';
+    Parameters += '&Acronym='+Acronym+'';
+    Parameters += '&NewActivityWeight='+NewActivityWeight+'';
+    Parameters += '&NewActivityHeight='+NewActivityHeight+'';
+    Parameters += '&NewActivityDistance='+NewActivityDistance+'';
+    Parameters += '&NewActivityDistanceUOM='+NewActivityDistanceUOM+'';
+    Parameters += '&NewActivityReps='+NewActivityReps+'';
+    $.ajax({url:'ajax.php?module=custom&action=formsubmit&RoundNo='+RoundNo+'&OrderBy='+OrderBy+'&'+Parameters+'',data:"",dataType:"html",success:addactivitydisplay});          
     $.ajax({url:'ajax.php?module=custom',data:{dropdown:'refresh'},dataType:"html",success:dropdownrefresh});  
 }
 

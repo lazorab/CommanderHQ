@@ -33,5 +33,35 @@ class LoginModel extends Model
             return false;
         }	
     }
+    
+    function Register()
+    {
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+        $SQL='SELECT Registered FROM Affiliates WHERE GymName = "'.$_REQUEST['gymname'].'"';
+        $db->setQuery($SQL);        
+	if($db->loadRsult() == 0){       
+        $Password = base_convert(time(), 10, 16);
+        $SQL='UPADATE Affiliates SET UserName="'.$_REQUEST['gymname'].'", PassWord="'.$Password.'", Registered="1" WHERE GymName="'.$_REQUEST['gymname'].'"';
+        $db->setQuery($SQL);
+	$db->Query();       
+        $message="Username is \n";
+        $message="Password is ".$Password."\n";
+        $mail = new Rmail();
+        $mail->setFrom('Commander HQ<info@be-mobile.co.za>');
+        $mail->setSubject('Commander HQ Registration');
+        $mail->setPriority('normal');
+        $mail->setHTML($message);
+        $MailResult =  $mail->send(array($_REQUEST['email']));
+        return $MailResult;
+        }
+    }
+    
+    function getAffiliates()
+    {
+        $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
+        $SQL='SELECT GymName FROM Affiliates WHERE GymName LIKE "'.$_REQUEST['term'].'%"';
+        $db->setQuery($SQL);
+        return $db->loadObject();
+    }
 }
 

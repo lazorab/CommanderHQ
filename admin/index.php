@@ -29,15 +29,19 @@ if (file_exists("includes/header/$Environment.php"))
 include("includes/header/$Environment.php");
   
 ?>
-    <body>
-
-<div id="header">
-<?php if(isset($_COOKIE['GID'])){
-    echo $Display->GymDetails()->GymName;
-}else{?>
-<img alt="Header" src="<?php echo IMAGE_RENDER_PATH;?>header.png"/>
-<?php } ?>
-</div>
+    <body class="register">
+        <div id="container">
+        <div id="wrapper">
+   	  <div id="header">
+        	<div id="logo"><img src="images/logo.png" /></div>
+            <div id="banner">
+            	<div id="banner_statement"><?php if(isset($_COOKIE['GID'])){echo $Display->GymDetails()->GymName;
+}else{ ?>Login/Register<?php } ?><br/>
+            	  <br/>
+                  <span class="sub_statement">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Morbi commodo, ipsum sed pharetra gravida, orci magna rhoncus neque, id pulvinar odio lorem non turpis. Nullam sit amet enim. Suspendisse id velit vitae ligula volutpat condimentum. Aliquam erat volutp</span>il<span class="sub_statement">at. Sed quis velit. Nulla facilisi. Nulla libero. Vivamus pharetra posuere sapien.</span>
+            	</div>
+            </div>   
+      </div>
 <?php if(isset($_COOKIE['GID'])){
 /*MENU*/	
 if (file_exists("includes/menu/$Environment.php"))
@@ -51,13 +55,15 @@ include("includes/menu/$Environment.php");
 include("modules/$Module/view/$Environment.php");
 ?>
 
-</div><!-- /content -->
-<div class="clear"></div>
+
 <?php	
 /*FOOTER*/
     if (file_exists("includes/footer/$Environment.php"))
 include("includes/footer/$Environment.php");
 ?>
+</div><!-- /content -->
+</div><!-- /wrapper -->
+</div><!-- /container -->
 
     </body>
 </html>

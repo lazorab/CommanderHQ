@@ -26,22 +26,23 @@ class LoginController extends Controller
 				header('location: index.php?module=upload');
 			}		
 		}	
-		else if($_REQUEST['action'] == 'Retrieve')
+		else if($_REQUEST['action'] == 'Register')
 		{
 			$Model = new LoginModel();
-			if($_REQUEST['username'] == '')
-				$this->Message = 'You must enter your Username';
-			if($_REQUEST['email'] == '')
-				$this->Message = 'You must enter your Email Address';
-			if($this->Message == '')
-			{
-				$Successful = $Model->RetrievePassword($_REQUEST['username'], $_REQUEST['email']);
-				if(!$Successful)
-					$this->Message = 'Error sending email';
-				else
-					$this->Message = 'You have been sent an email';
-			}
+			$Model->Register();
 		}
-	}	
+        }
+                
+                function Output()
+                {
+                  if($_REQUEST['action'] == 'getAffiliates')
+		{
+			$Model = new LoginModel();
+			$Affiliates = $Model->getAffiliates();
+
+                        return json_encode($Affiliates);
+		}                   
+                }
+		
 }
 ?>
