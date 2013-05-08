@@ -165,9 +165,16 @@ function __construct()
         return $Result;
     }
     
+    function AttributeId($Attribute)
+    {
+        $Model = new CustomModel;
+        return $Model->getAttributeId($Attribute);        
+    }
+    
     function MainOutput()
     {
-$Html = '';
+        $Html = '';
+        $RoutineNotesAttributeId = $this->AttributeId('Notes');
         $Html .= '<form action="index.php" id="customform" name="form">
 <input type="hidden" name="form" value="submitted"/>
 <input type="hidden" name="origin" value="'.$this->Origin.'"/>
@@ -182,7 +189,8 @@ $Html = '';
         $Html .= '</div>';
         $Html .= '<textarea name="descr" placeholder="Describe Your WOD"></textarea>';
         $Html .= '<div style="background-color:#EEE;padding:4px;" class="RoutineBox">';
-        $Html .= '<h3>Routine 1</h3>';
+        $Html .= '<h2>Routine 1</h2>';
+        $Html .= '<textarea name="1_0_0_'.$RoutineNotesAttributeId.'_0_1" placeholder="Describe Routine 1"></textarea>';
         $Html .= '<h3>Round 1</h3>';
         $Html .= '<div id="activity1list">'.$this->ChosenExercises().'</div>';
         $Html .= '</div><div style="background-color:#EEE;padding:4px;" class="RoutineBox">';

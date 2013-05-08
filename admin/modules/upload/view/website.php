@@ -505,7 +505,7 @@ function aDuplicateLastActivity()
 }
 </script>
 
-<div id="tabs">
+<div id="tabs" data-role="none">
     <ul>
         <li><a href="#tabs-1">Well rounded WOD</a></li>
         <li><a href="#tabs-2">Advanced WOD</a></li>
@@ -599,3 +599,4 @@ function aDuplicateLastActivity()
 <div id="aadd_exercise"></div>   
 </div>
 </div>
+<br/><br/>

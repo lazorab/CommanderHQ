@@ -1,0 +1,85 @@
+<script type="text/javascript">
+$('#back').html('<img alt="Back" onclick="OpenThisPage(\'<?php echo $_SERVER ['HTTP_REFERER'];?>\');" <?php echo $RENDER->NewImage('back.png');?> src="<?php echo IMAGE_RENDER_PATH;?>back.png"/>'); 
+
+</script>
+<br/>
+
+<div id="AjaxOutput">
+
+<h2>TERMS AND CONDITIONS OF USE OF THE WEBSITES</h2>
+<p>All references to "the Company"", "we", "us" and "our" in these terms and conditions are deemed to refer to Cellular Media Distribution CC, registration number 2008/232596/23, a limited liability company incorporated in the Republic of South Africa and having its registered postal address at PO Box 2167, Sun Valley, Cape Town, Western Cape, South Africa 7985.</p><p>
+All references to "you" and "your" are deemed to refer to any user and/or visitor of www.commanderhq.net, www.commanderhq.biz, www.commanderhq.info, www.commanderhq.mobi, www.commanderhq.org, and other related URLs, mobile web applications and/or native applications (iOS, Android or Blackberry) ("Websites"). </p>
+<h3>Acceptance of terms</h3>
+<p>The Company permits the use of the Websites subject to these terms and conditions ("Terms and Conditions"). By using the Websites in any way, you shall be deemed to have accepted all the Terms and Conditions unconditionally. You must not use the Websites if you do not agree to the Terms and Conditions.</p>
+<h3>Use of the Websites</h3><p>
+1.1 You may only use the Websites if you are 18 years of age or older </p><p>
+1.2 You agree that you will not use any device, software or other instrument to interfere or attempt to interfere with the proper working of the Websites. In addition, you agree that you will not use any robot, spider, other automatic device, or manual process to monitor, copy, distribute or modify the Websites or the information contained herein, without the prior written consent from an authorised Company representative (such consent is deemed given for standard search engine technology employed by Internet search websites to direct Internet users to the Websites). </p><p>
+1.3 You may not use the Websites to distribute material which is defamatory, offensive, contains or amounts to hate speech or is otherwise unlawful.</p><p>
+1.4 You may not display, publish, copy, print, post or otherwise use the Websites and/or the information contained therein for the benefit of any other website without the express prior written consent of an authorised Company representative.</p><p>
+1.5 You are entirely responsible for maintaining the confidentiality of any password required for the opening of an account on the Websites. You may not use the account, username, or password of someone else at any time. You agree to notify the Company immediately of any unauthorized use of your account, user name, or password (collectively, a "User ID"). We shall not be liable for any loss that you incur as a result of someone else using your password, either with or without your knowledge. You may be held liable for any  losses incurred by the Company, its officers, directors, employees, consultants, staff, agents, and representatives due to someone else's use of your account or password. We reserve the right to refuse registration of, or cancel a User ID, in our sole discretion.</p>
+<h3>Ownership and copyright</h3><p>
+1.6 The contents of the Websites, including any information, software, icons, text, graphics, lay-outs, images, sound clips, trade names, logos, trade marks and service marks are protected by law, including but not limited to copyright and trade mark law, and are owned by or licensed to the Company.  </p><p>
+1.7 No licence to or right in any of such contents is granted to or conferred upon you. Any unauthorised use, distribution or reproduction of the said contents is prohibited.</p><p>
+1.8 The Websites allows you to download material, logos and trade marks of third parties.  All intellectual property rights in the material, logos and trade marks remain with the third party concerned.  By downloading any such material from the Websites, you do not obtain any intellectual property rights therein.  The Company grants you a non-exclusive, perpetual license to display the material on your personal computer only.  You may not share any downloaded material with others.  </p>
+<h3>Sharing of information</h3><p>
+1.9 The Websites is a platform on which users can communicate, interact and share their exercise routines, progress, results and fitness statistics ("User Material") and track this information.  It is up to you as to what information you choose to share with others and make public via the Websites.  Accordingly, use of the Websites is entirely at your own risk.</p><p>
+1.10 You may not post, transmit, or distribute User Material that you did not create or that you do not have permission to post, or which amounts to or promotes hate speech, violence or discrimination based on race, ethnicity, religion, culture, disability, gender, age, marital status, pregnancy or sexual orientation/gender identity.</p><p>
+1.11 You may not use the Websites to promote dangerous or illegal activity.  You also may not use the Websites to make threats against another person or engage in a personal vendetta.</p><p>
+1.12 Just as we value your privacy, you too must respect the privacy of others.  You may not post the information of other persons on the Websites.</p><p>
+1.13 When posting information or files to the Websites, please ensure that the information or file does not contain viruses, cause pop-ups, attempts to install software or otherwise impacts the Websites with malicious code.  </p><p>
+1.14 If you choose to post photographs on the Websites other than of yourself, please ensure that you obtain the consent of those other persons to publish their image.  You may NOT post any photos of children or minors on the Websites.</p><p>
+1.15 If you feel that User Material posted by other users on the Websites violates these Terms and Conditions, please contact us.  </p><p>
+1.16 Upon submitting, displaying, transmitting, uploading or posting any User Material to the Websites, you will have assigned all intellectual property rights to such User Material to the Company free of charge, failing that you will have granted the Company an irrevocable, non-exclusive perpetual right throughout the world to use, reproduce, publish, modify, sell, broadcast and distribute the User Material in any media formats and through any means or methods whether now known or hereafter discovered, without compensation. </p><p>
+1.17 You warrant and represent that you own the rights to the User Material or are otherwise authorized to post, upload, distribute, display, perform, transmit, or otherwise use User Material. You also warrant that the User Material will not contain any proprietary or confidential information and that the Company's exploitation of the User Material will not violate any rights of or require any compensation to any third party.</p>
+<h3>Disclaimer</h3><p>
+1.18 Any person who accesses the Websites or relies on the Websites or on the information contained in the Websites does so at his or her own risk.</p><p>
+1.19 While the Company takes reasonable measures to ensure that the contents of the Websites are accurate and complete, the Company makes no representations or warranties, whether express or implied, as to the quality, timeliness, operation, integrity, availability or functionality of the Websites or as to the accuracy, completeness or reliability of any information on the Websites.  </p><p>
+1.20 All INFORMATION PROVIDED ON THE WEBSITES IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, COMPLETENESS, OR NON-INFRINGEMENT, AS MAY BE ALLOWED IN LAW.</p><p>
+1.21 The Company does not accept any responsibility for any errors or omissions on the Websites.</p><p>
+1.22 In addition to the disclaimers contained elsewhere in these Terms and Conditions, the Company also makes no warranty or representation, whether express or implied, that the information or files available on the Websites are free of viruses, spyware, malware, trojans, destructive materials or any other data or code which is able to corrupt, destroy, compromise or jeopardise the operation, stability, security functionality or content of your computer system, computer network, hardware or software in any way.</p><p>
+1.23 You expressly acknowledge and agree that the Company does not provide medical advice. The Websites are not a substitute for professional medical diagnosis, treatment or advice or a medical examination. ANY INFORMATION ON THE WEBSITES RELATING TO MEDICAL CONDITIONS AND THEIR TREATMENT IS PROVIDED FOR INFORMATIONAL PURPOSES ONLY AND IS NOT INTENDED TO REPLACE OR SUBSTITUTE FOR ADVICE PROVIDED BY A PHYSICIAN OR OTHER MEDICAL PROVIDER. You should not use the information provided on the Websites for diagnosing a health problem or disease. </p><p>
+1.24 PRIOR TO PARTICIPATING IN ANY PROGRAM, ACTIVITY, EXERCISE, DIET, OR USE OF ANY PRODUCT, PROGRAM, WORKOUT, EXERCISE OR TREATMENT DISCUSSED ON THE WEBSITES, YOU SHOULD SEEK THE ADVICE OF YOUR PHYSICIAN AND OTHER QUALIFIED HEALTH-CARE PROFESSIONALS. </p><p>
+1.25 You understand that the exercises and programs discussed on the Websites can be strenuous and should be scaled or done in moderation. There is an inherent risk in any exercise that, while providing some health benefits, it can also cause unknown health issues. APPLICATION OR RELIANCE ON THE TECHNIQUES, ADVICE, IDEAS, AND SUGGESTIONS OF ANY PERSON ASSOCIATED WITH THE COMPANY OR THE WEBSITES ARE AT YOUR SOLE DISCRETION AND RISK.</p>
+<h3>Linked third party websites</h3><p>
+1.26 The Websites may contain links or references to other websites ("Third Party Websites") outside of our control, including those of advertisers.  These Terms and Conditions do not apply to those Third Party Websites and the Company is not responsible for the practices and/or privacy policies of those Third Party Websites or the cookies that those sites may use.  </p><p>
+1.27 Notwithstanding the fact that the Websites may refer to or provide links to Third Party Websites, your use of such Third Party Websites is entirely at your own risk and WE ARE NOT RESPONSIBLE FOR ANY LOSS, EXPENSE, CLAIM OR DAMAGE, WHETHER DIRECT, INDIRECT OR CONSEQUENTIAL, ARISING FROM YOUR USE OF SUCH THIRD PARTY WEBSITES or your reliance on any information contained thereon. </p>
+<h3>No Hyperlinks or Deep Linking</h3><p>
+1.28 You may not establish a hyperlink, frame, metatag or similar reference, whether electronically or otherwise, to the Websites or any subsidiary pages without the prior written consent of an authorised Company representative.  If the Company elects to grant such consent, it may be granted subject to such conditions as the Company may specify from time to time. </p><p>
+1.29 Furthermore, you are not permitted to "deep link" to the Websites or to "frame" any part of the Websites.</p>
+<h2>Privacy policy</h2><p>
+1.30 We respect your privacy.  Should you decide to make use of our Websites, the only personal information that we will require of you is the following:</p><p>
+1.30.1 your name and surname; </p><p>
+1.30.2 your email address;</p><p>
+1.30.3 mobile phone number;</p><p>
+1.30.4 date of birth;</p><p>
+1.30.5 the gym you train at;</p><p>
+1.30.6 your height;</p><p>
+1.30.7 your weight;</p><p>
+1.30.8 your gender; and</p><p>
+1.30.9 payment details (for example, your credit card, or PayPal details).</p><p>
+1.31 You agree to provide accurate, truthful and current information, and not to impersonate or misrepresent any person or entity or falsely state or otherwise misrepresent your affiliation with anyone or anything. Failure to adhere to this requirement will entitle the Company, inter alia, to terminate your use of the Websites. </p><p>
+1.32 The purposes for which we will use your personal information are as follows: to contact you regarding current or new products or services, to inform you of new features, special offers and promotional competitions (provided you have consented to receiving such marketing material), to track and measure your progress, to deliver your “Workout of the Day”, and generally to improve your experience on our Websites. Should you no longer wish to receive communications from us, you may send us an email or mobile text message with the words "Stop CommanderHQ subscription in the subject field and include in the body of the message [Your Registered User Name] [Registered Email Address]" to unsubscribe@commanderhq.net.  Your cancellation will be effected on the first business day of the following month after you have notified us of your cancellation.</p><p>
+1.33 The Company will not use your personal information for any purpose (other than as stated above) without your express consent.  We will not use or disclose your personal information to third parties without your consent, unless the use or disclosure is –</p><p>
+1.33.1 required in order to comply with applicable law, order of court or legal process served on the Company; and/or</p><p>
+1.33.2 disclosure is necessary to protect and defend the rights or property of the Company.</p><p>
+1.34 We will be entitled to disclose your personal information to those of our employees and/or third party service providers who assist us to interact with you via our Websites, mobile communications and/or email, and thus need to know your personal information in order to assist us to communicate with you properly and efficiently.  We will ensure that all such employees and/or third party service providers having access to your personal information are bound by appropriate and legally binding confidentiality and non-use obligations in relation to your personal information. </p><p>
+1.35 We will:</p><p>
+1.35.1 treat your personal information as strictly confidential;</p><p>
+1.35.2 take appropriate technical and organisational measures to ensure that your personal information is kept secure and is protected against unauthorised or unlawful processing, accidental loss, destruction or damage, alteration, disclosure or access;</p><p>
+1.35.3 promptly notify you if we become aware of any unauthorised use, disclosure or processing of your personal information;</p><p>
+1.35.4 provide you with reasonable evidence of our compliance with our obligations under this policy on reasonable notice and request; and</p><p>
+1.35.5 upon your request, promptly return or destroy any and all of your personal information in our possession or control.</p><p>
+1.36 We will not retain your personal information longer than the period for which it was originally needed, unless we are required by law to do so, or you consent to us retaining such information for a longer period.  </p>
+<h3>Limitation of liability</h3><p>
+1.37 THE COMPANY SHALL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL OR CONSEQUENTIAL INJURY, LOSS OR DAMAGES WHICH MIGHT ARISE FROM YOUR USE OF, OR RELIANCE UPON, ANY MATERIAL OR CONTENT CONTAINED IN, OR INABILITY TO USE, AND/OR UNLAWFUL ACTIVITY ON, THE WEBSITES AND/OR ANY LINKED THIRD PARTY WEBSITE, UNLESS SUCH LOSS OR DAMAGES ARISE DUE TO THE GROSS NEGLIGENCE OF THE COMPANY. </p><p>
+1.38 YOU HEREBY INDEMNIFY THE COMPANY AGAINST ANY LOSS, CLAIM OR DAMAGE WHICH MAY BE SUFFERED BY YOURSELF OR ANY THIRD PARTY ARISING IN ANY WAY FROM YOUR USE OF THE WEBSITES AND/OR ANY LINKED THIRD PARTY WEBSITE.</p>
+<h3>Changes to these Terms and Conditions</h3><p>
+The Company reserves the right to update and/or amend the Terms and Conditions from time to time and without any notice, and you are accordingly encouraged to check the Websites regularly. Any such change will only apply to your use of the Websites after the change is displayed on the Websites. If you use the Websites after such updated or amended Terms and Conditions have been displayed on the Websites, you will be deemed to have accepted such updates or amendments.</p>
+<h3>Availability and termination</h3><p>
+1.39 We will use reasonable endeavours to maintain the availability of the Websites, except during scheduled maintenance periods, and reserve the right to discontinue providing the Websites or any part thereof with or without notice to you.</p><p>
+1.40 The Company may in its sole discretion terminate, suspend and modify the Websites, with or without notice to you. You agree that the Company will not be liable to you in the event that it chooses to suspend, modify or terminate the Websites.</p>
+<h3>Governing Law</h3><p>
+These Terms and Conditions shall be governed and interpreted in accordance with the laws of the Republic of South Africa.  Your continued use of the Websites will constitute your consent and submission to the jurisdiction of the South African courts regarding all proceedings, transactions, applications or the like instituted by either party against the other, arising from any of these Terms and Conditions. </p>
+    
+</div>
+<div class="clear"></div>

@@ -18,8 +18,8 @@
 <link rel="stylesheet" type="text/css" href="css/jscal2.css" />
 <link rel="stylesheet" type="text/css" href="css/border-radius.css" />
 <link rel="stylesheet" type="text/css" href="css/steel/steel.css" />
-
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+<link href="css/website.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/themes/hot-sneaks/jquery-ui.css" />
 <link type="text/css" rel="stylesheet" href="css/nv.d3.css" />
 <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
 <script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>

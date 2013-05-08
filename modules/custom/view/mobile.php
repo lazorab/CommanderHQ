@@ -409,7 +409,8 @@ function addRoutine()
     }else{
         document.getElementById('RoutineCounter').value++;
         var RoutineNo = $('#RoutineCounter').val();
-        var ThisRoutine ='<div class="clear"></div><div class="RoutineLabel" id="Routine' + RoutineNo + 'Label"><div style="background-color:#EEE" class="RoutineBox"><h3>Routine ' + RoutineNo + '</h3></div>';
+        var ThisRoutine ='<div class="clear"></div><div class="RoutineLabel" id="Routine' + RoutineNo + 'Label"><div style="background-color:#EEE" class="RoutineBox"><h2>Routine ' + RoutineNo + '</h2></div>';
+        ThisRoutine += '<textarea name="' + RoutineNo + '_0_0_<?php echo $Display->AttributeId('Notes');?>_0_1" placeholder="Describe Routine ' + RoutineNo + '"></textarea>';
         ThisRoutine += '<div class="RoundLabel" id="Routine' + RoutineNo + 'Round1Label"></div>';
         ThisRoutine += '<input type="hidden" name="Routine' + RoutineNo + 'RoundCounter" id="Routine' + RoutineNo + 'RoundCounter" value="1"/>';
         ThisRoutine += '<input type="hidden" name="Routine' + RoutineNo + 'Round1Counter" id="Routine' + RoutineNo + 'Round1Counter" value="0"/>';       

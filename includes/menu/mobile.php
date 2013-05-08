@@ -42,7 +42,8 @@
 
 <div class="menusection"></div>
 	<ul>
-		<li style="<?php echo $Display->NewLineHeight('80')?>"><img  alt="Menu" <?php echo $RENDER->NewImage('menu/logout.png');?> src="<?php echo IMAGE_RENDER_PATH;?>menu/logout.png"/><a href="" onclick="OpenThisPage('?module=logout');" class="contentLink" style="<?php echo $Display->NewFontSize('32')?>">Logout</a></li>
-                <li style="<?php echo $Display->NewLineHeight('80')?>"><img  alt="Menu" <?php echo $RENDER->NewImage('menu/logout.png');?> src="<?php echo IMAGE_RENDER_PATH;?>menu/logout.png"/><a href="" onclick="OpenThisPage('?module=terms');" class="contentLink" style="<?php echo $Display->NewFontSize('32')?>">Terms &amp; Conditions</a></li>
+            <li style="<?php echo $Display->NewLineHeight('80')?>"><img  alt="Menu" <?php echo $RENDER->NewImage('menu/help.png');?> src="<?php echo IMAGE_RENDER_PATH;?>menu/help.png"/><a href="" onclick="OpenThisPage('?module=help');" class="contentLink" style="<?php echo $Display->NewFontSize('32')?>">Help</a></li>
+            <li style="<?php echo $Display->NewLineHeight('80')?>"><img  alt="Menu" <?php echo $RENDER->NewImage('menu/logout.png');?> src="<?php echo IMAGE_RENDER_PATH;?>menu/logout.png"/><a href="" onclick="OpenThisPage('?module=logout');" class="contentLink" style="<?php echo $Display->NewFontSize('32')?>">Logout</a></li>
+            <li style="<?php echo $Display->NewLineHeight('80')?>"><img  alt="Menu" <?php echo $RENDER->NewImage('menu/tandc.png');?> src="<?php echo IMAGE_RENDER_PATH;?>menu/tandc.png"/><a href="" onclick="OpenThisPage('?module=terms');" class="contentLink" style="<?php echo $Display->NewFontSize('32')?>">Terms &amp; Conditions</a></li>
 	</ul>
 </div>

@@ -106,13 +106,6 @@ p{
         text-align:center;    
 }
 
-#header
-{
-	font-family:Airstrip Four;
-	font-size:medium;
-	color:#ffea00;
-	background-color:#3f2b44;
-}
 
 #nav{
 	background-color:#66486e;
@@ -126,13 +119,6 @@ p{
 	background-color:#fff;
 }
 
-#content
-{
-	min-height: 360px;
-	color:#333;
-	background-color:#fff;
-	padding: 10px;
-}
 
 #video
 {
@@ -522,16 +508,6 @@ a {
 	text-decoration:none;
 }
 
-#footer a {
-	color: #fff;
-	text-decoration:none;
-}
-
-#container a {
-	color: #fff;
-	text-decoration:none;
-}
-
 .image-left {
 	padding: 0px;
 	float: left;
@@ -587,32 +563,4 @@ a {
 {
 	color:#024e8c;
 	font-style:italic;
-}
-
-/*main footer*/
-#footer{
-	background-color:#6f747a;
-	font-family:Arial, Helvetica, sans-serif;
-	font-size:12px;
-	color:#fff;
-	margin:0;
-	padding-top:4px;
-	text-align:center;
-	background-repeat:no-repeat;
-}
-
-#footer img{
-	vertical-align:middle;
-}
-
-.FooterIcons{
-	padding: 2% 0 0 5%;
-	font-size:12px;
-	color:#333;
-	font-weight:bold;	
-}
-
-.FooterIcons img
-{
-	vertical-align:middle;
 }

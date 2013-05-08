@@ -29,11 +29,11 @@ if (atpos<1 || dotpos<atpos+2 || dotpos+2>=x.length)
   alert("Not a valid e-mail address");
   return false;
   }else{
-      document.regform.submit();
+      document.regForm.submit();
   }
 }
 </script>
-<div style="font-size:large;color:white"><?php echo $Display->Message;?></div>
+<?php echo $Display->Message;?>
 <br/><br/>
 
 			<div id="content_main">

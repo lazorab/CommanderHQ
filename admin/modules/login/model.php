@@ -39,20 +39,31 @@ class LoginModel extends Model
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
         $SQL='SELECT Registered FROM Affiliates WHERE GymName = "'.$_REQUEST['gymname'].'"';
         $db->setQuery($SQL);        
-	if($db->loadRsult() == 0){       
+	if($db->loadResult() != 1){       
         $Password = base_convert(time(), 10, 16);
-        $SQL='UPADATE Affiliates SET UserName="'.$_REQUEST['gymname'].'", PassWord="'.$Password.'", Registered="1" WHERE GymName="'.$_REQUEST['gymname'].'"';
+        $SQL='UPDATE Affiliates SET UserName = "'.$_REQUEST['gymname'].'", 
+                PassWord = "'.$Password.'", 
+                RegUserName = "'.$_REQUEST['name'].'",
+                RegEmail = "'.$_REQUEST['email'].'",
+                RegPhone = "'.$_REQUEST['phone'].'",
+                Registered = "1"
+                WHERE GymName = "'.$_REQUEST['gymname'].'"';
         $db->setQuery($SQL);
-	$db->Query();       
-        $message="Username is \n";
-        $message="Password is ".$Password."\n";
+	$db->Query();    
+        $message="Successfully Registered\n";
+        $message.="\n";
+        $message.="Username is ".$_REQUEST['gymname']."\n";
+        $message.="\n";
+        $message.="Password is ".$Password."\n";
         $mail = new Rmail();
         $mail->setFrom('Commander HQ<info@be-mobile.co.za>');
-        $mail->setSubject('Commander HQ Registration');
+        $mail->setSubject('Commander HQ Gym Registration');
         $mail->setPriority('normal');
         $mail->setHTML($message);
         $MailResult =  $mail->send(array($_REQUEST['email']));
-        return $MailResult;
+        return '<div style="text-align:right;font-size:large;color:green">Successfully Registered!<br/>You Have been sent an Email with your Username and Password</div>';
+        }else{
+        return '<div style="text-align:right;font-size:large;color:red">Already a Registered Gym!</div>';
         }
     }
     
@@ -61,7 +72,7 @@ class LoginModel extends Model
         $db = new DatabaseManager(DB_SERVER,DB_USERNAME,DB_PASSWORD,DB_CUSTOM_DATABASE);
         $SQL='SELECT GymName FROM Affiliates WHERE GymName LIKE "'.$_REQUEST['term'].'%"';
         $db->setQuery($SQL);
-        return $db->loadObject();
+        return $db->loadObjectList();
     }
 }
 

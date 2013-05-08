@@ -29,7 +29,7 @@ class LoginController extends Controller
 		else if($_REQUEST['action'] == 'Register')
 		{
 			$Model = new LoginModel();
-			$Model->Register();
+			$this->Message = $Model->Register();
 		}
         }
                 
@@ -39,8 +39,15 @@ class LoginController extends Controller
 		{
 			$Model = new LoginModel();
 			$Affiliates = $Model->getAffiliates();
+                        $Results=array();
+                        $i=1;
+                        foreach($Affiliates AS $Affiliate){
 
-                        return json_encode($Affiliates);
+                            $Results[] = ''.$Affiliate->GymName.'';
+
+                        }
+
+                        return json_encode($Results);
 		}                   
                 }
 		
