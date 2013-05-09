@@ -160,6 +160,7 @@
 	text-decoration: none;
 }
 
+
 /* B
 -----------------------------------------------------------------------------------------------------------*/
 .ui-bar-b {
@@ -1000,8 +1001,8 @@ a.ui-link-inherit {
 /* Button corner class
 -----------------------------------------------------------------------------------------------------------*/
 .ui-btn-corner-all {
-	-webkit-border-radius: 				1em /*{global-radii-buttons}*/;
-	border-radius: 						1em /*{global-radii-buttons}*/;
+	-webkit-border-radius: 				0.3em /*{global-radii-buttons}*/;
+	border-radius: 						0.3em /*{global-radii-buttons}*/;
 }
 /* radius clip workaround for cleaning up corner trapping */
 .ui-corner-all,
@@ -2517,7 +2518,7 @@ input.ui-input-text.ui-mini, textarea.ui-input-text.ui-mini,
 .ui-field-contain .ui-input-search, .ui-field-contain div.ui-input-text { margin: 0; }
 textarea.ui-input-text { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }
 input.ui-input-text { -webkit-appearance: none; }
-textarea.ui-input-text { height: 50px; -webkit-transition: height 200ms linear; -moz-transition: height 200ms linear; -o-transition: height 200ms linear; transition: height 200ms linear; }
+textarea.ui-input-text { height: 35px; -webkit-transition: height 200ms linear; -moz-transition: height 200ms linear; -o-transition: height 200ms linear; transition: height 200ms linear; }
 textarea.ui-mini { height: 45px; }
 .ui-icon-searchfield:after { position: absolute; left: 7px; top: 50%; margin-top: -9px; content: ""; width: 18px; height: 18px; opacity: .5; }
 .ui-input-search .ui-input-clear, .ui-input-text .ui-input-clear { position: absolute; right: 0; top: 50%; margin-top: -13px; }
